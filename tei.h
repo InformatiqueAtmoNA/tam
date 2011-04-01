@@ -2,8 +2,26 @@
 // \file Tei.h
 // \brief Gère l'envoi et la réception de commande Tei
 // \author FOUQUART Christophe
-// \version 0.1
-// \date 09/02/2011
+// \version 1.0
+// \date 31/03/2011
+//
+// TAM - Tests Automatiques Métrologiques
+// Copyright (C) 2011 FOUQUART Christophe
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+//
 ////////////////////////////////////////////////////*/
 
 #ifndef TEI_H
@@ -52,14 +70,15 @@ protected:
     // \brief Crée une trame au format TEI
     //
     // \param commande Commande TEI
-    // \param data Données facultatives
+    // \param QString* Trame de commande
     ///////////////////////////////////////////////////////////////////////////*/
-    QString* creerTrameCommande(QString commande);
+    QString* creerTrameCommande(QString const & commande);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn float getFloatFromMesureString(QString mesure)
     // \brief Renvoi le float contenu dans la trame de mesure
     //
+    // \param mesure Trame de mesure
     // \return float Mesure au format flottant
     ///////////////////////////////////////////////////////////////////////////*/
     float getFloatFromMesureString(QString mesure);
@@ -74,12 +93,6 @@ protected:
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn Tei()
-    // \brief Constructeur
-    ///////////////////////////////////////////////////////////////////////////*/
-    Tei();
-
-    /*///////////////////////////////////////////////////////////////////////////
     // \fn Tei(QString adressePeriph, TypePeripherique typePeriph, bool accepteFloat)
     // \brief Constructeur
     //
@@ -88,25 +101,19 @@ public:
     // \param typePolluant Type de polluant associé à l'appareil
     // \param optionTpg Paramètre définissant si l'appareil dispose d'un ozoniseur ou d'un photometre
     ///////////////////////////////////////////////////////////////////////////*/
-    Tei(QString adressePeriph, TypePeripherique typePeriph, TypePolluant typePolluant,OptionTpg optionTpg=AUCUNE);
-
-    /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual Mode4()
-    // \brief Destructeur
-    ///////////////////////////////////////////////////////////////////////////*/
-    virtual ~Tei();
+    Tei(QString const & adressePeriph, TypePeripherique const & typePeriph, TypePolluant const & typePolluant,OptionTpg const & optionTpg=AUCUNE);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void init()
     // \brief Initialisation des parametres du périphérique
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void init();
+    virtual bool init();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void parDefault()
     // \brief Règle l'appareil sur son mode de fonctionnement par défaut
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void parDefault();
+    virtual bool parDefault();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual ushort offset()
@@ -115,6 +122,12 @@ public:
     // \return int Offsetdu périphérique
     ///////////////////////////////////////////////////////////////////////////*/
     virtual short offset();
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn virtual void standBy()
+    // \brief mise en stand-by du périphérique
+    ///////////////////////////////////////////////////////////////////////////*/
+    virtual bool standBy();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeMesure()
@@ -159,30 +172,22 @@ public:
     virtual void passageMesure();
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void reset()
-    // \brief Reset du périphérique
-    ///////////////////////////////////////////////////////////////////////////*/
-    virtual void reset();
-
-    /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void standBy()
-    // \brief mise en stand-by du périphérique
-    ///////////////////////////////////////////////////////////////////////////*/
-    virtual void standBy();
-
-    /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void commandeEvent()
-    // \brief Connaitre les valeurs actuelles de gaz du diluteur
-    ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeEvent();
-
-    /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void commandeConfig()
-    // \brief Connaitre la configuration actuelle du diluteur
+    // \fn virtual QVector<Commandes> const* getListeCommandes()
+    // \brief Renvoie la liste des commandes autorisées par le protocole
     //
-    // \return void* Pointeur sur la structure de configuration
+    // \return QVector<Commandes> const* Liste des commandes autorisées par le protocole
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void* commandeConfig();
+    virtual QVector<Commandes> const* getListeCommandes();
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn virtual SpanHandler* getSpanHandler(Commandes commandeSpan)
+    // \brief Renvoie une instance de SpanHandler contenant les infos
+    //        sur les arguments de la commande
+    //
+    // \param commandeSpan Commande dont on veut connaitre les arguments à utiliser
+    // \return SpanHandler* Instance de SpanHandler contenant les infos sur les arguments de la commande
+    ///////////////////////////////////////////////////////////////////////////*/
+    virtual SpanHandler* getSpanHandler(Commandes commandeSpan);
 };
 
 #endif // TEI_H

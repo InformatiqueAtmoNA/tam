@@ -2,8 +2,26 @@
 // \file mode4_sx_6000_17.h
 // \brief Classe dérivée de Mode4 pour les diluteurs SX6000 V1.7
 // \author FOUQUART Christophe
-// \version 0.1
-// \date 10/03/2011
+// \version 1.0
+// \date 31/03/2011
+//
+// TAM - Tests Automatiques Métrologiques
+// Copyright (C) 2011 FOUQUART Christophe
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+//
 ////////////////////////////////////////////////////*/
 
 #ifndef MODE4_SX_6000_17_H
@@ -23,7 +41,7 @@ class Mode4_SX_6000_17 : public Mode4
 {
 
 public:
-    Mode4_SX_6000_17(QString adressePeriph, TypePeripherique typePeriph, bool accepteFloat);
+    Mode4_SX_6000_17(QString const & adressePeriph, TypePeripherique const & typePeriph, bool const & accepteFloat);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeAlarme()
@@ -34,32 +52,45 @@ public:
     ushort demandeAlarme();
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void commandeSpan(ushort canal,ushort point=0, ushort conc03=0)
+    // \fn void commandeSpan(SpanHandler const & spanData)
     // \brief Commande au diluteur de se mettre à un certain point de gaz
     //
-    // \param canal canal sur lequel le polluant souhaité est programmé
-    // \param point Point de consigne
-    // \param concO3 Concentration en ozone
+    // \param spanData Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    void commandeSpan(ushort canal,ushort point=0, ushort concO3=0);
+    void commandeSpan(SpanHandler const & spanData);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void commandeSpan(ushort canal,ushort point)
+    // \fn void commandeSpanZero(QString const & canal="")
     // \brief Commande au diluteur de se mettre au point de gaz zero
+    //
+    // \param canal Canal associé au polluant voulu
     ///////////////////////////////////////////////////////////////////////////*/
-    void commandeSpanZero(ushort canal);
+    void commandeSpanZero(QString const & canal="");
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void commandeSpan(ushort canal,ushort point)
+    // \fn void commandeSpanTpg(SpanHandler const & spanTpgData)
     // \brief Commande au diluteur de se mettre à un certain point de gaz
+    //  pour effectuer un Titrage en Phase Gazeuse
+    //
+    // \param spanTpgData Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    void commandeSpanTpg(ushort canalNox,ushort point,ushort concO3);
+    void commandeSpanTpg(SpanHandler const & spanTpgData);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void commandeSpan(ushort canal,ushort point
+    // \fn void commandeSpan03(SpanHandler const & spanO3Data)
     // \brief Commande au diluteur de se mettre à un certain point de gaz O3
+    //
+    // \param spanO3Data Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    void commandeSpanO3(ushort canal,ushort point03);
+    void commandeSpanO3(SpanHandler const & spanO3Data);
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn virtual QVector<Commandes> const* getListeCommandes()
+    // \brief Renvoie la liste des commandes autorisées par le protocole
+    //
+    // \return QVector<Commandes> const* Liste des commandes autorisées par le protocole
+    ///////////////////////////////////////////////////////////////////////////*/
+    virtual QVector<Commandes> const* getListeCommandes();
 
 };
 

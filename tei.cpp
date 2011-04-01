@@ -1,10 +1,6 @@
 #include "tei.h"
 
-Tei::Tei() {
-
-}
-
-Tei::Tei(QString adressePeriph, TypePeripherique typePeriph, TypePolluant typePolluant,OptionTpg optionTpg) {
+Tei::Tei(QString const & adressePeriph, TypePeripherique const & typePeriph, TypePolluant const & typePolluant,OptionTpg const & optionTpg) {
     bool conversionOK;
     ushort adresseCodeAscii = adressePeriph.toUShort(&conversionOK,10);
     if(conversionOK) {
@@ -19,12 +15,8 @@ Tei::Tei(QString adressePeriph, TypePeripherique typePeriph, TypePolluant typePo
     this->optionTpg = optionTpg;
 }
 
-Tei::~Tei() {
-
-}
-
 // Crée une trame au format TEI
-QString* Tei::creerTrameCommande(QString commande) {
+QString* Tei::creerTrameCommande(QString const & commande) {
     QString* trame = new QString();
     trame->append(this->adresse);
     trame->append(commande);
@@ -43,14 +35,29 @@ bool Tei::setModeRemote() {
     return false;
 }
 
+// Paramétrage du format de trame
+bool Tei::setFormat() {
+    QString cmd = *(this->creerTrameCommande("set format 00"));
+    QString reponse = this->transaction(cmd);
+    if(reponse.isEmpty())
+        return false;
+    if(reponse.contains("set mode remote ok"))
+        return true;
+    return false;
+}
+
+
 // Initialisation des parametres du périphérique
-void Tei::init() {
+bool Tei::init() {
     this->setModeRemote();
+    this->setFormat();
+    return true;
 }
 
 // Regle l'appareil sur son mode de fonctionnement par défaut
-void Tei::parDefault() {
+bool Tei::parDefault() {
     this->setModeRemote();
+    return true;
 }
 
 // Renvoie l'offsetdu periphérique
@@ -131,6 +138,9 @@ ushort Tei::demandeAlarme() {
     if(reponse.isEmpty())
         return NULL;
 
+    if(reponse.contains("*"))
+        reponse.remove("*");
+    reponse.remove(reponse.length()-1,1);
     QString flagsAlarme = reponse.right(4);
     for(int i=0;i<4;i++) {
         if(flagsAlarme.at(i)=='0' || flagsAlarme.at(i)=='1' ||
@@ -190,32 +200,39 @@ void Tei::passageMesure() {
     this->transaction(cmd);
 }
 
-// Reset du périphérique
-void Tei::reset() {
-    qDebug()<<"Commande non disponible sur l'appareil";
-    qDebug()<<"L'opération doit etre effectuée manuellement";
-}
-
 // mise en stand-by du périphérique
-void Tei::standBy() {
+bool Tei::standBy() {
     QString cmd = *(this->creerTrameCommande("set gas off"));
     QString reponse = this->transaction(cmd);
     if(reponse.isEmpty())
-        return;
+        return true;
     cmd = *(this->creerTrameCommande("set ozon off"));
     this->transaction(cmd);
+    return true;
 }
 
-// Connaitre les valeurs actuelles de gaz du diluteur
-void Tei::commandeEvent() {
-    qDebug()<<"Commande non disponible sur l'appareil";
-    qDebug()<<"L'opération doit etre effectuée manuellement";
+// Renvoie la liste des commandes autorisées par le protocole
+QVector<Commandes> const* Tei::getListeCommandes() {
+    QVector<Commandes>* commandesAutorisees = new QVector<Commandes>(6);
+    (*commandesAutorisees)[0] = DATE_HEURE;
+    (*commandesAutorisees)[1] = MESURES;
+    (*commandesAutorisees)[2] = ALARME;
+    (*commandesAutorisees)[3] = MODE_ZERO;
+    (*commandesAutorisees)[4] = MODE_ETALON;
+    (*commandesAutorisees)[5] = MODE_MESURE;
+
+    return commandesAutorisees;
 }
 
-// Connaitre la configuration actuelle du diluteur
-void* Tei::commandeConfig() {
-    qDebug()<<"Commande non disponible sur l'appareil";
-    qDebug()<<"L'opération doit etre effectuée manuellement";
-
-    return NULL;
+// Renvoie une instance de SpanHandler contenant les infos
+// sur les arguments de la commande
+SpanHandler* Tei::getSpanHandler(Commandes commandeSpan) {
+    SpanHandler* infosCommandeSpan = new SpanHandler();
+    QVector<bool>* argumentsUtiles = new QVector<bool>(3);
+    switch(commandeSpan) {
+     default:
+        argumentsUtiles->fill(false);
+    }
+    infosCommandeSpan->setTabArgumentsSpan(*argumentsUtiles);
+    return infosCommandeSpan;
 }

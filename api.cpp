@@ -1,14 +1,15 @@
 #include "api.h"
 
-Api::Api(QString adressePeriph, TypePeripherique typePeriph, TypePolluant typePolluant)
+Api::Api(QString const & adressePeriph, TypePeripherique const & typePeriph, Protocoles const & protocoleUtilise, TypePolluant const & typePolluant)
 {
     this->adresse = adressePeriph;
     this->typePeripherique = typePeriph;
     this->polluantAssocie = typePolluant;
+    this->versionProtocole = protocoleUtilise;
 }
 
 // \brief Crée une trame en fonction du numéro de commande API
-QString* Api::creerTrameCommande(QString typeCommande,QString data) {
+QString* Api::creerTrameCommande(QString const & typeCommande,QString const & data) {
     QString* trame = new QString();
     trame->append(typeCommande);
     trame->append(" ");
@@ -19,7 +20,7 @@ QString* Api::creerTrameCommande(QString typeCommande,QString data) {
     return trame;
 }
 
-float Api::getFloatFromMesureString(QString mesure) {
+float Api::getFloatFromMesureString(QString const & mesure) {
     int indexDebutMesure = mesure.indexOf("=")+1;
     int indexFinMesure = mesure.indexOf(" ",indexDebutMesure);
 
@@ -104,20 +105,6 @@ ushort Api::demandeAlarme() {
     return codeAlarme;
 }
 
-// Commande au diluteur de se mettre à un certain point de gaz
-void Api::commandeSpan(QString canal,ushort point,ushort concO3) {
-    if(concO3>0) {
-        if(point>0)
-            this->commandeSpanTpg(point,concO3);
-        else
-            this->commandeSpanO3(concO3);
-        return;
-    }
-    QString data = "GENERATE "+ QString::number(point) + " PPB " + canal;
-    QString cmd = *(this->creerTrameCommande("C",data));
-    this->transaction(cmd);
-}
-
 // Demande de passage en mode zero
 void Api::passageZero() {
     QString cmd = *(this->creerTrameCommande("C","ZERO"));
@@ -137,27 +124,90 @@ void Api::passageMesure() {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Api::commandeSpanTpg(ushort pointNO,ushort concO3) {
-    QString data = "GPT "+ QString::number(pointNO) + " PPB " + QString::number(concO3) + " PPB";
+void Api::commandeSpan(SpanHandler const & spanData) {
+    QString data = "GENERATE "+ QString::number(spanData.getPoint()) + " PPB " + spanData.getCanal();
+    QString cmd = *(this->creerTrameCommande("C",data));
+    this->transaction(cmd);
+}
+
+// Commande au diluteur de se mettre au point de gaz zero
+void Api::commandeSpanZero(QString const & canal) {
+    SpanHandler* spanData = new SpanHandler();
+    spanData->setSpanArguments(canal,0,0);
+    this->commandeSpan(*spanData);
+    delete spanData;
+}
+
+// Commande au diluteur de se mettre à un certain point de gaz
+void Api::commandeSpanTpg(SpanHandler const & spanData) {
+    QString data = "GPT "+ QString::number(spanData.getPoint()) + " PPB " + QString::number(spanData.getConcO3()) + " PPB";
     QString cmd = *(this->creerTrameCommande("C",data));
     this->transaction(cmd);
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz O3
-void Api::commandeSpanO3(ushort point03) {
-    QString data = "GENERATE "+ QString::number(point03) + " PPB O3";
+void Api::commandeSpanO3(SpanHandler const & spanData) {
+    QString data = "GENERATE "+ QString::number(spanData.getConcO3()) + " PPB O3";
     QString cmd = *(this->creerTrameCommande("C",data));
     this->transaction(cmd);
 }
 
 // Mise en stand-by du périphérique
-void Api::standBy() {
+bool Api::standBy() {
     QString cmd = *(this->creerTrameCommande("C","STANDBY"));
     this->transaction(cmd);
+    return true;
 }
 
-void Api::commandeSpanZero(QString canal) {
-    QString data = "GENERATE 0 PPB " + canal;
-    QString cmd = *(this->creerTrameCommande("C",data));
-    this->transaction(cmd);
+// Renvoie la liste des commandes autorisées par le protocole
+QVector<Commandes> const* Api::getListeCommandes() {
+    QVector<Commandes>* commandesAutorisees;
+
+    if(this->versionProtocole == API_ANA) {
+        commandesAutorisees = new QVector<Commandes>(5);
+        (*commandesAutorisees)[0] = MESURES;
+        (*commandesAutorisees)[1] = ALARME;
+        (*commandesAutorisees)[2] = MODE_ZERO;
+        (*commandesAutorisees)[3] = MODE_ETALON;
+        (*commandesAutorisees)[4] = MODE_MESURE;
+
+    }
+    else {
+        commandesAutorisees = new QVector<Commandes>(6);
+        (*commandesAutorisees)[0] = STAND_BY;
+        (*commandesAutorisees)[1] = ALARME;
+        (*commandesAutorisees)[2] = SPAN;
+        (*commandesAutorisees)[3] = SPAN_ZERO;
+        (*commandesAutorisees)[4] = SPAN_TPG;
+        (*commandesAutorisees)[5] = SPAN_O3;
+    }
+    return commandesAutorisees;
+}
+
+// Renvoie une instance de SpanHandler contenant les infos
+// sur les arguments de la commande
+SpanHandler* Api::getSpanHandler(Commandes commandeSpan) {
+    SpanHandler* infosCommandeSpan = new SpanHandler();
+    QVector<bool>* argumentsUtiles = new QVector<bool>(3);
+    argumentsUtiles->fill(false);
+    switch(commandeSpan) {
+    case SPAN:
+        (*argumentsUtiles)[CANAL]=true;
+        (*argumentsUtiles)[POINT]=true;
+        break;
+    case SPAN_ZERO:
+        (*argumentsUtiles)[CANAL]=true;
+        break;
+    case SPAN_TPG:
+        (*argumentsUtiles)[POINT]=true;
+        (*argumentsUtiles)[CONCO3]=true;
+        break;
+    case SPAN_O3:
+        (*argumentsUtiles)[CONCO3]=true;
+        break;
+    default:
+        break;
+    }
+    infosCommandeSpan->setTabArgumentsSpan(*argumentsUtiles);
+    return infosCommandeSpan;
 }

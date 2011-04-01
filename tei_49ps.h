@@ -1,8 +1,8 @@
-/*////////////////////////////////////////////////////
-// \file tei_146i.h
-// \brief Classe dérivée de Tei pour les diluteur 146i
+/*//////////////////////////////////////////////////////////////////////
+// \file tei_49ps.h
+// \brief Classe dérivée de Tei pour les générateurs d'ozone SONIMIX 49ps
 // \author FOUQUART Christophe
-// \version 0.1
+// \version 1.0
 // \date 31/03/2011
 //
 // TAM - Tests Automatiques Métrologiques
@@ -22,26 +22,25 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-////////////////////////////////////////////////////*/
+//////////////////////////////////////////////////////////////////////*/
 
-#ifndef TEI_146I_H
-#define TEI_146I_H
+#ifndef TEI_49PS_H
+#define TEI_49PS_H
 
 #include "tei.h"
 
 /*////////////////////////////////////////////////////////////////////////////////////
-// \class Tei_146i
-// \brief Classe dérivée de Tei pour les diluteur 146i
+// \class Tei_49ps
+// \brief Classe dérivée de Tei pour les générateurs d'ozone SONIMIX 49ps
 //
 // Cette classe redéfinie certaines méthodes
 // héritées de la classe Tei.
 ////////////////////////////////////////////////////////////////////////////////////*/
-
-class Tei_146i : public Tei
+class Tei_49ps : public Tei
 {
 public:
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn Tei_146i(QString adressePeriph, TypePeripherique typePeriph, bool accepteFloat)
+    // \fn Tei_49ps(QString adressePeriph, TypePeripherique typePeriph, bool accepteFloat)
     // \brief Constructeur
     //
     // \param adressePeriph Adresse du périphérique
@@ -49,7 +48,7 @@ public:
     // \param typePolluant Type de polluant associé à l'appareil
     // \param optionTpg Paramètre définissant si l'appareil dispose d'un ozoniseur ou d'un photometre
     ///////////////////////////////////////////////////////////////////////////*/
-    Tei_146i(QString const & adressePeriph, TypePeripherique const & typePeriph, TypePolluant const & typePolluant,OptionTpg const & optionTpg=AUCUNE);
+    Tei_49ps(QString const & adressePeriph, TypePeripherique const & typePeriph, TypePolluant const & typePolluant,OptionTpg const & optionTpg=AUCUNE);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void void commandeSpan(SpanHandler const & spanData)
@@ -103,4 +102,4 @@ public:
     virtual SpanHandler* getSpanHandler(Commandes commandeSpan);
 };
 
-#endif // TEI_146I_H
+#endif // TEI_49PS_H

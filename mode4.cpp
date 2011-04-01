@@ -4,11 +4,12 @@ Mode4::Mode4() {
 
 }
 
-Mode4::Mode4(QString adressePeriph, TypePeripherique typePeriph, bool accepteFloat) {
+Mode4::Mode4(QString const & adressePeriph, TypePeripherique const & typePeriph, Protocoles const & protocoleUtilise, bool const & accepteFloat) {
     this->adresse = adressePeriph;
     this->typePeripherique = typePeriph;
     this->accepteMesureFloat = accepteFloat;
     this->flagEtatCom = ETAT_REPOS;
+    this->versionProtocole = protocoleUtilise;
 }
 
 Mode4::~Mode4() {
@@ -16,7 +17,7 @@ Mode4::~Mode4() {
 }
 
 // Cree une trame en fonction du numero de commande MODE4
-QString* Mode4::creerTrameCommande(QString noCommande, QString data) {
+QString* Mode4::creerTrameCommande(QString const & noCommande, QString const & data) {
     QString* trame = new QString();
     trame->append(STX);
     trame->append(this->adresse);
@@ -30,7 +31,7 @@ QString* Mode4::creerTrameCommande(QString noCommande, QString data) {
 // Calcule du BCC (Block Check Character)
 // Le BCC est obtenu en effectuant un OU exclusif (XOR)
 // sur tous les octets dà partir de STX exclu jusqu'au BCC exclu
-QString* Mode4::calculerBCC(QString trame) {
+QString* Mode4::calculerBCC(QString const & trame) {
     char bcc = 0x00;
     for(int i=1;i<trame.length();i++)
         bcc ^= trame[i].toAscii();
@@ -43,7 +44,7 @@ QString* Mode4::calculerBCC(QString trame) {
 }
 
 // Analyse la trame et renvoie les infos de config dans une structure
-void* Mode4::parseConfig(QString trameConfig) {
+void* Mode4::parseConfig(QString const & trameConfig) {
 
     int positionData = 7;
     // Si ce n'est pas une trame de configuration
@@ -72,12 +73,12 @@ void* Mode4::parseConfig(QString trameConfig) {
 
         // Recherche de l'offset
         confAnalyseur->offset = trameConfig.mid(positionData+12,4).toShort();
-        confAnalyseur->infoConfig->append("offset : "+ confAnalyseur->offset);
+        confAnalyseur->infoConfig->append("offset : "+ QString::number(confAnalyseur->offset));
 
         // Recherche des alarmes
         QString alarmes = trameConfig.mid(positionData+20,2);
         confAnalyseur->alarme = alarmes.toUShort();
-        confAnalyseur->infoConfig->append("alarmes : "+confAnalyseur->alarme);
+        confAnalyseur->infoConfig->append("alarmes : "+QString::number(confAnalyseur->alarme));
         // Teste si le chiffre représentant l'alarme est impair
         if(confAnalyseur->alarme % 2 > 0)
             emit(this->alarmeGenerale()); // On declenche le signal d'alarme
@@ -140,7 +141,7 @@ void* Mode4::parseConfig(QString trameConfig) {
 }
 
 // Renvoie une chaine de 8 caractères representant le nombre en parametre
-QString* Mode4::getStrForNumber(ushort nombre,ushort nbDigit) {
+QString* Mode4::getStrForNumber(ushort const & nombre,ushort const & nbDigit) {
     QString* strNombre = new QString();
     strNombre->fill('0',nbDigit);
     if(nombre==0) return strNombre;
@@ -150,13 +151,15 @@ QString* Mode4::getStrForNumber(ushort nombre,ushort nbDigit) {
 }
 
 // Initialisation des parametres du périphérique
-void Mode4::init() {
+bool Mode4::init() {
     this->passageMesure();
+    return true;
 }
 
 // Regle l'appareil sur son mode de fonctionnement par défaut
-void Mode4::parDefault() {
+bool Mode4::parDefault() {
     this->passageMesure();
+    return true;
 }
 
 // Renvoie l'offsetdu periphérique
@@ -165,6 +168,15 @@ short Mode4::offset() {
     if(config==NULL)
         return NULL;
     return config->offset;
+}
+
+// Renvoie le flottant représenté dans la chaine passé en paramètre
+float Mode4::getMesureFromString(QString const & mesure) {
+    for(ushort i=0;i<mesure.length();i++)
+        if(mesure.at(i)!='0') {
+            return mesure.right(mesure.length()-i).toFloat();
+        }
+    return 0;
 }
 
 // Demande de mesure immediate
@@ -194,9 +206,15 @@ QVector<float>* Mode4::demandeMesure() {
         (*mesures)[2] = reponse.left(reponse.indexOf(" ")).toFloat();
     }
     else {
-        (*mesures)[0] = reponse.mid(16,8).toFloat()/10;
-        (*mesures)[1] = reponse.mid(24,8).toFloat()/10;
-        (*mesures)[2] = reponse.mid(32,8).toFloat()/10;
+        qDebug()<<"Mesure 1: "<<reponse.mid(16,8);
+        QString mesure = reponse.mid(16,8);
+        (*mesures)[0] = this->getMesureFromString(mesure);
+        mesure = reponse.mid(24,8);
+        qDebug()<<"Mesure 2: "<<reponse.mid(24,8);
+        (*mesures)[1] = this->getMesureFromString(mesure);
+        mesure = reponse.mid(32,8);
+        qDebug()<<"Mesure 3: "<<reponse.mid(32,8);
+        (*mesures)[2] = this->getMesureFromString(mesure);
     }
     return mesures;
 }
@@ -250,12 +268,14 @@ void Mode4::passageMesure() {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Mode4::commandeSpan(ushort canal,ushort point,ushort concO3) {
-    QString strPoint = *this->getStrForNumber(point,8);
-    QString strO3 = *this->getStrForNumber(concO3,8);
+void Mode4::commandeSpan(SpanHandler const & spanData) {
+    ushort point = spanData.getPoint();
+    ushort concO3 = spanData.getConcO3();
+    QString strPoint = *(this->getStrForNumber(point,8));
+    QString strO3 = *(this->getStrForNumber(concO3,8));
 
-    QString data = QString::number(canal);
-    if(canal<10)
+    QString data = spanData.getCanal();
+    if(spanData.getCanal().toUShort()<10)
         data.prepend('0');
 
     data.append(strPoint);
@@ -265,14 +285,26 @@ void Mode4::commandeSpan(ushort canal,ushort point,ushort concO3) {
     this->transaction(cmd);
 }
 
-// Commande au diluteur de se mettre à un certain point de gaz O3
-void Mode4::commandeSpanO3(ushort canal,ushort point03) {
-    this->commandeSpan(canal,0,point03);
+// Commande au diluteur de se mettre au point de gaz zero
+void Mode4::commandeSpanZero(QString const & canal) {
+    SpanHandler* spanData = new SpanHandler();
+    spanData->setSpanArguments(canal,0,0);
+    this->commandeSpan(*spanData);
+    delete spanData;
 }
 
+// Commande au diluteur de se mettre à un certain point de gaz O3
+void Mode4::commandeSpanO3(SpanHandler const & spanO3Data) {
+    this->commandeSpan(spanO3Data);
+}
+
+// Commande au diluteur de se mettre à un certain point de gaz
+void Mode4::commandeSpanTpg(SpanHandler const & spanTpgData) {
+    this->commandeSpan(spanTpgData);
+}
 
 // Reset du périphérique
-void Mode4::reset() {
+bool Mode4::reset() {
     QString cmd;
     if(this->typePeripherique==ANALYSEUR)
         cmd = *(this->creerTrameCommande("1Z","\0"));
@@ -280,10 +312,12 @@ void Mode4::reset() {
         cmd = *(this->creerTrameCommande("00","\0"));
 
     emit(this->envoiTrame(cmd));
+    qDebug()<<"Trame reset envoyée : "<<cmd;
+    return true;
 }
 
 // mise en stand-by du périphérique
-void Mode4::standBy() {
+bool Mode4::standBy() {
     QString cmd;
     if(this->typePeripherique==ANALYSEUR)
         cmd = *(this->creerTrameCommande("14","\0"));
@@ -291,12 +325,14 @@ void Mode4::standBy() {
         cmd = *(this->creerTrameCommande("01","\0"));
 
     this->transaction(cmd);
+    return true;
 }
 
 // Connaitre les valeurs actuelles de gaz du diluteur
-void Mode4::commandeEvent() {
+bool Mode4::commandeEvent() {
     QString cmd = *(this->creerTrameCommande("12","\0"));
     this->transaction(cmd);
+    return true;
 }
 
 // Connaitre la configuration actuelle de l'appareil
@@ -315,4 +351,65 @@ void* Mode4::commandeConfig() {
     void* conf = parseConfig(reponse);
 
     return conf;
+}
+
+// Renvoie la liste des commandes autorisées par le protocole
+QVector<Commandes> const* Mode4::getListeCommandes() {
+    QVector<Commandes>* commandesAutorisees;
+
+    if(this->versionProtocole == MODE4_ANA) {
+        commandesAutorisees = new QVector<Commandes>(9);
+        (*commandesAutorisees)[0] = RESET;
+        (*commandesAutorisees)[1] = OFFSET;
+        (*commandesAutorisees)[2] = STAND_BY;
+        (*commandesAutorisees)[3] = DATE_HEURE;
+        (*commandesAutorisees)[4] = MESURES;
+        (*commandesAutorisees)[5] = ALARME;
+        (*commandesAutorisees)[6] = MODE_ZERO;
+        (*commandesAutorisees)[7] = MODE_ETALON;
+        (*commandesAutorisees)[8] = MODE_MESURE;
+
+    }
+    else {
+        commandesAutorisees = new QVector<Commandes>(8);
+        (*commandesAutorisees)[0] = RESET;
+        (*commandesAutorisees)[1] = EVENT;
+        (*commandesAutorisees)[2] = STAND_BY;
+        (*commandesAutorisees)[3] = ALARME;
+        (*commandesAutorisees)[4] = SPAN;
+        (*commandesAutorisees)[5] = SPAN_ZERO;
+        (*commandesAutorisees)[6] = SPAN_TPG;
+        (*commandesAutorisees)[7] = SPAN_O3;
+    }
+    return commandesAutorisees;
+}
+
+// Renvoie une instance de SpanHandler contenant les infos
+// sur les arguments de la commande
+SpanHandler* Mode4::getSpanHandler(Commandes commandeSpan) {
+    SpanHandler* infosCommandeSpan = new SpanHandler();
+    QVector<bool>* argumentsUtiles = new QVector<bool>(3);
+    argumentsUtiles->fill(false);
+    switch(commandeSpan) {
+    case SPAN:
+        (*argumentsUtiles)[CANAL]=true;
+        (*argumentsUtiles)[POINT]=true;
+        break;
+    case SPAN_ZERO:
+        (*argumentsUtiles)[CANAL]=true;
+        break;
+    case SPAN_TPG:
+        (*argumentsUtiles)[CANAL]=true;
+        (*argumentsUtiles)[POINT]=true;
+        (*argumentsUtiles)[CONCO3]=true;
+        break;
+    case SPAN_O3:
+        (*argumentsUtiles)[CANAL]=true;
+        (*argumentsUtiles)[CONCO3]=true;
+        break;
+    default:
+        break;
+    }
+    infosCommandeSpan->setTabArgumentsSpan(*argumentsUtiles);
+    return infosCommandeSpan;
 }

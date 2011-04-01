@@ -1,6 +1,6 @@
 /*////////////////////////////////////////////////////
-// \file threadcomhandler.h
-// \brief Classe implémentant un thread gérant la communication RS232
+// \file spanhandler.h
+// \brief Classe gérant les paramètres de span
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 31/03/2011
@@ -24,84 +24,79 @@
 //
 ////////////////////////////////////////////////////*/
 
-#ifndef THREADCOMHANDLER_H
-#define THREADCOMHANDLER_H
+#ifndef SPANHANDLER_H
+#define SPANHANDLER_H
 
-#include <QtCore>
-#include <QThread>
-#include "communicationserie.h"
+#include "definitions_globales.h"
 
 /*////////////////////////////////////////////////////////////////////////////////////
-// \class ThreadComHandler
-// \brief Classe implémentant un thread gérant la communication RS232
+// \class SpanHandler
+// \brief Classe gérant les paramètres de span
+//
+// Cette classe gère les paramètres de span
 ////////////////////////////////////////////////////////////////////////////////////*/
 
-class ThreadComHandler : public QThread
+class SpanHandler
 {
-    Q_OBJECT
-private:
-    CommunicationSerie* comRS232; // Gère la communication RS232
-    bool flagStop; // Indique que le thread doit s'arrêter
-
+    QVector<QVariant>* spanArguments; // Valeur des arguments pour les fonctions de span
+    QVector<bool>* tabArgumentsUtiles; // Tableau des arguments utilisés
 public:
-    /*///////////////////////////////////////////////////////////////////////////
-    // \fn ThreadComHandler()
-    // \brief Constructeur par défaut
-    ///////////////////////////////////////////////////////////////////////////*/
-    ThreadComHandler();
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn ~ThreadComHandler()
-    // \brief Destructeur
+    // \fn SpanHandler()
+    // \brief Constructeur par defaut
     ///////////////////////////////////////////////////////////////////////////*/
-    ~ThreadComHandler();
+    SpanHandler();
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void run()
-    // \brief Exécute une boucle infinie permettant d'utiliser les signaux/slots
-    ///////////////////////////////////////////////////////////////////////////*/
-    void run();
-
-public slots:
-    /*///////////////////////////////////////////////////////////////////////////
-    // \fn void configureRS232()
-    // \brief Configure la liaison RS232
+    // \fn void setTabArgumentsSpan(QVector<bool> argumentSpan)
+    // \brief Affecte le tableau d'utilisation des arguments de span
     //
-    // \param deviceName Identifiant du périphérique (/dev/tty* ou COM*)
-    // \return bool Faux si probleme de connexion
+    // \param argumentSpan Tableau d'utilisation des arguments de span
     ///////////////////////////////////////////////////////////////////////////*/
-    void configureRS232(QString deviceName);
+    void setTabArgumentsSpan(QVector<bool> argumentSpan);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void stop()
-    // \brief Stop le thread
-    ///////////////////////////////////////////////////////////////////////////*/
-    void stop();
-
-signals:
-    /*///////////////////////////////////////////////////////////////////////////
-    // \fn void envoiTrame(QString data)
-    // \brief Envoi d'une trame par RS232
+    // \fn QVector<bool>* getTabArgumentsSpan()
+    // \brief Renvoie le tableau d'utilisation des arguments de span
     //
-    // \param data Trame de commande
+    // \return QVector<bool>* Tableau d'utilisation des arguments de span
     ///////////////////////////////////////////////////////////////////////////*/
-    void envoiTrame(QString data);
+    QVector<bool>* getTabArgumentsSpan();
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void envoiTrame(QString data)
-    // \brief Réception d'une trame par RS232
+    // \fn void setSpanArguments(QString const & canal,ushort const & point, ushort const & concO3)
+    // \brief Affecte les valeurs des arguments de span au tableau
     //
-    // \param data Trame de réponse
+    // \param canal Canal de polluant
+    // \param point Point de gaz à atteindre
+    // \param concO3 Concentration d'ozone désirée
     ///////////////////////////////////////////////////////////////////////////*/
-    void receptionTrame(QString data);
+    void setSpanArguments(QString const & canal,ushort const & point, ushort const & concO3);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void ouverturePort(bool reussi)
-    // \brief Informe de la réussite ou pas de l'ouverture du port série
+    // \fn QString getCanal() const
+    // \brief Renvoie le canal de polluant
     //
-    // \param reussi Vrai si ouverture réussie, faux sinon
+    // \return QString Canal de polluant
     ///////////////////////////////////////////////////////////////////////////*/
-    void ouverturePort(bool reussi);
+    QString getCanal() const;
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn ushort getPoint() const
+    // \brief Renvoie le point de gaz à atteindre
+    //
+    // \return ushort Point de gaz à atteindre
+    ///////////////////////////////////////////////////////////////////////////*/
+    ushort getPoint() const;
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn ushort getConcO3() const
+    // \brief Renvoie la concentration d'ozone désirée
+    //
+    // \return ushort Concentration d'ozone désirée
+    ///////////////////////////////////////////////////////////////////////////*/
+    ushort getConcO3() const;
 };
 
-#endif // THREADCOMHANDLER_H
+#endif // SPANHANDLER_H
