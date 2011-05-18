@@ -86,4 +86,6 @@ LIBS += -L./ \
     -lqserialdevice
 
 OTHER_FILES += \
-    licence.txt
+    licence.txt \
+    StructureTest.dtd \
+    CreationBaseMySql.sql
