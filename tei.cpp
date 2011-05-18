@@ -1,3 +1,29 @@
+/*////////////////////////////////////////////////////
+// \file Tei.cpp
+// \brief Gère l'envoi et la réception de commande Tei
+// \author FOUQUART Christophe
+// \version 1.0
+// \date 31/03/2011
+//
+// TAM - Tests Automatiques Métrologiques
+// Copyright (C) 2011 FOUQUART Christophe
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+//
+////////////////////////////////////////////////////*/
+
 #include "tei.h"
 
 Tei::Tei(QString const & adressePeriph, TypePeripherique const & typePeriph, TypePolluant const & typePolluant,OptionTpg const & optionTpg) {
@@ -142,16 +168,25 @@ ushort Tei::demandeAlarme() {
         reponse.remove("*");
     reponse.remove(reponse.length()-1,1);
     QString flagsAlarme = reponse.right(4);
+
+//    for(int i=0;i<4;i++) {
+//        if(flagsAlarme.at(i)=='0' || flagsAlarme.at(i)=='1' ||
+//           flagsAlarme.at(i)=='4' || flagsAlarme.at(i)=='5')
+//            qDebug()<<"Pas d'alarme : "<<flagsAlarme;
+//        else {
+//            qDebug()<<"Alarme générale : "<<flagsAlarme;
+//            emit(this->alarmeGenerale());
+//            return 1;
+//        }
+//    }
     for(int i=0;i<4;i++) {
-        if(flagsAlarme.at(i)=='0' || flagsAlarme.at(i)=='1' ||
-           flagsAlarme.at(i)=='4' || flagsAlarme.at(i)=='5')
-            qDebug()<<"Pas d'alarme : "<<flagsAlarme;
-        else {
+        if(flagsAlarme.at(i)!='0') {
             qDebug()<<"Alarme générale : "<<flagsAlarme;
             emit(this->alarmeGenerale());
             return 1;
         }
     }
+
     return 0;
 }
 

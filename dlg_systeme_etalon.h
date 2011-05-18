@@ -19,6 +19,10 @@ public:
     ~Dlg_Systeme_Etalon();
 
     int getIdSelection();
+    QString getNoSerieEtalon();
+    QString getNoSerieBouteille();
+    QString getNoSerieGZero();
+
 private:
     Ui::Dlg_Systeme_Etalon *ui;
 

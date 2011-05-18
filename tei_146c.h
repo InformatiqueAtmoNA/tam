@@ -58,6 +58,14 @@ public:
     virtual bool standBy();
 
     /*///////////////////////////////////////////////////////////////////////////
+    // \fn virtual void demandeAlarme()
+    // \brief Demande d'alarme
+    //
+    // \return ushort Valeur de l'alarme
+    ///////////////////////////////////////////////////////////////////////////*/
+    virtual ushort demandeAlarme();
+
+    /*///////////////////////////////////////////////////////////////////////////
     // \fn void void commandeSpan(SpanHandler const & spanData)
     // \brief Commande au diluteur de se mettre à un certain point de gaz
     //

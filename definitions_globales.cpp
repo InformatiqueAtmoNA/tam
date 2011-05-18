@@ -53,6 +53,34 @@ QString typePolluantToString(TypePolluant type) {
     return "";
 }
 
+QString typeTestToString(TypeTest type) {
+    if(type==REPETABILITE_1)
+        return "REPETABLITE_1";
+    if(type==REPETABILITE_2)
+        return "REPETABLITE_2";
+    if(type==LINEARITE)
+        return "LINEARITE";
+    if(type==TEMP_REPONSE)
+        return "TEMP_REPONSE";
+    if(type==RENDEMENT_FOUR)
+        return "RENDEMENT_FOUR";
+    return "PERSO";
+}
+
+TypeTest stringToTypeTest(QString type) {
+    if(type=="REPETABILITE_1")
+        return REPETABILITE_1;
+    if(type=="REPETABILITE_2")
+        return REPETABILITE_2;
+    if(type=="LINEARITE")
+        return LINEARITE;
+    if(type=="TEMP_REPONSE")
+        return TEMP_REPONSE;
+    if(type=="RENDEMENT_FOUR")
+        return RENDEMENT_FOUR;
+    return PERSO;
+}
+
 Commandes stringToCommande(QString cmd) {
     if(cmd=="OFFSET")
         return OFFSET;

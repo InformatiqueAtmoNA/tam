@@ -29,6 +29,7 @@
 
 #include <QDialog>
 #include "bdhandler.h"
+#include "dlg_equipement.h"
 
 namespace Ui {
     class Dlg_Concentration;
@@ -40,7 +41,7 @@ class Dlg_Concentration : public QDialog
 
 public:
     explicit Dlg_Concentration(QWidget *parent,const QPointer<BdHandler> bdHandler,
-                               const int idSystemeEtalon, const bool returnSelection=false,
+                               const int idSystemeEtalon, const bool filtrerRdf = false, const bool returnSelection=false,
                                const int indexSelection =-1);
     ~Dlg_Concentration();
 
@@ -51,12 +52,16 @@ private:
     QPointer<QSqlTableModel> m_model;
     QModelIndex m_indexSelection;
     QPointer<BdHandler> m_bdHandler;
+    QPointer<QSqlQueryModel> m_modelPolluants;
     QString m_noSerieEquipemenent;
     int m_idSystemeEtalon;
+    ushort m_idPolluant;
     int m_ligneModifiee;
     bool m_modifEnCours;
     bool m_returnSelection;
+    bool m_filtrerRdf;
 
+    void peuplerCbPolluant();
     void peuplerTable();
     void afficherFormulaire();
 
@@ -68,6 +73,7 @@ private slots:
     void buttonValiderClicked();
     void buttonFermerClicked();
     void buttonSelectionnerClicked();
+    void cbSelectPolluantIndexChanged(const int index);
 };
 
 

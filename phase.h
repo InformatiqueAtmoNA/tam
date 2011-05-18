@@ -1,6 +1,6 @@
 /*////////////////////////////////////////////////////////////
 // \file Phase.h
-// \brief ReprÃ©sente une phase lors du dÃ©roulement d'un test
+// \brief Représente une phase lors du déroulement d'un test
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 25/03/2011
@@ -31,26 +31,28 @@
 
 /*////////////////////////////////////////////////////////////////////////////////////
 // \class Phase
-// \brief ReprÃ©sente une phase lors du dÃ©roulement d'un test
+// \brief Représente une phase lors du déroulement d'un test
 //
 // Classe de transition vers le format XML
 ////////////////////////////////////////////////////////////////////////////////////*/
 
 class Phase : public QObject
 {
-    ushort m_noPhase; // NumÃ©ro de la phase
+    ushort m_noPhase; // Numéro de la phase
     QTime m_tempsMaxPhase; // Temps maximum de la phase
-    ushort m_nbCyclesMesures; // Nombre de cycles de mesures Ã  effectuer aprÃ¨s le temps de stabilisation
-    QTime m_tempsStabilisation; // Temps de stabilisation pendant lequel aucune mesure n'est effectuÃ©e
-    QTime m_tempsMoyennageMesure; // Temps correspondant Ã  un cycle sur lequel les mesures seront moyennÃ©es
-    QVector<ushort> m_criteresArret; // CritÃ¨re d'arrÃªt : m_criteresArret[0]=m_nbCyclesMesures,  m_criteresArret[1]=pourcentage de stabilisation
-    Commandes m_commandeFinTs; // Commande optionnelle Ã  effectuer Ã  la fin du temps de stabilisation
-    QMap<TypePolluant,ushort> m_listePolluants; // Liste des polluants et de leurs points de gaz associÃ©s
+    ushort m_nbCyclesMesures; // Nombre de cycles de mesures à effectuer après le temps de stabilisation
+    QTime m_tempsStabilisation; // Temps de stabilisation pendant lequel aucune mesure n'est effectuée
+    QTime m_tempsMoyennageMesure; // Temps correspondant à un cycle sur lequel les mesures seront moyennées
+    QTime m_tempsAttenteEntreMesure; // Temps d'attente entre chaque cycle de mesure
+    bool m_critereArretPrevu; // Indique si un critère d'arrêt est prévu
+    QVector<ushort> m_criteresArret; // Critère d'arrêt : voir enum dans definitions_globales.h
+    Commandes m_commandeDebutPhase; // Commande optionnelle à effectuer à la fin du temps de stabilisation
+    QMap<ushort,ushort> m_listePolluants; // Liste des polluants et de leurs points de gaz associés
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
     // \fn Phase();
-    // \brief Constructeur par dÃ©faut
+    // \brief Constructeur par défaut
     ///////////////////////////////////////////////////////////////////////////*/
     Phase();
 
@@ -58,81 +60,130 @@ public:
     // \fn Phase();
     // \brief Constructeur de copie
     //
-    // \param phase RÃ©fÃ©rence vers l'objet Phase Ã  copier
+    // \param phase Référence vers l'objet Phase à copier
     ///////////////////////////////////////////////////////////////////////////*/
-    Phase(Phase const & phase);
+    Phase(const Phase & phase);
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn bool isEmpty() const
+    // \brief Teste si la phase est vide
+    //
+    // \return bool Vrai si le numéro de phase est à 0. Faux sinon
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline bool isEmpty() const {return (this->m_noPhase==0);}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn bool polluantPresent(ushort idMolecule) const
+    // \brief Renvoi si un polluant est déjà programé
+    //
+    // \param idMolecule Id de la table Molecule
+    // \return bool Vrai si le polluant est déjà programé. Faux sinon
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline bool polluantPresent(ushort idMolecule) const {return m_listePolluants.contains(idMolecule);}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getNoPhase()
-    // \brief Renvoi le numÃ©ro de phase
+    // \brief Renvoi le numéro de phase
     //
-    // \return ushort NumÃ©ro de phase
+    // \return ushort Numéro de phase
     ///////////////////////////////////////////////////////////////////////////*/
-    inline ushort getNoPhase() {return this->m_noPhase;}
+    inline ushort getNoPhase() const {return this->m_noPhase;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn QTime const getTpsMaxPhase()
-    // \brief Renvoi le temps maximum de durÃ©e de la phase
+    // \fn QTime const getTpsMaxPhase() const
+    // \brief Renvoi le temps maximum de durée de la phase
     //
-    // \return QTime Temps maximum de durÃ©e de la phase
+    // \return QTime Temps maximum de durée de la phase
     ///////////////////////////////////////////////////////////////////////////*/
-    inline QTime getTpsMaxPhase() {return this->m_tempsMaxPhase;}
+    inline QTime getTpsMaxPhase() const {return this->m_tempsMaxPhase;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn QTime const getNbCyclesMesures()
+    // \fn QTime const getNbCyclesMesures() const
     // \brief Renvoi le nombre de cycles de mesures avant la fin de la phase
     //
     // \return ushort Nombre de cycles de mesures avant la fin de la phase
     ///////////////////////////////////////////////////////////////////////////*/
-    inline ushort getNbCyclesMesures() {return this->m_nbCyclesMesures;}
+    inline ushort getNbCyclesMesures() const {return this->m_nbCyclesMesures;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn QTime const getTpsStabilisation()
+    // \fn ushort getCritereArret_NbCyclesMesures() const
+    // \brief Renvoi le nombre de cycles de mesures sur lequel s'applique le critère d'arrêt
+    //
+    // \return ushort Nombre de cycles de mesures sur lequel s'applique le critère d'arrêt
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline ushort getCritereArret_NbCyclesMesures() const {return this->m_criteresArret[CRITERE_ARRET_NB_CYCLES_MESURES];}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn ushort getCritereArret_PourcentageStabilisation() const
+    // \brief Renvoi le pourcentage de variation en dessous duquel l'arrêt s'effectue
+    //
+    // \return ushort pourcentage de variation en dessous duquel l'arrêt s'effectue
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline ushort getCritereArret_PourcentageStabilisation() const {return this->m_criteresArret[CRITERE_ARRET_POURENTAGE_STABILISATION];}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn bool critereArretExiste() const
+    // \brief Teste si un critère d'arrêt est programmé
+    //
+    // \return bool Vrai si critère d'arrêt programmé, Faux sinon
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline bool critereArretExiste() const {return m_critereArretPrevu;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn QTime const getTpsStabilisation() const
     // \brief Renvoi le temps de stabilisation
     //
     // \return QTime Temps de stabilisation
     ///////////////////////////////////////////////////////////////////////////*/
-    inline QTime getTpsStabilisation() {return this->m_tempsStabilisation;}
+    inline QTime getTpsStabilisation() const {return this->m_tempsStabilisation;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn QTime const getTpsMoyennageMesure()
+    // \fn QTime const getTpsMoyennageMesure() const
     // \brief Renvoi le temps de moyennage des mesures pour un cycle
     //
     // \return QTime Temps de moyennage des mesures pour un cycle
     ///////////////////////////////////////////////////////////////////////////*/
-    inline QTime getTpsMoyennageMesure() {return this->m_tempsMoyennageMesure;}
+    inline QTime getTpsMoyennageMesure() const {return this->m_tempsMoyennageMesure;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn QTime const getCmdFinTs()
+    // \fn QTime getTpsAttenteEntreMesure() const
+    // \brief Renvoi le temps d'attente entre chaque cycle de mesures
+    //
+    // \return QTime temps d'un cycle de mesures
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline QTime getTpsAttenteEntreMesure() const {return this->m_tempsAttenteEntreMesure;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn QTime const getCmdDebutPhase() const
     // \brief Renvoi la commande optionnelle de fin de tamps de stabilisation
     //
     // \return Commandes Commande optionnelle de fin de tamps de stabilisation
     ///////////////////////////////////////////////////////////////////////////*/
-    inline Commandes getCmdFinTs() {return this->m_commandeFinTs;}
+    inline Commandes getCmdDebutPhase() const {return this->m_commandeDebutPhase;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn QTime const getListePolluants()
-    // \brief Renvoi la liste des polluants et de leurs points de gaz associÃ©s
+    // \fn QTime const getListePolluants() const
+    // \brief Renvoi la liste des polluants et de leurs points de gaz associés
     //
-    // \return QMap<TypePolluant,ushort> Liste des polluants et de leurs points de gaz associÃ©s
+    // \return QMap<ushort,ushort> Liste des polluants et de leurs points de gaz associés
     ///////////////////////////////////////////////////////////////////////////*/
-    inline QMap<TypePolluant,ushort> getListePolluants() {return m_listePolluants;}
+    inline QMap<ushort,ushort> getListePolluants() const {return m_listePolluants;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setNoPhase(ushort const & numPhase)
-    // \brief Affecte un nouveau numÃ©ro de phase
+    // \brief Affecte un nouveau numéro de phase
     //
-    // \param numPhase Nouveau numÃ©ro de phase
+    // \param numPhase Nouveau numéro de phase
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setNoPhase(ushort const & numPhase) {this->m_noPhase = numPhase;}
+    inline void setNoPhase(const ushort & numPhase) {this->m_noPhase = numPhase;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setTpsMaxPhase(QTime const & tempsMaxPhase)
-    // \brief Affecte un nouveau temps maximum de durÃ©e de la phase
+    // \brief Affecte un nouveau temps maximum de durée de la phase
     //
-    // \param tempsMaxPhase Nouveau temps maximum de durÃ©e de la phase
+    // \param tempsMaxPhase Nouveau temps maximum de durée de la phase
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setTpsMaxPhase(QTime const & tempsMaxPhase) {this->m_tempsMaxPhase = tempsMaxPhase;}
+    inline void setTpsMaxPhase(const QTime & tempsMaxPhase) {this->m_tempsMaxPhase = tempsMaxPhase;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setNbCyclesMesures(ushort const & nbCyclesMesures)
@@ -140,7 +191,7 @@ public:
     //
     // \param nbCyclesMesures Nouveau nombre de cycles de mesures avant la fin de la phase
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setNbCyclesMesures(ushort const & nbCyclesMesures) {this->m_nbCyclesMesures = nbCyclesMesures;}
+    inline void setNbCyclesMesures(const ushort & nbCyclesMesures) {this->m_nbCyclesMesures = nbCyclesMesures;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setTpsStabilisation(QTime const & tempsStabilisation)
@@ -148,7 +199,7 @@ public:
     //
     // \param tempsStabilisation Nouveau temps de stabilisation
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setTpsStabilisation(QTime const & tempsStabilisation) {this->m_tempsStabilisation = tempsStabilisation;}
+    inline void setTpsStabilisation(const QTime & tempsStabilisation) {this->m_tempsStabilisation = tempsStabilisation;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setTpsMoyennageMesure(QTime const & tempsMoyennageMesure)
@@ -156,7 +207,15 @@ public:
     //
     // \param tempsMoyennageMesure Nouveau temps de moyennage des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setTpsMoyennageMesure(QTime const & tempsMoyennageMesure) {this->m_tempsMoyennageMesure = tempsMoyennageMesure;}
+    inline void setTpsMoyennageMesure(const QTime & tempsMoyennageMesure) {this->m_tempsMoyennageMesure = tempsMoyennageMesure;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setTempsMoyennageMesure(QTime const & tpsMoyennageMesure)
+    // \brief Ajoute un nouveau temps d'un cycle de mesures
+    //
+    // \param tpsMoyennageMesure Nouveau temps d'attente entre chaque cycle de mesures
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setTpsAttenteEntreMesure(const QTime & tpsAttenteEntreMesure) {this->m_tempsAttenteEntreMesure = tpsAttenteEntreMesure;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setCmdFinTs(Commandes const & commandeFinTS)
@@ -164,52 +223,94 @@ public:
     //
     // \param commandeFinTS Nouvelle commande fin de temps de stabilisation
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setCmdFinTs(Commandes const & commandeFinTS) {this->m_commandeFinTs = commandeFinTS;}
+    inline void setCmdFinTs(const Commandes & commandeFinTS) {this->m_commandeDebutPhase = commandeFinTS;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void ajouterPolluant(TypePolluant const & polluant, ushort pointGaz)
-    // \brief Ajoute un nouveau polluant Ã  la phase avec son point de gaz associÃ©
+    // \brief Ajoute un nouveau polluant à la phase avec son point de gaz associé
     //
     // \param polluant Nouveau polluant
-    // \param pointGaz Nouveau point de gaz associÃ©
+    // \param pointGaz Nouveau point de gaz associé
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void ajouterPolluant(TypePolluant const & polluant, ushort pointGaz) {this->m_listePolluants.insert(polluant,pointGaz);}
+    inline void ajouterPolluant(const uint polluant, const ushort pointGaz) {this->m_listePolluants.insert(polluant,pointGaz);}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void ajouterCritereArret(ushort const & nbCycleMesure, ushort const & pourcentageStabilisation)
-    // \brief Ajoute un critÃ¨re d'arrÃªt de la phase
+    // \fn void supprimerPolluant(const uint polluant)
+    // \brief Supprime un nouveau polluant de la phase
     //
-    // \param nbCycleMesure Nombre cycles de mesures pendant lequel on vÃ©rifiera la stabilitÃ©
-    // \param pourcentageStabilisation Pourcentage de stabilitÃ© provoquant l'arrÃªt de la phase
+    // \param polluant Polluant à supprimer
     ///////////////////////////////////////////////////////////////////////////*/
-    void ajouterCritereArret(ushort const & nbCycleMesure, ushort const & pourcentageStabilisation);
+    inline void supprimerPolluant(const uint polluant) {this->m_listePolluants.remove(polluant);}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setCritereArretPrevu(bool critereArretPrevu)
+    // \brief Ajoute un critère d'arrêt de la phase
+    //
+    // \param critereArretPrevu Indique si un critère d'arrêt est spécifié
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setCritereArretPrevu(bool critereArretPrevu) {this->m_critereArretPrevu=critereArretPrevu;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setCritereArret_NbCyclesMesures(const ushort value) const
+    // \brief Initialise le nombre de cycles de mesures sur lequel s'applique le critère d'arrêt
+    //
+    // \param value Nombre de cycles de mesures sur lequel s'applique le critère d'arrêt
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setCritereArret_NbCyclesMesures(const ushort value) {this->m_criteresArret.replace(CRITERE_ARRET_NB_CYCLES_MESURES,value);}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void getCritereArret_PourcentageStabilisation(const ushort value) const
+    // \brief Initialise le pourcentage de variation en dessous duquel l'arrêt s'effectue
+    //
+    // \return value Pourcentage de variation en dessous duquel l'arrêt s'effectue
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setCritereArret_PourcentageStabilisation(const ushort value) {this->m_criteresArret.replace(CRITERE_ARRET_POURENTAGE_STABILISATION,value);}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn Phase& operator=(const Phase&)
-    // \brief Surcharge de l'opÃ©rateur =
+    // \brief Surcharge de l'opérateur =
     //
-    // \param Phase RÃ©fÃ©rence sur l'objet Phase Ã  copier
-    // \return Phase& RÃ©fÃ©rence sur le nouvel objet Phase
+    // \param Phase Référence sur l'objet Phase à copier
+    // \return Phase& Référence sur le nouvel objet Phase
     ///////////////////////////////////////////////////////////////////////////*/
     Phase& operator=(const Phase&);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn QDomElement exportToXml(QDomDocument & xmlTest)
-    // \brief Exporte les donnÃ©es membres de l'instance de la classe sous forme d'Ã©lÃ©ment XML
+    // \brief Exporte les données membres de l'instance de la classe sous forme d'élément XML
     //
-    // \param xmlTest Document XML servant Ã  l'export
-    // \return QDomElement ElÃ©ment XML contenant les donnÃ©es membres de la classe
+    // \param xmlTest Document XML servant à l'export
+    // \return QDomElement Elément XML contenant les données membres de la classe
     ///////////////////////////////////////////////////////////////////////////*/
     QDomElement exportToXml(QDomDocument & xmlTest);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn static QPointer<Phase> importFromXml(QDomElement const & domPhase)
-    // \brief Construit une nouvelle instance de la classe Phase Ã  partir d'un Ã©lÃ©ment XML
+    // \brief Construit une nouvelle instance de la classe Phase à partir d'un élément XML
     //
-    // \param domPhase ElÃ©ment XML reprÃ©sentant une phase
+    // \param domPhase Elément XML représentant une phase
     // \return QPointer<Phase> Pointeur vers la nouvelle instance de la classe Phase
     ///////////////////////////////////////////////////////////////////////////*/
-    static QPointer<Phase> importFromXml(QDomElement const & domPhase);
+    static QPointer<Phase> importFromXml(const QDomElement & domPhase);
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn static QPointer<Phase> getPhaseFromConf(const PhaseConfig & config)
+    // \brief Construit une nouvelle instance de la classe Phase à partir d'une structure de configuration
+    //
+    // \param config Configuration de la phase : voir definition_globales.h
+    // \return QPointer<Phase> Pointeur vers la nouvelle instance de la classe Phase
+    ///////////////////////////////////////////////////////////////////////////*/
+    static QPointer<Phase> getPhaseFromConf(const PhaseConfig & config);
 };
 
 #endif // PHASE_H
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn QDebug operator<<(QDebug dbg, const Phase & Phase)
+    // \brief Redéfinition de l'opérateur de flux pour l'affichage en mode debug
+    //
+    // \param dbg Flux de sortie
+    // \param phase Référence vers l'instance de la classe Phase à afficher
+    // \return QDebug Flux de sortie
+    ///////////////////////////////////////////////////////////////////////////*/
+    extern QDebug operator<<(QDebug dbg, const Phase & phase);

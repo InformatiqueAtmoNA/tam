@@ -34,6 +34,7 @@ class BdHandler : public QObject
 protected :
     QSqlDatabase m_baseMySql;
 
+    QSqlRecord* getTableRow(QString sqlTableRequete);
 public:
     BdHandler() {}
     BdHandler(const QString & driver,const QString & host,const QString & username,
@@ -43,14 +44,17 @@ public:
     QPointer<QSqlRelationalTableModel> getEquipementModel();
     QPointer<QSqlRelationalTableModel> getModelesModel();
     QPointer<QSqlRelationalTableModel> getSystemeEtalonModel();
-    QPointer<QSqlRelationalTableModel> getPolluantAssocieModel(const int idEquipement);
+    QPointer<QSqlRelationalTableModel> getPolluantAssocieModel(const uint idEquipement);
+    QPointer<QSqlQueryModel> getPolluantsParSystemeEtalon(const uint idSystemeEtalon,const bool filtrerRdf=false);
     QPointer<QSqlTableModel> getSystemeEtalonModelSansRelation();
     QPointer<QSqlTableModel> getMoleculesModel();
     QPointer<QSqlTableModel> getProtocolesModel();
     QPointer<QSqlTableModel> getMarquesModel();
     QPointer<QSqlTableModel> getTxTransmissionModel();
-    QPointer<QSqlTableModel> getConcentrationModel(const int idSystemeEtalon);
-
+    QPointer<QSqlTableModel> getConcentrationModel(const uint idSystemeEtalon,const uint idPolluant);
+    QSqlRecord* getConcentrationRow(const uint idConcentration);
+    QSqlRecord* getConcentrationRow(const uint idSystemeEtalon, const uint idMolecule, const uint pointGaz);
+    QSqlRecord* getMoleculeRow(const uint idMolecule);
     bool isOpen();
 };
 

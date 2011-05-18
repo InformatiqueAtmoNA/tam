@@ -209,7 +209,19 @@ void Dlg_Systeme_Etalon::buttonSelectionnerClicked() {
 }
 
 int Dlg_Systeme_Etalon::getIdSelection() {
-    return this->m_model->record(m_indexSelection.row()).value(MODELE_ID).toInt();
+    return this->m_model->record(m_indexSelection.row()).value(SYS_ETALON_ID).toInt();
+}
+
+QString Dlg_Systeme_Etalon::getNoSerieEtalon() {
+    return this->m_model->record(m_indexSelection.row()).value(SYS_ETALON_DILUTEUR).toString();
+}
+
+QString Dlg_Systeme_Etalon::getNoSerieBouteille() {
+    return this->m_model->record(m_indexSelection.row()).value(SYS_ETALON_BOUTEILLE).toString();
+}
+
+QString Dlg_Systeme_Etalon::getNoSerieGZero() {
+    return this->m_model->record(m_indexSelection.row()).value(SYS_ETALON_GZERO).toString();
 }
 
 void Dlg_Systeme_Etalon::buttonModifierClicked() {

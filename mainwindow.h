@@ -1,3 +1,9 @@
+/*////////////////////////////////////////////////////////////
+// \file mainwindow.h
+// \brief Classe d'interface graphique de la fenetre principale
+// \author FOUQUART Christophe
+// \version 1.0
+// \date 25/03/2011
 //
 // TAM - Tests Automatiques Métrologiques
 // Copyright (C) 2011 FOUQUART Christophe
@@ -16,11 +22,15 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
+////////////////////////////////////////////////////////////*/
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDebug>
+#include <QSettings>
+#include "creationtest.h"
 
 namespace Ui {
     class MainWindow;
@@ -33,10 +43,17 @@ public:
     ~MainWindow();
 
 protected:
+    QPointer<BdHandler> m_bdHandler;
+
     void changeEvent(QEvent *e);
+    QVariant getParam(QString const & key);
+    void setParam(QString const & key, QVariant const & param);
 
 private:
     Ui::MainWindow *ui;
+
+private slots:
+    void pushButtonClicked();
 };
 
 #endif // MAINWINDOW_H

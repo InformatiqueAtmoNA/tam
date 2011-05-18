@@ -31,8 +31,8 @@
 #include <QtCore/QByteArray>
 #include <iostream>
 #include <string>
-#include <abstractserial.h>
 #include <QtCore/qstring.h>
+#include "abstractserial.h"
 
 /*/////////////////////////////////////////////////////
 // \class CommunicationSerie

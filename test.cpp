@@ -1,29 +1,38 @@
-/*    Copyright 2011 FOUQUART Christophe
+/*////////////////////////////////////////////////////////////
+// \file test.cpp
+// \brief Représente un un test
+// \author FOUQUART Christophe
+// \version 1.0
+// \date 25/03/2011
 //
-//    This file is part of Test_Automatiques_Metrologiques.
+// TAM - Tests Automatiques Métrologiques
+// Copyright (C) 2011 FOUQUART Christophe
 //
-//    Test_Automatiques_Metrologiques is free software:
-//    you can redistribute it and/or modify it under the terms of the
-//    GNU General Public License as published by the Free Software Foundation,
-//    either version 3 of the License, or (at your option) any later version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
 //
-//    Test_Automatiques_Metrologiques is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License
-//    along with Test_Automatiques_Metrologiques.
-//    If not, see <http://www.gnu.org/licenses/>.
-*/
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+//
+////////////////////////////////////////////////////////////*/
+
 
 #include "test.h"
 
 Test::Test()
 {
-    this->m_etalonPresent=false;
     this->m_idTest = 0;
-    this->m_nbCyclesMesureParPhase = 0;
+    this->m_nbCyclesMesureParPhase = 1;
+    this->m_nbCyclesDePhase = 1;
+    this->m_idSystemeEtalon = 0;
 }
 
 Test::Test(const Test& test) : QObject() {
@@ -33,32 +42,53 @@ Test::Test(const Test& test) : QObject() {
     this->m_tempsStabilisation = test.m_tempsStabilisation;
     this->m_tempsMoyennageMesure = test.m_tempsMoyennageMesure;
     this->m_nbCyclesMesureParPhase = test.m_nbCyclesMesureParPhase;
-    this->m_listeEquipement = test.m_listeEquipement;
-    this->m_etalonPresent = test.m_etalonPresent;
+    this->m_nbCyclesDePhase = test.m_nbCyclesDePhase;
     this->m_listePhases = test.m_listePhases;
 }
 
-bool Test::ajouterEquipement(Equipement peripherique) {
-    // Si peripherqie est un Ã©talon
-    if(peripherique.getTypePeripherique()==ETALON) {
-        // Si un Ã©talon a dÃ©ja Ã©tÃ© configurÃ©, on retourne faux
-        if(this->m_etalonPresent)
-            return false;
-        else // Sinon on indique la prÃ©sence d'un Ã©talon dans la configuration
-            m_etalonPresent = true;
-    }
-    // Sinon on ajoute le pÃ©riphÃ©rique Ã  la liste des Ã©quipements
-    this->m_listeEquipement.append(peripherique);
-    return true;
+void Test::ajouterPhase(const Phase & newPhase) {
+    this->m_listePhases.insert(newPhase.getNoPhase(),newPhase);
 }
 
-void Test::ajouterPhase(Phase newPhase) {
-    this->m_listePhases.append(newPhase);
-}
-
-void Test::ajouterPhase(ushort const & noPhase, Phase newPhase) {
+void Test::ajouterPhase(ushort const noPhase, Phase & newPhase) {
     newPhase.setNoPhase(noPhase);
-    this->m_listePhases.insert(noPhase-1, newPhase);
+    this->m_listePhases.insert(noPhase, newPhase);
+}
+
+void Test::phaseInseree(ushort noPhase) {
+    QMap<ushort,Phase> newListePhases;
+
+    QMapIterator<ushort,Phase> iterator(this->m_listePhases);
+    while(iterator.hasNext()) {
+        iterator.next();
+        if(iterator.key()<noPhase)
+            newListePhases.insert(iterator.key(),iterator.value());
+        else {
+            Phase phase = iterator.value();
+            phase.setNoPhase(iterator.key()+1);
+            newListePhases.insert(iterator.key()+1,phase);
+        }
+    }
+    this->m_listePhases = newListePhases;
+}
+
+void Test::supprimerPhase(const ushort noPhase) {
+    QMap<ushort,Phase> newListePhases;
+
+    QMapIterator<ushort,Phase> iterator(this->m_listePhases);
+    while(iterator.hasNext()) {
+        iterator.next();
+        if(iterator.key()==noPhase)
+            continue;
+        if(iterator.key()<noPhase)
+            newListePhases.insert(iterator.key(),iterator.value());
+        else {
+            Phase phase = iterator.value();
+            phase.setNoPhase(iterator.key()-1);
+            newListePhases.insert(iterator.key()-1,phase);
+        }
+    }
+    this->m_listePhases = newListePhases;
 }
 
 bool Test::exportToXml(QString const & nomFichier) {
@@ -73,28 +103,35 @@ bool Test::exportToXml(QString const & nomFichier) {
         return false;
     out.setDevice(&file);
 
-    // On crÃ©e l'Ã©lÃ©ment XML test, et on lui ajoute son id en attribut
+    // On crée l'élément XML test, et on lui ajoute son id en attribut
     QDomElement el_test = testXml.createElement("test");
     el_test.setAttribute("id",QString::number(this->m_idTest));
 
-    // insertion en dÃ©but de document de <?xml version="1.0" ?>
+    // insertion en début de document de <?xml version="1.0" ?>
     QDomNode noeud = testXml.createProcessingInstruction("xml","version=\"1.0\" encoding=\"ISO-8859-1\"");
     testXml.insertBefore(noeud,testXml.firstChild());
     QDomDocumentType type = impl.createDocumentType("test",0, "StructureTest.dtd");
     testXml.appendChild(type);
 
-    // Pour chaque Ã©lÃ©ment d'Ã©quipement, on crÃ©e un Ã©lement XML
-    // que l'on rajoute Ã  l'Ã©lÃ©ment <equipement>
+    // Pour chaque élément d'équipement, on crée un élement XML
+    // que l'on rajoute à l'élément <equipement>
     QDomElement el_listeEquipement = testXml.createElement("equipement");
 
-    for(int i=0;i < this->m_listeEquipement.size();i++) {
-        Equipement equipement = this->m_listeEquipement.at(i);
-        QDomElement el_equipement = equipement.exportToXml(testXml);
-        el_listeEquipement.appendChild(el_equipement);
+    QDomElement el_etalon = testXml.createElement("etalon");
+    el_etalon.setAttribute("id",this->m_idSystemeEtalon);
+    el_etalon.setAttribute("type",typeTestToString(this->m_typeTest));
+
+    el_listeEquipement.appendChild(el_etalon);
+
+    for(int i=0;i < this->m_polluants.size();i++) {
+        QDomElement polluant = testXml.createElement("polluant");
+        polluant.setAttribute("type",this->m_polluants.at(i));
+        el_listeEquipement.appendChild(polluant);
     }
+
     el_test.appendChild(el_listeEquipement);
 
-    // CrÃ©ation de l'Ã©lÃ©ment XML deroulement et ajout des paramÃ¨tres s'ils existent
+    // Création de l'élément XML deroulement et ajout des paramètres s'ils existent
     QDomElement el_deroulement = testXml.createElement("deroulement");
     if(!this->m_tempsMaxTest.isNull())
         el_deroulement.setAttribute("tps_max_test",this->m_tempsMaxTest.toString("hh:mm:ss"));
@@ -104,13 +141,19 @@ bool Test::exportToXml(QString const & nomFichier) {
         el_deroulement.setAttribute("tps_stabilisation",this->m_tempsStabilisation.toString("hh:mm:ss"));
     if(!this->m_tempsMoyennageMesure.isNull())
         el_deroulement.setAttribute("tps_moyennage_mesure",this->m_tempsMoyennageMesure.toString("hh:mm:ss"));
+    if(!this->m_tempsAttenteEntreMesure.isNull())
+        el_deroulement.setAttribute("tps_attente_entre_mesure_par_phase",this->m_tempsAttenteEntreMesure.toString("hh:mm:ss"));
     if(this->m_nbCyclesMesureParPhase>0)
         el_deroulement.setAttribute("nb_cycles_mesures_par_phase",QString::number(this->m_nbCyclesMesureParPhase));
+    if(this->m_nbCyclesDePhase>0)
+        el_deroulement.setAttribute("nb_cycles_de_phases",QString::number(this->m_nbCyclesDePhase));
 
-    // Pour chaque phase, on crÃ©e un Ã©lement XML
-    // que l'on rajoute Ã  l'Ã©lÃ©ment <deroulement>
-    for(int i=0;i < this->m_listePhases.size();i++) {
-        Phase phase = this->m_listePhases.at(i);
+    // Pour chaque phase, on crée un élement XML
+    // que l'on rajoute à l'élément <deroulement>
+    QMapIterator<ushort, Phase> iterator(this->m_listePhases);
+    while (iterator.hasNext()) {
+        iterator.next();
+        Phase phase = iterator.value();
         QDomElement el_phase = phase.exportToXml(testXml);
         el_deroulement.appendChild(el_phase);
     }
@@ -133,29 +176,38 @@ QPointer<Test> Test::importFromXml(QString const & nomFichier) {
     // ouverture du fichier XML
     if (!file.open(QIODevice::ReadOnly))
         return 0;
-    // Etablit le document XML Ã 
-    // partir des donnÃ©es du fichier (hiÃ©rarchie, etc)
+    // Etablit le document XML à
+    // partir des données du fichier (hiérarchie, etc)
     if (!testXml.setContent(&file)) {
         file.close();
         return 0;
     }
     file.close();
 
-    // On rÃ©cupÃ¨re l'Ã©lÃ©ment racine du fichier xml
+    // On récupère l'élément racine du fichier xml
     QDomElement el_test = testXml.documentElement();
     // On affecte l'id de test
-    p_test.data()->setIdTest(el_test.attribute("id").toInt());
+    p_test->setIdTest(el_test.attribute("id").toInt());
+    // On affecte le type de test
+    p_test->setTypeTest(el_test.attribute("type"));
 
-    // RÃ©cupÃ¨re la liste des Ã©lÃ©ment enfants de l'Ã©lÃ©ment XML equipement
+    // Récupère la liste des élément enfants de l'élément XML equipement
     QDomNodeList nl_listeEquipement = el_test.firstChildElement("equipement").childNodes();
-    // Pour chaque Ã©lÃ©ment enfant, on l'ajoute Ã  la liste des Ã©quipements
+
+    // Pour chaque élément enfant, on l'ajoute à la liste des équipements
     for(int i=0;i<nl_listeEquipement.size();i++) {
-        QDomElement equipement = nl_listeEquipement.at(i).toElement();
-        Equipement newEquipement = *(Equipement::importFromXml(equipement).data());
-        p_test.data()->ajouterEquipement(newEquipement);
+        if(nl_listeEquipement.at(i).nodeName()=="etalon")
+        {
+            QDomElement el_etalon = nl_listeEquipement.at(i).toElement();
+            p_test->setSystemeEtalon(el_etalon.attribute("id").toUInt());
+        }
+        else {
+            QDomElement polluant = nl_listeEquipement.at(i).toElement();
+            p_test->ajouterPolluant(polluant.attribute("type"));
+        }
     }
 
-    // RÃ©cupÃ©ration de l'Ã©lÃ©ment XML dÃ©roulement et de ses attributs
+    // Récupération de l'élément XML déroulement et de ses attributs
     QDomElement el_deroulement = el_test.firstChildElement("deroulement").toElement();
 
     QString tpsMaxTest = el_deroulement.attribute("tps_max_test");
@@ -163,20 +215,24 @@ QPointer<Test> Test::importFromXml(QString const & nomFichier) {
     QString tpsStabilisation = el_deroulement.attribute("tps_stabilisation");
     QString tpsMoyennageMesure = el_deroulement.attribute("tps_moyennage_mesure");
     QString nbCyclesMesureParPhase = el_deroulement.attribute("nb_cycles_mesures_par_phase");
+    QString nbCyclesDePhases= el_deroulement.attribute("nb_cycles_de_phases");
+    QString tpsAttenteEntreMesure = el_deroulement.attribute("tps_attente_entre_mesure_par_phase");
 
-    p_test.data()->setTpsMaxTest(QTime::fromString(tpsMaxTest,"hh:mm:ss"));
-    p_test.data()->setTempsAcquisition(tpsAcquisition.toUShort());
-    p_test.data()->setTempsStabilisation(QTime::fromString(tpsStabilisation,"hh:mm:ss"));
-    p_test.data()->setTempsMoyennageMesure(QTime::fromString(tpsMoyennageMesure,"hh:mm:ss"));
-    p_test.data()->setNbCyclesMesureParPhase(nbCyclesMesureParPhase.toUShort());
+    p_test->setTempsMaxTest(QTime::fromString(tpsMaxTest,"hh:mm:ss"));
+    p_test->setTempsAcquisition(tpsAcquisition.toUShort());
+    p_test->setTempsStabilisation(QTime::fromString(tpsStabilisation,"hh:mm:ss"));
+    p_test->setTempsMoyennageMesure(QTime::fromString(tpsMoyennageMesure,"hh:mm:ss"));
+    p_test->setTempsAttenteEntreMesure(QTime::fromString(tpsAttenteEntreMesure,"hh:mm:ss"));
+    p_test->setNbCyclesMesureParPhase(nbCyclesMesureParPhase.toUShort());
+    p_test->setNbCyclesDePhase(nbCyclesDePhases.toUShort());
 
-    // RÃ©cupÃ¨re la liste des Ã©lÃ©ment enfants de l'Ã©lÃ©ment XML dÃ©roulement
+    // Récupère la liste des élément enfants de l'élément XML déroulement
     QDomNodeList nl_listePhases = el_deroulement.childNodes();
-    // Pour chaque Ã©lÃ©ment enfant, on l'ajoute Ã  la liste des phases
+    // Pour chaque élément enfant, on l'ajoute à la liste des phases
     for(int i=0;i<nl_listePhases.size();i++) {
         QDomElement phase = nl_listePhases.at(i).toElement();
         Phase newPhase = *(Phase::importFromXml(phase).data());
-        p_test.data()->ajouterPhase(newPhase);
+        p_test->ajouterPhase(newPhase);
     }
 
     return p_test;
