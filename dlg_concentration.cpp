@@ -41,15 +41,17 @@ Dlg_Concentration::Dlg_Concentration(QWidget *parent,const QPointer<BdHandler> b
     this->m_idSystemeEtalon = idSystemeEtalon;
     this->m_filtrerRdf = filtrerRdf;
 
+    this->ui->tabWidget->setCurrentIndex(0);
+    m_pageConcentrationAssociee = this->ui->tabWidget->widget(1);
+
     this->peuplerCbPolluant();
     this->peuplerTable();
     this->initialiserChamps();
 
-    connect(this->ui->tableView->selectionModel(),
-          SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-          this,SLOT(changementSelection(const QModelIndex &)));
     connect(this->ui->button_Supprimer,SIGNAL(clicked()),
           this,SLOT(buttonSupprimerClicked()));
+    connect(this->ui->button_Modifier,SIGNAL(clicked()),
+          this,SLOT(buttonModifierClicked()));
     connect(this->ui->button_Ajouter,SIGNAL(clicked()),
           this,SLOT(buttonAjouterClicked()));
     connect(this->ui->button_Fermer,SIGNAL(clicked()),
@@ -62,6 +64,15 @@ Dlg_Concentration::Dlg_Concentration(QWidget *parent,const QPointer<BdHandler> b
           this,SLOT(buttonValiderClicked()));
     connect(this->ui->comboBox_SelectPolluant,SIGNAL(currentIndexChanged(int)),
           this,SLOT(cbSelectPolluantIndexChanged(int)));
+
+    connect(this->ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(tabWidgetIndexChanged(int)));
+    connect(this->ui->button_Ajouter_ConcAssociee,SIGNAL(clicked()),this,SLOT(buttonAjouterConcAssocieeClicked()));
+    connect(this->ui->button_Annuler_ConcAssociee,SIGNAL(clicked()),this,SLOT(initialiserChampsConcAssociee()));
+    connect(this->ui->button_Modifier_ConcAssociee,SIGNAL(clicked()),this,SLOT(buttonModifierConcAssocieeClicked()));
+    connect(this->ui->button_Supprimer_ConcAssociee,SIGNAL(clicked()),this,SLOT(buttonSupprimerConcAssocieeClicked()));
+    connect(this->ui->button_Valider_ConcAssociee,SIGNAL(clicked()),this,SLOT(buttonValiderConcAssocieeClicked()));
+    connect(this->ui->comboBox_ConcAssociee_Polluant,SIGNAL(currentIndexChanged(int)),
+          this,SLOT(cbConcAssocieeSelectPolluantIndexChanged(int)));
 
     if(indexSelection > -1) {
         this->ui->tableView->selectRow(indexSelection);
@@ -126,6 +137,12 @@ void Dlg_Concentration::peuplerTable()
     this->ui->tableView->setColumnHidden(CONCENTRATION_ID_MOLECULE, true);
     this->ui->tableView->resizeColumnsToContents();
     this->ui->tableView->setItemDelegate(new QSqlRelationalDelegate(this));
+
+    connect(this->ui->tableView->selectionModel(),
+          SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+          this,SLOT(tableViewSelectedItemChanged(const QModelIndex &)));
+    connect(this->ui->tableView,SIGNAL(doubleClicked(QModelIndex)),
+          this,SLOT(tableViewItemDoubleClicked(QModelIndex)));
 }
 
 void Dlg_Concentration::afficherFormulaire()
@@ -134,21 +151,35 @@ void Dlg_Concentration::afficherFormulaire()
     this->ui->button_Ajouter->setEnabled(false);
     this->ui->button_Supprimer->setEnabled(false);
     this->ui->button_Fermer->setEnabled(false);
+    this->ui->button_Valider->setDefault(true);
+    this->ui->button_Selectionner->setEnabled(false);
+    this->ui->button_Modifier->setEnabled(false);
 
     this->ui->lineEdit_Point->setFocus();
 
-    this->ui->button_Valider->setDefault(true);
-    this->ui->button_Selectionner->setEnabled(false);
+}
+
+void Dlg_Concentration::afficherFormulaireConcAssociee()
+{
+    this->ui->gb_edit_champs_ConcAssociee->setVisible(true);
+    this->ui->button_Ajouter_ConcAssociee->setEnabled(false);
+    this->ui->button_Supprimer_ConcAssociee->setEnabled(false);
+    this->ui->button_Valider_ConcAssociee->setDefault(true);
+    this->ui->button_Modifier_ConcAssociee->setEnabled(false);
 }
 
 void Dlg_Concentration::initialiserChamps()
 {
+    this->m_modifEnCours=false;
+    this->ui->comboBox_SelectPolluant->setEnabled(true);
     this->ui->gb_edit_champs->setVisible(false);
     this->ui->tableView->setEnabled(true);
+    this->ui->tabWidget->removeTab(1);
+
+    this->ui->button_Modifier->setEnabled(false);
+    this->ui->button_Supprimer->setEnabled(false);
     this->ui->button_Ajouter->setEnabled(true);
-    this->ui->button_Supprimer->setEnabled(true);
     this->ui->button_Fermer->setEnabled(true);
-    this->ui->button_Selectionner->setEnabled(true);
     if(!this->m_returnSelection || this->m_model->rowCount()==0)
       this->ui->button_Selectionner->setVisible(false);
 
@@ -157,17 +188,138 @@ void Dlg_Concentration::initialiserChamps()
     this->ui->lineEdit_ConcO3->clear();
 }
 
-void Dlg_Concentration::changementSelection(const QModelIndex & idxSelection)
+void Dlg_Concentration::initialiserChampsConcAssociee()
+{
+    this->m_modifConcAssocieeEnCours=false;
+    this->ui->gb_edit_champs_ConcAssociee->setVisible(false);
+    this->ui->tableView_ConcAssociee->setEnabled(true);
+
+    this->ui->button_Modifier_ConcAssociee->setEnabled(false);
+    this->ui->button_Supprimer_ConcAssociee->setEnabled(false);
+    this->ui->button_Ajouter_ConcAssociee->setEnabled(true);
+
+    this->ui->spinBox_ConcAssociee_Concentration->clear();
+}
+
+void Dlg_Concentration::setGbEditChampsReadOnly(const bool readOnly)
+{
+    this->ui->lineEdit_Point->setReadOnly(readOnly);
+    this->ui->lineEdit_ConcReelle->setReadOnly(readOnly);
+    this->ui->lineEdit_ConcO3->setReadOnly(readOnly);
+    this->ui->button_Annuler->setEnabled(!readOnly);
+    this->ui->button_Valider->setEnabled(!readOnly);
+}
+
+void Dlg_Concentration::setGbEditChampsConcAssocieeReadOnly(const bool readOnly)
+{
+    this->ui->comboBox_ConcAssociee_Polluant->setEnabled(!readOnly);
+    this->ui->spinBox_ConcAssociee_Concentration->setReadOnly(readOnly);
+    this->ui->button_Annuler_ConcAssociee->setEnabled(!readOnly);
+    this->ui->button_Valider_ConcAssociee->setEnabled(!readOnly);
+}
+
+void Dlg_Concentration::editCurrentRow(const QModelIndex& idxSelection)
+{
+    if(!idxSelection.isValid())
+        return;
+
+    this->m_modifEnCours= true;
+    this->ui->tableView->setEnabled(false);
+    this->ui->v_Layout_Buttons->setEnabled(false);
+    this->ui->comboBox_SelectPolluant->setEnabled(false);
+    this->ui->gb_edit_champs->setVisible(true);
+    this->setGbEditChampsReadOnly(false);
+
+    QSqlRecord record = m_model->record(idxSelection.row());
+    this->ui->lineEdit_Point->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_POINT).toString());
+    this->ui->lineEdit_ConcReelle->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_REELLE).toString());
+    this->ui->lineEdit_ConcO3->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_OZONE).toString());
+}
+
+void Dlg_Concentration::editConcAssocieeCurrentRow(const QModelIndex & idxSelection)
+{
+    if(!idxSelection.isValid())
+        return;
+
+    this->m_modifConcAssocieeEnCours = true;
+    this->ui->gb_edit_champs_ConcAssociee->setVisible(true);
+    this->ui->tableView_ConcAssociee->setEnabled(false);
+    this->ui->button_Ajouter_ConcAssociee->setEnabled(false);
+    this->setGbEditChampsConcAssocieeReadOnly(false);
+
+    QSqlRecord record = m_modelConcentrationAssociee->record(idxSelection.row());
+    QString formuleMolecule = record.value(CONC_ASSOCIEE_ID_MOLECULE).toString();
+    this->ui->comboBox_ConcAssociee_Polluant->setCurrentIndex(this->ui->comboBox_ConcAssociee_Polluant->findText(formuleMolecule));
+    this->ui->spinBox_ConcAssociee_Concentration->setValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toInt());
+}
+
+void Dlg_Concentration::tableViewSelectedItemChanged(const QModelIndex & idxSelection)
 {
     qDebug()<<"---------------------------------------------";
-    qDebug()<<"call Dlg_Concentration::changementSelection()";
+    qDebug()<<"call Dlg_Concentration::tableViewSelectedItemChanged()";
     qDebug()<<"selected : "<<idxSelection.row();
     this->m_indexSelection = idxSelection;
     if(this->m_indexSelection.isValid()) {
-       if(this->m_returnSelection)
-          this->ui->button_Selectionner->setEnabled(true);
+        if(this->m_returnSelection)
+            this->ui->button_Selectionner->setEnabled(true);
+        this->ui->tabWidget->addTab(m_pageConcentrationAssociee,"Concentrations associées");
+        this->ui->gb_edit_champs->setVisible(true);
+        this->setGbEditChampsReadOnly(true);
+        this->ui->button_Modifier->setEnabled(true);
+        this->ui->button_Supprimer->setEnabled(true);
+
+        this->ui->lineEdit_Point->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_POINT).toString());
+        this->ui->lineEdit_ConcReelle->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_REELLE).toString());
+        this->ui->lineEdit_ConcO3->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_OZONE).toString());
+        connect(this->ui->tableView_ConcAssociee,SIGNAL(clicked(QModelIndex)),this,SLOT(tableViewConcAssocieeItemChanged(QModelIndex)));
+    }
+    else {
+        this->ui->button_Modifier->setEnabled(false);
+        this->ui->button_Supprimer->setEnabled(false);
+        if(this->ui->gb_edit_champs->isVisible()) {
+            this->ui->gb_edit_champs->setVisible(false);
+            this->setGbEditChampsReadOnly(false);
+        }
+        this->ui->tabWidget->removeTab(1);
     }
 }
+
+void Dlg_Concentration::tableViewConcAssocieeItemChanged(const QModelIndex & idxSelection)
+{
+    qDebug()<<"---------------------------------------------";
+    qDebug()<<"call Dlg_Concentration::tableViewConcAssocieeIntemChanged()";
+    qDebug()<<"selected : "<<idxSelection.row();
+    this->m_indexConcAssocieSelection = idxSelection;
+
+    if(this->m_indexConcAssocieSelection.isValid()) {
+        this->ui->gb_edit_champs_ConcAssociee->setVisible(true);
+        this->ui->button_Modifier_ConcAssociee->setEnabled(true);
+        this->ui->button_Supprimer_ConcAssociee->setEnabled(true);
+
+        QSqlRecord record = m_modelConcentrationAssociee->record(m_indexConcAssocieSelection.row());
+        QString formuleMolecule = record.value(CONC_ASSOCIEE_ID_MOLECULE).toString();
+
+        qDebug()<<formuleMolecule<<"  "<<this->ui->comboBox_ConcAssociee_Polluant->findText(formuleMolecule);
+        this->ui->comboBox_ConcAssociee_Polluant->setCurrentIndex(this->ui->comboBox_ConcAssociee_Polluant->findText(formuleMolecule));
+        this->ui->spinBox_ConcAssociee_Concentration->setValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toInt());
+        this->setGbEditChampsConcAssocieeReadOnly(true);
+    }
+    else {
+        if(this->ui->gb_edit_champs_ConcAssociee->isVisible()) {
+            this->ui->gb_edit_champs_ConcAssociee->setVisible(false);
+            this->setGbEditChampsConcAssocieeReadOnly(false);
+        }
+        this->ui->button_Modifier_ConcAssociee->setEnabled(false);
+        this->ui->button_Supprimer_ConcAssociee->setEnabled(false);
+    }
+}
+
+void Dlg_Concentration::buttonAjouterClicked() {
+    this->initialiserChamps();
+    this->setGbEditChampsReadOnly(false);
+    this->afficherFormulaire();
+}
+
 
 void Dlg_Concentration::buttonSupprimerClicked()
 {
@@ -187,19 +339,17 @@ void Dlg_Concentration::buttonSupprimerClicked()
     }
 }
 
-void Dlg_Concentration::buttonAjouterClicked()
-{
-    this->afficherFormulaire();
-}
-
 void Dlg_Concentration::buttonValiderClicked()
 {
-    int row = m_model->rowCount();
-
-    if(row>0) row-=1;
-
-    m_model->insertRow(row);
-
+    int row;
+    if(m_modifEnCours) {
+        row = this->ui->tableView->currentIndex().row();
+    }
+    else {
+        row = m_model->rowCount();
+        if(row>0) row-=1;
+        m_model->insertRow(row);
+    }
     m_model->setData(m_model->index(row,CONCENTRATION_SYS_ETALON),QVariant::fromValue(this->m_idSystemeEtalon));
     m_model->setData(m_model->index(row,CONCENTRATION_ID_MOLECULE),QVariant::fromValue(this->m_idPolluant));
     m_model->setData(m_model->index(row,CONCENTRATION_POINT),QVariant::fromValue(this->ui->lineEdit_Point->text()));
@@ -211,24 +361,104 @@ void Dlg_Concentration::buttonValiderClicked()
     this->initialiserChamps();
 }
 
-void Dlg_Concentration::buttonFermerClicked()
+void Dlg_Concentration::buttonModifierClicked()
 {
-    this->m_model->submitAll();
-    this->reject();
+    this->editCurrentRow(this->ui->tableView->currentIndex());
 }
 
-void Dlg_Concentration::buttonSelectionnerClicked()
+void Dlg_Concentration::cbSelectPolluantIndexChanged(const int index)
 {
-    this->accept();
-}
-
-int Dlg_Concentration::getIdSelection()
-{
-    return this->m_model->record(m_indexSelection.row()).value(CONCENTRATION_ID).toInt();
-}
-
-void Dlg_Concentration::cbSelectPolluantIndexChanged(const int index) {
     this->m_idPolluant = m_modelPolluants->record(index).value(POLLUANT_BY_SYS_ETALON_ID).toUInt();
     delete m_model;
     this->peuplerTable();
+    this->ui->tabWidget->removeTab(1);
 }
+
+void Dlg_Concentration::cbConcAssocieeSelectPolluantIndexChanged(const int index) {
+    this->m_idMoleculeConcentrationAssocie = m_modelMolecule->record(index).value(POLLUANT_BY_SYS_ETALON_ID).toUInt();
+}
+
+void Dlg_Concentration::tabWidgetIndexChanged(const int index)
+{
+    switch(index) {
+    case 0:
+        break;
+    case 1:
+        if(this->ui->gb_edit_champs->isVisible() || !this->ui->tableView->currentIndex().isValid())
+            this->ui->tabWidget->setCurrentIndex(0);
+        else {
+            this->ui->gb_edit_champs_ConcAssociee->setVisible(false);
+            uint idConcentration = m_model->record(this->ui->tableView->currentIndex().row()).value(CONCENTRATION_ID).toUInt();
+            m_modelConcentrationAssociee = this->m_bdHandler->getConcentrationAssocieeModel(idConcentration);
+            this->ui->tableView_ConcAssociee->setModel(m_modelConcentrationAssociee);
+            this->ui->tableView_ConcAssociee->hideColumn(CONC_ASSOCIEE_ID);
+            this->ui->tableView_ConcAssociee->hideColumn(CONC_ASSOCIEE_ID_CONCENTRATION);
+            this->ui->button_Supprimer_ConcAssociee->setEnabled(false);
+            this->ui->button_Modifier_ConcAssociee->setEnabled(false);
+            if(m_modelMolecule.isNull()) {
+                m_modelMolecule = this->m_bdHandler->getMoleculesModel();
+            }
+            this->ui->comboBox_ConcAssociee_Polluant->setModel(m_modelMolecule);
+            this->ui->comboBox_ConcAssociee_Polluant->setModelColumn(MOLECULE_FORMULE);
+
+            this->initialiserChampsConcAssociee();
+        }
+        break;
+    }
+}
+
+void Dlg_Concentration::buttonSupprimerConcAssocieeClicked()
+{
+    if(!m_indexConcAssocieSelection.isValid())
+       return;
+    int reponse = QMessageBox::question(this, "Supprimer un élément", "êtes-vous sûr de vouloir effacer cet enregistrement?",
+                QMessageBox::Yes | QMessageBox::No);
+
+    if (reponse == QMessageBox::No)
+       return;
+
+    if(!m_modelConcentrationAssociee->removeRow(m_indexConcAssocieSelection.row()))
+       QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé",QMessageBox::Ok);
+    else {
+       m_modelConcentrationAssociee->submitAll();
+       this->initialiserChampsConcAssociee();
+    }
+
+}
+
+void Dlg_Concentration::buttonModifierConcAssocieeClicked()
+{
+    this->editConcAssocieeCurrentRow(this->ui->tableView_ConcAssociee->currentIndex());
+}
+
+void Dlg_Concentration::buttonAjouterConcAssocieeClicked()
+{
+    this->initialiserChampsConcAssociee();
+    this->setGbEditChampsConcAssocieeReadOnly(false);
+    this->afficherFormulaireConcAssociee();
+    this->ui->comboBox_ConcAssociee_Polluant->setFocus();
+    this->ui->tableView_ConcAssociee->setEnabled(false);
+}
+
+void Dlg_Concentration::buttonValiderConcAssocieeClicked()
+{
+    int row;
+    if(m_modifConcAssocieeEnCours) {
+        row = this->ui->tableView_ConcAssociee->currentIndex().row();
+    }
+    else {
+        row = m_modelConcentrationAssociee->rowCount();
+        if(row>0) row-=1;
+        m_modelConcentrationAssociee->insertRow(row);
+    }
+    QVariant idConcentration = this->m_model->record(m_indexSelection.row()).value(CONCENTRATION_ID);
+
+    m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_ID_CONCENTRATION),idConcentration);
+    m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_ID_MOLECULE),QVariant::fromValue(this->m_idMoleculeConcentrationAssocie));
+    m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_CONCENTRATION),QVariant::fromValue(this->ui->spinBox_ConcAssociee_Concentration->value()));
+
+    m_modelConcentrationAssociee->submitAll();
+
+    this->initialiserChampsConcAssociee();
+}
+

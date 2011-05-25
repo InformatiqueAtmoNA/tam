@@ -45,35 +45,59 @@ public:
                                const int indexSelection =-1);
     ~Dlg_Concentration();
 
-    int getIdSelection();
+    inline int getIdSelection() {return this->m_model->record(m_indexSelection.row()).value(CONCENTRATION_ID).toInt();}
 private:
     Ui::Dlg_Concentration *ui;
 
     QPointer<QSqlTableModel> m_model;
     QModelIndex m_indexSelection;
+    QModelIndex m_indexConcAssocieSelection;
     QPointer<BdHandler> m_bdHandler;
     QPointer<QSqlQueryModel> m_modelPolluants;
+    QPointer<QSqlTableModel> m_modelMolecule;
+    QPointer<QSqlRelationalTableModel> m_modelConcentrationAssociee;
+
     QString m_noSerieEquipemenent;
+    QWidget* m_pageConcentrationAssociee;
+
     int m_idSystemeEtalon;
     ushort m_idPolluant;
-    int m_ligneModifiee;
+    ushort m_idMoleculeConcentrationAssocie;
     bool m_modifEnCours;
+    bool m_modifConcAssocieeEnCours;
     bool m_returnSelection;
     bool m_filtrerRdf;
 
     void peuplerCbPolluant();
     void peuplerTable();
     void afficherFormulaire();
+    void afficherFormulaireConcAssociee();
+    void setGbEditChampsReadOnly(const bool readOnly=true);
+    void setGbEditChampsConcAssocieeReadOnly(const bool readOnly=true);
+    void editCurrentRow(const QModelIndex & idxSelection);
+    void editConcAssocieeCurrentRow(const QModelIndex & idxSelection);
 
 private slots:
-    void changementSelection(const QModelIndex & idxSelection);
-    void buttonSupprimerClicked();
+    inline void tableViewItemDoubleClicked(const QModelIndex & idxSelection) {this->editCurrentRow(idxSelection);}
+    inline void buttonFermerClicked() {this->m_model->submitAll();this->reject();}
+    inline void buttonSelectionnerClicked() {this->accept();}
+
+    void tableViewSelectedItemChanged(const QModelIndex & idxSelection);
     void buttonAjouterClicked();
+    void buttonSupprimerClicked();
     void initialiserChamps();
+    void initialiserChampsConcAssociee();
+    void buttonModifierClicked();
     void buttonValiderClicked();
-    void buttonFermerClicked();
-    void buttonSelectionnerClicked();
     void cbSelectPolluantIndexChanged(const int index);
+    void cbConcAssocieeSelectPolluantIndexChanged(const int index);
+    void tabWidgetIndexChanged(const int index);
+
+    void tableViewConcAssocieeItemChanged(const QModelIndex & idxSelection);
+    void buttonSupprimerConcAssocieeClicked();
+    void buttonModifierConcAssocieeClicked();
+    void buttonAjouterConcAssocieeClicked();
+    void buttonValiderConcAssocieeClicked();
 };
 
 

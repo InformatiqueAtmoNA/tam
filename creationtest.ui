@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>569</height>
+    <height>584</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,14 +20,17 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>6</y>
+     <y>30</y>
      <width>801</width>
-     <height>561</height>
+     <height>551</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <property name="sizeConstraint">
      <enum>QLayout::SetNoConstraint</enum>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
     </property>
     <item>
      <widget class="QTabWidget" name="tabWidget">
@@ -527,7 +530,7 @@
           <x>10</x>
           <y>270</y>
           <width>781</width>
-          <height>229</height>
+          <height>211</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -551,7 +554,13 @@
              <property name="minimumSize">
               <size>
                <width>0</width>
-               <height>175</height>
+               <height>150</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>150</height>
               </size>
              </property>
              <property name="frameShape">
@@ -657,10 +666,14 @@
           <x>269</x>
           <y>-1</y>
           <width>521</width>
-          <height>501</height>
+          <height>471</height>
          </rect>
         </property>
-        <layout class="QHBoxLayout" name="h_Layout_EditPhase"/>
+        <layout class="QHBoxLayout" name="h_Layout_EditPhase">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+        </layout>
        </widget>
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
@@ -668,12 +681,12 @@
           <x>2</x>
           <y>1</y>
           <width>261</width>
-          <height>491</height>
+          <height>471</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_16">
+          <layout class="QHBoxLayout" name="h_layout_Deroulement">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <property name="sizeConstraint">
@@ -715,15 +728,21 @@
              <item>
               <widget class="QListWidget" name="listWidget_Phases">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize">
+                <size>
+                 <width>158</width>
+                 <height>422</height>
+                </size>
+               </property>
                <property name="maximumSize">
                 <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
+                 <width>158</width>
+                 <height>422</height>
                 </size>
                </property>
                <property name="editTriggers">

@@ -31,6 +31,7 @@
 #include <QDebug>
 #include <QSettings>
 #include "creationtest.h"
+#include "homewidget.h"
 
 namespace Ui {
     class MainWindow;
@@ -44,16 +45,22 @@ public:
 
 protected:
     QPointer<BdHandler> m_bdHandler;
+    QPointer<HomeWidget> m_homeWidget;
+    QPointer<CreationTest> m_dlg_test;
+    QPointer<QGridLayout> m_gridLayout;
 
     void changeEvent(QEvent *e);
-    QVariant getParam(QString const & key);
-    void setParam(QString const & key, QVariant const & param);
+    void afficherHomeWidget();
+    void afficherCreationTest(const QString fichierDescription="");
 
 private:
     Ui::MainWindow *ui;
 
-private slots:
-    void pushButtonClicked();
+public slots:
+    void nouveauTest();
+    void modifierTest(const QString fichierDescription);
+    void executerTest(const QString fichierDescription);
+    void fermetureCreationTestWidget();
 };
 
 #endif // MAINWINDOW_H

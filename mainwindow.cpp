@@ -34,20 +34,33 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QString driver = this->getParam("BD_Driver").toString();
-    QString host = this->getParam("Host").toString();
-    QString userName = this->getParam("UserName").toString();
-    QString password = this->getParam("Password").toString();
-    QString dbName = this->getParam("DB_Name").toString();
+    QString driver = getParam("BD_Driver").toString();
+    QString host = getParam("Host").toString();
+    QString userName = getParam("UserName").toString();
+    QString password = getParam("Password").toString();
+    QString dbName = getParam("DB_Name").toString();
 
     m_bdHandler = new BdHandler(driver,host,userName,password,dbName);
+    m_bdHandler->connexionBD();
 
-    CreationTest* dlg_test = new CreationTest(m_bdHandler,this);
-    this->ui->gridLayout->addWidget(dlg_test,0,0);
+    m_gridLayout = new QGridLayout();
+
+    this->setLayout(m_gridLayout);
+
+    this->afficherHomeWidget();
 }
 
 MainWindow::~MainWindow()
 {
+    if(!this->m_bdHandler.isNull())
+        delete this->m_bdHandler;
+    if(!this->m_dlg_test.isNull())
+        delete this->m_dlg_test;
+    if(!this->m_homeWidget.isNull())
+        delete this->m_homeWidget;
+    if(!this->m_gridLayout.isNull())
+        delete this->m_gridLayout;
+
     delete ui;
 }
 
@@ -63,19 +76,56 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
-QVariant MainWindow::getParam(QString const & key) {
-    QSettings parametres("params.ini",QSettings::IniFormat);
-    return parametres.value(key);
+void MainWindow::afficherHomeWidget()
+{
+    if(!this->m_dlg_test.isNull()) {
+        this->m_gridLayout->removeWidget(m_dlg_test);
+        delete this->m_dlg_test;
+    }
+    m_homeWidget = new HomeWidget(m_bdHandler,this);
+    this->m_gridLayout->addWidget(m_homeWidget,0,0);
+    m_homeWidget->show();
+
+    connect(this->m_homeWidget,SIGNAL(creerTest()),this,SLOT(nouveauTest()));
+    connect(this->m_homeWidget,SIGNAL(modifierTest(QString)),this,SLOT(modifierTest(QString)));
+    connect(this->m_homeWidget,SIGNAL(executerTest(QString)),this,SLOT(executerTest(QString)));
+    connect(this->m_homeWidget,SIGNAL(creerTest()),this,SLOT(nouveauTest()));
 }
 
-void MainWindow::setParam(QString const & key, QVariant const & param) {
-    QSettings parametres("params.ini",QSettings::IniFormat);
-    parametres.setValue(key,param);
-    parametres.sync();
+void MainWindow::afficherCreationTest(const QString fichierDescription)
+{
+    if(!this->m_homeWidget.isNull()) {
+        this->m_gridLayout->removeWidget(m_homeWidget);
+        delete m_homeWidget;
+    }
+    if(fichierDescription.isEmpty())
+        this->m_dlg_test = new CreationTest(m_bdHandler,this);
+    else
+        this->m_dlg_test = new CreationTest(m_bdHandler,this,fichierDescription);
+    this->m_gridLayout->addWidget(m_dlg_test,0,0);
+
+    m_dlg_test->show();
+
+    connect(this->m_dlg_test,SIGNAL(fermeture()),this,SLOT(fermetureCreationTestWidget()));
 }
 
-void MainWindow::pushButtonClicked() {
-    Dlg_Systeme_Etalon dlg_test(this,m_bdHandler);
-    dlg_test.exec();
 
+void MainWindow::nouveauTest()
+{
+    this->afficherCreationTest();
+}
+
+void MainWindow::modifierTest(const QString fichierDescription)
+{
+    this->afficherCreationTest(fichierDescription);
+}
+
+void MainWindow::executerTest(const QString fichierDescription)
+{
+    qDebug()<<"execution du test "<<fichierDescription<<" pas encore développé";
+}
+
+void MainWindow::fermetureCreationTestWidget()
+{
+    this->afficherHomeWidget();
 }

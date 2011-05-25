@@ -55,9 +55,9 @@ QString typePolluantToString(TypePolluant type) {
 
 QString typeTestToString(TypeTest type) {
     if(type==REPETABILITE_1)
-        return "REPETABLITE_1";
+        return "REPETABILITE_1";
     if(type==REPETABILITE_2)
-        return "REPETABLITE_2";
+        return "REPETABiLITE_2";
     if(type==LINEARITE)
         return "LINEARITE";
     if(type==TEMP_REPONSE)
@@ -143,4 +143,15 @@ QString commandesToString(Commandes cmd) {
     if(cmd==EVENT)
         return "EVENT";
     return "NO_CMD";
+}
+
+QVariant getParam(QString const & key) {
+    QSettings parametres("params.ini",QSettings::IniFormat);
+    return parametres.value(key);
+}
+
+void setParam(QString const & key, QVariant const & param) {
+    QSettings parametres("params.ini",QSettings::IniFormat);
+    parametres.setValue(key,param);
+    parametres.sync();
 }

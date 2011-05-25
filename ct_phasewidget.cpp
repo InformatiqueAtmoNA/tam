@@ -93,12 +93,12 @@ void ct_PhaseWidget::afficherPhase()
         this->ui->gb_CmdDebut_Phase->setVisible(false);
     }
     if(this->m_phase.getListePolluants().count()>0) {
-        QMapIterator<ushort,ushort> iterator(this->m_phase.getListePolluants());
+        QMapIterator<ushort,uint> iterator(this->m_phase.getListePolluants());
         while(iterator.hasNext()) {
             iterator.next();
             ushort idMolecule = iterator.key();
-            ushort pointGaz = iterator.value();
-            QSqlRecord* concentrationRecord = this->m_bdHandler->getConcentrationRow(this->m_idSystemeEtalon,idMolecule,pointGaz);
+            uint idConcentration = iterator.value();
+            QSqlRecord* concentrationRecord = this->m_bdHandler->getConcentrationRow(idConcentration);
             Q_ASSERT_X(concentrationRecord,"afficherPhase()","concentration record==NULL");
             QSqlRecord* moleculeRecord = this->m_bdHandler->getMoleculeRow(idMolecule);
             Q_ASSERT_X(moleculeRecord,"afficherPhase()","molecule record==NULL");
@@ -179,7 +179,8 @@ void ct_PhaseWidget::buttonAjouterPolluantClicked()
     int result = dlgConcentration.exec();
 
     if(result) {
-        QSqlRecord* concentrationRecord = m_bdHandler->getConcentrationRow(dlgConcentration.getIdSelection());
+        int idSelection = dlgConcentration.getIdSelection();
+        QSqlRecord* concentrationRecord = m_bdHandler->getConcentrationRow(idSelection);
         Q_ASSERT_X(concentrationRecord,"buttonAjouterPolluantClicked()","concentration==NULL");
         uint idMolecule = concentrationRecord->value(CONCENTRATION_ID_MOLECULE).toUInt();
         // Si le polluant est déja présent dans la liste
@@ -196,8 +197,7 @@ void ct_PhaseWidget::buttonAjouterPolluantClicked()
 
         this->afficherPolluants(concentrationRecord,moleculeRecord);
 
-        uint pointGaz = concentrationRecord->value(CONCENTRATION_POINT).toUInt();
-        this->m_phase.ajouterPolluant(idMolecule,pointGaz);
+        this->m_phase.ajouterPolluant(idMolecule,concentrationRecord->value(CONCENTRATION_ID).toUInt());
         delete concentrationRecord;
         delete moleculeRecord;
     }
@@ -216,7 +216,6 @@ void ct_PhaseWidget::tableViewPolluantsIndexChanged(const QModelIndex index) {
     this->ui->button_RetirerPolluant->setEnabled(index.isValid());
     this->m_indexListePolluant = index;
 }
-
 
 void ct_PhaseWidget::ckb_CritereArretStateChanged(const int state) {
     bool enableWidgets = (state == Qt::Checked);

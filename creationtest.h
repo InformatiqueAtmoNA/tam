@@ -41,12 +41,13 @@ class CreationTest : public QWidget
     Q_OBJECT
 
 public:
-    explicit CreationTest(QPointer<BdHandler> bdHandler,QWidget *parent = 0);
+    explicit CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent = 0,
+                          const QString nomFichier="",const QPointer<Test> test=0);
     ~CreationTest();
 
 private:
     Ui::CreationTest *ui;
-    Test m_test;
+    QPointer<Test> m_test;
     QString m_nomFichier;
     QPointer<BdHandler> m_bdHandler;
     TypeTest m_typeTest;
@@ -56,20 +57,21 @@ private:
     ushort m_etape;
     bool m_autoriserCreationPhase;
 
+    void initialiserChamps();
     void afficherPhaseWidget(const ushort noPhase, bool readOnly=false);
     void incrementerNbPhases();
     void decrementerNbPhases();
 
 private slots:
-    inline void button_AjouterPhaseClicked() {this->afficherPhaseWidget(m_nbPhases+1);}
-    inline void timeEdit_TempsMaxTestValueChanged(const QTime & time) {this->m_test.setTempsMaxTest(time);}
-    inline void spinBox_TempsAcquisitionValueChanged(const int value) {this->m_test.setTempsAcquisition(value);}
-    inline void spinBox_nbCyclesMesuresValueChanged(const int value) {this->m_test.setNbCyclesMesureParPhase(value);}
-    inline void spinBox_nbCyclesPhasesValueChanged(const int value) {this->m_test.setNbCyclesDePhase(value);}
-    inline void timeEdit_TempsStabilisation(const QTime & time) {this->m_test.setTempsStabilisation(time);}
-    inline void timeEdit_TempsMoyennageMesuresValueChanged(const QTime & time) {this->m_test.setTempsMoyennageMesure(time);}
-    inline void timeEdit_TempsAttenteEntreMesureValueChanged(const QTime & time) {this->m_test.setTempsAttenteEntreMesure(time);}
+    inline void timeEdit_TempsMaxTestValueChanged(const QTime & time) {this->m_test->setTempsMaxTest(time);}
+    inline void spinBox_TempsAcquisitionValueChanged(const int value) {this->m_test->setTempsAcquisition(value);}
+    inline void spinBox_nbCyclesMesuresValueChanged(const int value) {this->m_test->setNbCyclesMesureParPhase(value);}
+    inline void spinBox_nbCyclesPhasesValueChanged(const int value) {this->m_test->setNbCyclesDePhase(value);}
+    inline void timeEdit_TempsStabilisation(const QTime & time) {this->m_test->setTempsStabilisation(time);}
+    inline void timeEdit_TempsMoyennageMesuresValueChanged(const QTime & time) {this->m_test->setTempsMoyennageMesure(time);}
+    inline void timeEdit_TempsAttenteEntreMesureValueChanged(const QTime & time) {this->m_test->setTempsAttenteEntreMesure(time);}
 
+    void button_AjouterPhaseClicked();
     void button_InsererPhaseClicked();
     void button_SupprimerPhaseClicked();
     void button_ChoixSystemeEtalonClicked();
@@ -87,6 +89,9 @@ private slots:
 public slots:
     void editionPhaseAnnulee();
     void editionPhaseValidee(const Phase & phase);
+
+signals:
+    void fermeture();
 };
 
 #endif // CREATIONTEST_H

@@ -83,12 +83,12 @@ QDomElement Phase::exportToXml(QDomDocument & xmlTest) {
         newPhase.setAttribute("tps_attente_entre_mesure",this->m_tempsAttenteEntreMesure.toString("hh:mm:ss"));
 
     // Création et ajout des éléments XML polluant
-    QMapIterator<ushort,ushort> i(m_listePolluants);
+    QMapIterator<ushort,uint> i(m_listePolluants);
     while (i.hasNext()) {
         i.next();
         QDomElement polluant = xmlTest.createElement("polluant");
         polluant.setAttribute("type",i.key());
-        polluant.setAttribute("point_gaz",QString::number(i.value()));
+        polluant.setAttribute("id_concentration",QString::number(i.value()));
         newPhase.appendChild(polluant);
     }
 
@@ -133,7 +133,7 @@ QPointer<Phase> Phase::importFromXml(const QDomElement & domPhase) {
     QDomNodeList nodeList_polluant = domPhase.elementsByTagName("polluant");
     for(int i=0;i<nodeList_polluant.count();i++) {
         QDomElement polluant = nodeList_polluant.at(i).toElement();
-        newPhase->ajouterPolluant(polluant.attribute("type").toUShort(),polluant.attribute("point_gaz").toUShort());
+        newPhase->ajouterPolluant(polluant.attribute("type").toUShort(),polluant.attribute("id_concentration").toUShort());
     }
 
     QDomElement el_commandeFinTs = domPhase.firstChildElement("commande_fin_ts");
@@ -159,7 +159,7 @@ QPointer<Phase> Phase::getPhaseFromConf(const PhaseConfig & config) {
 QDebug operator<<(QDebug dbg, const Phase & phase) {
     dbg.nospace() << "Phase n° " << phase.getNoPhase()<<"\n";
     dbg.nospace() << "Listes des identifiants de la table concentration associés :\n";
-    QMapIterator<ushort,ushort> iterator(phase.getListePolluants());
+    QMapIterator<ushort,uint> iterator(phase.getListePolluants());
     while(iterator.hasNext()) {
         iterator.next();
         dbg.nospace()<<iterator.key()<<" --> "<<iterator.value();

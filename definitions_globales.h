@@ -28,6 +28,7 @@
 #define DEFINITIONS_GLOBALES_H
 
 #include <QObject>
+#include <QGridLayout>
 #include <QDebug>
 #include <QStringList>
 #include <QtXml>
@@ -119,14 +120,25 @@ enum table_systeme_etalon {SYS_ETALON_ID,SYS_ETALON_DILUTEUR,SYS_ETALON_BOUTEILL
 // \enum Colonnes de la table Concentration
 enum table_concentration {CONCENTRATION_ID,CONCENTRATION_SYS_ETALON,CONCENTRATION_ID_MOLECULE,
                           CONCENTRATION_POINT,CONCENTRATION_REELLE,CONCENTRATION_OZONE};
+// \enum Colonnes de la table Concentration_Associee
+enum table_concentration_associee {CONC_ASSOCIEE_ID,CONC_ASSOCIEE_ID_CONCENTRATION,CONC_ASSOCIEE_ID_MOLECULE,
+                                   CONC_ASSOCIEE_CONCENTRATION};
 // \enum Colonnes de la table Polluant_Associe
 enum table_polluant_associe {POLLUANT_ASSOCIE_ID,POLLUANT_ASSOCIE_ID_EQUIPEMENT,POLLUANT_ASSOCIE_ID_MOLECULE};
+// \enum Colonnes de la table Test_XML
+enum table_test_xml {TEST_XML_ID,TEST_XML_NOM_FICHIER,TEST_XML_TYPE_TEST,TEST_XML_ID_SYSTEME_ETALON};
+
 // \enum Colonnes du modèle PolluantByIdSystemeEtalon
 enum modele_polluant_by_systeme_etalon {POLLUANT_BY_SYS_ETALON_ID,POLLUANT_BY_SYS_ETALON_FORMULE};
+
 // \enum Colonnes du TableWidget Polluant de ct_phasewidget
 enum phasewidget_tablewidget_polluant {PHASEW_TABLEW_POLLUANTS_IDMOLECULE,PHASEW_TABLEW_POLLUANTS_CODE,
                                        PHASEW_TABLEW_POLLUANTS_FORMULE,PHASEW_TABLEW_POLLUANTS_POINT,
                                        PHASEW_TABLEW_POLLUANTS_REELLE,PHASEW_TABLEW_POLLUANTS_OZONE};
+
+// \enum Colonnes du TableWidget TestsXml de HomeWidget
+enum homewidget_tablewidget_test {HOMEW_TABLEW_TEST_ID_TEST,HOMEW_TABLEW_TEST_FICHIER,HOMEW_TABLEW_TEST_TYPE,
+                                  HOMEW_TABLEW_TEST_DILUTEUR,HOMEW_TABLEW_TEST_BOUTEILLE,HOMEW_TABLEW_TEST_GZERO};
 
 // \struct PhaseConfig Informations de configration de ct_phasewidget
 struct PhaseConfig {
@@ -189,5 +201,23 @@ extern Commandes stringToCommande(QString cmd);
 // \return Commandes Chaine de caractères représentant
 ///////////////////////////////////////////////////////////////////////////*/
 extern QString commandesToString(Commandes cmd);
+
+/*///////////////////////////////////////////////////////////////////////////
+// \fn extern QVariant getParam(QString const & key)
+// \brief Renvoi un paramètre stocké dans param.ini
+//
+// \param key Nom du paramètre demandé
+// \return QVariant Paramètre demandé
+///////////////////////////////////////////////////////////////////////////*/
+extern QVariant getParam(QString const & key);
+
+/*///////////////////////////////////////////////////////////////////////////
+// \fn extern void setParam(QString const & key, QVariant const & param)
+// \brief Stocke un paramètre dans param.ini
+//
+// \param key Nom du paramètre demandé
+// \param param Paramètre à sauvegarder
+///////////////////////////////////////////////////////////////////////////*/
+extern void setParam(QString const & key, QVariant const & param);
 
 #endif // DEFINITIONS_GLOBALES_H

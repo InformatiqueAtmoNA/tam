@@ -41,21 +41,26 @@ public:
               const QString & password, const QString & dbName);
     bool connexionBD();
     void deconnexionBD();
+    bool isOpen();
+
     QPointer<QSqlRelationalTableModel> getEquipementModel();
     QPointer<QSqlRelationalTableModel> getModelesModel();
-    QPointer<QSqlRelationalTableModel> getSystemeEtalonModel();
+    QPointer<QSqlRelationalTableModel> getSystemeEtalonModel(const uint idSystemeEtalon=0);
     QPointer<QSqlRelationalTableModel> getPolluantAssocieModel(const uint idEquipement);
+    QPointer<QSqlRelationalTableModel> getConcentrationAssocieeModel(const uint idConcentration=0);
     QPointer<QSqlQueryModel> getPolluantsParSystemeEtalon(const uint idSystemeEtalon,const bool filtrerRdf=false);
     QPointer<QSqlTableModel> getSystemeEtalonModelSansRelation();
     QPointer<QSqlTableModel> getMoleculesModel();
+    QPointer<QSqlQueryModel> getMoleculesModel(const uint idmoleculeFiltre);
     QPointer<QSqlTableModel> getProtocolesModel();
     QPointer<QSqlTableModel> getMarquesModel();
     QPointer<QSqlTableModel> getTxTransmissionModel();
+    QPointer<QSqlTableModel> getTestXmlModel(const uint idTestXml=0);
     QPointer<QSqlTableModel> getConcentrationModel(const uint idSystemeEtalon,const uint idPolluant);
+    QPointer<QSqlTableModel> getConcentrationAssocieeModel();
     QSqlRecord* getConcentrationRow(const uint idConcentration);
     QSqlRecord* getConcentrationRow(const uint idSystemeEtalon, const uint idMolecule, const uint pointGaz);
     QSqlRecord* getMoleculeRow(const uint idMolecule);
-    bool isOpen();
 };
 
 #endif // BDHANDLER_H

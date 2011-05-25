@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     dlg_equipement.cpp \
     dlg_concentration.cpp \
     dlg_systeme_etalon.cpp \
-    ct_phasewidget.cpp
+    ct_phasewidget.cpp \
+    homewidget.cpp
 
 HEADERS  += mainwindow.h \
     threadcomhandler.h \
@@ -66,7 +67,8 @@ HEADERS  += mainwindow.h \
     dlg_equipement.h \
     dlg_concentration.h \
     dlg_systeme_etalon.h \
-    ct_phasewidget.h
+    ct_phasewidget.h \
+    homewidget.h
 
 FORMS    += mainwindow.ui \
     creationtest.ui \
@@ -78,7 +80,8 @@ FORMS    += mainwindow.ui \
     dlg_equipement.ui \
     dlg_concentration.ui \
     dlg_systeme_etalon.ui \
-    ct_phasewidget.ui
+    ct_phasewidget.ui \
+    homewidget.ui
 
 INCLUDEPATH += ./qserialdevice \
                ./

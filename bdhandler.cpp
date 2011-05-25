@@ -79,16 +79,47 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel() {
     model->setHeaderData(EQUIPEMENT_PARITE, Qt::Horizontal, "Parité");
     model->setHeaderData(EQUIPEMENT_OFFSET, Qt::Horizontal, "Offset");
     model->setSort(EQUIPEMENT_ID, Qt::AscendingOrder);
-    model->select();
+    if(!model->select())
+        qDebug()<<model->lastError().text();
 
     return model;
 }
+
+QPointer<QSqlRelationalTableModel> BdHandler::getConcentrationAssocieeModel(const uint idConcentration) {
+    QPointer<QSqlRelationalTableModel> model = new QSqlRelationalTableModel(this);
+    model->setTable("Concentration_Associee");
+    model->setRelation(CONC_ASSOCIEE_ID_MOLECULE, QSqlRelation("Molecule", "id_molecule", "formule"));
+
+    model->setHeaderData(CONC_ASSOCIEE_ID_MOLECULE, Qt::Horizontal, "Molécule");
+    model->setHeaderData(CONC_ASSOCIEE_CONCENTRATION, Qt::Horizontal, "Concentration");
+    model->setSort(EQUIPEMENT_ID, Qt::AscendingOrder);
+    if(idConcentration>0)
+        model->setFilter(QString("id_concentration=%1").arg(idConcentration));
+    if(!model->select())
+        qDebug()<<model->lastError().text();
+
+    return model;
+}
+
 
 QPointer<QSqlTableModel> BdHandler::getMoleculesModel() {
     QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
     model->setTable("Molecule");
     model->setSort(MOLECULE_ID, Qt::AscendingOrder);
-    model->select();
+    if(!model->select())
+        qDebug()<<model->lastError().text();
+
+    return model;
+}
+
+QPointer<QSqlQueryModel> BdHandler::getMoleculesModel(const uint idmoleculeFiltre) {
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel();
+
+    QString query = QString("SELECT * FROM Molecule WHERE id_Molecule <> %1").arg(QString::number(idmoleculeFiltre));
+    model->setQuery(query,m_baseMySql);
+    model->setHeaderData(MOLECULE_CODE,Qt::Horizontal,"Code");
+    model->setHeaderData(MOLECULE_FORMULE,Qt::Horizontal,"Formule");
+    model->setHeaderData(MOLECULE_NOM,Qt::Horizontal,"Nom");
 
     return model;
 }
@@ -97,7 +128,8 @@ QPointer<QSqlTableModel> BdHandler::getProtocolesModel() {
     QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
     model->setTable("Protocole");
     model->setSort(PROTOCOLE_ID, Qt::AscendingOrder);
-    model->select();
+    if(!model->select())
+        qDebug()<<model->lastError().text();
 
     return model;
 }
@@ -106,7 +138,8 @@ QPointer<QSqlTableModel> BdHandler::getMarquesModel() {
     QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
     model->setTable("Marque_Equipement");
     model->setSort(MARQUE_ID, Qt::AscendingOrder);
-    model->select();
+    if(!model->select())
+        qDebug()<<model->lastError().text();
 
     return model;
 }
@@ -115,7 +148,21 @@ QPointer<QSqlTableModel> BdHandler::getTxTransmissionModel() {
     QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
     model->setTable("Taux_Transmission");
     model->setSort(TX_TRANSMISSION_DESIGNATION, Qt::AscendingOrder);
-    model->select();
+    if(!model->select())
+        qDebug()<<model->lastError().text();
+
+    return model;
+}
+
+QPointer<QSqlTableModel> BdHandler::getTestXmlModel(const uint idTestXml) {
+    QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
+    model->setTable("Test_XML");
+    if(idTestXml>0)
+        model->setFilter(QString("id_Test_Xml=%1").arg(idTestXml));
+
+    model->setSort(TEST_XML_ID, Qt::AscendingOrder);
+    if(!model->select())
+        qDebug()<<model->lastError().text();
 
     return model;
 }
@@ -130,15 +177,19 @@ QPointer<QSqlRelationalTableModel> BdHandler::getModelesModel() {
     model->setHeaderData(MODELE_ID_PROTOCOLE, Qt::Horizontal, "Protocole");
     model->setHeaderData(MODELE_DESIGNATION, Qt::Horizontal, "Designation");
     model->setSort(MODELE_ID, Qt::AscendingOrder);
-    model->select();
+    if(!model->select())
+        qDebug()<<model->lastError().text();
 
     return model;
 }
 
-QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel() {
+QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel(const uint idSystemeEtalon) {
+    qDebug()<<"------------------------------------------";
+    qDebug()<<"call : BdHandler::getSystemeEtalonModel()";
+
     QPointer<QSqlRelationalTableModel> model = new QSqlRelationalTableModel(0,m_baseMySql);
 
-    model->setTable("System_Etalonnage");
+    model->setTable("Systeme_Etalonnage");
     model->setRelation(SYS_ETALON_DILUTEUR,QSqlRelation("Equipement","id_equipement","numero_serie"));
     model->setRelation(SYS_ETALON_BOUTEILLE,QSqlRelation("Equipement","id_equipement","numero_serie"));
     model->setRelation(SYS_ETALON_GZERO,QSqlRelation("Equipement","id_equipement","numero_serie"));
@@ -146,16 +197,24 @@ QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel() {
     model->setHeaderData(SYS_ETALON_BOUTEILLE, Qt::Horizontal, "Bouteille");
     model->setHeaderData(SYS_ETALON_GZERO, Qt::Horizontal, "Générateur air zéro");
     model->setSort(SYS_ETALON_ID, Qt::AscendingOrder);
-    model->select();
+
+    if(idSystemeEtalon>0)
+        model->setFilter(QString("id_systeme_etalon=%1").arg(idSystemeEtalon));
+
+    if(!model->select())
+        qDebug()<<model->lastError().text();
+
+    qDebug()<<"rowCount = "<<model->rowCount();
 
     return model;
 }
 
 QPointer<QSqlTableModel> BdHandler::getSystemeEtalonModelSansRelation() {
     QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
-    model->setTable("System_Etalonnage");
+    model->setTable("Systeme_Etalonnage");
     model->setSort(SYS_ETALON_ID, Qt::AscendingOrder);
-    model->select();
+    if(!model->select())
+        qDebug()<<model->lastError().text();
 
     return model;
 }
@@ -179,6 +238,21 @@ QPointer<QSqlTableModel> BdHandler::getConcentrationModel(const uint idSystemeEt
     return model;
 }
 
+QPointer<QSqlTableModel> BdHandler::getConcentrationAssocieeModel() {
+    QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
+    model->setTable("Concentration_Associee");
+
+    qDebug()<<"Concentration_Associee model demandé";
+    model->setSort(CONC_ASSOCIEE_ID, Qt::AscendingOrder);
+
+    if(!model->select())
+        qDebug()<<model->lastError().text();
+
+    qDebug()<<"Concentration_Associee model rowcount()="<<model->rowCount();
+
+    return model;
+}
+
 QPointer<QSqlRelationalTableModel> BdHandler::getPolluantAssocieModel(const uint idEquipement) {
     QPointer<QSqlRelationalTableModel> model = new QSqlRelationalTableModel(0,m_baseMySql);
 
@@ -188,8 +262,8 @@ QPointer<QSqlRelationalTableModel> BdHandler::getPolluantAssocieModel(const uint
     model->setRelation(POLLUANT_ASSOCIE_ID_MOLECULE,QSqlRelation("Molecule","id_molecule","formule"));
     model->setHeaderData(POLLUANT_ASSOCIE_ID_MOLECULE, Qt::Horizontal, "Polluant");
     model->setSort(POLLUANT_ASSOCIE_ID_MOLECULE, Qt::AscendingOrder);
-    qDebug()<<model->select();
-    qDebug()<<model->lastError().text();
+    if(!model->select())
+        qDebug()<<model->lastError().text();
     qDebug()<<"equipement : "<<idEquipement;
     qDebug()<<"nb polluants associes : "<<model->rowCount();
 
@@ -197,7 +271,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getPolluantAssocieModel(const uint
 }
 
 QPointer<QSqlQueryModel> BdHandler::getPolluantsParSystemeEtalon(const uint idSystemeEtalon,const bool filtrerRdf) {
-    QSqlQuery requete(QString("SELECT * FROM System_Etalonnage WHERE id_systeme_etalon=%1").arg(idSystemeEtalon));
+    QSqlQuery requete(QString("SELECT * FROM Systeme_Etalonnage WHERE id_systeme_etalon=%1").arg(idSystemeEtalon));
 
     int idDiluteur,idBouteille;
 
@@ -246,7 +320,6 @@ QSqlRecord* BdHandler::getTableRow(const QString sqlTableRequete) {
     return record;
 }
 
-
 QSqlRecord* BdHandler::getConcentrationRow(const uint idConcentration) {
     qDebug()<<"---------------------------------------------";
     qDebug()<<"call getConcentrationRow("<<idConcentration<<")";
@@ -254,19 +327,12 @@ QSqlRecord* BdHandler::getConcentrationRow(const uint idConcentration) {
 }
 
 QSqlRecord* BdHandler::getConcentrationRow(const uint idSystemeEtalon, const uint idMolecule, const uint pointGaz) {
-    QSqlQuery requete(QString("SELECT * FROM Concentration WHERE id_systeme_etalon=%1 AND id_molecule=%2 AND point_consigne=%3").arg(
-                      QString::number(idSystemeEtalon),QString::number(idMolecule),QString::number(pointGaz)));
-
     qDebug()<<"---------------------------------------------";
     qDebug()<<"call BdHandler::getConcentrationRow()";
-    qDebug()<<"nb. enregistrements : "<<requete.size();
+    QString requete = QString("SELECT * FROM Concentration WHERE id_systeme_etalon=%1 AND id_molecule=%2 AND point_consigne=%3").arg(
+                      QString::number(idSystemeEtalon),QString::number(idMolecule),QString::number(pointGaz));
 
-    QSqlRecord* record = NULL;
-
-    if(requete.next()) {
-        record = new QSqlRecord(requete.record());
-    }
-    return record;
+    return getTableRow(requete);
 }
 
 QSqlRecord* BdHandler::getMoleculeRow(const uint idMolecule) {

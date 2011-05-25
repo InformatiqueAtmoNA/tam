@@ -47,7 +47,7 @@ class Phase : public QObject
     bool m_critereArretPrevu; // Indique si un critère d'arrêt est prévu
     QVector<ushort> m_criteresArret; // Critère d'arrêt : voir enum dans definitions_globales.h
     Commandes m_commandeDebutPhase; // Commande optionnelle à effectuer à la fin du temps de stabilisation
-    QMap<ushort,ushort> m_listePolluants; // Liste des polluants et de leurs points de gaz associés
+    QMap<ushort,uint> m_listePolluants; // Liste des polluants et de leurs points de gaz associés
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
@@ -163,11 +163,11 @@ public:
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn QTime const getListePolluants() const
-    // \brief Renvoi la liste des polluants et de leurs points de gaz associés
+    // \brief Renvoi la liste des identifiants de la table Concentration de la phase
     //
-    // \return QMap<ushort,ushort> Liste des polluants et de leurs points de gaz associés
+    // \return QMap<ushort,uint> Liste des polluants et de leurs points de gaz associés
     ///////////////////////////////////////////////////////////////////////////*/
-    inline QMap<ushort,ushort> getListePolluants() const {return m_listePolluants;}
+    inline QMap<ushort,uint> getListePolluants() const {return m_listePolluants;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setNoPhase(ushort const & numPhase)
@@ -226,13 +226,13 @@ public:
     inline void setCmdFinTs(const Commandes & commandeFinTS) {this->m_commandeDebutPhase = commandeFinTS;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void ajouterPolluant(TypePolluant const & polluant, ushort pointGaz)
-    // \brief Ajoute un nouveau polluant à la phase avec son point de gaz associé
+    // \fn void ajouterPolluant(uint idConcentration)
+    // \brief Ajoute un nouveau polluant à la phase grâce à son identifant de la table Concentration
     //
     // \param polluant Nouveau polluant
     // \param pointGaz Nouveau point de gaz associé
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void ajouterPolluant(const uint polluant, const ushort pointGaz) {this->m_listePolluants.insert(polluant,pointGaz);}
+    inline void ajouterPolluant(const uint polluant, const uint idConcentration) {this->m_listePolluants.insert(polluant,idConcentration);}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void supprimerPolluant(const uint polluant)

@@ -150,6 +150,14 @@ public:
     inline uint getIdSystemeEtalon() {return this->m_idSystemeEtalon;}
 
     /*///////////////////////////////////////////////////////////////////////////
+    // \fn ushort getNbPhases()
+    // \brief Renvoi le nombre de phases
+    //
+    // \return ushort Nombre de phases
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline ushort getNbPhases() {return this->m_listePhases.count();}
+
+    /*///////////////////////////////////////////////////////////////////////////
     // \fn QStringList getPolluants()
     // \brief Renvoi la liste des polluants
     //
@@ -339,6 +347,15 @@ public:
     // \param noPhase Numéro de la phase qui sera insérée
     ///////////////////////////////////////////////////////////////////////////*/
     void phaseInseree(const ushort noPhase);
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn Test& operator=(const Test&)
+    // \brief Surcharge de l'opérateur =
+    //
+    // \param Test Référence sur l'objet Test à copier
+    // \return Test& Référence sur le nouvel objet Test
+    ///////////////////////////////////////////////////////////////////////////*/
+    Test& operator=(const Test&);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn QDomElement exportToXml(QDomDocument & xmlTest)

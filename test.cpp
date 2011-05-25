@@ -46,6 +46,19 @@ Test::Test(const Test& test) : QObject() {
     this->m_listePhases = test.m_listePhases;
 }
 
+Test& Test::operator =(const Test& test) {
+    this->m_idTest = test.m_idTest;
+    this->m_tempsMaxTest = test.m_tempsMaxTest;
+    this->m_tempsAcquisition = test.m_tempsAcquisition;
+    this->m_tempsStabilisation = test.m_tempsStabilisation;
+    this->m_tempsMoyennageMesure = test.m_tempsMoyennageMesure;
+    this->m_nbCyclesMesureParPhase = test.m_nbCyclesMesureParPhase;
+    this->m_nbCyclesDePhase = test.m_nbCyclesDePhase;
+    this->m_listePhases = test.m_listePhases;
+
+    return *this;
+}
+
 void Test::ajouterPhase(const Phase & newPhase) {
     this->m_listePhases.insert(newPhase.getNoPhase(),newPhase);
 }
@@ -96,6 +109,19 @@ bool Test::exportToXml(QString const & nomFichier) {
     QFile file;
     QTextStream out;
     QDomImplementation impl;
+
+    // Si le fichier existe déjà
+    if(QFile::exists(nomFichier)) {
+        QMessageBox msgBox;
+        msgBox.setText("Le fichier existe déjà");
+        msgBox.setInformativeText("Voulez-vous le remplacer?");
+        msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        if(ret==QMessageBox::Cancel)
+            return false;
+    }
 
     // Ouverture du nouveau fichier XML
     file.setFileName(nomFichier);
