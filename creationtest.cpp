@@ -35,6 +35,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     ui->setupUi(this);
 
     this->m_bdHandler = bdHandler;
+    this->m_indexTypeTest = -1;
     m_nbPhases=0;
     m_etape=0;
     this->m_autoriserCreationPhase=true;
@@ -116,23 +117,29 @@ void CreationTest::initialiserChamps()
     this->ui->lineEdit_Bouteille->setText(model->record(0).value(SYS_ETALON_BOUTEILLE).toString());
     this->ui->lineEdit_GZero->setText(model->record(0).value(SYS_ETALON_GZERO).toString());
 
-    switch(this->m_typeTest) {
+    switch(this->m_test->getTypeTest()) {
     case REPETABILITE_1:
+        this->m_indexTypeTest = 0;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(0);
         break;
     case REPETABILITE_2:
+        this->m_indexTypeTest = 1;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(1);
         break;
     case LINEARITE:
+        this->m_indexTypeTest = 2;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(2);
         break;
     case TEMP_REPONSE:
+        this->m_indexTypeTest = 3;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(3);
         break;
     case RENDEMENT_FOUR:
+        this->m_indexTypeTest = 4;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(4);
         break;
     case PERSO:
+        this->m_indexTypeTest = 5;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(5);
         break;
     }

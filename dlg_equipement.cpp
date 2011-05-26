@@ -41,7 +41,6 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
     this->m_filtreType = filtreType;
 
     this->peuplerTable();
-    this->initialiserChamps();
 
     connect(this->ui->tableView->selectionModel(),
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
@@ -74,6 +73,8 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
             this,SLOT(buttonAddPolluantClicked()));
     connect(this->ui->button_RemovePolluant,SIGNAL(clicked()),
             this,SLOT(buttonRemovePolluantClicked()));
+
+    this->initialiserChamps();
 
     if(indexSelection > -1) {
         this->ui->tableView->selectRow(indexSelection);
@@ -196,7 +197,7 @@ void Dlg_Equipement::initialiserChamps() {
     this->ui->lineEdit_Offset->clear();
     this->ui->lineEdit_Adresse->clear();
     this->ui->cb_Nb_Bits_Stop->setCurrentIndex(0);
-    this->ui->cb_Nb_Bits_Transmission->setCurrentIndex(0);
+    this->ui->cb_Nb_Bits_Transmission->setCurrentIndex(3);
     this->m_idTxTransmission = this->ui->cb_Tx_Transmission->findText("9600");
     this->ui->cb_Tx_Transmission->setCurrentIndex(this->m_idTxTransmission);
     this->ui->cb_Type_Controle_Flux->setCurrentIndex(0);
@@ -303,6 +304,8 @@ void Dlg_Equipement::buttonEditModeleClicked()
 
 void Dlg_Equipement::cb_tauxTransmissionChanged(const int index)
 {
+    qDebug()<<"-----------------------------------------";
+    qDebug()<<"call Dlg_Equipement::cb_tauxTransmissionChanged("<<QString::number(index)<<")";
     this->m_idTxTransmission = this->m_model_tx_transmission->record(index).value(TX_TRANSMISSION_ID).toInt();
 }
 
@@ -364,6 +367,7 @@ void Dlg_Equipement::buttonModifierClicked()
                                                                        Qt::DisplayRole,selection.value(EQUIPEMENT_ID_MODELE),
                                                                        1,Qt::MatchExactly|Qt::MatchWrap);
     this->ui->cb_Modele->setCurrentIndex(listIndexCbSelection.at(0).row());
+
     listIndexCbSelection = this->m_model_tx_transmission->match(this->m_model_tx_transmission->index(0,TX_TRANSMISSION_DESIGNATION),
                                                                 Qt::DisplayRole,selection.value(EQUIPEMENT_ID_TX_TRANSMISSION),
                                                                 1,Qt::MatchExactly|Qt::MatchWrap);
@@ -377,11 +381,10 @@ void Dlg_Equipement::buttonModifierClicked()
     this->ui->lineEdit_Offset->setText(selection.value(EQUIPEMENT_OFFSET).toString());
     this->ui->lineEdit_Adresse->setText(selection.value(EQUIPEMENT_ADRESSE).toString());
 
-    this->ui->cb_Nb_Bits_Transmission->setCurrentIndex(this->ui->cb_Nb_Bits_Transmission->findText(selection.value(EQUIPEMENT_NB_BITS_TRANSMISSION).toString()));
-    this->ui->cb_Nb_Bits_Stop->setCurrentIndex(this->ui->cb_Nb_Bits_Stop->findText(selection.value(EQUIPEMENT_NB_BITS_STOP).toString()));
-    this->ui->cb_Nb_Bits_Stop->setCurrentIndex(this->ui->cb_Nb_Bits_Stop->findText(selection.value(EQUIPEMENT_NB_BITS_STOP).toString()));
-    this->ui->cb_Type_Controle_Flux->setCurrentIndex(this->ui->cb_Type_Controle_Flux->findText(selection.value(EQUIPEMENT_CONTROLE_FLUX).toString()));
-    this->ui->cb_Type_Parite->setCurrentIndex(this->ui->cb_Type_Parite->findText(selection.value(EQUIPEMENT_PARITE).toString()));
+    this->ui->cb_Nb_Bits_Transmission->setCurrentIndex(this->ui->cb_Nb_Bits_Transmission->findText(selection.value(EQUIPEMENT_NB_BITS_TRANSMISSION).toString(),Qt::MatchExactly));
+    this->ui->cb_Nb_Bits_Stop->setCurrentIndex(this->ui->cb_Nb_Bits_Stop->findText(selection.value(EQUIPEMENT_NB_BITS_STOP).toString(),Qt::MatchExactly));
+    this->ui->cb_Type_Controle_Flux->setCurrentIndex(this->ui->cb_Type_Controle_Flux->findText(selection.value(EQUIPEMENT_CONTROLE_FLUX).toString(),Qt::MatchExactly));
+    this->ui->cb_Type_Parite->setCurrentIndex(this->ui->cb_Type_Parite->findText(selection.value(EQUIPEMENT_PARITE).toString(),Qt::MatchExactly));
 
     this->afficherFormulaire();
 }

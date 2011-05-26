@@ -155,7 +155,7 @@ void Dlg_Concentration::afficherFormulaire()
     this->ui->button_Selectionner->setEnabled(false);
     this->ui->button_Modifier->setEnabled(false);
 
-    this->ui->lineEdit_Point->setFocus();
+    this->ui->spinBox_PointGaz->setFocus();
 
 }
 
@@ -183,9 +183,9 @@ void Dlg_Concentration::initialiserChamps()
     if(!this->m_returnSelection || this->m_model->rowCount()==0)
       this->ui->button_Selectionner->setVisible(false);
 
-    this->ui->lineEdit_Point->clear();
-    this->ui->lineEdit_ConcReelle->clear();
-    this->ui->lineEdit_ConcO3->clear();
+    this->ui->spinBox_PointGaz->clear();
+    this->ui->doubleSpinBox_ConcReelle->clear();
+    this->ui->spinBox_ConcO3->clear();
 }
 
 void Dlg_Concentration::initialiserChampsConcAssociee()
@@ -198,14 +198,14 @@ void Dlg_Concentration::initialiserChampsConcAssociee()
     this->ui->button_Supprimer_ConcAssociee->setEnabled(false);
     this->ui->button_Ajouter_ConcAssociee->setEnabled(true);
 
-    this->ui->spinBox_ConcAssociee_Concentration->clear();
+    this->ui->doubleSpinBox_ConcAssociee_Concentration->clear();
 }
 
 void Dlg_Concentration::setGbEditChampsReadOnly(const bool readOnly)
 {
-    this->ui->lineEdit_Point->setReadOnly(readOnly);
-    this->ui->lineEdit_ConcReelle->setReadOnly(readOnly);
-    this->ui->lineEdit_ConcO3->setReadOnly(readOnly);
+    this->ui->spinBox_PointGaz->setReadOnly(readOnly);
+    this->ui->doubleSpinBox_ConcReelle->setReadOnly(readOnly);
+    this->ui->spinBox_ConcO3->setReadOnly(readOnly);
     this->ui->button_Annuler->setEnabled(!readOnly);
     this->ui->button_Valider->setEnabled(!readOnly);
 }
@@ -213,7 +213,7 @@ void Dlg_Concentration::setGbEditChampsReadOnly(const bool readOnly)
 void Dlg_Concentration::setGbEditChampsConcAssocieeReadOnly(const bool readOnly)
 {
     this->ui->comboBox_ConcAssociee_Polluant->setEnabled(!readOnly);
-    this->ui->spinBox_ConcAssociee_Concentration->setReadOnly(readOnly);
+    this->ui->doubleSpinBox_ConcAssociee_Concentration->setReadOnly(readOnly);
     this->ui->button_Annuler_ConcAssociee->setEnabled(!readOnly);
     this->ui->button_Valider_ConcAssociee->setEnabled(!readOnly);
 }
@@ -231,9 +231,9 @@ void Dlg_Concentration::editCurrentRow(const QModelIndex& idxSelection)
     this->setGbEditChampsReadOnly(false);
 
     QSqlRecord record = m_model->record(idxSelection.row());
-    this->ui->lineEdit_Point->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_POINT).toString());
-    this->ui->lineEdit_ConcReelle->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_REELLE).toString());
-    this->ui->lineEdit_ConcO3->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_OZONE).toString());
+    this->ui->spinBox_PointGaz->setValue(this->m_model->record(idxSelection.row()).value(CONCENTRATION_POINT).toUInt());
+    this->ui->doubleSpinBox_ConcReelle->setValue(this->m_model->record(idxSelection.row()).value(CONCENTRATION_REELLE).toDouble());
+    this->ui->spinBox_ConcO3->setValue(this->m_model->record(idxSelection.row()).value(CONCENTRATION_OZONE).toUInt());
 }
 
 void Dlg_Concentration::editConcAssocieeCurrentRow(const QModelIndex & idxSelection)
@@ -250,7 +250,7 @@ void Dlg_Concentration::editConcAssocieeCurrentRow(const QModelIndex & idxSelect
     QSqlRecord record = m_modelConcentrationAssociee->record(idxSelection.row());
     QString formuleMolecule = record.value(CONC_ASSOCIEE_ID_MOLECULE).toString();
     this->ui->comboBox_ConcAssociee_Polluant->setCurrentIndex(this->ui->comboBox_ConcAssociee_Polluant->findText(formuleMolecule));
-    this->ui->spinBox_ConcAssociee_Concentration->setValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toInt());
+    this->ui->doubleSpinBox_ConcAssociee_Concentration->setValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toDouble());
 }
 
 void Dlg_Concentration::tableViewSelectedItemChanged(const QModelIndex & idxSelection)
@@ -268,9 +268,9 @@ void Dlg_Concentration::tableViewSelectedItemChanged(const QModelIndex & idxSele
         this->ui->button_Modifier->setEnabled(true);
         this->ui->button_Supprimer->setEnabled(true);
 
-        this->ui->lineEdit_Point->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_POINT).toString());
-        this->ui->lineEdit_ConcReelle->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_REELLE).toString());
-        this->ui->lineEdit_ConcO3->setText(this->m_model->record(idxSelection.row()).value(CONCENTRATION_OZONE).toString());
+        this->ui->spinBox_PointGaz->setValue(this->m_model->record(idxSelection.row()).value(CONCENTRATION_POINT).toUInt());
+        this->ui->doubleSpinBox_ConcReelle->setValue(this->m_model->record(idxSelection.row()).value(CONCENTRATION_REELLE).toDouble());
+        this->ui->spinBox_ConcO3->setValue(this->m_model->record(idxSelection.row()).value(CONCENTRATION_OZONE).toUInt());
         connect(this->ui->tableView_ConcAssociee,SIGNAL(clicked(QModelIndex)),this,SLOT(tableViewConcAssocieeItemChanged(QModelIndex)));
     }
     else {
@@ -301,7 +301,7 @@ void Dlg_Concentration::tableViewConcAssocieeItemChanged(const QModelIndex & idx
 
         qDebug()<<formuleMolecule<<"  "<<this->ui->comboBox_ConcAssociee_Polluant->findText(formuleMolecule);
         this->ui->comboBox_ConcAssociee_Polluant->setCurrentIndex(this->ui->comboBox_ConcAssociee_Polluant->findText(formuleMolecule));
-        this->ui->spinBox_ConcAssociee_Concentration->setValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toInt());
+        this->ui->doubleSpinBox_ConcAssociee_Concentration->setValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toDouble());
         this->setGbEditChampsConcAssocieeReadOnly(true);
     }
     else {
@@ -352,9 +352,9 @@ void Dlg_Concentration::buttonValiderClicked()
     }
     m_model->setData(m_model->index(row,CONCENTRATION_SYS_ETALON),QVariant::fromValue(this->m_idSystemeEtalon));
     m_model->setData(m_model->index(row,CONCENTRATION_ID_MOLECULE),QVariant::fromValue(this->m_idPolluant));
-    m_model->setData(m_model->index(row,CONCENTRATION_POINT),QVariant::fromValue(this->ui->lineEdit_Point->text()));
-    m_model->setData(m_model->index(row,CONCENTRATION_REELLE),QVariant::fromValue(this->ui->lineEdit_ConcReelle->text()));
-    m_model->setData(m_model->index(row,CONCENTRATION_OZONE),QVariant::fromValue(this->ui->lineEdit_ConcO3->text()));
+    m_model->setData(m_model->index(row,CONCENTRATION_POINT),QVariant::fromValue(this->ui->spinBox_PointGaz->value()));
+    m_model->setData(m_model->index(row,CONCENTRATION_REELLE),QVariant::fromValue(this->ui->doubleSpinBox_ConcReelle->value()));
+    m_model->setData(m_model->index(row,CONCENTRATION_OZONE),QVariant::fromValue(this->ui->spinBox_ConcO3->value()));
 
     m_model->submitAll();
 
@@ -455,7 +455,7 @@ void Dlg_Concentration::buttonValiderConcAssocieeClicked()
 
     m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_ID_CONCENTRATION),idConcentration);
     m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_ID_MOLECULE),QVariant::fromValue(this->m_idMoleculeConcentrationAssocie));
-    m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_CONCENTRATION),QVariant::fromValue(this->ui->spinBox_ConcAssociee_Concentration->value()));
+    m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_CONCENTRATION),QVariant::fromValue(this->ui->doubleSpinBox_ConcAssociee_Concentration->value()));
 
     m_modelConcentrationAssociee->submitAll();
 

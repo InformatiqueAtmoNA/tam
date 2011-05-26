@@ -32,7 +32,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_ConcPrincipales">
     <attribute name="title">
@@ -195,26 +195,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEdit_Point">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-               </widget>
+               <widget class="QSpinBox" name="spinBox_PointGaz"/>
               </item>
              </layout>
             </item>
@@ -244,24 +225,9 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEdit_ConcReelle">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
+               <widget class="QDoubleSpinBox" name="doubleSpinBox_ConcReelle">
+                <property name="maximum">
+                 <double>99999999.989999994635582</double>
                 </property>
                </widget>
               </item>
@@ -293,24 +259,9 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEdit_ConcO3">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
+               <widget class="QSpinBox" name="spinBox_ConcO3">
+                <property name="maximum">
+                 <number>999999999</number>
                 </property>
                </widget>
               </item>
@@ -410,6 +361,9 @@
             <width>150</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="insertPolicy">
+           <enum>QComboBox::NoInsert</enum>
           </property>
          </widget>
         </item>
@@ -591,6 +545,9 @@
                   <height>0</height>
                  </size>
                 </property>
+                <property name="insertPolicy">
+                 <enum>QComboBox::NoInsert</enum>
+                </property>
                </widget>
               </item>
              </layout>
@@ -605,11 +562,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="spinBox_ConcAssociee_Concentration">
-                <property name="maximum">
-                 <number>50000</number>
-                </property>
-               </widget>
+               <widget class="QDoubleSpinBox" name="doubleSpinBox_ConcAssociee_Concentration"/>
               </item>
              </layout>
             </item>

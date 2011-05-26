@@ -28,27 +28,33 @@ void HomeWidget::getListeTests()
 {
     this->m_modelTestXml = this->m_bdHandler->getTestXmlModel();
 
-    for(int i=0;i<this->m_modelTestXml->rowCount();i++) {
-        QSqlRecord recordTestXml = this->m_modelTestXml->record(i);
-        uint idSystemeEtalon = recordTestXml.value(TEST_XML_ID_SYSTEME_ETALON).toUInt();
-        QSqlRecord recordSystemeEtalon = this->m_bdHandler->getSystemeEtalonModel(idSystemeEtalon)->record(0);
+    if(this->m_modelTestXml->rowCount()>0) {
+        for(int i=0;i<this->m_modelTestXml->rowCount();i++) {
+            QSqlRecord recordTestXml = this->m_modelTestXml->record(i);
+            uint idSystemeEtalon = recordTestXml.value(TEST_XML_ID_SYSTEME_ETALON).toUInt();
+            QSqlRecord recordSystemeEtalon = this->m_bdHandler->getSystemeEtalonModel(idSystemeEtalon)->record(0);
 
-        QTableWidgetItem* item_idTest = new QTableWidgetItem(recordTestXml.value(TEST_XML_ID).toString());
-        QTableWidgetItem* item_fichier = new QTableWidgetItem(recordTestXml.value(TEST_XML_NOM_FICHIER).toString());
-        QTableWidgetItem* item_type = new QTableWidgetItem(recordTestXml.value(TEST_XML_TYPE_TEST).toString());
-        QTableWidgetItem* item_numSerieDiluteur = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_DILUTEUR).toString());
-        QTableWidgetItem* item_numSerieBouteille = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_BOUTEILLE).toString());
-        QTableWidgetItem* item_numSerieGoz = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_GZERO).toString());
+            QTableWidgetItem* item_idTest = new QTableWidgetItem(recordTestXml.value(TEST_XML_ID).toString());
+            QTableWidgetItem* item_fichier = new QTableWidgetItem(recordTestXml.value(TEST_XML_NOM_FICHIER).toString());
+            QTableWidgetItem* item_type = new QTableWidgetItem(recordTestXml.value(TEST_XML_TYPE_TEST).toString());
+            QTableWidgetItem* item_numSerieDiluteur = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_DILUTEUR).toString());
+            QTableWidgetItem* item_numSerieBouteille = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_BOUTEILLE).toString());
+            QTableWidgetItem* item_numSerieGoz = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_GZERO).toString());
 
-        uint idxNewRecord = this->ui->tableWidget_TestXml->rowCount();
-        this->ui->tableWidget_TestXml->insertRow(idxNewRecord);
-        this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_ID_TEST,item_idTest);
-        this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_FICHIER,item_fichier);
-        this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_TYPE,item_type);
-        this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_DILUTEUR,item_numSerieDiluteur);
-        this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_BOUTEILLE,item_numSerieBouteille);
-        this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_GZERO,item_numSerieGoz);
-        this->ui->tableWidget_TestXml->setColumnHidden(HOMEW_TABLEW_TEST_ID_TEST,true);
+            uint idxNewRecord = this->ui->tableWidget_TestXml->rowCount();
+            this->ui->tableWidget_TestXml->insertRow(idxNewRecord);
+            this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_ID_TEST,item_idTest);
+            this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_FICHIER,item_fichier);
+            this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_TYPE,item_type);
+            this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_DILUTEUR,item_numSerieDiluteur);
+            this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_BOUTEILLE,item_numSerieBouteille);
+            this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_GZERO,item_numSerieGoz);
+            this->ui->tableWidget_TestXml->setColumnHidden(HOMEW_TABLEW_TEST_ID_TEST,true);
+        }
+    }
+    else {
+        this->ui->button_Executer->setEnabled(false);
+        this->ui->button_Modifier->setEnabled(false);
     }
 }
 

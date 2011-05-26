@@ -132,11 +132,11 @@ CREATE INDEX `fk_eq_tx_transmission` ON `TAM_V3`.`Equipement` (`id_tx_transmissi
 
 
 -- -----------------------------------------------------
--- Table `TAM_V3`.`System_Etalonnage`
+-- Table `TAM_V3`.`Systeme_Etalonnage`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`System_Etalonnage` ;
+DROP TABLE IF EXISTS `TAM_V3`.`Systeme_Etalonnage` ;
 
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`System_Etalonnage` (
+CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Systeme_Etalonnage` (
   `id_systeme_etalon` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `id_etalon` SMALLINT UNSIGNED NOT NULL ,
   `id_bouteille` SMALLINT UNSIGNED NULL DEFAULT 0 ,
@@ -150,7 +150,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`System_Etalonnage` (
 ENGINE = MyISAM
 AUTO_INCREMENT = 63;
 
-CREATE INDEX `fk_se_equipement` ON `TAM_V3`.`System_Etalonnage` (`id_etalon` ASC, `id_bouteille` ASC, `id_gzero` ASC) ;
+CREATE INDEX `fk_se_equipement` ON `TAM_V3`.`Systeme_Etalonnage` (`id_etalon` ASC, `id_bouteille` ASC, `id_gzero` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -160,13 +160,20 @@ DROP TABLE IF EXISTS `TAM_V3`.`Test_XML` ;
 
 CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Test_XML` (
   `id_Test_Xml` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `designation` VARCHAR(45) NOT NULL ,
   `fichier_description` VARCHAR(45) NOT NULL ,
-  `type_test` ENUM('REPETABILITE_1','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','TPG','AUTRE') NOT NULL DEFAULT 'AUTRE' ,
-  PRIMARY KEY (`id_Test_Xml`) )
+  `type_test` ENUM('REPETABILITE_1','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','TPG','PERSO') NOT NULL DEFAULT 'PERSO' ,
+  `id_systeme_etalon` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id_Test_Xml`) ,
+  CONSTRAINT `fk_Test_XML_SystemeEtalon`
+    FOREIGN KEY (`id_systeme_etalon` )
+    REFERENCES `TAM_V3`.`Systeme_Etalonnage` (`id_systeme_etalon` )
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE)
 ENGINE = MyISAM;
 
 CREATE UNIQUE INDEX `fichier_description_UNIQUE` ON `TAM_V3`.`Test_XML` (`fichier_description` ASC) ;
+
+CREATE INDEX `fk_Test_XML_SystemeEtalon` ON `TAM_V3`.`Test_XML` (`id_systeme_etalon` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -204,7 +211,6 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Test_Metrologique` (
   `id_test` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `id_description_xml` SMALLINT UNSIGNED NOT NULL ,
   `id_operateur` SMALLINT UNSIGNED NOT NULL ,
-  `id_systeme_etalon` INT UNSIGNED NOT NULL ,
   `id_lieu` SMALLINT UNSIGNED NOT NULL ,
   `pression` INT(11)  NULL DEFAULT NULL ,
   `debit` DECIMAL(10,0)  NULL DEFAULT NULL ,
@@ -215,11 +221,6 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Test_Metrologique` (
   `min_gamme` INT(11) NOT NULL DEFAULT '0' ,
   `offset` INT(11) NOT NULL DEFAULT '0' ,
   PRIMARY KEY (`id_test`) ,
-  CONSTRAINT `fk_test_systeme_etalon`
-    FOREIGN KEY (`id_systeme_etalon` )
-    REFERENCES `TAM_V3`.`System_Etalonnage` (`id_systeme_etalon` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
   CONSTRAINT `fk_test_xml`
     FOREIGN KEY (`id_description_xml` )
     REFERENCES `TAM_V3`.`Test_XML` (`id_Test_Xml` )
@@ -237,8 +238,6 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Test_Metrologique` (
     ON UPDATE CASCADE)
 ENGINE = MyISAM
 AUTO_INCREMENT = 2455;
-
-CREATE INDEX `fk_test_systeme_etalon` ON `TAM_V3`.`Test_Metrologique` (`id_systeme_etalon` ASC) ;
 
 CREATE INDEX `fk_test_xml` ON `TAM_V3`.`Test_Metrologique` (`id_description_xml` ASC) ;
 
@@ -348,7 +347,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Concentration` (
   PRIMARY KEY (`id_Concentration`) ,
   CONSTRAINT `fk_system_etalon`
     FOREIGN KEY (`id_systeme_etalon` )
-    REFERENCES `TAM_V3`.`System_Etalonnage` (`id_systeme_etalon` )
+    REFERENCES `TAM_V3`.`Systeme_Etalonnage` (`id_systeme_etalon` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = MyISAM;
@@ -404,6 +403,34 @@ ENGINE = MyISAM;
 CREATE UNIQUE INDEX `id_equipement_UNIQUE` ON `TAM_V3`.`Equipement_Reforme` (`id_equipement` ASC) ;
 
 CREATE INDEX `fk_eq_reforme_modele` ON `TAM_V3`.`Equipement_Reforme` (`id_modele` ASC) ;
+
+
+-- -----------------------------------------------------
+-- Table `TAM_V3`.`Concentration_Associee`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `TAM_V3`.`Concentration_Associee` ;
+
+CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Concentration_Associee` (
+  `id_concentration_associee` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `id_concentration` INT UNSIGNED NOT NULL ,
+  `id_molecule` SMALLINT UNSIGNED NOT NULL ,
+  `concentration` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id_concentration_associee`) ,
+  CONSTRAINT `fk_Conc_Associee_Concentration`
+    FOREIGN KEY (`id_concentration` )
+    REFERENCES `TAM_V3`.`Concentration` (`id_Concentration` )
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_Conc_Associee_Molecule`
+    FOREIGN KEY (`id_molecule` )
+    REFERENCES `TAM_V3`.`Molecule` (`id_molecule` )
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE)
+ENGINE = MyISAM;
+
+CREATE INDEX `fk_Conc_Associee_Concentration` ON `TAM_V3`.`Concentration_Associee` (`id_concentration` ASC) ;
+
+CREATE INDEX `fk_Conc_Associee_Molecule` ON `TAM_V3`.`Concentration_Associee` (`id_molecule` ASC) ;
 
 
 
