@@ -6,22 +6,6 @@ CREATE SCHEMA IF NOT EXISTS `TAM_V3` DEFAULT CHARACTER SET latin1 COLLATE latin1
 USE `TAM_V3` ;
 
 -- -----------------------------------------------------
--- Table `TAM_V3`.`Dilution`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Dilution` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Dilution` (
-  `etalon` VARCHAR(100) NOT NULL DEFAULT '' ,
-  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
-  `point` SMALLINT(6) NOT NULL DEFAULT '0' ,
-  `point_etalon` SMALLINT(6) NOT NULL DEFAULT '0' ,
-  `taux` FLOAT NOT NULL DEFAULT '0' ,
-  PRIMARY KEY (`etalon`, `date`, `point`) )
-ENGINE = MyISAM
-DEFAULT CHARACTER SET = latin1;
-
-
--- -----------------------------------------------------
 -- Table `TAM_V3`.`Marque_Equipement`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `TAM_V3`.`Marque_Equipement` ;
@@ -30,7 +14,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Marque_Equipement` (
   `id_marque` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `designation` VARCHAR(30) NOT NULL ,
   PRIMARY KEY (`id_marque`) )
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `designation_UNIQUE` ON `TAM_V3`.`Marque_Equipement` (`designation` ASC) ;
 
@@ -44,7 +28,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Protocole` (
   `id_Protocole` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `designation` VARCHAR(20) NOT NULL ,
   PRIMARY KEY (`id_Protocole`) )
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `designation_UNIQUE` ON `TAM_V3`.`Protocole` (`designation` ASC) ;
 
@@ -71,7 +55,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Modele_Equipement` (
     REFERENCES `TAM_V3`.`Protocole` (`id_Protocole` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE INDEX `fk_modele_marque` ON `TAM_V3`.`Modele_Equipement` (`id_marque` ASC) ;
 
@@ -87,7 +71,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Taux_Transmission` (
   `id_tx_transmission` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `taux_transmission` INT UNSIGNED NULL ,
   PRIMARY KEY (`id_tx_transmission`) )
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `taux_transmission_UNIQUE` ON `TAM_V3`.`Taux_Transmission` (`taux_transmission` ASC) ;
 
@@ -99,7 +83,7 @@ DROP TABLE IF EXISTS `TAM_V3`.`Equipement` ;
 
 CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Equipement` (
   `id_equipement` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `id_modele` SMALLINT NOT NULL ,
+  `id_modele` SMALLINT UNSIGNED NOT NULL ,
   `numero_serie` VARCHAR(45) NOT NULL ,
   `en_service` TINYINT(1)  NOT NULL DEFAULT false ,
   `min_gamme` SMALLINT NULL DEFAULT 0 ,
@@ -122,9 +106,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Equipement` (
     REFERENCES `TAM_V3`.`Taux_Transmission` (`id_tx_transmission` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-ENGINE = MyISAM
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_general_ci;
+ENGINE = InnoDB;
 
 CREATE INDEX `fk_eq_modele` ON `TAM_V3`.`Equipement` (`id_modele` ASC) ;
 
@@ -141,18 +123,32 @@ DROP TABLE IF EXISTS `TAM_V3`.`Systeme_Etalonnage` ;
 CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Systeme_Etalonnage` (
   `id_systeme_etalon` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `id_etalon` SMALLINT UNSIGNED NOT NULL ,
-  `id_bouteille` SMALLINT UNSIGNED NULL DEFAULT 0 ,
-  `id_gzero` SMALLINT UNSIGNED NULL DEFAULT 0 ,
+  `id_bouteille` SMALLINT UNSIGNED NOT NULL ,
+  `id_gzero` SMALLINT UNSIGNED NOT NULL ,
   PRIMARY KEY (`id_systeme_etalon`) ,
-  CONSTRAINT `fk_se_equipement`
-    FOREIGN KEY (`id_etalon` , `id_bouteille` , `id_gzero` )
-    REFERENCES `TAM_V3`.`Equipement` (`id_equipement` , `id_equipement` , `id_equipement` )
+  CONSTRAINT `fk_se_equipement_etalon`
+    FOREIGN KEY (`id_etalon` )
+    REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_se_equipement_bouteille`
+    FOREIGN KEY (`id_bouteille` )
+    REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_se_equipement_gzero`
+    FOREIGN KEY (`id_gzero` )
+    REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-ENGINE = MyISAM
+ENGINE = InnoDB
 AUTO_INCREMENT = 63;
 
-CREATE INDEX `fk_se_equipement` ON `TAM_V3`.`Systeme_Etalonnage` (`id_etalon` ASC, `id_bouteille` ASC, `id_gzero` ASC) ;
+CREATE INDEX `fk_se_equipement_etalon` ON `TAM_V3`.`Systeme_Etalonnage` (`id_etalon` ASC) ;
+
+CREATE INDEX `fk_se_equipement_bouteille` ON `TAM_V3`.`Systeme_Etalonnage` (`id_bouteille` ASC) ;
+
+CREATE INDEX `fk_se_equipement_gzero` ON `TAM_V3`.`Systeme_Etalonnage` (`id_gzero` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -171,7 +167,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Test_XML` (
     REFERENCES `TAM_V3`.`Systeme_Etalonnage` (`id_systeme_etalon` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `fichier_description_UNIQUE` ON `TAM_V3`.`Test_XML` (`fichier_description` ASC) ;
 
@@ -188,7 +184,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Operateur` (
   `Nom` VARCHAR(30) NOT NULL ,
   `Prenom` VARCHAR(30) NOT NULL ,
   PRIMARY KEY (`id_operateur`) )
-ENGINE = MyISAM
+ENGINE = InnoDB
 AUTO_INCREMENT = 28;
 
 
@@ -201,7 +197,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Lieu` (
   `id_lieu` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `designation` VARCHAR(45) NOT NULL ,
   PRIMARY KEY (`id_lieu`) )
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -238,7 +234,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Test_Metrologique` (
     REFERENCES `TAM_V3`.`Lieu` (`id_lieu` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-ENGINE = MyISAM
+ENGINE = InnoDB
 AUTO_INCREMENT = 2455;
 
 CREATE INDEX `fk_test_xml` ON `TAM_V3`.`Test_Metrologique` (`id_description_xml` ASC) ;
@@ -270,7 +266,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Mesure` (
     REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE INDEX `fk_mesure_test` ON `TAM_V3`.`Mesure` (`id_test` ASC) ;
 
@@ -286,7 +282,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Port_Serie` (
   `no_port` INT(2) UNSIGNED NOT NULL DEFAULT '0' ,
   `designation` VARCHAR(20) NULL DEFAULT NULL ,
   PRIMARY KEY (`no_port`) )
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -300,7 +296,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Molecule` (
   `nom` VARCHAR(50) NOT NULL ,
   `formule` VARCHAR(10) NOT NULL ,
   PRIMARY KEY (`id_molecule`) )
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `code_UNIQUE` ON `TAM_V3`.`Molecule` (`code` ASC) ;
 
@@ -327,7 +323,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Polluant_Associe` (
     REFERENCES `TAM_V3`.`Molecule` (`id_molecule` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE INDEX `fk_po_equipement` ON `TAM_V3`.`Polluant_Associe` (`id_pa_equipement` ASC) ;
 
@@ -352,7 +348,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Concentration` (
     REFERENCES `TAM_V3`.`Systeme_Etalonnage` (`id_systeme_etalon` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE INDEX `fk_system_etalon` USING BTREE ON `TAM_V3`.`Concentration` (`id_systeme_etalon` ASC) ;
 
@@ -376,7 +372,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Liste_Analyseurs_Test` (
     REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE INDEX `fk_liste_ana_test` ON `TAM_V3`.`Liste_Analyseurs_Test` (`id_test` ASC) ;
 
@@ -400,7 +396,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Equipement_Reforme` (
     REFERENCES `TAM_V3`.`Modele_Equipement` (`id_modele` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `id_equipement_UNIQUE` ON `TAM_V3`.`Equipement_Reforme` (`id_equipement` ASC) ;
 
@@ -428,7 +424,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Concentration_Associee` (
     REFERENCES `TAM_V3`.`Molecule` (`id_molecule` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-ENGINE = MyISAM;
+ENGINE = InnoDB;
 
 CREATE INDEX `fk_Conc_Associee_Concentration` ON `TAM_V3`.`Concentration_Associee` (`id_concentration` ASC) ;
 
