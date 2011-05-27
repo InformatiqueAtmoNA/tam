@@ -132,6 +132,7 @@ bool Test::exportToXml(QString const & nomFichier) {
     // On crée l'élément XML test, et on lui ajoute son id en attribut
     QDomElement el_test = testXml.createElement("test");
     el_test.setAttribute("id",QString::number(this->m_idTest));
+    el_test.setAttribute("type",typeTestToString(this->m_typeTest));
 
     // insertion en début de document de <?xml version="1.0" ?>
     QDomNode noeud = testXml.createProcessingInstruction("xml","version=\"1.0\" encoding=\"ISO-8859-1\"");
@@ -145,7 +146,6 @@ bool Test::exportToXml(QString const & nomFichier) {
 
     QDomElement el_etalon = testXml.createElement("etalon");
     el_etalon.setAttribute("id",this->m_idSystemeEtalon);
-    el_etalon.setAttribute("type",typeTestToString(this->m_typeTest));
 
     el_listeEquipement.appendChild(el_etalon);
 
@@ -215,7 +215,8 @@ QPointer<Test> Test::importFromXml(QString const & nomFichier) {
     // On affecte l'id de test
     p_test->setIdTest(el_test.attribute("id").toInt());
     // On affecte le type de test
-    p_test->setTypeTest(el_test.attribute("type"));
+    TypeTest typeTest = stringToTypeTest(el_test.attribute("type"));
+    p_test->setTypeTest(typeTest);
 
     // Récupère la liste des élément enfants de l'élément XML equipement
     QDomNodeList nl_listeEquipement = el_test.firstChildElement("equipement").childNodes();

@@ -46,6 +46,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     connect(this->ui->button_ChoixSystemeEtalon,SIGNAL(clicked()),this,SLOT(button_ChoixSystemeEtalonClicked()));
     connect(this->ui->button_InsererPhase,SIGNAL(clicked()),this,SLOT(button_InsererPhaseClicked()));
     connect(this->ui->button_SupprimerPhase,SIGNAL(clicked()),this,SLOT(button_SupprimerPhaseClicked()));
+    connect(this->ui->button_ModifierPhase,SIGNAL(clicked()),this,SLOT(button_ModifierPhaseClicked()));
     connect(this->ui->button_Annuler,SIGNAL(clicked()),this,SLOT(button_AnnulerClicked()));
     connect(this->ui->button_Sauvegarder,SIGNAL(clicked()),this,SLOT(button_SauvegarderClicked()));
     connect(this->ui->cb_ChoixTypeTest,SIGNAL(currentIndexChanged(int)),this,SLOT(cb_ChoixTypeTestIndexChanged(int)));
@@ -84,6 +85,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
         this->ui->button_Suivant->setEnabled(false);
         this->ui->button_InsererPhase->setEnabled(false);
         this->ui->button_SupprimerPhase->setEnabled(false);
+        this->ui->button_ModifierPhase->setEnabled(false);
         this->m_indexTypeTest = this->ui->cb_ChoixTypeTest->currentIndex();
 
         this->ui->spinBox_TempsAcquisition->setValue(5);
@@ -255,6 +257,11 @@ void CreationTest::button_SupprimerPhaseClicked()
     this->decrementerNbPhases();
 }
 
+void CreationTest::button_ModifierPhaseClicked() {
+    ushort noPhase = this->ui->listWidget_Phases->currentItem()->text().toUShort();
+    this->afficherPhaseWidget(noPhase);
+}
+
 void CreationTest::button_ChoixSystemeEtalonClicked()
 {
     if(this->m_test->getIdSystemeEtalon()>0 && !this->m_test->isListePhasesEmpty()) {
@@ -378,6 +385,13 @@ void CreationTest::button_SauvegarderClicked ()
             row = model->rowCount()-1;
         model->insertRow(row);
     }
+
+    qDebug()<<"---------------------------------------------------------------";
+    qDebug()<<"call : CreationTest::button_SauvegarderClicked()";
+    qDebug()<<"nom de fichier = "<<this->m_nomFichier;
+    qDebug()<<"type de test = "<<typeTestToString(this->m_test->getTypeTest());
+    qDebug()<<"identifiant de système étalon = "<<this->m_test->getIdSystemeEtalon();
+
     model->setData(model->index(row,TEST_XML_NOM_FICHIER),QVariant::fromValue(this->m_nomFichier));
     model->setData(model->index(row,TEST_XML_TYPE_TEST),QVariant::fromValue(typeTestToString(this->m_typeTest)));
     model->setData(model->index(row,TEST_XML_ID_SYSTEME_ETALON),QVariant::fromValue(this->m_test->getIdSystemeEtalon()));
@@ -433,6 +447,7 @@ void CreationTest::editionPhaseAnnulee()
     if(this->ui->listWidget_Phases->currentRow()>-1) {
         if(this->m_autoriserCreationPhase) this->ui->button_InsererPhase->setEnabled(true);
         this->ui->button_SupprimerPhase->setEnabled(true);
+        this->ui->button_ModifierPhase->setEnabled(true);
     }
     this->m_phaseWidget->close();
     this->ui->button_AjouterPhase->setEnabled(true);
@@ -500,6 +515,9 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
         this->m_typeTest=PERSO;
         break;
     }
+    if(!this->m_test.isNull()) {
+        this->m_test->setTypeTest(this->m_typeTest);
+    }
     this->m_indexTypeTest = index;
 }
 
@@ -515,6 +533,7 @@ void CreationTest::listWidgetItemDoubleClicked(QListWidgetItem* item)
 {
     this->ui->button_InsererPhase->setEnabled(false);
     this->ui->button_SupprimerPhase->setEnabled(false);
+    this->ui->button_ModifierPhase->setEnabled(false);
     ushort noPhase = item->text().toUShort();
     this->afficherPhaseWidget(noPhase);
 }
@@ -524,10 +543,13 @@ void CreationTest::listWidgetCurrentRowChanged(const int row)
     if(row==-1) {
         this->ui->button_InsererPhase->setEnabled(false);
         this->ui->button_SupprimerPhase->setEnabled(false);
+        this->ui->button_ModifierPhase->setEnabled(false);
     }
     else {
-        if(this->m_autoriserCreationPhase) this->ui->button_InsererPhase->setEnabled(true);
+        if(this->m_autoriserCreationPhase)
+            this->ui->button_InsererPhase->setEnabled(true);
         this->ui->button_SupprimerPhase->setEnabled(true);
+        this->ui->button_ModifierPhase->setEnabled(true);
     }
 }
 

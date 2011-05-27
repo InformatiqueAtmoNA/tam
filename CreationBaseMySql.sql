@@ -59,6 +59,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Modele_Equipement` (
   `id_marque` SMALLINT UNSIGNED NOT NULL ,
   `id_protocole` SMALLINT UNSIGNED NOT NULL ,
   `designation` VARCHAR(45) NULL DEFAULT NULL ,
+  `type` ENUM('ANALYSEUR','DILUTEUR','BOUTEILLE','GO3','GZERO') NULL ,
   PRIMARY KEY (`id_modele`) ,
   CONSTRAINT `fk_modele_marque`
     FOREIGN KEY (`id_marque` )
@@ -100,7 +101,6 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Equipement` (
   `id_equipement` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `id_modele` SMALLINT NOT NULL ,
   `numero_serie` VARCHAR(45) NOT NULL ,
-  `type` ENUM('ANALYSEUR','DILUTEUR','BOUTEILLE','GO3','GZERO') NOT NULL ,
   `en_service` TINYINT(1)  NOT NULL DEFAULT false ,
   `min_gamme` SMALLINT NULL DEFAULT 0 ,
   `max_gamme` SMALLINT NULL DEFAULT 0 ,
@@ -129,6 +129,8 @@ COLLATE = latin1_general_ci;
 CREATE INDEX `fk_eq_modele` ON `TAM_V3`.`Equipement` (`id_modele` ASC) ;
 
 CREATE INDEX `fk_eq_tx_transmission` ON `TAM_V3`.`Equipement` (`id_tx_transmission` ASC) ;
+
+CREATE UNIQUE INDEX `numero_serie_UNIQUE` ON `TAM_V3`.`Equipement` (`numero_serie` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -342,8 +344,8 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Concentration` (
   `id_systeme_etalon` INT UNSIGNED NOT NULL ,
   `id_molecule` SMALLINT UNSIGNED NOT NULL ,
   `point_consigne` SMALLINT NOT NULL ,
-  `conc_reelle` SMALLINT UNSIGNED NOT NULL ,
-  `conc_ozone` SMALLINT UNSIGNED NULL DEFAULT 0 ,
+  `conc_reelle` DECIMAL(10,2) NOT NULL ,
+  `conc_ozone` SMALLINT UNSIGNED NOT NULL DEFAULT 0 ,
   PRIMARY KEY (`id_Concentration`) ,
   CONSTRAINT `fk_system_etalon`
     FOREIGN KEY (`id_systeme_etalon` )
@@ -414,7 +416,7 @@ CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Concentration_Associee` (
   `id_concentration_associee` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `id_concentration` INT UNSIGNED NOT NULL ,
   `id_molecule` SMALLINT UNSIGNED NOT NULL ,
-  `concentration` INT UNSIGNED NOT NULL ,
+  `concentration` DECIMAL(10,2) UNSIGNED NOT NULL ,
   PRIMARY KEY (`id_concentration_associee`) ,
   CONSTRAINT `fk_Conc_Associee_Concentration`
     FOREIGN KEY (`id_concentration` )
@@ -444,7 +446,6 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 START TRANSACTION;
 USE `TAM_V3`;
 INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (9, 'LNI');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (3, 'AIRLI');
 INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (10, 'MESSER');
 INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (11, 'SERES');
 INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (7, 'ENVSA');
@@ -465,6 +466,15 @@ COMMIT;
 START TRANSACTION;
 USE `TAM_V3`;
 INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (1, 'INCONNU');
+INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'MODE4_ANA');
+INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'MODE4_SX6000_17');
+INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'MODE4_SX3022');
+INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'TEI_ANA');
+INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'TEI_146i');
+INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'TEI_146c');
+INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'TEI_49ps');
+INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'API_ANA');
+INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'API_DIL');
 
 COMMIT;
 
@@ -473,7 +483,7 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `TAM_V3`;
-INSERT INTO `TAM_V3`.`Modele_Equipement` (`id_modele`, `id_marque`, `id_protocole`, `designation`) VALUES (1, 1, 1, 'INCONNU');
+INSERT INTO `TAM_V3`.`Modele_Equipement` (`id_modele`, `id_marque`, `id_protocole`, `designation`, `type`) VALUES (1, 1, 1, 'INCONNU', NULL);
 
 COMMIT;
 
@@ -511,8 +521,8 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `TAM_V3`;
-INSERT INTO `TAM_V3`.`Equipement` (`id_equipement`, `id_modele`, `numero_serie`, `type`, `en_service`, `min_gamme`, `max_gamme`, `offset`, `id_tx_transmission`, `adresse`, `nb_bits_transmission`, `nb_bits_stop`, `controle_flux`, `type_parite`) VALUES (1, 1, 'vide', 'BOUTEILLE', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `TAM_V3`.`Equipement` (`id_equipement`, `id_modele`, `numero_serie`, `type`, `en_service`, `min_gamme`, `max_gamme`, `offset`, `id_tx_transmission`, `adresse`, `nb_bits_transmission`, `nb_bits_stop`, `controle_flux`, `type_parite`) VALUES (2, 1, 'vide', 'GZERO', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `TAM_V3`.`Equipement` (`id_equipement`, `id_modele`, `numero_serie`, `en_service`, `min_gamme`, `max_gamme`, `offset`, `id_tx_transmission`, `adresse`, `nb_bits_transmission`, `nb_bits_stop`, `controle_flux`, `type_parite`) VALUES (1, 1, 'aucune', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `TAM_V3`.`Equipement` (`id_equipement`, `id_modele`, `numero_serie`, `en_service`, `min_gamme`, `max_gamme`, `offset`, `id_tx_transmission`, `adresse`, `nb_bits_transmission`, `nb_bits_stop`, `controle_flux`, `type_parite`) VALUES (2, 1, 'aucun', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
 
 COMMIT;
 

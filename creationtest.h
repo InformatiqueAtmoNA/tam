@@ -74,6 +74,7 @@ private slots:
     void button_AjouterPhaseClicked();
     void button_InsererPhaseClicked();
     void button_SupprimerPhaseClicked();
+    void button_ModifierPhaseClicked();
     void button_ChoixSystemeEtalonClicked();
     void button_AnnulerClicked();
     void button_SuivantClicked();

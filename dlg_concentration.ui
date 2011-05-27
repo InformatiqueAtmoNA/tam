@@ -32,7 +32,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_ConcPrincipales">
     <attribute name="title">
@@ -562,7 +562,11 @@
                </widget>
               </item>
               <item>
-               <widget class="QDoubleSpinBox" name="doubleSpinBox_ConcAssociee_Concentration"/>
+               <widget class="QDoubleSpinBox" name="doubleSpinBox_ConcAssociee_Concentration">
+                <property name="maximum">
+                 <double>9999999.990000000223517</double>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>

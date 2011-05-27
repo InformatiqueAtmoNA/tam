@@ -41,7 +41,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_Parametres">
        <attribute name="title">
@@ -405,18 +405,18 @@
                </item>
                <item>
                 <widget class="QTimeEdit" name="timeEdit_TempsStabilisation">
-                 <property name="currentSection">
-                  <enum>QDateTimeEdit::MinuteSection</enum>
-                 </property>
-                 <property name="displayFormat">
-                  <string>mm:ss</string>
-                 </property>
                  <property name="time">
                   <time>
                    <hour>0</hour>
                    <minute>5</minute>
                    <second>0</second>
                   </time>
+                 </property>
+                 <property name="currentSection">
+                  <enum>QDateTimeEdit::MinuteSection</enum>
+                 </property>
+                 <property name="displayFormat">
+                  <string>mm:ss</string>
                  </property>
                 </widget>
                </item>
@@ -666,7 +666,7 @@
           <x>269</x>
           <y>-1</y>
           <width>521</width>
-          <height>471</height>
+          <height>481</height>
          </rect>
         </property>
         <layout class="QHBoxLayout" name="h_Layout_EditPhase">
@@ -681,7 +681,7 @@
           <x>2</x>
           <y>1</y>
           <width>261</width>
-          <height>471</height>
+          <height>481</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -798,6 +798,13 @@
                 <widget class="QPushButton" name="button_InsererPhase">
                  <property name="text">
                   <string>Insérer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="button_ModifierPhase">
+                 <property name="text">
+                  <string>Modifier</string>
                  </property>
                 </widget>
                </item>

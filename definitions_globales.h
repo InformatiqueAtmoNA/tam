@@ -79,7 +79,7 @@
 #define SH_CONCO3 2
 
 // \enum TypePeripherique Type d'appareil
-enum TypePeripherique {ANALYSEUR,ETALON,DILUTEUR,BOUTEILLE,GO3,GZERO};
+enum TypePeripherique {ANALYSEUR,ETALON,BOUTEILLE,GO3,GZERO};
 // \enum TypePolluant Polluant associé à  l'appareil
 enum TypePolluant {CO,O3,SO2,NO,NO2,NOX,DIL};
 // \enum TypeTest Type de test
@@ -108,10 +108,10 @@ enum table_marque {MARQUE_ID,MARQUE_DESIGNATION};
 // \enum Colonnes de la table Taux_Transmission
 enum table_tx_transmission {TX_TRANSMISSION_ID,TX_TRANSMISSION_DESIGNATION};
 // \enum Colonnes de la table Modele_Equipement
-enum table_modele {MODELE_ID,MODELE_ID_MARQUE,MODELE_ID_PROTOCOLE,MODELE_DESIGNATION};
+enum table_modele {MODELE_ID,MODELE_ID_MARQUE,MODELE_ID_PROTOCOLE,MODELE_DESIGNATION,MODELE_TYPE};
 // \enum Colonnes de la table Equipement
 enum table_equipement {EQUIPEMENT_ID,EQUIPEMENT_ID_MODELE,EQUIPEMENT_NO_SERIE,
-                       EQUIPEMENT_TYPE,EQUIPEMENT_EN_SERVICE,EQUIPEMENT_MIN_GAMME,
+                       EQUIPEMENT_EN_SERVICE,EQUIPEMENT_MIN_GAMME,
                        EQUIPEMENT_MAX_GAMME,EQUIPEMENT_OFFSET,EQUIPEMENT_ID_TX_TRANSMISSION,
                        EQUIPEMENT_ADRESSE,EQUIPEMENT_NB_BITS_TRANSMISSION, EQUIPEMENT_NB_BITS_STOP,
                        EQUIPEMENT_CONTROLE_FLUX,EQUIPEMENT_PARITE};

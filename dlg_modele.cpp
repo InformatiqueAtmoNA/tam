@@ -29,7 +29,7 @@
 #include "ui_dlg_modele.h"
 
 Dlg_Modele::Dlg_Modele(QWidget *parent,const QPointer<BdHandler> bdHandler,
-                       const bool returnSelection,const int indexSelection) :
+                       const bool returnSelection,const int indexSelection,const QString & filtreType) :
     QDialog(parent),
     ui(new Ui::Dlg_Modele)
 {
@@ -38,6 +38,7 @@ Dlg_Modele::Dlg_Modele(QWidget *parent,const QPointer<BdHandler> bdHandler,
 
     this->m_bdHandler = bdHandler;
     this->m_returnSelection = returnSelection;
+    this->m_filtreType = filtreType;
 
     this->afficherTable();
     this->initialiserChamps();
@@ -72,6 +73,10 @@ Dlg_Modele::Dlg_Modele(QWidget *parent,const QPointer<BdHandler> bdHandler,
 
     this->cb_MarqueChanged(this->ui->cb_Marque->currentIndex());
     this->cb_ProtocoleChanged(this->ui->cb_Protocole->currentIndex());
+    if(!this->m_filtreType.isEmpty()) {
+        this->ui->cb_Type->clear();
+        this->ui->cb_Type->addItem(this->m_filtreType);
+    }
 }
 
 Dlg_Modele::~Dlg_Modele()
@@ -146,7 +151,7 @@ void Dlg_Modele::buttonAjouterClicked() {
     this->ui->button_Supprimer->setEnabled(false);
     this->ui->button_Fermer->setEnabled(false);
 
-    this->ui->cb_Marque->setFocus();
+    this->ui->cb_Type->setFocus();
 
     this->ui->button_Valider->setDefault(true);
     this->ui->button_Selectionner->setEnabled(false);
@@ -162,6 +167,7 @@ void Dlg_Modele::buttonValiderClicked() {
     m_model->setData(m_model->index(row,MODELE_ID_MARQUE),QVariant::fromValue(this->m_idMarque));
     m_model->setData(m_model->index(row,MODELE_ID_PROTOCOLE),QVariant::fromValue(this->m_idProtocole));
     m_model->setData(m_model->index(row,MODELE_DESIGNATION),QVariant::fromValue(this->ui->lineEdit_Designation->text()));
+    m_model->setData(m_model->index(row,MODELE_TYPE),QVariant::fromValue(this->ui->cb_Type->currentText()));
 
     m_model->submitAll();
 

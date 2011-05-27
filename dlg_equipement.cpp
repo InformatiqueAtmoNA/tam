@@ -98,14 +98,6 @@ void Dlg_Equipement::peuplerTable() {
     m_model->setParent(this);
     m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
-    if(!this->m_filtreType.isEmpty())
-    {
-        if(this->m_filtreType=="DILUTEUR")
-            m_model->setFilter("type LIKE 'DILUTEUR' OR type LIKE 'GO3'");
-        else
-            m_model->setFilter(QString("type LIKE '%1'").arg(this->m_filtreType));
-    }
-
     this->ui->tableView->setModel(m_model);
     this->ui->tableView->setColumnHidden(EQUIPEMENT_ID, true);
     this->ui->tableView->resizeColumnsToContents();
@@ -115,6 +107,14 @@ void Dlg_Equipement::peuplerTable() {
     m_model_Modele->setParent(this);
     this->ui->cb_Modele->setModel(m_model_Modele);
     this->ui->cb_Modele->setModelColumn(MODELE_DESIGNATION);
+
+    if(!this->m_filtreType.isEmpty())
+    {
+        if(this->m_filtreType=="ETALON")
+            m_model_Modele->setFilter("type LIKE 'DILUTEUR' OR type LIKE 'GO3'");
+        else
+            m_model_Modele->setFilter(QString("type LIKE '%1'").arg(this->m_filtreType));
+    }
 
     m_model_tx_transmission = m_bdHandler->getTxTransmissionModel();
     m_model_tx_transmission->setParent(this);
@@ -249,7 +249,6 @@ void Dlg_Equipement::buttonValiderClicked()
     m_model->setData(m_model->index(row,EQUIPEMENT_ID_MODELE),QVariant::fromValue(this->m_idModele));
     m_model->setData(m_model->index(row,EQUIPEMENT_ID_TX_TRANSMISSION),QVariant::fromValue(this->m_idTxTransmission));
     m_model->setData(m_model->index(row,EQUIPEMENT_NO_SERIE),QVariant::fromValue(this->ui->lineEdit_NoSerie->text()));
-    m_model->setData(m_model->index(row,EQUIPEMENT_TYPE),QVariant::fromValue(this->ui->cb_Type->currentText()));
     m_model->setData(m_model->index(row,EQUIPEMENT_EN_SERVICE),QVariant::fromValue(this->ui->ckB_EnService->isChecked()));
     m_model->setData(m_model->index(row,EQUIPEMENT_MIN_GAMME),QVariant::fromValue(this->ui->lineEdit_MinGamme->text()));
     m_model->setData(m_model->index(row,EQUIPEMENT_MAX_GAMME),QVariant::fromValue(this->ui->lineEdit_MaxGamme->text()));
@@ -280,7 +279,7 @@ void Dlg_Equipement::cb_ModeleChanged(const int index)
 void Dlg_Equipement::buttonEditModeleClicked()
 {
     int oldIndexCbModele = this->ui->cb_Modele->currentIndex();
-    Dlg_Modele dlgModele(this,this->m_bdHandler,true,oldIndexCbModele);
+    Dlg_Modele dlgModele(this,this->m_bdHandler,true,oldIndexCbModele,this->m_filtreType);
 
     int result = dlgModele.exec();
 
@@ -374,7 +373,6 @@ void Dlg_Equipement::buttonModifierClicked()
     this->ui->cb_Tx_Transmission->setCurrentIndex(listIndexCbSelection.at(0).row());
 
     this->ui->lineEdit_NoSerie->setText(selection.value(EQUIPEMENT_NO_SERIE).toString());
-    this->ui->cb_Type->setCurrentIndex(this->ui->cb_Type->findText(selection.value(EQUIPEMENT_TYPE).toString()));
     this->ui->ckB_EnService->setChecked(selection.value(EQUIPEMENT_EN_SERVICE).toBool());
     this->ui->lineEdit_MinGamme->setText(selection.value(EQUIPEMENT_MIN_GAMME).toString());
     this->ui->lineEdit_MaxGamme->setText(selection.value(EQUIPEMENT_MAX_GAMME).toString());

@@ -57,7 +57,7 @@ QString typeTestToString(TypeTest type) {
     if(type==REPETABILITE_1)
         return "REPETABILITE_1";
     if(type==REPETABILITE_2)
-        return "REPETABiLITE_2";
+        return "REPETABILITE_2";
     if(type==LINEARITE)
         return "LINEARITE";
     if(type==TEMP_REPONSE)

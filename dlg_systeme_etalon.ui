@@ -181,7 +181,7 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Diluteur ou Générateur :</string>
+             <string>Générateur de gaz :</string>
             </property>
            </widget>
           </item>

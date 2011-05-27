@@ -41,7 +41,7 @@ class Dlg_Modele : public QDialog
 
 public:
     explicit Dlg_Modele(QWidget *parent = 0,const QPointer<BdHandler> bdHandler = new BdHandler(),
-                        const bool returnSelection=false, const int indexSelection =-1);
+                        const bool returnSelection=false, const int indexSelection =-1,const QString & filtreType="");
     ~Dlg_Modele();
 
     int getIdSelection();
@@ -54,6 +54,7 @@ private:
     QPointer<BdHandler> m_bdHandler;
     int m_idMarque;
     int m_idProtocole;
+    QString m_filtreType;
 
     bool m_returnSelection;
     void afficherTable();

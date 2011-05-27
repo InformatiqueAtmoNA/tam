@@ -67,7 +67,6 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel() {
     model->setHeaderData(EQUIPEMENT_ID_MODELE, Qt::Horizontal, "Modèle");
     model->setHeaderData(EQUIPEMENT_NO_SERIE, Qt::Horizontal, "N° Série");
     model->setHeaderData(EQUIPEMENT_ID_TX_TRANSMISSION, Qt::Horizontal, "Taux transmission");
-    model->setHeaderData(EQUIPEMENT_TYPE, Qt::Horizontal, "Type");
     model->setHeaderData(EQUIPEMENT_EN_SERVICE, Qt::Horizontal, "En service ?");
     model->setHeaderData(EQUIPEMENT_MAX_GAMME, Qt::Horizontal, "Max. Gamme");
     model->setHeaderData(EQUIPEMENT_MIN_GAMME, Qt::Horizontal, "Min. Gamme");
