@@ -75,7 +75,12 @@ Dlg_Modele::Dlg_Modele(QWidget *parent,const QPointer<BdHandler> bdHandler,
     this->cb_ProtocoleChanged(this->ui->cb_Protocole->currentIndex());
     if(!this->m_filtreType.isEmpty()) {
         this->ui->cb_Type->clear();
-        this->ui->cb_Type->addItem(this->m_filtreType);
+        if(this->m_filtreType == "ETALON") {
+            this->ui->cb_Type->addItem("DILUTEUR");
+            this->ui->cb_Type->addItem("GO3");
+        }
+        else
+            this->ui->cb_Type->addItem(this->m_filtreType);
     }
 }
 

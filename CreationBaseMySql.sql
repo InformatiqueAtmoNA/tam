@@ -1,546 +1,383 @@
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-CREATE SCHEMA IF NOT EXISTS `TAM_V3` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci ;
-USE `TAM_V3` ;
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
--- -----------------------------------------------------
--- Table `TAM_V3`.`Marque_Equipement`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Marque_Equipement` ;
 
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Marque_Equipement` (
-  `id_marque` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `designation` VARCHAR(30) NOT NULL ,
-  PRIMARY KEY (`id_marque`) )
-ENGINE = InnoDB;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
-CREATE UNIQUE INDEX `designation_UNIQUE` ON `TAM_V3`.`Marque_Equipement` (`designation` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Protocole`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Protocole` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Protocole` (
-  `id_Protocole` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `designation` VARCHAR(20) NOT NULL ,
-  PRIMARY KEY (`id_Protocole`) )
-ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `designation_UNIQUE` ON `TAM_V3`.`Protocole` (`designation` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Modele_Equipement`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Modele_Equipement` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Modele_Equipement` (
-  `id_modele` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `id_marque` SMALLINT UNSIGNED NOT NULL ,
-  `id_protocole` SMALLINT UNSIGNED NOT NULL ,
-  `designation` VARCHAR(45) NULL DEFAULT NULL ,
-  `type` ENUM('ANALYSEUR','DILUTEUR','BOUTEILLE','GO3','GZERO') NULL ,
-  PRIMARY KEY (`id_modele`) ,
-  CONSTRAINT `fk_modele_marque`
-    FOREIGN KEY (`id_marque` )
-    REFERENCES `TAM_V3`.`Marque_Equipement` (`id_marque` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_modele_protocole`
-    FOREIGN KEY (`id_protocole` )
-    REFERENCES `TAM_V3`.`Protocole` (`id_Protocole` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_modele_marque` ON `TAM_V3`.`Modele_Equipement` (`id_marque` ASC) ;
-
-CREATE INDEX `fk_modele_protocole` ON `TAM_V3`.`Modele_Equipement` (`id_protocole` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Taux_Transmission`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Taux_Transmission` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Taux_Transmission` (
-  `id_tx_transmission` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `taux_transmission` INT UNSIGNED NULL ,
-  PRIMARY KEY (`id_tx_transmission`) )
-ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `taux_transmission_UNIQUE` ON `TAM_V3`.`Taux_Transmission` (`taux_transmission` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Equipement`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Equipement` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Equipement` (
-  `id_equipement` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `id_modele` SMALLINT UNSIGNED NOT NULL ,
-  `numero_serie` VARCHAR(45) NOT NULL ,
-  `en_service` TINYINT(1)  NOT NULL DEFAULT false ,
-  `min_gamme` SMALLINT NULL DEFAULT 0 ,
-  `max_gamme` SMALLINT NULL DEFAULT 0 ,
-  `offset` SMALLINT NULL DEFAULT 0 ,
-  `id_tx_transmission` TINYINT UNSIGNED NOT NULL ,
-  `adresse` VARCHAR(10) NULL ,
-  `nb_bits_transmission` TINYINT NULL DEFAULT 0 ,
-  `nb_bits_stop` TINYINT NULL DEFAULT 0 ,
-  `controle_flux` ENUM('AUCUN','HARDWARE','XON/XOFF') NULL DEFAULT 'AUCUN' ,
-  `type_parite` ENUM('AUCUNE','ODD','EVEN','MARK','SPACE') NULL DEFAULT 'AUCUNE' ,
-  PRIMARY KEY (`id_equipement`) ,
-  CONSTRAINT `fk_eq_modele`
-    FOREIGN KEY (`id_modele` )
-    REFERENCES `TAM_V3`.`Modele_Equipement` (`id_modele` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_eq_tx_transmission`
-    FOREIGN KEY (`id_tx_transmission` )
-    REFERENCES `TAM_V3`.`Taux_Transmission` (`id_tx_transmission` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_eq_modele` ON `TAM_V3`.`Equipement` (`id_modele` ASC) ;
-
-CREATE INDEX `fk_eq_tx_transmission` ON `TAM_V3`.`Equipement` (`id_tx_transmission` ASC) ;
-
-CREATE UNIQUE INDEX `numero_serie_UNIQUE` ON `TAM_V3`.`Equipement` (`numero_serie` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Systeme_Etalonnage`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Systeme_Etalonnage` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Systeme_Etalonnage` (
-  `id_systeme_etalon` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `id_etalon` SMALLINT UNSIGNED NOT NULL ,
-  `id_bouteille` SMALLINT UNSIGNED NOT NULL ,
-  `id_gzero` SMALLINT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`id_systeme_etalon`) ,
-  CONSTRAINT `fk_se_equipement_etalon`
-    FOREIGN KEY (`id_etalon` )
-    REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_se_equipement_bouteille`
-    FOREIGN KEY (`id_bouteille` )
-    REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_se_equipement_gzero`
-    FOREIGN KEY (`id_gzero` )
-    REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 63;
-
-CREATE INDEX `fk_se_equipement_etalon` ON `TAM_V3`.`Systeme_Etalonnage` (`id_etalon` ASC) ;
-
-CREATE INDEX `fk_se_equipement_bouteille` ON `TAM_V3`.`Systeme_Etalonnage` (`id_bouteille` ASC) ;
-
-CREATE INDEX `fk_se_equipement_gzero` ON `TAM_V3`.`Systeme_Etalonnage` (`id_gzero` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Test_XML`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Test_XML` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Test_XML` (
-  `id_Test_Xml` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `fichier_description` VARCHAR(45) NOT NULL ,
-  `type_test` ENUM('REPETABILITE_1','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','TPG','PERSO') NOT NULL DEFAULT 'PERSO' ,
-  `id_systeme_etalon` INT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`id_Test_Xml`) ,
-  CONSTRAINT `fk_Test_XML_SystemeEtalon`
-    FOREIGN KEY (`id_systeme_etalon` )
-    REFERENCES `TAM_V3`.`Systeme_Etalonnage` (`id_systeme_etalon` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `fichier_description_UNIQUE` ON `TAM_V3`.`Test_XML` (`fichier_description` ASC) ;
-
-CREATE INDEX `fk_Test_XML_SystemeEtalon` ON `TAM_V3`.`Test_XML` (`id_systeme_etalon` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Operateur`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Operateur` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Operateur` (
-  `id_operateur` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `Nom` VARCHAR(30) NOT NULL ,
-  `Prenom` VARCHAR(30) NOT NULL ,
-  PRIMARY KEY (`id_operateur`) )
-ENGINE = InnoDB
-AUTO_INCREMENT = 28;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Lieu`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Lieu` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Lieu` (
-  `id_lieu` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `designation` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`id_lieu`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Test_Metrologique`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Test_Metrologique` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Test_Metrologique` (
-  `id_test` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `id_description_xml` SMALLINT UNSIGNED NOT NULL ,
-  `id_operateur` SMALLINT UNSIGNED NOT NULL ,
-  `id_lieu` SMALLINT UNSIGNED NOT NULL ,
-  `pression` INT(11)  NULL DEFAULT NULL ,
-  `debit` DECIMAL(10,0)  NULL DEFAULT NULL ,
-  `temperature` DECIMAL(10,0)  NULL DEFAULT NULL ,
-  `date_debut` DATETIME NOT NULL ,
-  `date_fin` DATETIME NOT NULL ,
-  `max_gamme` INT(11) NOT NULL DEFAULT '0' ,
-  `min_gamme` INT(11) NOT NULL DEFAULT '0' ,
-  `offset` INT(11) NOT NULL DEFAULT '0' ,
-  PRIMARY KEY (`id_test`) ,
-  CONSTRAINT `fk_test_xml`
-    FOREIGN KEY (`id_description_xml` )
-    REFERENCES `TAM_V3`.`Test_XML` (`id_Test_Xml` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_test_operateur`
-    FOREIGN KEY (`id_operateur` )
-    REFERENCES `TAM_V3`.`Operateur` (`id_operateur` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_test_lieu`
-    FOREIGN KEY (`id_lieu` )
-    REFERENCES `TAM_V3`.`Lieu` (`id_lieu` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 2455;
-
-CREATE INDEX `fk_test_xml` ON `TAM_V3`.`Test_Metrologique` (`id_description_xml` ASC) ;
-
-CREATE INDEX `fk_test_operateur` ON `TAM_V3`.`Test_Metrologique` (`id_operateur` ASC) ;
-
-CREATE INDEX `fk_test_lieu` ON `TAM_V3`.`Test_Metrologique` (`id_lieu` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Mesure`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Mesure` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Mesure` (
-  `no_mesure` SMALLINT UNSIGNED NOT NULL ,
-  `id_test` SMALLINT UNSIGNED NOT NULL ,
-  `id_equipement` SMALLINT UNSIGNED NOT NULL ,
-  `mesure` DECIMAL(10,0)  NOT NULL ,
-  `mesure_moyenne` TINYINT(1)  NOT NULL DEFAULT false ,
-  PRIMARY KEY (`no_mesure`, `id_test`, `id_equipement`) ,
-  CONSTRAINT `fk_mesure_test`
-    FOREIGN KEY (`id_test` )
-    REFERENCES `TAM_V3`.`Test_Metrologique` (`id_test` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_mesure_equipement`
-    FOREIGN KEY (`id_equipement` )
-    REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_mesure_test` ON `TAM_V3`.`Mesure` (`id_test` ASC) ;
-
-CREATE INDEX `fk_mesure_equipement` ON `TAM_V3`.`Mesure` (`id_equipement` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Port_Serie`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Port_Serie` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Port_Serie` (
-  `no_port` INT(2) UNSIGNED NOT NULL DEFAULT '0' ,
-  `designation` VARCHAR(20) NULL DEFAULT NULL ,
-  PRIMARY KEY (`no_port`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Molecule`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Molecule` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Molecule` (
-  `id_molecule` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `code` VARCHAR(5) NOT NULL ,
-  `nom` VARCHAR(50) NOT NULL ,
-  `formule` VARCHAR(10) NOT NULL ,
-  PRIMARY KEY (`id_molecule`) )
-ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `code_UNIQUE` ON `TAM_V3`.`Molecule` (`code` ASC) ;
-
-CREATE UNIQUE INDEX `formule_UNIQUE` ON `TAM_V3`.`Molecule` (`formule` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Polluant_Associe`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Polluant_Associe` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Polluant_Associe` (
-  `id_polluant_associe` INT NOT NULL AUTO_INCREMENT ,
-  `id_pa_equipement` SMALLINT UNSIGNED NOT NULL ,
-  `id_pa_molecule` SMALLINT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`id_polluant_associe`) ,
-  CONSTRAINT `fk_po_equipement`
-    FOREIGN KEY (`id_pa_equipement` )
-    REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_po_molecule`
-    FOREIGN KEY (`id_pa_molecule` )
-    REFERENCES `TAM_V3`.`Molecule` (`id_molecule` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_po_equipement` ON `TAM_V3`.`Polluant_Associe` (`id_pa_equipement` ASC) ;
-
-CREATE INDEX `fk_po_molecule` ON `TAM_V3`.`Polluant_Associe` (`id_pa_molecule` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Concentration`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Concentration` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Concentration` (
-  `id_Concentration` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `id_systeme_etalon` INT UNSIGNED NOT NULL ,
-  `id_molecule` SMALLINT UNSIGNED NOT NULL ,
-  `point_consigne` SMALLINT NOT NULL ,
-  `conc_reelle` DECIMAL(10,2) NOT NULL ,
-  `conc_ozone` SMALLINT UNSIGNED NOT NULL DEFAULT 0 ,
-  PRIMARY KEY (`id_Concentration`) ,
-  CONSTRAINT `fk_system_etalon`
-    FOREIGN KEY (`id_systeme_etalon` )
-    REFERENCES `TAM_V3`.`Systeme_Etalonnage` (`id_systeme_etalon` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_system_etalon` USING BTREE ON `TAM_V3`.`Concentration` (`id_systeme_etalon` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Liste_Analyseurs_Test`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Liste_Analyseurs_Test` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Liste_Analyseurs_Test` (
-  `id_test` SMALLINT UNSIGNED NOT NULL ,
-  `id_equipement` SMALLINT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`id_test`, `id_equipement`) ,
-  CONSTRAINT `fk_liste_ana_test`
-    FOREIGN KEY (`id_test` )
-    REFERENCES `TAM_V3`.`Test_Metrologique` (`id_test` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_liste_ana_equipement`
-    FOREIGN KEY (`id_equipement` )
-    REFERENCES `TAM_V3`.`Equipement` (`id_equipement` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_liste_ana_test` ON `TAM_V3`.`Liste_Analyseurs_Test` (`id_test` ASC) ;
-
-CREATE INDEX `fk_liste_ana_equipement` ON `TAM_V3`.`Liste_Analyseurs_Test` (`id_equipement` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Equipement_Reforme`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Equipement_Reforme` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Equipement_Reforme` (
-  `id_equipement_reforme` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `id_modele` SMALLINT UNSIGNED NOT NULL ,
-  `id_equipement` SMALLINT UNSIGNED NOT NULL ,
-  `date_reforme` VARCHAR(45) NOT NULL ,
-  `numero_serie` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`id_equipement_reforme`) ,
-  CONSTRAINT `fk_eq_reforme_modele`
-    FOREIGN KEY (`id_modele` )
-    REFERENCES `TAM_V3`.`Modele_Equipement` (`id_modele` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `id_equipement_UNIQUE` ON `TAM_V3`.`Equipement_Reforme` (`id_equipement` ASC) ;
-
-CREATE INDEX `fk_eq_reforme_modele` ON `TAM_V3`.`Equipement_Reforme` (`id_modele` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `TAM_V3`.`Concentration_Associee`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `TAM_V3`.`Concentration_Associee` ;
-
-CREATE  TABLE IF NOT EXISTS `TAM_V3`.`Concentration_Associee` (
-  `id_concentration_associee` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `id_concentration` INT UNSIGNED NOT NULL ,
-  `id_molecule` SMALLINT UNSIGNED NOT NULL ,
-  `concentration` DECIMAL(10,2) UNSIGNED NOT NULL ,
-  PRIMARY KEY (`id_concentration_associee`) ,
-  CONSTRAINT `fk_Conc_Associee_Concentration`
-    FOREIGN KEY (`id_concentration` )
-    REFERENCES `TAM_V3`.`Concentration` (`id_Concentration` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_Conc_Associee_Molecule`
-    FOREIGN KEY (`id_molecule` )
-    REFERENCES `TAM_V3`.`Molecule` (`id_molecule` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_Conc_Associee_Concentration` ON `TAM_V3`.`Concentration_Associee` (`id_concentration` ASC) ;
-
-CREATE INDEX `fk_Conc_Associee_Molecule` ON `TAM_V3`.`Concentration_Associee` (`id_molecule` ASC) ;
-
-
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
--- -----------------------------------------------------
--- Data for table `TAM_V3`.`Marque_Equipement`
--- -----------------------------------------------------
-START TRANSACTION;
+--
+-- Base de données: `TAM_V3`
+--
+CREATE DATABASE `TAM_V3` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
 USE `TAM_V3`;
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (9, 'LNI');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (10, 'MESSER');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (11, 'SERES');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (7, 'ENVSA');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (13, 'TEI');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (6, 'CHROMATO-SUD');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (12, 'SYNSPEC');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (5, 'API');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (2, 'AIRLIQUIDE');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (8, 'HORIBA');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (4, 'ANSYCO');
-INSERT INTO `TAM_V3`.`Marque_Equipement` (`id_marque`, `designation`) VALUES (1, 'INCONNUE');
 
-COMMIT;
+-- --------------------------------------------------------
 
--- -----------------------------------------------------
--- Data for table `TAM_V3`.`Protocole`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `TAM_V3`;
-INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (1, 'INCONNU');
-INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'MODE4_ANA');
-INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'MODE4_SX6000_17');
-INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'MODE4_SX3022');
-INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'TEI_ANA');
-INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'TEI_146i');
-INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'TEI_146c');
-INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'TEI_49ps');
-INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'API_ANA');
-INSERT INTO `TAM_V3`.`Protocole` (`id_Protocole`, `designation`) VALUES (NULL, 'API_DIL');
+--
+-- Structure de la table `Concentration`
+--
 
-COMMIT;
+CREATE TABLE IF NOT EXISTS `Concentration` (
+  `id_Concentration` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_systeme_etalon` int(10) unsigned NOT NULL,
+  `id_molecule` smallint(5) unsigned NOT NULL,
+  `point_consigne` smallint(6) NOT NULL,
+  `conc_reelle` decimal(10,2) NOT NULL,
+  `conc_ozone` smallint(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_Concentration`),
+  KEY `fk_system_etalon` (`id_systeme_etalon`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
 
--- -----------------------------------------------------
--- Data for table `TAM_V3`.`Modele_Equipement`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `TAM_V3`;
-INSERT INTO `TAM_V3`.`Modele_Equipement` (`id_modele`, `id_marque`, `id_protocole`, `designation`, `type`) VALUES (1, 1, 1, 'INCONNU', NULL);
+-- --------------------------------------------------------
 
-COMMIT;
+--
+-- Structure de la table `Concentration_Associee`
+--
 
--- -----------------------------------------------------
--- Data for table `TAM_V3`.`Taux_Transmission`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `TAM_V3`;
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 50);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 75);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 110);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 134);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 150);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 200);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 300);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 600);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 1200);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 1800);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 2400);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 4800);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 9600);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 14400);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 19200);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 38400);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 56000);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 57600);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 76800);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 115200);
-INSERT INTO `TAM_V3`.`Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALUES (NULL, 128000);
+CREATE TABLE IF NOT EXISTS `Concentration_Associee` (
+  `id_concentration_associee` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_concentration` int(10) unsigned NOT NULL,
+  `id_molecule` smallint(5) unsigned NOT NULL,
+  `concentration` decimal(10,2) unsigned NOT NULL,
+  PRIMARY KEY (`id_concentration_associee`),
+  KEY `fk_Conc_Associee_Concentration` (`id_concentration`),
+  KEY `fk_Conc_Associee_Molecule` (`id_molecule`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
 
-COMMIT;
+-- --------------------------------------------------------
 
--- -----------------------------------------------------
--- Data for table `TAM_V3`.`Equipement`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `TAM_V3`;
-INSERT INTO `TAM_V3`.`Equipement` (`id_equipement`, `id_modele`, `numero_serie`, `en_service`, `min_gamme`, `max_gamme`, `offset`, `id_tx_transmission`, `adresse`, `nb_bits_transmission`, `nb_bits_stop`, `controle_flux`, `type_parite`) VALUES (1, 1, 'aucune', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `TAM_V3`.`Equipement` (`id_equipement`, `id_modele`, `numero_serie`, `en_service`, `min_gamme`, `max_gamme`, `offset`, `id_tx_transmission`, `adresse`, `nb_bits_transmission`, `nb_bits_stop`, `controle_flux`, `type_parite`) VALUES (2, 1, 'aucun', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
+--
+-- Structure de la table `Equipement`
+--
 
-COMMIT;
+CREATE TABLE IF NOT EXISTS `Equipement` (
+  `id_equipement` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `id_modele` smallint(5) unsigned NOT NULL,
+  `numero_serie` varchar(45) COLLATE latin1_general_ci NOT NULL,
+  `en_service` tinyint(1) NOT NULL DEFAULT '0',
+  `min_gamme` smallint(6) DEFAULT '0',
+  `max_gamme` smallint(6) DEFAULT '0',
+  `offset` smallint(6) DEFAULT '0',
+  `id_tx_transmission` tinyint(3) unsigned NOT NULL,
+  `adresse` varchar(10) COLLATE latin1_general_ci DEFAULT NULL,
+  `nb_bits_transmission` tinyint(4) DEFAULT '0',
+  `nb_bits_stop` tinyint(4) DEFAULT '0',
+  `controle_flux` enum('AUCUN','HARDWARE','XON/XOFF') COLLATE latin1_general_ci DEFAULT 'AUCUN',
+  `type_parite` enum('AUCUNE','ODD','EVEN','MARK','SPACE') COLLATE latin1_general_ci DEFAULT 'AUCUNE',
+  PRIMARY KEY (`id_equipement`),
+  UNIQUE KEY `numero_serie_UNIQUE` (`numero_serie`),
+  KEY `fk_eq_modele` (`id_modele`),
+  KEY `fk_eq_tx_transmission` (`id_tx_transmission`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=28 ;
 
--- -----------------------------------------------------
--- Data for table `TAM_V3`.`Lieu`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `TAM_V3`;
-INSERT INTO `TAM_V3`.`Lieu` (`id_lieu`, `designation`) VALUES (NULL, 'Laboratoire métrologique ATMO poito-charentes');
+-- --------------------------------------------------------
 
-COMMIT;
+--
+-- Structure de la table `Equipement_Reforme`
+--
 
--- -----------------------------------------------------
--- Data for table `TAM_V3`.`Molecule`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `TAM_V3`;
-INSERT INTO `TAM_V3`.`Molecule` (`id_molecule`, `code`, `nom`, `formule`) VALUES (NULL, '1', 'Dioxyde de soufre', 'SO2');
-INSERT INTO `TAM_V3`.`Molecule` (`id_molecule`, `code`, `nom`, `formule`) VALUES (NULL, '2', 'Monoxyde d\'azote', 'NO');
-INSERT INTO `TAM_V3`.`Molecule` (`id_molecule`, `code`, `nom`, `formule`) VALUES (NULL, '3', 'Dioxyde d\'azote', 'NO2');
-INSERT INTO `TAM_V3`.`Molecule` (`id_molecule`, `code`, `nom`, `formule`) VALUES (NULL, '4', 'Monoxyde de carbone', 'CO');
-INSERT INTO `TAM_V3`.`Molecule` (`id_molecule`, `code`, `nom`, `formule`) VALUES (NULL, '8', 'Ozone', 'O3');
-INSERT INTO `TAM_V3`.`Molecule` (`id_molecule`, `code`, `nom`, `formule`) VALUES (NULL, '12', 'Oxydes d\'azote', 'NOX');
+CREATE TABLE IF NOT EXISTS `Equipement_Reforme` (
+  `id_equipement_reforme` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `id_modele` smallint(5) unsigned NOT NULL,
+  `id_equipement` smallint(5) unsigned NOT NULL,
+  `date_reforme` varchar(45) COLLATE latin1_general_ci NOT NULL,
+  `numero_serie` varchar(45) COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`id_equipement_reforme`),
+  UNIQUE KEY `id_equipement_UNIQUE` (`id_equipement`),
+  KEY `fk_eq_reforme_modele` (`id_modele`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
 
-COMMIT;
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Lieu`
+--
+
+CREATE TABLE IF NOT EXISTS `Lieu` (
+  `id_lieu` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `designation` varchar(45) COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`id_lieu`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Liste_Analyseurs_Test`
+--
+
+CREATE TABLE IF NOT EXISTS `Liste_Analyseurs_Test` (
+  `id_test` smallint(5) unsigned NOT NULL,
+  `id_equipement` smallint(5) unsigned NOT NULL,
+  PRIMARY KEY (`id_test`,`id_equipement`),
+  KEY `fk_liste_ana_test` (`id_test`),
+  KEY `fk_liste_ana_equipement` (`id_equipement`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Marque_Equipement`
+--
+
+CREATE TABLE IF NOT EXISTS `Marque_Equipement` (
+  `id_marque` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `designation` varchar(30) COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`id_marque`),
+  UNIQUE KEY `designation_UNIQUE` (`designation`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=14 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Mesure`
+--
+
+CREATE TABLE IF NOT EXISTS `Mesure` (
+  `no_mesure` smallint(5) unsigned NOT NULL,
+  `id_test` smallint(5) unsigned NOT NULL,
+  `id_equipement` smallint(5) unsigned NOT NULL,
+  `mesure` decimal(10,0) NOT NULL,
+  `mesure_moyenne` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`no_mesure`,`id_test`,`id_equipement`),
+  KEY `fk_mesure_test` (`id_test`),
+  KEY `fk_mesure_equipement` (`id_equipement`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Modele_Equipement`
+--
+
+CREATE TABLE IF NOT EXISTS `Modele_Equipement` (
+  `id_modele` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `id_marque` smallint(5) unsigned NOT NULL,
+  `id_protocole` smallint(5) unsigned NOT NULL,
+  `designation` varchar(45) COLLATE latin1_general_ci DEFAULT NULL,
+  `type` enum('ANALYSEUR','DILUTEUR','BOUTEILLE','GO3','GZERO') COLLATE latin1_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id_modele`),
+  KEY `fk_modele_marque` (`id_marque`),
+  KEY `fk_modele_protocole` (`id_protocole`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=6 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Molecule`
+--
+
+CREATE TABLE IF NOT EXISTS `Molecule` (
+  `id_molecule` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(5) COLLATE latin1_general_ci NOT NULL,
+  `nom` varchar(50) COLLATE latin1_general_ci NOT NULL,
+  `formule` varchar(10) COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`id_molecule`),
+  UNIQUE KEY `code_UNIQUE` (`code`),
+  UNIQUE KEY `formule_UNIQUE` (`formule`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=7 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Operateur`
+--
+
+CREATE TABLE IF NOT EXISTS `Operateur` (
+  `id_operateur` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Nom` varchar(30) COLLATE latin1_general_ci NOT NULL,
+  `Prenom` varchar(30) COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`id_operateur`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Polluant_Associe`
+--
+
+CREATE TABLE IF NOT EXISTS `Polluant_Associe` (
+  `id_polluant_associe` int(11) NOT NULL AUTO_INCREMENT,
+  `id_pa_equipement` smallint(5) unsigned NOT NULL,
+  `id_pa_molecule` smallint(5) unsigned NOT NULL,
+  PRIMARY KEY (`id_polluant_associe`),
+  KEY `fk_po_equipement` (`id_pa_equipement`),
+  KEY `fk_po_molecule` (`id_pa_molecule`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=24 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Port_Serie`
+--
+
+CREATE TABLE IF NOT EXISTS `Port_Serie` (
+  `no_port` int(2) unsigned NOT NULL DEFAULT '0',
+  `designation` varchar(20) COLLATE latin1_general_ci DEFAULT NULL,
+  PRIMARY KEY (`no_port`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Protocole`
+--
+
+CREATE TABLE IF NOT EXISTS `Protocole` (
+  `id_Protocole` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `designation` varchar(20) COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`id_Protocole`),
+  UNIQUE KEY `designation_UNIQUE` (`designation`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=11 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Systeme_Etalonnage`
+--
+
+CREATE TABLE IF NOT EXISTS `Systeme_Etalonnage` (
+  `id_systeme_etalon` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_etalon` smallint(5) unsigned NOT NULL,
+  `id_bouteille` smallint(5) unsigned NOT NULL,
+  `id_gzero` smallint(5) unsigned NOT NULL,
+  PRIMARY KEY (`id_systeme_etalon`),
+  KEY `fk_se_equipement_etalon` (`id_etalon`),
+  KEY `fk_se_equipement_bouteille` (`id_bouteille`),
+  KEY `fk_se_equipement_gzero` (`id_gzero`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=67 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Taux_Transmission`
+--
+
+CREATE TABLE IF NOT EXISTS `Taux_Transmission` (
+  `id_tx_transmission` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `taux_transmission` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id_tx_transmission`),
+  UNIQUE KEY `taux_transmission_UNIQUE` (`taux_transmission`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=22 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Test_Metrologique`
+--
+
+CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
+  `id_test` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `id_description_xml` smallint(5) unsigned NOT NULL,
+  `id_operateur` smallint(5) unsigned NOT NULL,
+  `id_lieu` smallint(5) unsigned NOT NULL,
+  `pression` int(11) DEFAULT NULL,
+  `debit` decimal(10,0) DEFAULT NULL,
+  `temperature` decimal(10,0) DEFAULT NULL,
+  `date_debut` datetime NOT NULL,
+  `date_fin` datetime NOT NULL,
+  `max_gamme` int(11) NOT NULL DEFAULT '0',
+  `min_gamme` int(11) NOT NULL DEFAULT '0',
+  `offset` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_test`),
+  KEY `fk_test_xml` (`id_description_xml`),
+  KEY `fk_test_operateur` (`id_operateur`),
+  KEY `fk_test_lieu` (`id_lieu`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Test_XML`
+--
+
+CREATE TABLE IF NOT EXISTS `Test_XML` (
+  `id_Test_Xml` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `fichier_description` varchar(45) COLLATE latin1_general_ci NOT NULL,
+  `type_test` enum('REPETABILITE_1','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','TPG','PERSO') COLLATE latin1_general_ci NOT NULL DEFAULT 'PERSO',
+  `id_systeme_etalon` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id_Test_Xml`),
+  UNIQUE KEY `fichier_description_UNIQUE` (`fichier_description`),
+  KEY `fk_Test_XML_SystemeEtalon` (`id_systeme_etalon`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
+
+--
+-- Contraintes pour les tables exportées
+--
+
+--
+-- Contraintes pour la table `Concentration`
+--
+ALTER TABLE `Concentration`
+  ADD CONSTRAINT `fk_system_etalon` FOREIGN KEY (`id_systeme_etalon`) REFERENCES `Systeme_Etalonnage` (`id_systeme_etalon`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Contraintes pour la table `Concentration_Associee`
+--
+ALTER TABLE `Concentration_Associee`
+  ADD CONSTRAINT `fk_Conc_Associee_Concentration` FOREIGN KEY (`id_concentration`) REFERENCES `Concentration` (`id_Concentration`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_Conc_Associee_Molecule` FOREIGN KEY (`id_molecule`) REFERENCES `Molecule` (`id_molecule`) ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Equipement`
+--
+ALTER TABLE `Equipement`
+  ADD CONSTRAINT `fk_eq_modele` FOREIGN KEY (`id_modele`) REFERENCES `Modele_Equipement` (`id_modele`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_eq_tx_transmission` FOREIGN KEY (`id_tx_transmission`) REFERENCES `Taux_Transmission` (`id_tx_transmission`) ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Equipement_Reforme`
+--
+ALTER TABLE `Equipement_Reforme`
+  ADD CONSTRAINT `fk_eq_reforme_modele` FOREIGN KEY (`id_modele`) REFERENCES `Modele_Equipement` (`id_modele`) ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Liste_Analyseurs_Test`
+--
+ALTER TABLE `Liste_Analyseurs_Test`
+  ADD CONSTRAINT `fk_liste_ana_equipement` FOREIGN KEY (`id_equipement`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_liste_ana_test` FOREIGN KEY (`id_test`) REFERENCES `Test_Metrologique` (`id_test`) ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Mesure`
+--
+ALTER TABLE `Mesure`
+  ADD CONSTRAINT `fk_mesure_equipement` FOREIGN KEY (`id_equipement`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_mesure_test` FOREIGN KEY (`id_test`) REFERENCES `Test_Metrologique` (`id_test`) ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Modele_Equipement`
+--
+ALTER TABLE `Modele_Equipement`
+  ADD CONSTRAINT `fk_modele_marque` FOREIGN KEY (`id_marque`) REFERENCES `Marque_Equipement` (`id_marque`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_modele_protocole` FOREIGN KEY (`id_protocole`) REFERENCES `Protocole` (`id_Protocole`) ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Polluant_Associe`
+--
+ALTER TABLE `Polluant_Associe`
+  ADD CONSTRAINT `fk_po_equipement` FOREIGN KEY (`id_pa_equipement`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_po_molecule` FOREIGN KEY (`id_pa_molecule`) REFERENCES `Molecule` (`id_molecule`) ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Systeme_Etalonnage`
+--
+ALTER TABLE `Systeme_Etalonnage`
+  ADD CONSTRAINT `fk_se_equipement_bouteille` FOREIGN KEY (`id_bouteille`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_se_equipement_etalon` FOREIGN KEY (`id_etalon`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_se_equipement_gzero` FOREIGN KEY (`id_gzero`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Test_Metrologique`
+--
+ALTER TABLE `Test_Metrologique`
+  ADD CONSTRAINT `fk_test_lieu` FOREIGN KEY (`id_lieu`) REFERENCES `Lieu` (`id_lieu`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_test_operateur` FOREIGN KEY (`id_operateur`) REFERENCES `Operateur` (`id_operateur`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_test_xml` FOREIGN KEY (`id_description_xml`) REFERENCES `Test_XML` (`id_Test_Xml`) ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Test_XML`
+--
+ALTER TABLE `Test_XML`
+  ADD CONSTRAINT `fk_Test_XML_SystemeEtalon` FOREIGN KEY (`id_systeme_etalon`) REFERENCES `Systeme_Etalonnage` (`id_systeme_etalon`) ON UPDATE CASCADE;
