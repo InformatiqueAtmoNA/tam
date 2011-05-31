@@ -43,7 +43,7 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
     this->peuplerTable();
 
     connect(this->ui->tableView->selectionModel(),
-            SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+            SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this,SLOT(changementSelection(QModelIndex)));
     connect(this->ui->cb_Modele, SIGNAL(currentIndexChanged(int)),
             this,SLOT(cb_ModeleChanged(int)));
@@ -282,11 +282,19 @@ void Dlg_Equipement::buttonValiderClicked()
 
     bool afficherForm = this->m_nouvelEnregistrement;
     this->initialiserChamps();
-    this->ui->tableView->setCurrentIndex(this->m_model->index(row+1,EQUIPEMENT_ID));
+    this->peuplerTable();
+    this->changementSelection(this->m_model->index(row,EQUIPEMENT_ID));
     if(afficherForm) {
         this->buttonModifierClicked();
         this->ui->tabWidget->setCurrentIndex(2);
         this->ui->tabWidget->setFocus();
+    }
+    else {
+        if(this->m_returnSelection) {
+        this->ui->button_Selectionner->setVisible(true);
+        if(this->m_indexSelection.isValid())
+            this->ui->button_Selectionner->setEnabled(true);
+        }
     }
 }
 
