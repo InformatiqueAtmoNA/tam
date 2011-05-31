@@ -213,7 +213,8 @@ void ct_PhaseWidget::buttonSupprimerPolluantClicked() {
 }
 
 void ct_PhaseWidget::tableViewPolluantsIndexChanged(const QModelIndex index) {
-    this->ui->button_RetirerPolluant->setEnabled(index.isValid());
+    if(!m_isReadOnly)
+        this->ui->button_RetirerPolluant->setEnabled(index.isValid());
     this->m_indexListePolluant = index;
 }
 

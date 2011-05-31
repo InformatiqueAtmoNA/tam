@@ -74,12 +74,16 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
 
         if(m_nomFichier.indexOf(".xml")>0)
             m_nomFichier.remove(".xml");
+        if(m_nomFichier.indexOf(".\\")>0)
+            m_nomFichier.remove(".\\");
+        if(m_nomFichier.indexOf("./")>0)
+            m_nomFichier.remove("./");
+        this->ui->lineEdit_NomTest->setText(this->m_nomFichier);
     }
     else {
         this->m_test = new Test();
         this->cb_ChoixTypeTestIndexChanged(0);
         this->ui->cb_ChoixTypeTest->setCurrentIndex(0);
-        this->ui->tabWidget->setCurrentIndex(0);
         this->ui->tab_Deroulement->setEnabled(false);
         this->ui->tab_NomTest->setEnabled(false);
         this->ui->button_Suivant->setEnabled(false);
@@ -92,6 +96,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
         this->ui->spinBox_NbCyclesPhases->setValue(1);
         this->ui->spinBox_nbCyclesMesures->setValue(1);
     }
+    this->ui->tabWidget->setCurrentIndex(0);
 }
 
 CreationTest::~CreationTest()
@@ -119,7 +124,8 @@ void CreationTest::initialiserChamps()
     this->ui->lineEdit_Bouteille->setText(model->record(0).value(SYS_ETALON_BOUTEILLE).toString());
     this->ui->lineEdit_GZero->setText(model->record(0).value(SYS_ETALON_GZERO).toString());
 
-    switch(this->m_test->getTypeTest()) {
+    this->m_typeTest = this->m_test->getTypeTest();
+    switch(this->m_typeTest) {
     case REPETABILITE_1:
         this->m_indexTypeTest = 0;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(0);
@@ -359,7 +365,7 @@ void CreationTest::button_SauvegarderClicked ()
             nbPhasesRequises = 2;
             break;
         case LINEARITE:
-            nbPhasesRequises = 5;
+            nbPhasesRequises = 2;
             break;
         case RENDEMENT_FOUR:
             nbPhasesRequises = 3;
@@ -395,12 +401,14 @@ void CreationTest::button_SauvegarderClicked ()
     model->setData(model->index(row,TEST_XML_NOM_FICHIER),QVariant::fromValue(this->m_nomFichier));
     model->setData(model->index(row,TEST_XML_TYPE_TEST),QVariant::fromValue(typeTestToString(this->m_typeTest)));
     model->setData(model->index(row,TEST_XML_ID_SYSTEME_ETALON),QVariant::fromValue(this->m_test->getIdSystemeEtalon()));
-    model->submitAll();
+
     this->m_test->setIdTest(model->record(row).value(TEST_XML_ID).toInt());
     if(!this->m_test->exportToXml(this->m_nomFichier)) {
-        model->removeRow(row);
-        model->submitAll();
+        model->revertAll();
+        return;
     }
+    else
+        model->submitAll();
     emit(this->fermeture());
 }
 
@@ -501,14 +509,13 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
         break;
     case 2:
         this->m_typeTest=LINEARITE;
-        this->ui->spinBox_nbCyclesMesures->setMinimum(5);
         break;
     case 3:
         this->m_typeTest=TEMP_REPONSE;
         break;
     case 4:
         this->m_typeTest=RENDEMENT_FOUR;
-        this->ui->spinBox_nbCyclesMesures->setMinimum(0);
+        this->ui->spinBox_nbCyclesMesures->setMinimum(1);
         this->ui->spinBox_nbCyclesMesures->setValue(4);
         break;
     case 5:

@@ -256,52 +256,45 @@ void Dlg_Equipement::buttonAjouterClicked() {
 
 void Dlg_Equipement::buttonValiderClicked()
 {
-    if(this->ui->tabWidget->currentIndex()<2) {
-        int row;
-        if(m_modifEnCours)
-            row=m_idModifie;
-        else {
-            row = m_model->rowCount();
-            if(row>0)
-                row-=1;
-            m_model->insertRow(row);
-        }
-        m_model->setData(m_model->index(row,EQUIPEMENT_ID_MODELE),QVariant::fromValue(this->m_idModele));
-        m_model->setData(m_model->index(row,EQUIPEMENT_ID_TX_TRANSMISSION),QVariant::fromValue(this->m_idTxTransmission));
-        m_model->setData(m_model->index(row,EQUIPEMENT_NO_SERIE),QVariant::fromValue(this->ui->lineEdit_NoSerie->text()));
-        m_model->setData(m_model->index(row,EQUIPEMENT_EN_SERVICE),QVariant::fromValue(this->ui->ckB_EnService->isChecked()));
-        m_model->setData(m_model->index(row,EQUIPEMENT_MIN_GAMME),QVariant::fromValue(this->ui->lineEdit_MinGamme->text()));
-        m_model->setData(m_model->index(row,EQUIPEMENT_MAX_GAMME),QVariant::fromValue(this->ui->lineEdit_MaxGamme->text()));
-        m_model->setData(m_model->index(row,EQUIPEMENT_OFFSET),QVariant::fromValue(this->ui->lineEdit_Offset->text()));
-        m_model->setData(m_model->index(row,EQUIPEMENT_ADRESSE),QVariant::fromValue(this->ui->lineEdit_Adresse->text()));
-        m_model->setData(m_model->index(row,EQUIPEMENT_NB_BITS_TRANSMISSION),QVariant::fromValue(this->ui->cb_Nb_Bits_Transmission->currentText().toInt()));
-        m_model->setData(m_model->index(row,EQUIPEMENT_NB_BITS_STOP),QVariant::fromValue(this->ui->cb_Nb_Bits_Stop->currentText().toInt()));
-        m_model->setData(m_model->index(row,EQUIPEMENT_CONTROLE_FLUX),QVariant::fromValue(this->ui->cb_Type_Controle_Flux->currentText()));
-        m_model->setData(m_model->index(row,EQUIPEMENT_PARITE),QVariant::fromValue(this->ui->cb_Type_Parite->currentText()));
+    int row;
+    if(m_modifEnCours)
+        row=m_idModifie;
+    else {
+        row = m_model->rowCount();
+        if(row>0)
+            row-=1;
+        m_model->insertRow(row);
+    }
+    m_model->setData(m_model->index(row,EQUIPEMENT_ID_MODELE),QVariant::fromValue(this->m_idModele));
+    m_model->setData(m_model->index(row,EQUIPEMENT_ID_TX_TRANSMISSION),QVariant::fromValue(this->m_idTxTransmission));
+    m_model->setData(m_model->index(row,EQUIPEMENT_NO_SERIE),QVariant::fromValue(this->ui->lineEdit_NoSerie->text()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_EN_SERVICE),QVariant::fromValue(this->ui->ckB_EnService->isChecked()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_MIN_GAMME),QVariant::fromValue(this->ui->lineEdit_MinGamme->text()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_MAX_GAMME),QVariant::fromValue(this->ui->lineEdit_MaxGamme->text()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_OFFSET),QVariant::fromValue(this->ui->lineEdit_Offset->text()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_ADRESSE),QVariant::fromValue(this->ui->lineEdit_Adresse->text()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_NB_BITS_TRANSMISSION),QVariant::fromValue(this->ui->cb_Nb_Bits_Transmission->currentText().toInt()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_NB_BITS_STOP),QVariant::fromValue(this->ui->cb_Nb_Bits_Stop->currentText().toInt()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_CONTROLE_FLUX),QVariant::fromValue(this->ui->cb_Type_Controle_Flux->currentText()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_PARITE),QVariant::fromValue(this->ui->cb_Type_Parite->currentText()));
 
-        m_model->submitAll();
+    m_model->submitAll();
 
-        bool afficherForm = this->m_nouvelEnregistrement;
-        this->initialiserChamps();
-        this->peuplerTable();
-        this->changementSelection(this->m_model->index(row,EQUIPEMENT_ID));
-        if(afficherForm) {
-            this->buttonModifierClicked();
-            this->ui->tabWidget->setCurrentIndex(2);
-            this->ui->tabWidget->setFocus();
-        }
-        else {
-            if(this->m_returnSelection) {
-            this->ui->button_Selectionner->setVisible(true);
-            if(this->m_indexSelection.isValid())
-                this->ui->button_Selectionner->setEnabled(true);
-            }
-        }
+    bool afficherForm = this->m_nouvelEnregistrement;
+    this->initialiserChamps();
+    this->peuplerTable();
+    this->changementSelection(this->m_model->index(row,EQUIPEMENT_ID));
+    if(afficherForm) {
+        this->buttonModifierClicked();
+        this->ui->tabWidget->setCurrentIndex(2);
+        this->ui->tabWidget->setFocus();
     }
     else {
-        m_model_polluant_associe->submitAll();
-        this->initialiserChamps();
-        this->peuplerTable();
+        if(this->m_returnSelection) {
+        this->ui->button_Selectionner->setVisible(true);
+        if(this->m_indexSelection.isValid())
+            this->ui->button_Selectionner->setEnabled(true);
+        }
     }
 }
 
@@ -457,6 +450,7 @@ void Dlg_Equipement::buttonAddPolluantClicked()
     m_model_polluant_associe->insertRow(row);
     m_model_polluant_associe->setData(m_model_polluant_associe->index(row,POLLUANT_ASSOCIE_ID_EQUIPEMENT),idEquipement);
     m_model_polluant_associe->setData(m_model_polluant_associe->index(row,POLLUANT_ASSOCIE_ID_MOLECULE),idMolecule);
+    m_model_polluant_associe->submitAll();
     this->ui->tableView_Molecule->setRowHidden(m_indexSelectionMolecule.row(),true);
 }
 
@@ -466,11 +460,12 @@ void Dlg_Equipement::buttonRemovePolluantClicked()
     QVariant idMolecule = m_model_polluant_associe->record(m_indexSelectionPolluant.row()).value(POLLUANT_ASSOCIE_ID_MOLECULE);
 
     for(int i=0;i<m_model_polluant_associe->rowCount();i++) {
-        QModelIndexList listMolecule = m_model_molecule->match(m_model_molecule->index(0,MOLECULE_ID),Qt::DisplayRole,
+        QModelIndexList listMolecule = m_model_molecule->match(m_model_molecule->index(0,MOLECULE_FORMULE),Qt::DisplayRole,
                                                                idMolecule,1,Qt::MatchExactly | Qt::MatchWrap);
         for(int j=0;j<listMolecule.count();j++) {
             this->ui->tableView_Molecule->setRowHidden(listMolecule.at(j).row(),false);
         }
     }
     qDebug()<<m_model_polluant_associe->removeRow(m_indexSelectionPolluant.row());
+    m_model_polluant_associe->submitAll();
 }

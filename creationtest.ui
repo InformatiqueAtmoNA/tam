@@ -41,7 +41,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_Parametres">
        <attribute name="title">
@@ -405,18 +405,18 @@
                </item>
                <item>
                 <widget class="QTimeEdit" name="timeEdit_TempsStabilisation">
+                 <property name="currentSection">
+                  <enum>QDateTimeEdit::MinuteSection</enum>
+                 </property>
+                 <property name="displayFormat">
+                  <string>mm:ss</string>
+                 </property>
                  <property name="time">
                   <time>
                    <hour>0</hour>
                    <minute>5</minute>
                    <second>0</second>
                   </time>
-                 </property>
-                 <property name="currentSection">
-                  <enum>QDateTimeEdit::MinuteSection</enum>
-                 </property>
-                 <property name="displayFormat">
-                  <string>mm:ss</string>
                  </property>
                 </widget>
                </item>
