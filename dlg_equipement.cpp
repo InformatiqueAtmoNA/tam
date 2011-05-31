@@ -44,7 +44,7 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
 
     connect(this->ui->tableView->selectionModel(),
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            this,SLOT(changementSelection(const QModelIndex &)));
+            this,SLOT(changementSelection(QModelIndex)));
     connect(this->ui->cb_Modele, SIGNAL(currentIndexChanged(int)),
             this,SLOT(cb_ModeleChanged(int)));
     connect(this->ui->cb_Tx_Transmission, SIGNAL(currentIndexChanged(int)),
@@ -98,26 +98,43 @@ void Dlg_Equipement::peuplerTable() {
     m_model->setParent(this);
     m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
+    m_model_Modele = m_bdHandler->getModelesModel();
+    m_model_Modele->setParent(this);
+
+    if(!this->m_filtreType.isEmpty())
+    {
+        QString filtre;
+        if(this->m_filtreType=="ETALON")
+            filtre = "type LIKE 'DILUTEUR' OR type LIKE 'GO3'";
+        else
+            filtre = QString("type LIKE '%1'").arg(this->m_filtreType);
+        m_model_Modele->setFilter(filtre);
+
+        QPointer<QSqlQueryModel> modelEquipementFiltreParType = m_bdHandler->getEquipementFiltreParModele(filtre);
+
+        if(modelEquipementFiltreParType->rowCount()==0 && !this->ui->gb_edit_champs->isVisible()) {
+            QMessageBox::information(this, "Aucun équipement du type demandé", QString("Aucun équipement de type %1").arg(m_filtreType),
+                          QMessageBox::Ok);
+
+        }
+        filtre = QString("id_equipement=%1").arg(modelEquipementFiltreParType->record(0).value("id_equipement").toString());
+        for(int i=1;i<modelEquipementFiltreParType->rowCount();i++) {
+            uint id_equipement = modelEquipementFiltreParType->record(i).value("id_equipement").toUInt();
+            filtre.append(QString(" OR id_equipement=%1").arg(QString::number(id_equipement)));
+        }
+        m_model->setFilter(filtre);
+    }
+
+    m_model_tx_transmission = m_bdHandler->getTxTransmissionModel();
+    m_model_tx_transmission->setParent(this);
+
     this->ui->tableView->setModel(m_model);
     this->ui->tableView->setColumnHidden(EQUIPEMENT_ID, true);
     this->ui->tableView->resizeColumnsToContents();
     this->ui->tableView->setItemDelegate(new QSqlRelationalDelegate(this));
 
-    m_model_Modele = m_bdHandler->getModelesModel();
-    m_model_Modele->setParent(this);
     this->ui->cb_Modele->setModel(m_model_Modele);
     this->ui->cb_Modele->setModelColumn(MODELE_DESIGNATION);
-
-    if(!this->m_filtreType.isEmpty())
-    {
-        if(this->m_filtreType=="ETALON")
-            m_model_Modele->setFilter("type LIKE 'DILUTEUR' OR type LIKE 'GO3'");
-        else
-            m_model_Modele->setFilter(QString("type LIKE '%1'").arg(this->m_filtreType));
-    }
-
-    m_model_tx_transmission = m_bdHandler->getTxTransmissionModel();
-    m_model_tx_transmission->setParent(this);
     this->ui->cb_Tx_Transmission->setModel(m_model_tx_transmission);
     this->ui->cb_Tx_Transmission->setModelColumn(TX_TRANSMISSION_DESIGNATION);
 }
@@ -133,6 +150,8 @@ void Dlg_Equipement::afficherFormulaire() {
 
     this->ui->button_Valider->setDefault(true);
     this->ui->button_Selectionner->setEnabled(false);
+    this->ui->button_AddPolluant->setEnabled(false);
+    this->ui->button_RemovePolluant->setEnabled(false);
 
     if(!this->m_nouvelEnregistrement) {
         this->ui->tabWidget->setTabEnabled(2,true);
@@ -412,6 +431,9 @@ void Dlg_Equipement::buttonAddPolluantClicked()
     if(!m_indexSelectionMolecule.isValid()) return;
     QVariant idEquipement = m_model->record(m_idModifie).value(EQUIPEMENT_ID);
     QVariant idMolecule = m_model_molecule->record(m_indexSelectionMolecule.row()).value(MOLECULE_ID);
+    if(m_model_polluant_associe->match(m_model_polluant_associe->index(0,POLLUANT_ASSOCIE_ID_MOLECULE),Qt::DisplayRole,
+                                       idMolecule).count()>0)
+        return;
     int row = m_model_polluant_associe->rowCount();
     m_model_polluant_associe->insertRow(row);
     m_model_polluant_associe->setData(m_model_polluant_associe->index(row,POLLUANT_ASSOCIE_ID_EQUIPEMENT),idEquipement);

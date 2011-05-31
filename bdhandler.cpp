@@ -179,6 +179,9 @@ QPointer<QSqlRelationalTableModel> BdHandler::getModelesModel() {
     if(!model->select())
         qDebug()<<model->lastError().text();
 
+    qDebug()<<"----------------------------------------------";
+    qDebug()<<"call : BdHandler::getModelesModel()";
+    qDebug()<<"rowCount() = "<<model->rowCount();
     return model;
 }
 
@@ -301,6 +304,20 @@ QPointer<QSqlQueryModel> BdHandler::getPolluantsParSystemeEtalon(const uint idSy
 
     return model;
 }
+
+QPointer<QSqlQueryModel> BdHandler::getEquipementFiltreParModele(const QString & filtre) {
+    QString requete(QString("SELECT E.id_equipement,E.id_modele,M.type FROM Equipement E, Modele_Equipement M WHERE E.id_modele=M.id_modele AND (%1) ORDER BY E.id_equipement ASC").arg(filtre));
+
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(requete,m_baseMySql);
+
+    qDebug()<<"---------------------------------------------";
+    qDebug()<<"getEquipementFiltreParModele";
+    qDebug()<<"rowCount"<<model->rowCount();
+
+    return model;
+}
+
 
 QSqlRecord* BdHandler::getTableRow(const QString sqlTableRequete) {
     QSqlQuery requete(sqlTableRequete);

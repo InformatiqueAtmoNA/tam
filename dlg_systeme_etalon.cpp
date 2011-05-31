@@ -182,7 +182,7 @@ int Dlg_Systeme_Etalon::afficherDlg_Equipement(const QString & filtreType,const 
 void Dlg_Systeme_Etalon::buttonChoixDiluteurClicked() {
     this->m_noSerieEquipemenent = this->ui->lineEdit_ChoixDiluteur->text();
     int oldIndex = this->m_idDiluteur;
-    this->m_idDiluteur = this->afficherDlg_Equipement("DILUTEUR",oldIndex);
+    this->m_idDiluteur = this->afficherDlg_Equipement("ETALON",oldIndex);
     this->ui->lineEdit_ChoixDiluteur->setText(this->m_noSerieEquipemenent);
 }
 
