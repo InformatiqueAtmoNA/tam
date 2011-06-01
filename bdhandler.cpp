@@ -292,7 +292,7 @@ QPointer<QSqlQueryModel> BdHandler::getPolluantsParSystemeEtalon(const uint idSy
         query = QString("SELECT id_molecule,formule FROM Molecule M,Polluant_Associe PA WHERE id_pa_equipement = %1 AND id_pa_molecule=id_molecule").arg(idDiluteur);
 
     if(filtrerRdf)
-        query.append(" AND nom IN ('NO','NO2','NOX')");
+        query.append(" AND formule IN ('NO','NO2','NOX')");
 
     qDebug()<<"---------------------------------------------";
     qDebug()<<"call BdHandler::getPolluantsParSystemeEtalon()";

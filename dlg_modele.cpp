@@ -97,6 +97,13 @@ void Dlg_Modele::afficherTable() {
        m_bdHandler->connexionBD();
 
     m_model = m_bdHandler->getModelesModel();
+    if(!this->m_filtreType.isEmpty()) {
+        if(this->m_filtreType == "ETALON")
+            this->m_model->setFilter("type = 'DILUTEUR' OR type = 'GO3'");
+        else
+            this->m_model->setFilter(QString("type = '%1'").arg(this->m_filtreType));
+    }
+
     m_model->setParent(this);
     this->ui->tableView->setModel(m_model);
     this->ui->tableView->setColumnHidden(MODELE_ID, true);
