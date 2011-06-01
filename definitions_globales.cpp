@@ -60,8 +60,8 @@ QString typeTestToString(TypeTest type) {
         return "REPETABILITE_2";
     if(type==LINEARITE)
         return "LINEARITE";
-    if(type==TEMP_REPONSE)
-        return "TEMP_REPONSE";
+    if(type==TEMPS_REPONSE)
+        return "TEMPS_REPONSE";
     if(type==RENDEMENT_FOUR)
         return "RENDEMENT_FOUR";
     return "PERSO";
@@ -74,8 +74,8 @@ TypeTest stringToTypeTest(QString type) {
         return REPETABILITE_2;
     if(type=="LINEARITE")
         return LINEARITE;
-    if(type=="TEMP_REPONSE")
-        return TEMP_REPONSE;
+    if(type=="TEMPS_REPONSE")
+        return TEMPS_REPONSE;
     if(type=="RENDEMENT_FOUR")
         return RENDEMENT_FOUR;
     return PERSO;

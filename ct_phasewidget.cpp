@@ -79,7 +79,7 @@ void ct_PhaseWidget::afficherPhase()
     this->ui->timeEdit_TempsMoyennageMesures->setTime(m_phase.getTpsMoyennageMesure());
     this->ui->timeEdit_TempsStabilisation->setTime(m_phase.getTpsStabilisation());
 
-    if(m_typeTest==TEMP_REPONSE || m_typeTest==PERSO) {
+    if(m_typeTest==TEMPS_REPONSE || m_typeTest==PERSO) {
         this->ui->gb_CritereArret->setVisible(true);
         this->ui->gb_CmdDebut_Phase->setVisible(true);
         if(m_phase.critereArretExiste()) {

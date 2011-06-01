@@ -42,9 +42,6 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
 
     this->peuplerTable();
 
-    connect(this->ui->tableView->selectionModel(),
-            SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this,SLOT(changementSelection(QModelIndex)));
     connect(this->ui->cb_Modele, SIGNAL(currentIndexChanged(int)),
             this,SLOT(cb_ModeleChanged(int)));
     connect(this->ui->cb_Tx_Transmission, SIGNAL(currentIndexChanged(int)),
@@ -137,6 +134,9 @@ void Dlg_Equipement::peuplerTable() {
     this->ui->cb_Modele->setModelColumn(MODELE_DESIGNATION);
     this->ui->cb_Tx_Transmission->setModel(m_model_tx_transmission);
     this->ui->cb_Tx_Transmission->setModelColumn(TX_TRANSMISSION_DESIGNATION);
+
+    connect(this->ui->tableView,SIGNAL(clicked(QModelIndex)),
+            this,SLOT(changementSelection(QModelIndex)));
 }
 
 void Dlg_Equipement::afficherFormulaire() {
@@ -155,13 +155,21 @@ void Dlg_Equipement::afficherFormulaire() {
 
     if(!this->m_nouvelEnregistrement) {
         this->ui->tabWidget->setTabEnabled(2,true);
-        m_model_molecule = m_bdHandler->getMoleculesModel();
-        m_model_molecule->setParent(this);
-        this->ui->tableView_Molecule->setModel(m_model_molecule);
-        this->ui->tableView_Molecule->setColumnHidden(MOLECULE_ID,true);
-        this->ui->tableView_Molecule->setColumnHidden(MOLECULE_NOM,true);
-        this->ui->tableView_Molecule->resizeColumnsToContents();
 
+        if(m_model_molecule.isNull()) {
+            m_model_molecule = m_bdHandler->getMoleculesModel();
+            m_model_molecule->setParent(this);
+            this->ui->tableView_Molecule->setModel(m_model_molecule);
+            this->ui->tableView_Molecule->setColumnHidden(MOLECULE_ID,true);
+            this->ui->tableView_Molecule->setColumnHidden(MOLECULE_NOM,true);
+            this->ui->tableView_Molecule->resizeColumnsToContents();
+        }
+        else {
+            for(int i=0;i<m_model_molecule->rowCount();i++)
+                this->ui->tableView_Molecule->setRowHidden(i,false);
+        }
+        if(!m_model_polluant_associe.isNull())
+            delete m_model_polluant_associe;
         m_model_polluant_associe = m_bdHandler->getPolluantAssocieModel(m_model->record(m_indexSelection.row()).value(EQUIPEMENT_ID).toInt());
         m_model_polluant_associe->setParent(this);
         this->ui->tableView_PolluantsAssocies->setModel(m_model_polluant_associe);
@@ -224,6 +232,8 @@ void Dlg_Equipement::initialiserChamps() {
 }
 
 void Dlg_Equipement::changementSelection(const QModelIndex & idxSelection) {
+    qDebug()<<"---------------------------------------------------";
+    qDebug()<<"call : Dlg_Equipement::changementSelection("<<QString::number(idxSelection.row());
     this->m_indexSelection = idxSelection;
     if(this->m_indexSelection.isValid()) {
         this->ui->button_Modifier->setEnabled(true);
@@ -250,8 +260,10 @@ void Dlg_Equipement::buttonSupprimerClicked() {
 }
 
 void Dlg_Equipement::buttonAjouterClicked() {
+    this->initialiserChamps();
     m_nouvelEnregistrement = true;
     this->afficherFormulaire();
+    this->ui->tableView->setEnabled(false);
 }
 
 void Dlg_Equipement::buttonValiderClicked()
@@ -261,8 +273,6 @@ void Dlg_Equipement::buttonValiderClicked()
         row=m_idModifie;
     else {
         row = m_model->rowCount();
-        if(row>0)
-            row-=1;
         m_model->insertRow(row);
     }
     m_model->setData(m_model->index(row,EQUIPEMENT_ID_MODELE),QVariant::fromValue(this->m_idModele));

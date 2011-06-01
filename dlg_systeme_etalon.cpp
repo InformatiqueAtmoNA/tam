@@ -11,12 +11,12 @@ Dlg_Systeme_Etalon::Dlg_Systeme_Etalon(QWidget *parent,const QPointer<BdHandler>
 
     this->m_bdHandler = bdHandler;
     this->m_returnSelection = returnSelection;
+    this->m_modifEnCours = false;
 
     this->peuplerTable();
     this->initialiserChamps();
 
-    connect(this->ui->tableView->selectionModel(),
-            SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+    connect(this->ui->tableView,SIGNAL(clicked(QModelIndex)),
             this,SLOT(changementSelection(const QModelIndex &)));
     connect(this->ui->button_Supprimer,SIGNAL(clicked()),
             this,SLOT(buttonSupprimerClicked()));
@@ -98,6 +98,7 @@ void Dlg_Systeme_Etalon::initialiserChamps() {
     this->ui->button_Selectionner->setVisible(true);
     this->ui->button_Selectionner->setEnabled(true);
     this->ui->button_EditConcentration->setEnabled(true);
+    this->ui->tableView->setEnabled(true);
 
     if(!this->m_returnSelection || this->m_model->rowCount()==0) {
         this->ui->button_Selectionner->setVisible(false);
@@ -131,7 +132,9 @@ void Dlg_Systeme_Etalon::buttonSupprimerClicked() {
 }
 
 void Dlg_Systeme_Etalon::buttonAjouterClicked() {
+    this->initialiserChamps();
     this->afficherFormulaire();
+    this->ui->tableView->setEnabled(false);
 }
 
 void Dlg_Systeme_Etalon::buttonValiderClicked() {
@@ -154,13 +157,15 @@ void Dlg_Systeme_Etalon::buttonValiderClicked() {
     if(this->m_idGenAirZero>0)
         m_model->setData(m_model->index(row,SYS_ETALON_GZERO),QVariant::fromValue(this->m_idGenAirZero));
     else
-        m_model->setData(m_model->index(row,SYS_ETALON_GZERO),QVariant::fromValue(1));
+        m_model->setData(m_model->index(row,SYS_ETALON_GZERO),QVariant::fromValue(2));
 
     m_model->submitAll();
     m_model_sansRelation->select();
     m_modifEnCours = false;
 
     this->initialiserChamps();
+    this->ui->tableView->setCurrentIndex(m_model->index(row,SYS_ETALON_ID));
+    this->m_indexSelection = m_model->index(row,SYS_ETALON_ID);
 }
 
 int Dlg_Systeme_Etalon::afficherDlg_Equipement(const QString & filtreType,const int index) {

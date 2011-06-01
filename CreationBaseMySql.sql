@@ -1,6 +1,5 @@
+
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT=0;
-START TRANSACTION;
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -11,7 +10,6 @@ START TRANSACTION;
 --
 -- Base de données: `TAM_V3`
 --
-
 CREATE DATABASE `TAM_V3` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
 USE `TAM_V3`;
 
@@ -93,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `Equipement` (
 
 INSERT INTO `Equipement` (`id_equipement`, `id_modele`, `numero_serie`, `en_service`, `min_gamme`, `max_gamme`, `offset`, `id_tx_transmission`, `adresse`, `nb_bits_transmission`, `nb_bits_stop`, `controle_flux`, `type_parite`) VALUES
 (1, 1, 'aucune', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
-(2, 1, 'aucun', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
+(2, 2, 'aucun', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -229,14 +227,15 @@ CREATE TABLE IF NOT EXISTS `Modele_Equipement` (
   PRIMARY KEY (`id_modele`),
   KEY `fk_modele_marque` (`id_marque`),
   KEY `fk_modele_protocole` (`id_protocole`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=3 ;
 
 --
 -- Contenu de la table `Modele_Equipement`
 --
 
 INSERT INTO `Modele_Equipement` (`id_modele`, `id_marque`, `id_protocole`, `designation`, `type`) VALUES
-(1, 1, 1, 'INCONNU', NULL);
+(1, 1, 1, 'INCONNU', 'BOUTEILLE'),
+(2, 1, 1, 'INCONNU', 'GZERO');
 
 -- --------------------------------------------------------
 
@@ -460,7 +459,7 @@ DROP TABLE IF EXISTS `Test_XML`;
 CREATE TABLE IF NOT EXISTS `Test_XML` (
   `id_Test_Xml` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `fichier_description` varchar(45) COLLATE latin1_general_ci NOT NULL,
-  `type_test` enum('REPETABILITE_1','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','TPG','PERSO') COLLATE latin1_general_ci NOT NULL DEFAULT 'PERSO',
+  `type_test` enum('REPETABILITE_1','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','RENDEMENT_FOUR','PERSO') COLLATE latin1_general_ci NOT NULL DEFAULT 'PERSO',
   `id_systeme_etalon` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id_Test_Xml`),
   UNIQUE KEY `fichier_description_UNIQUE` (`fichier_description`),
@@ -551,4 +550,3 @@ ALTER TABLE `Test_Metrologique`
 --
 ALTER TABLE `Test_XML`
   ADD CONSTRAINT `fk_Test_XML_SystemeEtalon` FOREIGN KEY (`id_systeme_etalon`) REFERENCES `Systeme_Etalonnage` (`id_systeme_etalon`) ON UPDATE CASCADE;
-COMMIT;

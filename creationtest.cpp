@@ -76,7 +76,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
             m_nomFichier.remove(".xml");
         if(m_nomFichier.indexOf(".\\")>0)
             m_nomFichier.remove(".\\");
-        if(m_nomFichier.indexOf("./")>0)
+        if(m_nomFichier.contains("./"))
             m_nomFichier.remove("./");
         this->ui->lineEdit_NomTest->setText(this->m_nomFichier);
     }
@@ -138,7 +138,7 @@ void CreationTest::initialiserChamps()
         this->m_indexTypeTest = 2;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(2);
         break;
-    case TEMP_REPONSE:
+    case TEMPS_REPONSE:
         this->m_indexTypeTest = 3;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(3);
         break;
@@ -361,7 +361,7 @@ void CreationTest::button_SauvegarderClicked ()
         switch(this->m_typeTest) {
         case REPETABILITE_1:
         case REPETABILITE_2:
-        case TEMP_REPONSE:
+        case TEMPS_REPONSE:
             nbPhasesRequises = 2;
             break;
         case LINEARITE:
@@ -376,7 +376,7 @@ void CreationTest::button_SauvegarderClicked ()
         if(this->m_nbPhases<nbPhasesRequises) {
             QMessageBox msgBox;
             msgBox.setText("Configuration de test invalide");
-            QString text = "Un test de "+typeTestToString(this->m_typeTest)+"doit contenir au moins"+ nbPhasesRequises +"phases";
+            QString text = "Un test de "+typeTestToString(this->m_typeTest)+"doit contenir au moins "+ QString::number(nbPhasesRequises) +" phases";
             msgBox.setInformativeText(text);
             msgBox.setStandardButtons(QMessageBox::Ok);
             msgBox.setDefaultButton(QMessageBox::Ok);
@@ -439,7 +439,7 @@ void CreationTest::tabWidgetIndexChanged(const int index)
             this->ui->tabWidget->setCurrentIndex(m_etape);
             return;
         }
-        if(!this->ui->lineEdit_NomTest->text().isEmpty())
+        if(!this->ui->lineEdit_NomTest->text().isEmpty() && this->m_test->getIdTest() > 0)
             this->ui->button_Sauvegarder->setEnabled(true);
         else {
             qDebug()<<typeTestToString(this->m_typeTest);
@@ -511,7 +511,7 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
         this->m_typeTest=LINEARITE;
         break;
     case 3:
-        this->m_typeTest=TEMP_REPONSE;
+        this->m_typeTest=TEMPS_REPONSE;
         break;
     case 4:
         this->m_typeTest=RENDEMENT_FOUR;
