@@ -138,8 +138,8 @@ void Dlg_Concentration::peuplerTable()
     this->ui->tableView->resizeColumnsToContents();
     this->ui->tableView->setItemDelegate(new QSqlRelationalDelegate(this));
 
-    connect(this->ui->tableView->selectionModel(),
-          SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+    connect(this->ui->tableView,
+          SIGNAL(clicked(QModelIndex)),
           this,SLOT(tableViewSelectedItemChanged(const QModelIndex &)));
     connect(this->ui->tableView,SIGNAL(doubleClicked(QModelIndex)),
           this,SLOT(tableViewItemDoubleClicked(QModelIndex)));
@@ -182,6 +182,8 @@ void Dlg_Concentration::initialiserChamps()
     this->ui->button_Fermer->setEnabled(true);
     if(!this->m_returnSelection || this->m_model->rowCount()==0)
       this->ui->button_Selectionner->setVisible(false);
+    else
+        this->ui->button_Selectionner->setVisible(true);
 
     this->ui->spinBox_PointGaz->clear();
     this->ui->doubleSpinBox_ConcReelle->clear();

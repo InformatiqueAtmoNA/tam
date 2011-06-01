@@ -8,13 +8,13 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
     ui->setupUi(this);
 
     this->m_bdHandler = bdHandler;
-    this->m_idxSelectionTest = 0;
     this->getListeTests();
 
     connect(this->ui->button_Afficher,SIGNAL(clicked()),this,SLOT(buttonAfficherClicked()));
     connect(this->ui->button_Executer,SIGNAL(clicked()),this,SLOT(buttonExecuterClicked()));
     connect(this->ui->button_Modifier,SIGNAL(clicked()),this,SLOT(buttonModifierClicked()));
     connect(this->ui->button_Nouveau,SIGNAL(clicked()),this,SLOT(buttonNouveauClicked()));
+    connect(this->ui->button_Supprimer,SIGNAL(clicked()),this,SLOT(buttonSupprimerClicked()));
     connect(this->ui->tableWidget_TestXml,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetTestXmlIndexChanged(QModelIndex)));
 }
 
@@ -60,10 +60,7 @@ void HomeWidget::getListeTests()
 
 void HomeWidget::tableWidgetTestXmlIndexChanged(const QModelIndex & index)
 {
-    if(index.isValid())
-        this->m_idxSelectionTest = index.row();
-    else
-        this->m_idxSelectionTest = 0;
+    this->m_idxSelectionTest = index;
 }
 
 void HomeWidget::buttonNouveauClicked()
@@ -73,14 +70,30 @@ void HomeWidget::buttonNouveauClicked()
 
 void HomeWidget::buttonModifierClicked()
 {
-    QString fichierDescription = this->ui->tableWidget_TestXml->item(m_idxSelectionTest,HOMEW_TABLEW_TEST_FICHIER)->text();
+    QString fichierDescription = this->ui->tableWidget_TestXml->item(m_idxSelectionTest.row(),HOMEW_TABLEW_TEST_FICHIER)->text();
     emit(this->modifierTest(fichierDescription));
 }
 
 void HomeWidget::buttonExecuterClicked()
 {
-    QString fichierDescription = this->ui->tableWidget_TestXml->item(m_idxSelectionTest,HOMEW_TABLEW_TEST_FICHIER)->text();
+    QString fichierDescription = this->ui->tableWidget_TestXml->item(m_idxSelectionTest.row(),HOMEW_TABLEW_TEST_FICHIER)->text();
     emit(this->executerTest(fichierDescription));
+}
+
+void HomeWidget::buttonSupprimerClicked() {
+    if(!this->m_idxSelectionTest.isValid())
+        return;
+    int reponse = QMessageBox::question(this,"Supprimer un élément?","Voulez vous vraiment supprimer le test sélectionné?", QMessageBox::Yes | QMessageBox::No);
+
+    if (reponse == QMessageBox::No)
+        return;
+    QString fichierDescription = this->ui->tableWidget_TestXml->item(m_idxSelectionTest.row(),HOMEW_TABLEW_TEST_FICHIER)->text();
+    QFile fichierASupprimer(fichierDescription);
+    fichierASupprimer.remove();
+    this->m_modelTestXml->removeRow(this->m_idxSelectionTest.row());
+    if(!this->m_modelTestXml->submitAll())
+        qDebug()<<this->m_modelTestXml->lastError();
+    this->ui->tableWidget_TestXml->removeRow(this->m_idxSelectionTest.row());
 }
 
 void HomeWidget::buttonAfficherClicked()

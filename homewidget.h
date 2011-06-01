@@ -20,7 +20,7 @@ private:
     Ui::HomeWidget *ui;
     QPointer<BdHandler> m_bdHandler;
     QPointer<QSqlTableModel> m_modelTestXml;
-    uint m_idxSelectionTest;
+    QModelIndex m_idxSelectionTest;
 
     void getListeTests();
 
@@ -30,6 +30,7 @@ private slots:
     void buttonModifierClicked();
     void buttonExecuterClicked();
     void buttonAfficherClicked();
+    void buttonSupprimerClicked();
 
 signals:
     void creerTest();
