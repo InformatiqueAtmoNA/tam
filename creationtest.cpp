@@ -71,6 +71,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
 
         this->initialiserChamps();
         this->m_nomFichier = nomFichier;
+        this->m_nomFichierAEffacer = nomFichier;
 
         if(m_nomFichier.indexOf(".xml")>0)
             m_nomFichier.remove(".xml");
@@ -401,14 +402,19 @@ void CreationTest::button_SauvegarderClicked ()
     model->setData(model->index(row,TEST_XML_NOM_FICHIER),QVariant::fromValue(this->m_nomFichier));
     model->setData(model->index(row,TEST_XML_TYPE_TEST),QVariant::fromValue(typeTestToString(this->m_typeTest)));
     model->setData(model->index(row,TEST_XML_ID_SYSTEME_ETALON),QVariant::fromValue(this->m_test->getIdSystemeEtalon()));
+    model->submitAll();
 
     this->m_test->setIdTest(model->record(row).value(TEST_XML_ID).toInt());
     if(!this->m_test->exportToXml(this->m_nomFichier)) {
-        model->revertAll();
+        model->removeRow(row);
         return;
     }
-    else
-        model->submitAll();
+    if(!this->m_nomFichierAEffacer.isEmpty()){
+        if(this->m_nomFichierAEffacer.compare(this->m_nomFichier)!=0) {
+            QFile ancienFichierXML(this->m_nomFichierAEffacer);
+            ancienFichierXML.remove();
+        }
+    }
     emit(this->fermeture());
 }
 
@@ -439,12 +445,11 @@ void CreationTest::tabWidgetIndexChanged(const int index)
             this->ui->tabWidget->setCurrentIndex(m_etape);
             return;
         }
-        if(!this->ui->lineEdit_NomTest->text().isEmpty() && this->m_test->getIdTest() > 0)
-            this->ui->button_Sauvegarder->setEnabled(true);
-        else {
+        if(this->ui->lineEdit_NomTest->text().isEmpty()) {
             qDebug()<<typeTestToString(this->m_typeTest);
             this->ui->lineEdit_NomTest->setText(QString("%2-%1").arg(typeTestToString(this->m_typeTest),QString::number(this->m_test->getIdSystemeEtalon())));
         }
+        this->ui->button_Sauvegarder->setEnabled(true);
         this->ui->button_Suivant->setEnabled(false);
         break;
     }

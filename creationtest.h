@@ -49,6 +49,7 @@ private:
     Ui::CreationTest *ui;
     QPointer<Test> m_test;
     QString m_nomFichier;
+    QString m_nomFichierAEffacer;
     QPointer<BdHandler> m_bdHandler;
     TypeTest m_typeTest;
     int m_indexTypeTest;
