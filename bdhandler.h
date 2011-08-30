@@ -76,6 +76,7 @@ public:
     DesignationProtocole getDesignationProtocole(const ushort idEquipement);
     ushort getIdCalibrateur(const uint idSystemeEtalon);
 
+    bool miseAjourDateHeureFinTest(const ushort idTestMetro);
     bool insertIntoMesure(const MesureInfo mesuresInfos);
     void setSpanHandlerFromIdConcentration(ushort idConcentration, QString canal, SpanHandler* spanHandler);
 

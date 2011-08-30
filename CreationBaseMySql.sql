@@ -1,6 +1,5 @@
+
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT=0;
-START TRANSACTION;
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -25,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `Concentration` (
   `point_consigne` smallint(6) NOT NULL,
   `conc_reelle` decimal(10,2) NOT NULL,
   `conc_ozone` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `archivee` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_Concentration`),
   KEY `fk_Molecule` (`id_molecule`),
   KEY `fk_Concentration_Systeme_Etalon` (`id_systeme_etalon`)
@@ -66,9 +66,9 @@ CREATE TABLE IF NOT EXISTS `Equipement` (
   `id_modele` smallint(5) unsigned NOT NULL,
   `numero_serie` varchar(45) COLLATE latin1_general_ci NOT NULL,
   `en_service` tinyint(1) NOT NULL DEFAULT '0',
-  `min_gamme` smallint(6) DEFAULT '0',
-  `max_gamme` smallint(6) DEFAULT '0',
-  `offset` smallint(6) DEFAULT '0',
+  `min_gamme` int(11) DEFAULT '0',
+  `max_gamme` int(11) DEFAULT '0',
+  `offset` int(11) DEFAULT '0',
   `id_tx_transmission` tinyint(3) unsigned NOT NULL,
   `adresse` varchar(10) COLLATE latin1_general_ci DEFAULT NULL,
   `nb_bits_transmission` tinyint(4) DEFAULT '0',
@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS `Modele_Equipement` (
 
 INSERT INTO `Modele_Equipement` (`id_modele`, `id_marque`, `id_protocole`, `designation`, `type`) VALUES
 (1, 1, 1, 'INCONNU', 'BOUTEILLE'),
-(2, 1, 1, 'INCONNU', 'GZERO'),
+(2, 1, 1, 'INCONNU', 'GZERO');
 
 -- --------------------------------------------------------
 
@@ -414,6 +414,7 @@ CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
   `temperature` decimal(10,0) DEFAULT NULL,
   `date_debut` datetime NOT NULL,
   `date_fin` datetime NOT NULL,
+  `rapport` blob,
   PRIMARY KEY (`id_test`),
   KEY `fk_test_xml` (`id_description_xml`),
   KEY `fk_test_operateur` (`id_operateur`),
@@ -488,8 +489,8 @@ ALTER TABLE `Liste_Analyseurs_Test`
 -- Contraintes pour la table `Mesure`
 --
 ALTER TABLE `Mesure`
-  ADD CONSTRAINT `fk_mesure_equipement` FOREIGN KEY (`id_equipement`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_mesure_test` FOREIGN KEY (`id_test`) REFERENCES `Test_Metrologique` (`id_test`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_mesure_test` FOREIGN KEY (`id_test`) REFERENCES `Test_Metrologique` (`id_test`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_mesure_equipement` FOREIGN KEY (`id_equipement`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `Modele_Equipement`
@@ -509,13 +510,12 @@ ALTER TABLE `Polluant_Associe`
 -- Contraintes pour la table `Test_Metrologique`
 --
 ALTER TABLE `Test_Metrologique`
-  ADD CONSTRAINT `fk_test_lieu` FOREIGN KEY (`id_lieu`) REFERENCES `Lieu` (`id_lieu`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_test_xml` FOREIGN KEY (`id_description_xml`) REFERENCES `Test_XML` (`id_Test_Xml`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_test_operateur` FOREIGN KEY (`id_operateur`) REFERENCES `Operateur` (`id_operateur`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_test_xml` FOREIGN KEY (`id_description_xml`) REFERENCES `Test_XML` (`id_Test_Xml`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_test_lieu` FOREIGN KEY (`id_lieu`) REFERENCES `Lieu` (`id_lieu`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `Test_XML`
 --
 ALTER TABLE `Test_XML`
   ADD CONSTRAINT `fk_Test_XML_SystemeEtalon` FOREIGN KEY (`id_systeme_etalon`) REFERENCES `Systeme_Etalonnage` (`id_systeme_etalon`) ON UPDATE CASCADE;
-COMMIT;

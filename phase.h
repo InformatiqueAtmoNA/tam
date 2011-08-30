@@ -45,7 +45,7 @@ class Phase : public QObject
     QTime m_tempsMoyennageMesure; // Temps correspondant à un cycle sur lequel les mesures seront moyennées
     QTime m_tempsAttenteEntreMesure; // Temps d'attente entre chaque cycle de mesure
     bool m_critereArretPrevu; // Indique si un critère d'arrêt est prévu
-    QVector<ushort> m_criteresArret; // Critère d'arrêt : voir enum dans definitions_globales.h
+    QVector<ushort> m_criteresArret; // Critère d'arrêt
     Commandes m_commandeDebutPhase; // Commande optionnelle à effectuer à la fin du temps de stabilisation
     ushort m_idMolecule;
     uint m_idConcentration;
@@ -120,7 +120,15 @@ public:
     //
     // \return ushort pourcentage de variation en dessous duquel l'arrêt s'effectue
     ///////////////////////////////////////////////////////////////////////////*/
-    inline ushort getCritereArret_PourcentageStabilisation() const {return this->m_criteresArret[CRITERE_ARRET_POURENTAGE_STABILISATION];}
+    inline ushort getCritereArret_PourcentageStabilisation() const {return this->m_criteresArret[CRITERE_ARRET_POURCENTAGE_STABILISATION];}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn ushort getCritereArret_PourcentageStabilisation() const
+    // \brief Renvoi le pourcentage de variation en dessous duquel l'arrêt s'effectue
+    //
+    // \return ushort Unité de calcul du critère d'arrêt
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline ushort getCritereArret_Unite() const {return this->m_criteresArret[CRITERE_ARRET_UNITE];}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool critereArretExiste() const
@@ -273,7 +281,15 @@ public:
     //
     // \return value Pourcentage de variation en dessous duquel l'arrêt s'effectue
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setCritereArret_PourcentageStabilisation(const ushort value) {this->m_criteresArret.replace(CRITERE_ARRET_POURENTAGE_STABILISATION,value);}
+    inline void setCritereArret_PourcentageStabilisation(const ushort value) {this->m_criteresArret.replace(CRITERE_ARRET_POURCENTAGE_STABILISATION,value);}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setCritereArret_Unite(const ushort value) const
+    // \brief Initialise l'unité utilisée pour le calcul du critère d'arrêt
+    //
+    // \return value Unité utilisée pour le calcul du critère d'arrêt
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setCritereArret_Unite(const ushort value) {this->m_criteresArret.replace(CRITERE_ARRET_UNITE,value);}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn Phase& operator=(const Phase&)

@@ -1,10 +1,12 @@
 #include "generateurrapporttest.h"
 
 GenerateurRapportTest::GenerateurRapportTest(const QWeakPointer<et_ParamsTest> paramsTest,
-                                             const QSharedPointer<QVector<MesureInfo> > tableauMesures)
+                                             const QSharedPointer<QVector<MesureInfo> > tableauMesures,
+                                             const QWeakPointer<BdHandler> bdHandler)
 {
     m_tableauMesures = tableauMesures;
     m_paramsTest = paramsTest;
+    m_bdHandler = bdHandler;
 }
 
 bool GenerateurRapportTest::genererRapport()

@@ -465,7 +465,7 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_ID_LIEU,paramsTest->m_idLieu);
     enregistrement.setValue(TEST_METRO_PRESSION,paramsTest->m_pression);
     enregistrement.setValue(TEST_METRO_TEMPERATURE,paramsTest->m_temperature);
-    enregistrement.setValue(TEST_METRO_DATE_DEBUT,paramsTest->m_dateHeureDebut);
+    enregistrement.setValue(TEST_METRO_DATE_DEBUT,paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"));
     model->insertRecord(-1,enregistrement);
 
     model->submitAll();

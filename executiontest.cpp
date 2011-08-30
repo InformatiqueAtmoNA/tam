@@ -36,8 +36,6 @@ ExecutionTest::ExecutionTest(const QPointer<et_ParamsTest> paramsTest,const QPoi
     m_noPhaseSuivante = 1;
     m_cyclePhaseEnCours = 0;
 
-    m_tableauCompletMesures = QSharedPointer<QVector<MesureInfo> >(new QVector<MesureInfo>());
-
     if(bdHandler.isNull()) {
         QString driver = getParam("BD_Driver").toString();
         QString host = getParam("Host").toString();
@@ -616,7 +614,7 @@ void ExecutionTest::enregistrerMoyenneMesures()
         mesureInfos.mesure = moyenneMesure;
 
         m_tableauCompletMesures->append(mesureInfos);
-        m_tabMoyennesMesuresParPhase[it_tabMesuresParCycle.key()].append(moyenneMesure);
+        m_bdHandler->insertIntoMesure(mesureInfos);
     }
 
     emit(this->moyenneMesuresEnregistree());
@@ -628,7 +626,7 @@ void ExecutionTest::testTermine()
 
     emit(traceTest("Génération du fichier de rapport",0));
 
-    GenerateurRapportTest generateurRapportTest(m_paramsTest,m_tableauCompletMesures);
+    GenerateurRapportTest generateurRapportTest(m_paramsTest,m_tableauCompletMesures,m_bdHandler.data());
     generateurRapportTest.genererRapport();
 
     if(m_idListeTestEnCours>-1)
@@ -652,6 +650,7 @@ void ExecutionTest::verifierCritereArret()
         QVector<QWeakPointer<MesureIndividuelle> > tableauMoyennesMesuresParPhase = it_tabMoyennesMesuresParPhase.value();
         ushort nbCyclesMesuresCritereArret = m_paramsTest.data()->m_test->getPhase(m_noPhaseSuivante).getCritereArret_NbCyclesMesures();
         ushort nbMoyenneEnregistrees = tableauMoyennesMesuresParPhase.count();
+        ushort uniteCritereArret = m_paramsTest.data()->m_test->getPhase(m_noPhaseSuivante).getCritereArret_Unite();
         if(nbMoyenneEnregistrees< nbCyclesMesuresCritereArret) {
             emit(traceTest("Critère d'arrêt non atteint",0));
             emit(this->critereArretNonAtteint());
@@ -661,7 +660,10 @@ void ExecutionTest::verifierCritereArret()
         for(ushort i=(nbMoyenneEnregistrees-nbCyclesMesuresCritereArret);i<tableauMoyennesMesuresParPhase.count()-1;i++) {
             float variation = (abs(tableauMoyennesMesuresParPhase.at(i+1).data()->at(0)
                                  - tableauMoyennesMesuresParPhase.at(i).data()->at(0)));
-            if((variation/100) > m_paramsTest.data()->m_test->getPhase(m_noPhaseSuivante).getCritereArret_PourcentageStabilisation()) {
+            if(uniteCritereArret==POURCENTAGE) variation /=100;
+            if((variation) > m_paramsTest.data()->m_test->getPhase(m_noPhaseSuivante).getCritereArret_PourcentageStabilisation())
+            {
+
                 emit(traceTest("Critère d'arrêt non atteint",0));
                 emit(this->critereArretNonAtteint());
                 return;

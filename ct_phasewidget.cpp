@@ -53,6 +53,7 @@ ct_PhaseWidget::ct_PhaseWidget(const int idSystemeEtalon,const TypeTest typeTest
     connect(this->ui->spinBox_NbCycleMesureArret,SIGNAL(valueChanged(int)),this,SLOT(spinBox_NbCycleMesureArretValueChanged(int)));
     connect(this->ui->spinBox_nbCyclesMesures,SIGNAL(valueChanged(int)),this,SLOT(spinBoxNbCyclesMesuresValueChanged(int)));
     connect(this->ui->spinBox_PourcentageArret,SIGNAL(valueChanged(int)),this,SLOT(spinBoxPourcentageArretValueChanged(int)));
+    connect(this->ui->comboBox_critereArretUnite,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxCritereArretUniteIndexChanged(int)));
     connect(this->ui->cb_CmdDebutPhase,SIGNAL(currentIndexChanged(int)),this,SLOT(cb_CmdDebutPhaseIndexChanged(int)));
     connect(this->ui->timeEdit_TempsMaxPhase,SIGNAL(timeChanged(QTime)),this,SLOT(timeEditTempsMaxPhaseValueChanged(QTime)));
     connect(this->ui->timeEdit_TempsStabilisation,SIGNAL(timeChanged(QTime)),this,SLOT(timeEditTempsStabilisationValueChanged(QTime)));
@@ -84,6 +85,7 @@ void ct_PhaseWidget::afficherPhase()
             this->ui->timeEdit_TempsMaxPhase->setEnabled(true);
             this->ui->spinBox_NbCycleMesureArret->setValue(m_phase.getCritereArret_NbCyclesMesures());
             this->ui->spinBox_PourcentageArret->setValue(m_phase.getCritereArret_PourcentageStabilisation());
+            this->ui->comboBox_critereArretUnite->setCurrentIndex(m_phase.getCritereArret_Unite());
         }
         else
             this->ui->timeEdit_TempsMaxPhase->setEnabled(false);
@@ -210,10 +212,10 @@ void ct_PhaseWidget::ckb_CritereArretStateChanged(const int state) {
     this->ui->spinBox_NbCycleMesureArret->setEnabled(enableWidgets);
     this->ui->spinBox_PourcentageArret->setEnabled(enableWidgets);
     this->ui->label_CritereArret1->setEnabled(enableWidgets);
-    this->ui->label_CritereArret2->setEnabled(enableWidgets);
     this->ui->label_CritereArret3->setEnabled(enableWidgets);
     this->ui->label_CritereArret4->setEnabled(enableWidgets);
     this->ui->timeEdit_TempsMaxPhase->setEnabled(enableWidgets);
+    this->ui->comboBox_critereArretUnite->setEnabled(enableWidgets);
     this->m_phase.setCritereArretPrevu(enableWidgets);
     if(!enableWidgets) {
         this->ui->timeEdit_TempsMaxPhase->setTime(QTime(0,0));

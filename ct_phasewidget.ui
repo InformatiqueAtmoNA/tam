@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>481</width>
+    <width>560</width>
     <height>467</height>
    </rect>
   </property>
@@ -480,8 +480,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>461</width>
-        <height>87</height>
+        <width>543</width>
+        <height>91</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -581,13 +581,23 @@
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="label_CritereArret2">
-           <property name="enabled">
-            <bool>false</bool>
+          <widget class="QComboBox" name="comboBox_critereArretUnite">
+           <property name="maximumSize">
+            <size>
+             <width>70</width>
+             <height>16777215</height>
+            </size>
            </property>
-           <property name="text">
-            <string>% </string>
-           </property>
+           <item>
+            <property name="text">
+             <string>%</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>ppb</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item>

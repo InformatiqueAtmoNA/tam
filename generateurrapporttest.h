@@ -10,10 +10,12 @@ class GenerateurRapportTest
 private:
     QSharedPointer<QVector<MesureInfo> > m_tableauMesures;
     QWeakPointer<et_ParamsTest> m_paramsTest;
+    QWeakPointer<BdHandler> m_bdHandler;
 
 public:
     explicit GenerateurRapportTest(const QWeakPointer<et_ParamsTest> paramsTest,
-                                   const QSharedPointer<QVector<MesureInfo> > tableauMesures);
+                                   const QSharedPointer<QVector<MesureInfo> > tableauMesures,
+                                   const QWeakPointer<BdHandler> bdHandler);
 
     bool genererRapport();
     bool genererRapportRepetabilite_1();

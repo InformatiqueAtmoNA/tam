@@ -37,6 +37,7 @@ Phase::Phase()
     this->m_criteresArret.reserve(2);
     this->m_criteresArret.append(0);
     this->m_criteresArret.append(0);
+    this->m_criteresArret.append(0);
 }
 
 Phase::Phase(const Phase & phase) : QObject() {
@@ -96,7 +97,11 @@ QDomElement Phase::exportToXml(QDomDocument & xmlTest) {
     if(this->m_critereArretPrevu) {
         QDomElement el_critereArret = xmlTest.createElement("critere_arret");
         el_critereArret.setAttribute("nb_cycle_mesure",this->m_criteresArret.at(CRITERE_ARRET_NB_CYCLES_MESURES));
-        el_critereArret.setAttribute("pourcentage_stabilisation",this->m_criteresArret.at(CRITERE_ARRET_POURENTAGE_STABILISATION));
+        el_critereArret.setAttribute("pourcentage_stabilisation",this->m_criteresArret.at(CRITERE_ARRET_POURCENTAGE_STABILISATION));
+        if(this->m_criteresArret.at(CRITERE_ARRET_UNITE)==POURCENTAGE)
+            el_critereArret.setAttribute("unite","POURCENTAGE");
+        else
+            el_critereArret.setAttribute("unite","PPB");
         newPhase.appendChild(el_critereArret);
     }
 
@@ -125,9 +130,14 @@ QPointer<Phase> Phase::importFromXml(const QDomElement & domPhase) {
     if(!el_critereArret.isNull()) {
         ushort nbCyclesMesures = el_critereArret.attribute("nb_cycle_mesure").toUShort();
         ushort pourcentageStabilisation = el_critereArret.attribute("pourcentage_stabilisation").toUShort();
+        QString unite = el_critereArret.attribute("unite");
         newPhase->setCritereArretPrevu(true);
         newPhase->setCritereArret_NbCyclesMesures(nbCyclesMesures);
         newPhase->setCritereArret_PourcentageStabilisation(pourcentageStabilisation);
+        if(unite.contains("POURCENTAGE"))
+            newPhase->setCritereArret_Unite(POURCENTAGE);
+        else
+            newPhase->setCritereArret_Unite(PPB);
     }
 
     QDomElement polluant = domPhase.firstChildElement("polluant");

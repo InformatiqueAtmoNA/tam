@@ -64,6 +64,7 @@ private Q_SLOTS:
     inline void spinBoxNbCyclesMesuresValueChanged(const int value) {this->m_phase.setNbCyclesMesures(value);}
     inline void spinBox_NbCycleMesureArretValueChanged(const int value) {this->m_phase.setCritereArret_NbCyclesMesures(value);}
     inline void spinBoxPourcentageArretValueChanged(const int value) {this->m_phase.setCritereArret_PourcentageStabilisation(value);}
+    inline void comboBoxCritereArretUniteIndexChanged(const int value) {this->m_phase.setCritereArret_Unite(value);}
     inline void timeEditTempsMaxPhaseValueChanged(const QTime time) {this->m_phase.setTpsMaxPhase(time);}
     inline void timeEditTempsStabilisationValueChanged(const QTime time) {this->m_phase.setTpsStabilisation(time);}
     inline void timeEditTempsMoyennageMesuresValueChanged(const QTime time) {this->m_phase.setTpsMoyennageMesure(time);}

@@ -476,13 +476,17 @@ ushort BdHandler::getIdCalibrateur(const uint idSystemeEtalon)
 bool BdHandler::insertIntoMesure(const MesureInfo mesureInfos)
 {
     QString strRequete = "INSERT INTO `Mesure` (`id_test`,`id_equipement`,`no_cyclePhase`,`no_phase`,";
-    strRequete.append("`no_cycleMesure`,`mesure`) VALUES (");
+    strRequete.append("`no_cycleMesure`,`mesure_1`,`mesure_2`,`mesure_3`) VALUES (");
     strRequete.append(QString::number(mesureInfos.idTest)+",");
     strRequete.append(QString::number(mesureInfos.idEquipement)+",");
     strRequete.append(QString::number(mesureInfos.noCyclePhase)+",");
     strRequete.append(QString::number(mesureInfos.noPhase)+",");
     strRequete.append(QString::number(mesureInfos.noCycleMesure)+",");
-    //strRequete.append(QString::number(mesureInfos.mesure)+",");
+    strRequete.append(QString::number(mesureInfos.mesure.data()->at(0))+",");
+    if(mesureInfos.mesure.data()->count()>1)
+        strRequete.append(QString::number(mesureInfos.mesure.data()->at(1))+",");
+    if(mesureInfos.mesure.data()->count()>2)
+        strRequete.append(QString::number(mesureInfos.mesure.data()->at(2))+",");
 
     m_baseMySql.transaction();
     QSqlQuery requete;
@@ -497,4 +501,16 @@ void BdHandler::setSpanHandlerFromIdConcentration(ushort idConcentration, QStrin
     QSqlRecord* record = this->getConcentrationRow(idConcentration);
 
     spanHandler->setSpanArguments(canal,record->value(CONCENTRATION_POINT).toUInt(),record->value(CONCENTRATION_OZONE).toUInt());
+}
+
+bool BdHandler::miseAjourDateHeureFinTest(const ushort idTestMetro)
+{
+    QString strRequete = "UPDATE `Test_Metrologique` SET `date_fin` = "+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QSqlQuery requete;
+    bool succes = requete.exec(strRequete);
+    if(!succes) {
+        emit(afficherTrace("Problème lors de la mise à jour du champs date_fin de la table Test_Metrologique"));
+        emit(afficherTrace("id_testMetro ="+QString::number(idTestMetro)));
+    }
+    return succes;
 }

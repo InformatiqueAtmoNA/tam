@@ -37,5 +37,6 @@
 				<!ATTLIST critere_arret
 					nb_cycle_mesure CDATA #REQUIRED
 					pourcentage_stabilisation CDATA #REQUIRED
+					unite (POURCENTAGE|PPB) #REQUIRED
 				>
 			<!ELEMENT commande_fin_ts (#PCDATA)>

@@ -101,8 +101,10 @@ enum Commandes {OFFSET,MESURES,ALARME,DATE_HEURE,MODE_ZERO,MODE_ETALON,MODE_MESU
 enum SpanArguments {CANAL,POINT,CONCO3};
 // \enum Commandes disponible en début de phase de test
 enum commandes_debut_phase {CMD_DEBUT_PHASE_NOCMD,CMD_DEBUT_PHASE_MODE_MESURE,CMD_DEBUT_PHASE_MODE_ETALON};
+// \enum CritereArretUnite Unité du critère d'arrêt
+enum CritereArretUnite {POURCENTAGE=0,PPB=1};
 // \enum Champs du QVector contenant un critère d'arrêt d'une phase
-enum critere_arret {CRITERE_ARRET_NB_CYCLES_MESURES,CRITERE_ARRET_POURENTAGE_STABILISATION};
+enum critere_arret {CRITERE_ARRET_NB_CYCLES_MESURES,CRITERE_ARRET_POURCENTAGE_STABILISATION,CRITERE_ARRET_UNITE};
 
 // \enum Colonnes de la table Molecule
 enum table_molecule {MOLECULE_ID,MOLECULE_CODE,MOLECULE_NOM,MOLECULE_FORMULE};
@@ -132,7 +134,8 @@ enum table_concentration_associee {CONC_ASSOCIEE_ID,CONC_ASSOCIEE_ID_CONCENTRATI
 enum table_polluant_associe {POLLUANT_ASSOCIE_ID,POLLUANT_ASSOCIE_ID_EQUIPEMENT,POLLUANT_ASSOCIE_ID_MOLECULE};
 // \enum Colonnes de la table Test_Metro
 enum table_test_metro {TEST_METRO_ID,TEST_METRO_ID_TEST_XML,TEST_METRO_ID_OPERATEUR,TEST_METRO_ID_LIEU,
-                     TEST_METRO_PRESSION,TEST_METRO_TEMPERATURE,TEST_METRO_DATE_DEBUT,TEST_METRO_DATE_FIN};
+                     TEST_METRO_PRESSION,TEST_METRO_TEMPERATURE,TEST_METRO_DATE_DEBUT,TEST_METRO_DATE_FIN,
+                      TEST_METRO_RAPPORT};
 // \enum Colonnes de la table Test_XML
 enum table_test_xml {TEST_XML_ID,TEST_XML_NOM_FICHIER,TEST_XML_TYPE_TEST,TEST_XML_ID_SYSTEME_ETALON};
 // \enum Colonnes de la table Operateur
