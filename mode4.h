@@ -46,16 +46,16 @@ protected:
     bool accepteMesureFloat;
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn QString* creerTrameCommande(QString const & noCommande,QString const & data="")
+    // \fn QString* creerTrameCommande(QString & noCommande,QString & data="")
     // \brief Crée une trame en fonction du numéro de commande MODE4
     //
     // \param noCommande Cuméro de commande MODE4
     // \param data Données facultatives
     ///////////////////////////////////////////////////////////////////////////*/
-    QString* creerTrameCommande(QString const & noCommande,QString const & data="");
+    QString* creerTrameCommande(const QString & noCommande,const QString & data="");
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn QString* calculerBCC(QString const & trame)
+    // \fn QString* calculerBCC(QString & trame)
     // \brief Calcule du BCC (Block Check Character)
     //
     // Le BCC est obtenu en effectuant un OU exclusif (XOR)
@@ -64,16 +64,16 @@ protected:
     // \param trame Trame MODE4
     // \return QString* BCC
     ///////////////////////////////////////////////////////////////////////////*/
-    QString* calculerBCC(QString const & trame);
+    QString* calculerBCC(const QString & trame);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn Mode4_AnalyseurConfig* parseConfig(QString const & trameConfig)
+    // \fn Mode4_AnalyseurConfig* parseConfig(QString & trameConfig)
     // \brief Analyse la trame et renvoie les infos de config dans une structure
     //
     // \param trameConfig Trame de réponse a la commande MODE4 02
     // \return void* Pointeur sur une structure contenant les infos de configuration
     ///////////////////////////////////////////////////////////////////////////*/
-    void* parseConfig(QString const & trameConfig);
+    void* parseConfig(const QString & trameConfig);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void getStrForNumber()
@@ -82,16 +82,16 @@ protected:
     // \param nombre Nombre à transformer en chaine
     // \return QString* Chaine représentant le nombre
     ///////////////////////////////////////////////////////////////////////////*/
-    QString* getStrForNumber(ushort const & nombre, ushort const & nbDigit);
+    QString* getStrForNumber(const ushort & nombre, const ushort & nbDigit);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn float getMesureFromString(QString const & mesure)
+    // \fn float getMesureFromString(QString & mesure)
     // \brief Renvoie le flottant représenté dans la chaine passé en paramètre
     //
     // \param mesure Chaine contenant le flottant
     // \return QString* Chaine représentant le nombre
     ///////////////////////////////////////////////////////////////////////////*/
-    float getMesureFromString(QString const & mesure);
+    float getMesureFromString(const QString & mesure);
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ public:
     // \param TypePeripherique Analyseur ou Diluteur
     // \param accepteFloat Vrai si accepte la commande 16 de mesure en flottant
     ///////////////////////////////////////////////////////////////////////////*/
-    Mode4(QString const & adressePeriph, TypePeripherique const & typePeriph, Protocoles const & protocoleUtilise, bool const & accepteFloat);
+    Mode4(const QString & adressePeriph, const TypePeripherique & typePeriph, const DesignationProtocole & protocoleUtilise, const bool accepteFloat);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual Mode4()
@@ -142,7 +142,7 @@ public:
     //
     // \return QVector<float> Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual QVector<float>* demandeMesure();
+    virtual QWeakPointer<MesureIndividuelle> demandeMesure();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeAlarme()
@@ -179,37 +179,37 @@ public:
     virtual void passageMesure();
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void void commandeSpan(SpanHandler const & spanData)
+    // \fn virtual void void commandeSpan(const SpanHandler & spanData)
     // \brief Commande au diluteur de se mettre à un certain point de gaz
     //
     // \param spanData Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpan(SpanHandler const & spanData);
+    virtual void commandeSpan(const SpanHandler & spanData);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void commandeSpanZero(QString const & canal="")
+    // \fn virtual void commandeSpanZero(const QString & canal="")
     // \brief Commande au diluteur de se mettre au point de gaz zero
     //
     // \param canal Canal associé au polluant voulu
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpanZero(QString const & canal="");
+    virtual void commandeSpanZero(const QString & canal="");
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void commandeSpanTpg(SpanHandler const & spanTpgData)
+    // \fn virtual void commandeSpanTpg(const SpanHandler & spanTpgData)
     // \brief Commande au diluteur de se mettre à un certain point de gaz
     //  pour effectuer un Titrage en Phase Gazeuse
     //
     // \param spanTpgData Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpanTpg(SpanHandler const & spanTpgData);
+    virtual void commandeSpanTpg(const SpanHandler & spanTpgData);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void commandeSpan03(SpanHandler const & spanO3Data)
+    // \fn virtual void commandeSpan03(const SpanHandler & spanO3Data)
     // \brief Commande au diluteur de se mettre à un certain point de gaz O3
     //
     // \param spanO3Data Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpanO3(SpanHandler const & spanO3Data);
+    virtual void commandeSpanO3(const SpanHandler & spanO3Data);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void reset()

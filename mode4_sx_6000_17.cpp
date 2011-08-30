@@ -26,7 +26,7 @@
 
 #include "mode4_sx_6000_17.h"
 
-Mode4_SX_6000_17::Mode4_SX_6000_17(QString const & adressePeriph, TypePeripherique const & typePeriph, bool const & accepteFloat)
+Mode4_SX_6000_17::Mode4_SX_6000_17(const QString & adressePeriph, const TypePeripherique & typePeriph, const bool accepteFloat)
     : Mode4(adressePeriph,typePeriph,MODE4_SX6000_17,accepteFloat)
 {
 }
@@ -42,7 +42,7 @@ ushort Mode4_SX_6000_17::demandeAlarme() {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Mode4_SX_6000_17::commandeSpan(SpanHandler const & spanData) {
+void Mode4_SX_6000_17::commandeSpan(const SpanHandler & spanData) {
     QString strPoint = *this->getStrForNumber(spanData.getPoint(),2);
 
     QString data = spanData.getCanal();
@@ -56,7 +56,7 @@ void Mode4_SX_6000_17::commandeSpan(SpanHandler const & spanData) {
 }
 
 // Commande au diluteur de se mettre au point de gaz zero
-void Mode4_SX_6000_17::commandeSpanZero(QString const & canal) {
+void Mode4_SX_6000_17::commandeSpanZero(const QString & canal) {
     QString cmd;
     QString data = canal;
     if(canal.toUShort()<10)
@@ -67,7 +67,7 @@ void Mode4_SX_6000_17::commandeSpanZero(QString const & canal) {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Mode4_SX_6000_17::commandeSpanTpg(SpanHandler const & spanTpgData) {
+void Mode4_SX_6000_17::commandeSpanTpg(const SpanHandler & spanTpgData) {
     QString strPoint = *this->getStrForNumber(spanTpgData.getPoint(),2);
     QString strO3 = *this->getStrForNumber(spanTpgData.getConcO3(),3);
 
@@ -77,7 +77,7 @@ void Mode4_SX_6000_17::commandeSpanTpg(SpanHandler const & spanTpgData) {
     this->transaction(cmd);
 }
 
-void Mode4_SX_6000_17::commandeSpanO3(SpanHandler const & spanO3Data) {
+void Mode4_SX_6000_17::commandeSpanO3(const SpanHandler & spanO3Data) {
     QString cmd;
 
     ushort concO3 = spanO3Data.getConcO3();

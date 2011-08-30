@@ -47,7 +47,8 @@ class Phase : public QObject
     bool m_critereArretPrevu; // Indique si un critère d'arrêt est prévu
     QVector<ushort> m_criteresArret; // Critère d'arrêt : voir enum dans definitions_globales.h
     Commandes m_commandeDebutPhase; // Commande optionnelle à effectuer à la fin du temps de stabilisation
-    QMap<ushort,uint> m_listePolluants; // Liste des polluants et de leurs points de gaz associés
+    ushort m_idMolecule;
+    uint m_idConcentration;
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
@@ -79,7 +80,7 @@ public:
     // \param idMolecule Id de la table Molecule
     // \return bool Vrai si le polluant est déjà programé. Faux sinon
     ///////////////////////////////////////////////////////////////////////////*/
-    inline bool polluantPresent(ushort idMolecule) const {return m_listePolluants.contains(idMolecule);}
+    inline bool polluantPresent(ushort idMolecule) const {return (idMolecule==m_idMolecule);}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getNoPhase()
@@ -155,19 +156,27 @@ public:
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn QTime const getCmdDebutPhase() const
-    // \brief Renvoi la commande optionnelle de fin de tamps de stabilisation
+    // \brief Renvoi la commande optionnelle de début de phase
     //
-    // \return Commandes Commande optionnelle de fin de tamps de stabilisation
+    // \return Commandes Commande optionnelle de début de phase
     ///////////////////////////////////////////////////////////////////////////*/
     inline Commandes getCmdDebutPhase() const {return this->m_commandeDebutPhase;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn QTime const getListePolluants() const
-    // \brief Renvoi la liste des identifiants de la table Concentration de la phase
+    // \fn ushort const getIdConcentration() const
+    // \brief Renvoi l'identifiant de la table Concentration associé à la phase
     //
-    // \return QMap<ushort,uint> Liste des polluants et de leurs points de gaz associés
+    // \return uint Identifiant de la table Concentration associé à la phase
     ///////////////////////////////////////////////////////////////////////////*/
-    inline QMap<ushort,uint> getListePolluants() const {return m_listePolluants;}
+    inline uint getIdConcentration() const {return m_idConcentration;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn ushort const getIdMolecule() const
+    // \brief Renvoi l'identifiant de la table Molecule associé à la phase
+    //
+    // \return ushort Identifiant de la table Molecule associé à la phase
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline ushort getIdMolecule() const {return m_idMolecule;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setNoPhase(ushort const & numPhase)
@@ -218,12 +227,12 @@ public:
     inline void setTpsAttenteEntreMesure(const QTime & tpsAttenteEntreMesure) {this->m_tempsAttenteEntreMesure = tpsAttenteEntreMesure;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void setCmdFinTs(Commandes const & commandeFinTS)
+    // \fn void setCmdDebutPhase(Commandes const & commandeFinTS)
     // \brief Affecte une nouvelle commande fin de temps de stabilisation
     //
-    // \param commandeFinTS Nouvelle commande fin de temps de stabilisation
+    // \param commandeDebutPhase Nouvelle commande fin de temps de stabilisation
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setCmdFinTs(const Commandes & commandeFinTS) {this->m_commandeDebutPhase = commandeFinTS;}
+    inline void setCmdDebutPhase(const Commandes & commandeDebutPhase) {this->m_commandeDebutPhase = commandeDebutPhase;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void ajouterPolluant(uint idConcentration)
@@ -232,7 +241,7 @@ public:
     // \param polluant Nouveau polluant
     // \param pointGaz Nouveau point de gaz associé
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void ajouterPolluant(const uint polluant, const uint idConcentration) {this->m_listePolluants.insert(polluant,idConcentration);}
+    inline void ajouterPolluant(const uint polluant, const uint idConcentration) {m_idMolecule = polluant;m_idConcentration = idConcentration;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void supprimerPolluant(const uint polluant)
@@ -240,7 +249,7 @@ public:
     //
     // \param polluant Polluant à supprimer
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void supprimerPolluant(const uint polluant) {this->m_listePolluants.remove(polluant);}
+    inline void supprimerPolluant() {m_idConcentration=0;m_idMolecule=0;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setCritereArretPrevu(bool critereArretPrevu)

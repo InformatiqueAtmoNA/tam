@@ -49,9 +49,6 @@ Dlg_Systeme_Etalon::Dlg_Systeme_Etalon(QWidget *parent,const QPointer<BdHandler>
 Dlg_Systeme_Etalon::~Dlg_Systeme_Etalon()
 {
     delete ui;
-
-    if(!this->m_returnSelection)
-        m_bdHandler->deconnexionBD();
 }
 
 void Dlg_Systeme_Etalon::peuplerTable() {

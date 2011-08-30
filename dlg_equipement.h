@@ -20,7 +20,7 @@ public:
                             const QString & filtreType = "");
     ~Dlg_Equipement();
 
-    int getIdSelection();
+    uint getIdSelection();
     QString getNoSerieSelection();
 private:
     Ui::Dlg_Equipement *ui;
@@ -39,13 +39,13 @@ private:
     bool m_modifEnCours;
     bool m_nouvelEnregistrement;
     int m_idModele;
-    int m_idTxTransmission;
+    ushort m_idTxTransmission;
     int m_idModifie;
 
     void peuplerTable();
     void afficherFormulaire();
 
-private slots:
+private Q_SLOTS:
     void changementSelection(const QModelIndex & idxSelection);
     void buttonSupprimerClicked();
     void buttonAjouterClicked();

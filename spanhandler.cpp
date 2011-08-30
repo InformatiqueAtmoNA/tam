@@ -39,7 +39,8 @@ QVector<bool>* SpanHandler::getTabArgumentsSpan() {
     return this->tabArgumentsUtiles;
 }
 
-void SpanHandler::setSpanArguments(QString const & canal,ushort const & point, ushort const & concO3) {
+void SpanHandler::setSpanArguments(const QString canal,const ushort point, const ushort concO3)
+{
     (*this->spanArguments)[0] = canal;
     (*this->spanArguments)[1] = point;
     (*this->spanArguments)[2] = concO3;

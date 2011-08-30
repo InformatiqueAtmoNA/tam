@@ -63,8 +63,6 @@ Dlg_Tx_Transmission::Dlg_Tx_Transmission(QWidget *parent,const QPointer<BdHandle
 Dlg_Tx_Transmission::~Dlg_Tx_Transmission()
 {
     delete ui;
-    if(!this->m_returnSelection)
-        m_bdHandler.data()->deconnexionBD();
 }
 
 void Dlg_Tx_Transmission::afficherTable() {
@@ -149,5 +147,6 @@ void Dlg_Tx_Transmission::buttonSelectionnerClicked() {
 }
 
 int Dlg_Tx_Transmission::getIdSelection() {
-    return this->m_model->record(m_indexSelection.row()).value(TX_TRANSMISSION_ID).toInt();
+    uint idTxTransmission = this->m_model->record(m_indexSelection.row()).value(TX_TRANSMISSION_ID).toInt();
+    return idTxTransmission;
 }

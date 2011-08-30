@@ -26,11 +26,11 @@
 
 #include "tei_146i.h"
 
-Tei_146i::Tei_146i(QString const & adressePeriph, TypePeripherique const & typePeriph, TypePolluant const & typePolluant,OptionTpg const & optionTpg)
-        :Tei(adressePeriph, typePeriph,typePolluant,optionTpg) {}
+Tei_146i::Tei_146i(const QString & adressePeriph, const TypePeripherique & typePeriph, const OptionTpg & optionTpg)
+        :Tei(adressePeriph, typePeriph,optionTpg) {}
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Tei_146i::commandeSpan(SpanHandler const & spanData) {
+void Tei_146i::commandeSpan(const SpanHandler & spanData) {
     QString cmd;
     QString reponse;
     cmd = *(this->creerTrameCommande("set ozon off"));
@@ -47,7 +47,7 @@ void Tei_146i::commandeSpan(SpanHandler const & spanData) {
 }
 
 // Commande au diluteur de se mettre au point de gaz zero
-void Tei_146i::commandeSpanZero(QString const & canal) {
+void Tei_146i::commandeSpanZero(const QString & canal) {
     SpanHandler* spanData = new SpanHandler();
     spanData->setSpanArguments(canal,0,0);
     this->commandeSpan(*spanData);
@@ -55,7 +55,7 @@ void Tei_146i::commandeSpanZero(QString const & canal) {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Tei_146i::commandeSpanTpg(SpanHandler const & spanTpgData) {
+void Tei_146i::commandeSpanTpg(const SpanHandler & spanTpgData) {
     QString trame = "set gas ";
     trame.append(spanTpgData.getCanal());
     trame.append(" span ");
@@ -70,7 +70,7 @@ void Tei_146i::commandeSpanTpg(SpanHandler const & spanTpgData) {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz O3
-void Tei_146i::commandeSpanO3(SpanHandler const & spanO3Data) {
+void Tei_146i::commandeSpanO3(const SpanHandler & spanO3Data) {
     switch(this->optionTpg) {
     case AUCUNE:
         return;

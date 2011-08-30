@@ -41,7 +41,6 @@ class Test : public QObject
     Q_OBJECT
     int m_idTest; // Identifiant du test
     TypeTest m_typeTest;
-    QTime m_tempsMaxTest; // Temps maximum de test au delà duquel le test est arrêté automatiquement
     ushort m_tempsAcquisition; // Temps d'attente entre deux mesures en secondes.
     QTime m_tempsStabilisation; // Temps de stabilisation pendant lequel aucune mesure n'est effectuée
     QTime m_tempsMoyennageMesure; // Temps correspondant à un cycle sur lequel les mesures seront moyennées
@@ -84,14 +83,6 @@ public:
     // \return TypeTest Type de test
     ///////////////////////////////////////////////////////////////////////////*/
     inline TypeTest getTypeTest() {return this->m_typeTest;}
-
-    /*///////////////////////////////////////////////////////////////////////////
-    // \fn QTime getTempsMaxTestgetTempsMaxTest()
-    // \brief Renvoi le temps maximum de test
-    //
-    // \return QTime Temps maximum de test
-    ///////////////////////////////////////////////////////////////////////////*/
-    inline QTime getTempsMaxTest() {return this->m_tempsMaxTest;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getTempsAcquisition()
@@ -173,7 +164,6 @@ public:
     // \return Phase Phase correspondant
     ///////////////////////////////////////////////////////////////////////////*/
     inline Phase getPhase(const ushort noPhase) {return this->m_listePhases.value(noPhase);}
-//    Phase getPhase(const ushort noPhase);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool isListePhasesEmpty()
@@ -188,9 +178,42 @@ public:
     // \brief Teste si une phase numéro noPhase existe
     //
     // \param noPhase Numéro de la phase
-    // \return Phase Phase correspondant
+    // \return bool Vrai si la phase existe, faux sinon
     ///////////////////////////////////////////////////////////////////////////*/
     inline bool phaseExiste(const ushort noPhase) {return this->m_listePhases.contains(noPhase);}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn bool isTempsMaxTestDefined()
+    // \brief Teste si un temps maximum de test a été défini
+    //
+    // \return bool Vrai si tempsMaxTest défini. Faux sinon
+    ///////////////////////////////////////////////////////////////////////////*/
+    bool isTempsMaxTestDefined();
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn QMap<ushort,QTime> getListeTempsMaxPhase()
+    // \brief Renvoie la liste des temps max de phase définis pour chaque phase
+    //
+    // \return QMap<ushort,QTime> Liste des temps max de phase définis pour chaque phase
+    ///////////////////////////////////////////////////////////////////////////*/
+    QMap<ushort,QTime> getListeTempsMaxPhase();
+
+    /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // \fn QVector<ushort> getListeCommandeDebutPhaseDefinies()
+    // \brief Renvoie la liste des numéros de phases pour lesquelles une commande
+    //        de début de phase est définie
+    //
+    // \return QVector<ushort> des numéros de phases pour lesquelles une commande de début de phase est définie
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+    QVector<ushort> getListeCommandeDebutPhaseDefinies();
+
+    /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // \fn QVector<ushort> getListeCritereArretDefinis()
+    // \brief Renvoie la liste des numéros de phases pour lesquelles un critère d'arrêt est défini
+    //
+    // \return QVector<ushort> des numéros de phases pour lesquelles un critère d'arrêt est défini
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+    QVector<ushort> getListeCritereArretDefinis();
 
 ////// Mutateurs /////////////
 
@@ -225,14 +248,6 @@ public:
     // \param typeTest Nouvel type de test
     ///////////////////////////////////////////////////////////////////////////*/
     inline void setTypeTest(const QString & typeTest) {this->m_typeTest = stringToTypeTest(typeTest);}
-
-    /*///////////////////////////////////////////////////////////////////////////
-    // \fn void setTpsMaxTest(QTime const & tpsMaxTest)
-    // \brief Ajoute un nouveau temps maximum de durée du test
-    //
-    // \param tpsMaxTest Nouveau temps maximum de durée du test
-    ///////////////////////////////////////////////////////////////////////////*/
-    inline void setTempsMaxTest(const QTime & tpsMaxTest) {this->m_tempsMaxTest = tpsMaxTest;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setTempsAcquisition(ushort const & tpsAcquisition)

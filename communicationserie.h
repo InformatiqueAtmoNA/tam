@@ -64,7 +64,7 @@ private:
     ///////////////////////////////////////////////////////////////////////////*/
     void connectSignalsSlots();
 
-private slots:
+private Q_SLOTS:
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void slotRead()
@@ -79,7 +79,7 @@ private slots:
     // \param status Changement de statut
     // \param dateTime Date et heure du changement de statut
     ///////////////////////////////////////////////////////////////////////////*/
-    void statusSignal(QString status,QDateTime dateTime);
+    void statusSignal(const QString status,const QDateTime dateTime);
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ public:
     //
     // \param deviceName Identifiant du port COM (défini par /dev/ttyX ou COMX)
     ///////////////////////////////////////////////////////////////////////////*/
-    CommunicationSerie(QString deviceName);
+    CommunicationSerie(const QString deviceName);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn CommunicationSerie()
@@ -182,7 +182,7 @@ public:
     // \param newNumCom Nouveau numéro de port COM
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setNumeroCom(int newNumCom);
+    bool setNumeroCom(const int newNumCom);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool setDeviceName(QString newDeviceName)
@@ -191,7 +191,7 @@ public:
     // \param newDeviceName Nouvel identifiant du périphérique
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setDeviceName(QString newDeviceName);
+    bool setDeviceName(const QString newDeviceName);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool setBaudRate(AbstractSerial::BaudRate newBaudRate)
@@ -200,7 +200,7 @@ public:
     // \param newBaudRate Nouveau taux de transmission
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setBaudRate(AbstractSerial::BaudRate newBaudRate);
+    bool setBaudRate(const AbstractSerial::BaudRate newBaudRate);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool setDataBits(AbstractSerial::DataBits newDataBits)
@@ -209,7 +209,7 @@ public:
     // \param newDataBits Nouveau nombre de bits de transmission
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setDataBits(AbstractSerial::DataBits newDataBits);
+    bool setDataBits(const AbstractSerial::DataBits newDataBits);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool setParity(AbstractSerial::Parity newParity)
@@ -218,7 +218,7 @@ public:
     // \param newParity Nouveau type de parité
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setParity(AbstractSerial::Parity newParity);
+    bool setParity(const AbstractSerial::Parity newParity);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn CommunicationSerie();
@@ -227,7 +227,7 @@ public:
     // \param newStopBits Nouveau nombre de bits de stop
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setStopBits(AbstractSerial::StopBits newStopBits);
+    bool setStopBits(const AbstractSerial::StopBits newStopBits);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool setFlowControl(AbstractSerial::Flow newFlowControl)
@@ -236,7 +236,7 @@ public:
     // \param newFlowControl Nouveau type de controle de flux
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setFlowControl(AbstractSerial::Flow newFlowControl);
+    bool setFlowControl(const AbstractSerial::Flow newFlowControl);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool setCharTimeOut(int newCharTimeOut)
@@ -246,7 +246,7 @@ public:
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
     // Changer Intervalle de timeout en ms
-    bool setCharTimeOut(int newCharTimeOut);
+    bool setCharTimeOut(const int newCharTimeOut);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool open(AbstractSerial::OpenMode openMode)
@@ -255,7 +255,7 @@ public:
     // \param openMode Mode d'ouverture du périphérique
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool open(AbstractSerial::OpenMode openMode);
+    bool open(const AbstractSerial::OpenMode openMode);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool open(int numCom,AbstractSerial::OpenMode openMode)
@@ -265,7 +265,7 @@ public:
     // \param openMode Mode d'ouverture du périphérique
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool open(int numCom,AbstractSerial::OpenMode openMode);
+    bool open(const int numCom,const AbstractSerial::OpenMode openMode);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool open(QString deviceName,AbstractSerial::OpenMode openMode)
@@ -275,7 +275,7 @@ public:
     // \param openMode Mode d'ouverture du périphérique
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool open(QString deviceName,AbstractSerial::OpenMode openMode);
+    bool open(const QString deviceName,const AbstractSerial::OpenMode openMode);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool isOpen()
@@ -297,9 +297,9 @@ public:
     //
     // \param data Trame à tansmettre
     ///////////////////////////////////////////////////////////////////////////*/
-    void write(QString data);
+    void write(const QString data);
 
-public slots:
+public Q_SLOTS:
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void sendData(QString data)
@@ -307,7 +307,7 @@ public slots:
     //
     // \param data Trame à tansmettre
     ///////////////////////////////////////////////////////////////////////////*/
-    void sendData(QString data);
+    void sendData(const QString data);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void bytesWrittenSlot(qint64 bytes)
@@ -315,16 +315,16 @@ public slots:
     //
     // \param bytes Nombre d'octets écrits
     ///////////////////////////////////////////////////////////////////////////*/
-    void bytesWrittenSlot(qint64 bytes);
+    void bytesWrittenSlot(const qint64 bytes);
 
-signals:
+Q_SIGNALS:
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void dataReaded(QString data)
     // \brief Signal émis lors de la lecture de données sur le périphérique
     //
     // \param data Données lues
     ///////////////////////////////////////////////////////////////////////////*/
-    void dataReaded(QString data);
+    void dataReaded(const QString data);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void transmissionError()

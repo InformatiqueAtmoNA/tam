@@ -26,17 +26,25 @@
 
 #include "tei_49ps.h"
 
-Tei_49ps::Tei_49ps(QString const & adressePeriph, TypePeripherique const & typePeriph, TypePolluant const & typePolluant,OptionTpg const & optionTpg)
-    :Tei(adressePeriph, typePeriph,typePolluant,optionTpg) {}
+Tei_49ps::Tei_49ps(const QString & adressePeriph, const TypePeripherique & typePeriph, const OptionTpg & optionTpg)
+    :Tei(adressePeriph, typePeriph,optionTpg) {}
+
+bool Tei_49ps::standBy() {
+    SpanHandler* spanData = new SpanHandler();
+    spanData->setSpanArguments("",0,0);
+    this->commandeSpanO3(*spanData);
+    delete spanData;
+    return true;
+}
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Tei_49ps::commandeSpan(SpanHandler const & spanData) {
+void Tei_49ps::commandeSpan(const SpanHandler & spanData) {
     qDebug()<<"TEI-49ps : commande non supportée :";
     qDebug()<<"CommandeSpan("<<spanData.getCanal()<<","<<spanData.getPoint()<<","<<spanData.getConcO3()<<")";
 }
 
 // Commande au diluteur de se mettre au point de gaz zero
-void Tei_49ps::commandeSpanZero(QString const & canal) {
+void Tei_49ps::commandeSpanZero(const QString & canal) {
     SpanHandler* spanO3Data = new SpanHandler();
     spanO3Data->setSpanArguments(canal,0,0);
     this->commandeSpanO3(*spanO3Data);
@@ -45,13 +53,13 @@ void Tei_49ps::commandeSpanZero(QString const & canal) {
 
 // Commande au diluteur de se mettre à un certain point de gaz
 // Commande non supportée par l'appareil
-void Tei_49ps::commandeSpanTpg(SpanHandler const & spanTpgData) {
+void Tei_49ps::commandeSpanTpg(const SpanHandler & spanTpgData) {
     qDebug()<<"TEI-49ps : commande non supportée :";
     qDebug()<<"CommandeSpan("<<spanTpgData.getCanal()<<","<<spanTpgData.getPoint()<<","<<spanTpgData.getConcO3()<<")";
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz O3
-void Tei_49ps::commandeSpanO3(SpanHandler const & spanO3Data) {
+void Tei_49ps::commandeSpanO3(const SpanHandler & spanO3Data) {
     QString trame = "set O3 conc " + QString::number(spanO3Data.getConcO3());
     QString cmd = *(this->creerTrameCommande(trame));
     QString reponse = this->transaction(cmd);

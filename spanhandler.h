@@ -72,7 +72,7 @@ public:
     // \param point Point de gaz à atteindre
     // \param concO3 Concentration d'ozone désirée
     ///////////////////////////////////////////////////////////////////////////*/
-    void setSpanArguments(QString const & canal,ushort const & point, ushort const & concO3);
+    void setSpanArguments(const QString canal,const ushort point, const ushort concO3);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn QString getCanal() const

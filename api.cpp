@@ -26,16 +26,15 @@
 
 #include "api.h"
 
-Api::Api(QString const & adressePeriph, TypePeripherique const & typePeriph, Protocoles const & protocoleUtilise, TypePolluant const & typePolluant)
+Api::Api(const QString & adressePeriph, const TypePeripherique & typePeriph, const DesignationProtocole & protocoleUtilise)
 {
     this->adresse = adressePeriph;
     this->typePeripherique = typePeriph;
-    this->polluantAssocie = typePolluant;
     this->versionProtocole = protocoleUtilise;
 }
 
 // \brief Crée une trame en fonction du numéro de commande API
-QString* Api::creerTrameCommande(QString const & typeCommande,QString const & data) {
+QString* Api::creerTrameCommande(const QString & typeCommande,const QString & data) {
     QString* trame = new QString();
     trame->append(typeCommande);
     trame->append(" ");
@@ -46,16 +45,16 @@ QString* Api::creerTrameCommande(QString const & typeCommande,QString const & da
     return trame;
 }
 
-float Api::getFloatFromMesureString(QString const & mesure) {
+float Api::getFloatFromMesureString(const QString & mesure) {
     int indexDebutMesure = mesure.indexOf("=")+1;
     int indexFinMesure = mesure.indexOf(" ",indexDebutMesure);
 
     return mesure.mid(indexDebutMesure,indexFinMesure-indexDebutMesure).toFloat();
 }
 
-QVector<float>* Api::demandeMesureNox() {
+QWeakPointer<MesureIndividuelle> Api::demandeMesureNox() {
     QString cmd;
-    QVector<float>* tabMesures = new QVector<float>(3);
+    QWeakPointer<MesureIndividuelle> mesures = new MesureIndividuelle();
 
     for(int i=0;i<3;i++) {
         switch(i) {
@@ -72,15 +71,15 @@ QVector<float>* Api::demandeMesureNox() {
 
         QString reponse = this->transaction(cmd);
         if(reponse.isEmpty())
-            return NULL;
+            return mesures;
 
-        (*tabMesures)[i]=this->getFloatFromMesureString(reponse);
+        mesures.data()->append(this->getFloatFromMesureString(reponse));
     }
-    return tabMesures;
+    return mesures;
 }
 
 // Demande de mesure immédiate
-QVector<float>* Api::demandeMesure() {
+QWeakPointer<MesureIndividuelle> Api::demandeMesure() {
     QString cmd;
 
     switch(this->polluantAssocie) {
@@ -93,6 +92,8 @@ QVector<float>* Api::demandeMesure() {
     case SO2 :
         cmd = *(this->creerTrameCommande("T","SO2"));
         break;
+    case NO:
+    case NO2:
     case NOX:
         return this->demandeMesureNox();
         break;
@@ -100,12 +101,13 @@ QVector<float>* Api::demandeMesure() {
        emit(this->erreurCommande());
     }
     QString reponse = this->transaction(cmd);
+
+    QWeakPointer<MesureIndividuelle> mesures = new MesureIndividuelle();
+
     if(reponse.isEmpty())
-        return NULL;
+        return mesures;
 
-    QVector<float>* mesures = new QVector<float>(1);
-
-    (*mesures)[0] = this->getFloatFromMesureString(reponse);
+    mesures.data()->append(this->getFloatFromMesureString(reponse));
 
     return mesures;
 }
@@ -116,7 +118,7 @@ ushort Api::demandeAlarme() {
 
     QString reponse = this->transaction(cmd);
     if(reponse.isEmpty())
-        return NULL;
+        return 0;
 
     reponse.remove(0,reponse.indexOf("0x")+2);
 
@@ -150,14 +152,14 @@ void Api::passageMesure() {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Api::commandeSpan(SpanHandler const & spanData) {
+void Api::commandeSpan(const SpanHandler & spanData) {
     QString data = "GENERATE "+ QString::number(spanData.getPoint()) + " PPB " + spanData.getCanal();
     QString cmd = *(this->creerTrameCommande("C",data));
     this->transaction(cmd);
 }
 
 // Commande au diluteur de se mettre au point de gaz zero
-void Api::commandeSpanZero(QString const & canal) {
+void Api::commandeSpanZero(const QString & canal) {
     SpanHandler* spanData = new SpanHandler();
     spanData->setSpanArguments(canal,0,0);
     this->commandeSpan(*spanData);
@@ -165,14 +167,14 @@ void Api::commandeSpanZero(QString const & canal) {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Api::commandeSpanTpg(SpanHandler const & spanData) {
+void Api::commandeSpanTpg(const SpanHandler & spanData) {
     QString data = "GPT "+ QString::number(spanData.getPoint()) + " PPB " + QString::number(spanData.getConcO3()) + " PPB";
     QString cmd = *(this->creerTrameCommande("C",data));
     this->transaction(cmd);
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz O3
-void Api::commandeSpanO3(SpanHandler const & spanData) {
+void Api::commandeSpanO3(const SpanHandler & spanData) {
     QString data = "GENERATE "+ QString::number(spanData.getConcO3()) + " PPB O3";
     QString cmd = *(this->creerTrameCommande("C",data));
     this->transaction(cmd);

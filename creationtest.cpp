@@ -38,6 +38,8 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     this->m_indexTypeTest = -1;
     m_nbPhases=0;
     m_etape=0;
+    m_insertionEnCours = false;
+
     this->m_autoriserCreationPhase=true;
 
     connect(this->ui->button_AjouterPhase,SIGNAL(clicked()),this,SLOT(button_AjouterPhaseClicked()));
@@ -54,7 +56,6 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     connect(this->ui->spinBox_nbCyclesMesures,SIGNAL(valueChanged(int)),this,SLOT(spinBox_nbCyclesMesuresValueChanged(int)));
     connect(this->ui->spinBox_NbCyclesPhases,SIGNAL(valueChanged(int)),this,SLOT(spinBox_nbCyclesPhasesValueChanged(int)));
     connect(this->ui->timeEdit_TempsAttenteEntreMesure,SIGNAL(timeChanged(QTime)),this,SLOT(timeEdit_TempsAttenteEntreMesureValueChanged(QTime)));
-    connect(this->ui->timeEdit_TempsMaxTest,SIGNAL(timeChanged(QTime)),this,SLOT(timeEdit_TempsMaxTestValueChanged(QTime)));
     connect(this->ui->timeEdit_TempsStabilisation,SIGNAL(timeChanged(QTime)),this,SLOT(timeEdit_TempsStabilisation(QTime)));
     connect(this->ui->timeEdit_TempsMoyennageMesures,SIGNAL(timeChanged(QTime)),this,SLOT(timeEdit_TempsMoyennageMesuresValueChanged(QTime)));
     connect(this->ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(tabWidgetIndexChanged(int)));
@@ -68,6 +69,17 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
             this->m_test = Test::importFromXml(nomFichier);
         else
             this->m_test = test;
+
+        if(m_test.isNull()) {
+            QMessageBox msgBox;
+            msgBox.setText("Un problème est survenu lors du chargement du fichier de configuration du test");
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setIcon(QMessageBox::Critical);
+            msgBox.exec();
+
+            return;
+        }
 
         this->initialiserChamps();
         this->m_nomFichier = nomFichier;
@@ -94,8 +106,11 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
         this->m_indexTypeTest = this->ui->cb_ChoixTypeTest->currentIndex();
 
         this->ui->spinBox_TempsAcquisition->setValue(5);
+        this->m_test->setTempsAcquisition(5);
         this->ui->spinBox_NbCyclesPhases->setValue(1);
+        this->m_test->setNbCyclesDePhase(1);
         this->ui->spinBox_nbCyclesMesures->setValue(1);
+        this->m_test->setNbCyclesMesureParPhase(1);
     }
     this->ui->tabWidget->setCurrentIndex(0);
 }
@@ -107,7 +122,6 @@ CreationTest::~CreationTest()
 
 void CreationTest::initialiserChamps()
 {
-    this->ui->timeEdit_TempsMaxTest->setTime(this->m_test->getTempsMaxTest());
     this->ui->timeEdit_TempsStabilisation->setTime(this->m_test->getTempsStabilisation());
     this->ui->timeEdit_TempsAttenteEntreMesure->setTime(this->m_test->getTempsAttenteEntreMesure());
     this->ui->timeEdit_TempsMoyennageMesures->setTime(this->m_test->getTempsMoyennageMesure());
@@ -152,6 +166,7 @@ void CreationTest::initialiserChamps()
         this->ui->cb_ChoixTypeTest->setCurrentIndex(5);
         break;
     }
+    this->ui->cb_ChoixTypeTest->setEnabled(false);
     this->m_nbPhases = this->m_test->getNbPhases();
 
     for(ushort i=1;i<=this->m_nbPhases;i++) {
@@ -233,17 +248,17 @@ void CreationTest::decrementerNbPhases()
 
 void CreationTest::button_InsererPhaseClicked()
 {
+    if(!this->ui->listWidget_Phases->currentIndex().isValid())
+        return;
+    m_insertionEnCours = true;
+
     int rowToInsert = this->ui->listWidget_Phases->currentRow();
     ushort noPhaseToInsert = this->ui->listWidget_Phases->item(rowToInsert)->text().toUShort();
 
-    for(int i = rowToInsert;i<this->ui->listWidget_Phases->count();i++) {
-        ushort noPhase = this->ui->listWidget_Phases->item(i)->text().toUShort();
-        this->ui->listWidget_Phases->item(i)->setText(QString::number(++noPhase));
+    if(!m_phaseWidget.isNull()) {
+        this->m_phaseWidget->close();
+        delete this->m_phaseWidget;
     }
-
-    this->m_test->phaseInseree(noPhaseToInsert);
-    this->m_phaseWidget->close();
-    delete this->m_phaseWidget;
     this->afficherPhaseWidget(noPhaseToInsert);
     this->ui->button_Precedent->setEnabled(false);
     this->ui->button_Suivant->setEnabled(false);
@@ -358,7 +373,7 @@ void CreationTest::button_PrecedentClicked()
 void CreationTest::button_SauvegarderClicked ()
 {
     if(this->m_typeTest!=PERSO) {
-        uint nbPhasesRequises;
+        uint nbPhasesRequises=0;
         switch(this->m_typeTest) {
         case REPETABILITE_1:
         case REPETABILITE_2:
@@ -405,10 +420,18 @@ void CreationTest::button_SauvegarderClicked ()
     model->submitAll();
 
     this->m_test->setIdTest(model->record(row).value(TEST_XML_ID).toInt());
+
     if(!this->m_test->exportToXml(this->m_nomFichier)) {
+        QMessageBox msgBox;
+        msgBox.setText("Un problème est survenu lors de l'enregistrement du fichier de configuration XML");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+
         model->removeRow(row);
         return;
     }
+
     if(!this->m_nomFichierAEffacer.isEmpty()){
         if(this->m_nomFichierAEffacer.compare(this->m_nomFichier)!=0) {
             QFile ancienFichierXML(this->m_nomFichierAEffacer);
@@ -465,10 +488,24 @@ void CreationTest::editionPhaseAnnulee()
     this->m_phaseWidget->close();
     this->ui->button_AjouterPhase->setEnabled(true);
     this->tabWidgetIndexChanged(this->ui->tabWidget->currentIndex());
+    m_insertionEnCours = false;
 }
 
 void CreationTest::editionPhaseValidee(const Phase & phase)
 {
+    if(m_insertionEnCours) {
+        int rowToInsert = this->ui->listWidget_Phases->currentRow();
+        ushort noPhaseToInsert = this->ui->listWidget_Phases->item(rowToInsert)->text().toUShort();
+
+        for(int i = rowToInsert;i<this->ui->listWidget_Phases->count();i++) {
+            ushort noPhase = this->ui->listWidget_Phases->item(i)->text().toUShort();
+            this->ui->listWidget_Phases->item(i)->setText(QString::number(++noPhase));
+        }
+
+        this->m_test->phaseInseree(noPhaseToInsert);
+        m_insertionEnCours = false;
+    }
+
     if(!this->m_test->phaseExiste(phase.getNoPhase())) {
         this->incrementerNbPhases();
         QListWidgetItem* item = new QListWidgetItem(QString::number(phase.getNoPhase()));

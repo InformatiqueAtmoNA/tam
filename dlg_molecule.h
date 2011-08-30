@@ -50,7 +50,7 @@ private:
 
     void afficherTable();
 
-private slots:
+private Q_SLOTS:
     void changementSelection(const QModelIndex & idxSelection);
     void buttonSupprimerClicked();
     void buttonAjouterClicked();

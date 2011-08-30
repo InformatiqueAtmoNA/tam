@@ -72,7 +72,7 @@ protected:
     // \param commande Commande TEI
     // \param QString* Trame de commande
     ///////////////////////////////////////////////////////////////////////////*/
-    QString* creerTrameCommande(QString const & commande);
+    QString* creerTrameCommande(const QString & commande);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn float getFloatFromMesureString(QString mesure)
@@ -89,7 +89,7 @@ protected:
     //
     // \return QVector<float> Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    QVector<float>* demandeMesureNox();
+    QWeakPointer<MesureIndividuelle> demandeMesureNox();
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ public:
     // \param typePolluant Type de polluant associé à l'appareil
     // \param optionTpg Paramètre définissant si l'appareil dispose d'un ozoniseur ou d'un photometre
     ///////////////////////////////////////////////////////////////////////////*/
-    Tei(QString const & adressePeriph, TypePeripherique const & typePeriph, TypePolluant const & typePolluant,OptionTpg const & optionTpg=AUCUNE);
+    Tei(const QString & adressePeriph, const TypePeripherique & typePeriph,const OptionTpg & optionTpg=AUCUNE);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void init()
@@ -133,9 +133,9 @@ public:
     // \fn virtual void demandeMesure()
     // \brief Demande de mesure immédiate
     //
-    // \return QVector<float> Tableau des mesures
+    // \return MesureIndividuelle Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual QVector<float>* demandeMesure();
+    virtual QWeakPointer<MesureIndividuelle> demandeMesure();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeAlarme()

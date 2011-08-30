@@ -64,9 +64,6 @@ Dlg_Protocole::Dlg_Protocole(QWidget *parent,const QPointer<BdHandler> bdHandler
 Dlg_Protocole::~Dlg_Protocole()
 {
     delete ui;
-
-    if(!this->m_returnSelection)
-        m_bdHandler.data()->deconnexionBD();
 }
 
 void Dlg_Protocole::afficherTable() {

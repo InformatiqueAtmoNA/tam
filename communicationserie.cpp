@@ -33,7 +33,7 @@ CommunicationSerie::CommunicationSerie()
     device->enableEmitStatus(true);
 }
 
-CommunicationSerie::CommunicationSerie(int numCom)
+CommunicationSerie::CommunicationSerie(const int numCom)
 {
     this->device= new AbstractSerial(this);
     this->setNumeroCom(numCom);
@@ -43,7 +43,7 @@ CommunicationSerie::CommunicationSerie(int numCom)
     device->enableEmitStatus(true);
 }
 
-CommunicationSerie::CommunicationSerie(QString deviceName)
+CommunicationSerie::CommunicationSerie(const QString deviceName)
 {
     this->device= new AbstractSerial(this);
     qDebug()<<"Changement du nom de périphérique"<< deviceName;
@@ -107,7 +107,7 @@ int CommunicationSerie::getCharTimeOut() {
 //////////////////////////////////////////////////
 
 // Changer numero du port Com
-bool CommunicationSerie::setNumeroCom(int newNumCom) {
+bool CommunicationSerie::setNumeroCom(const int newNumCom) {
     QString newDeviceName = "/dev/ttyS" + newNumCom;
     if(!this->setDeviceName(newDeviceName)) {
         qDebug() << "Erreur lors de changement de numéro de port com" <<  newNumCom;
@@ -118,7 +118,7 @@ bool CommunicationSerie::setNumeroCom(int newNumCom) {
 }
 
 // Changer Nom de l'appareil
-bool CommunicationSerie::setDeviceName(QString newDeviceName) {
+bool CommunicationSerie::setDeviceName(const QString newDeviceName) {
     if (this->device->isOpen()) {
         qDebug() << "Erreur lors de changement de nom :" <<  newDeviceName;
         qDebug() << "Le périphérique est ouvert";
@@ -143,7 +143,7 @@ bool CommunicationSerie::setDeviceName(QString newDeviceName) {
 }
 
 // Changer Taux de transmission
-bool CommunicationSerie::setBaudRate(AbstractSerial::BaudRate newBaudRate) {
+bool CommunicationSerie::setBaudRate(const AbstractSerial::BaudRate newBaudRate) {
     if (!this->device->setBaudRate(newBaudRate)) {
         qDebug() << "Erreur lors de changement de taux de transmission " << newBaudRate;
         return false;
@@ -154,7 +154,7 @@ bool CommunicationSerie::setBaudRate(AbstractSerial::BaudRate newBaudRate) {
 }
 
 // Changer Nombre de bits de transmission
-bool CommunicationSerie::setDataBits(AbstractSerial::DataBits newDataBits) {
+bool CommunicationSerie::setDataBits(const AbstractSerial::DataBits newDataBits) {
     if (!this->device->setDataBits(newDataBits)) {
         qDebug() << "Erreur lors de changement de nombre de bits de transmission" << newDataBits;
         return false;
@@ -165,7 +165,7 @@ bool CommunicationSerie::setDataBits(AbstractSerial::DataBits newDataBits) {
 }
 
 // Changer la parité
-bool CommunicationSerie::setParity(AbstractSerial::Parity newParity) {
+bool CommunicationSerie::setParity(const AbstractSerial::Parity newParity) {
     if (!this->device->setParity(newParity)) {
         qDebug() << "Erreur lors de changement de la parité" << newParity;
         return false;
@@ -176,7 +176,7 @@ bool CommunicationSerie::setParity(AbstractSerial::Parity newParity) {
 }
 
 // Changer Bits de stop
-bool CommunicationSerie::setStopBits(AbstractSerial::StopBits newStopBits) {
+bool CommunicationSerie::setStopBits(const AbstractSerial::StopBits newStopBits) {
     if (!this->device->setStopBits(newStopBits)) {
         qDebug() << "Erreur lors de changement des bits de stop" << newStopBits;
         return false;
@@ -187,7 +187,7 @@ bool CommunicationSerie::setStopBits(AbstractSerial::StopBits newStopBits) {
 }
 
 // Changer Controle de flux
-bool CommunicationSerie::setFlowControl(AbstractSerial::Flow newFlowControl) {
+bool CommunicationSerie::setFlowControl(const AbstractSerial::Flow newFlowControl) {
     if (!this->device->setFlowControl(newFlowControl)) {
         qDebug() << "Erreur lors de changement du controle de flux" << newFlowControl;
         return false;
@@ -198,12 +198,8 @@ bool CommunicationSerie::setFlowControl(AbstractSerial::Flow newFlowControl) {
 }
 
 // Changer Intervalle de timeout en ms
-bool CommunicationSerie::setCharTimeOut(int newCharTimeOut) {
-    if (!this->device->setCharIntervalTimeout(newCharTimeOut)) {
-        qDebug() << "Erreur lors de changement de l'intervalle de timeout en ms" << newCharTimeOut;
-        return false;
-    }
-
+bool CommunicationSerie::setCharTimeOut(const int newCharTimeOut) {
+    this->device->setCharIntervalTimeout(newCharTimeOut);
     this->charTimeOut = newCharTimeOut;
     return true;
 }
@@ -222,14 +218,14 @@ bool CommunicationSerie::open(AbstractSerial::OpenMode openMode){
 }
 
 // Ouvrir le Périphérique en spécifiant le numéro de port com
-bool CommunicationSerie::open(int numCom,AbstractSerial::OpenMode openMode) {
+bool CommunicationSerie::open(const int numCom,const AbstractSerial::OpenMode openMode) {
     if(!this->setNumeroCom(numCom))
         return false;
     return this->open(openMode);
 }
 
 // Ouvrir le Périphérique en spécifiant le nom
-bool CommunicationSerie::open(QString deviceName,AbstractSerial::OpenMode openMode) {
+bool CommunicationSerie::open(const QString deviceName,const AbstractSerial::OpenMode openMode) {
     if(!this->setDeviceName(deviceName))
         return false;
     return this->open(openMode);
@@ -245,7 +241,7 @@ void CommunicationSerie::close() {
     this->device->close();
 }
 
-void CommunicationSerie::write(QString data) {
+void CommunicationSerie::write(const QString data) {
     QByteArray baData = data.toAscii();
     if(this->device->write(baData)<0) {
         qDebug() << "Problème lors de l'envoi de la trame" << baData;
@@ -266,7 +262,7 @@ void CommunicationSerie::slotRead() {
 }
 
 // En cas de changement de statut du périphérique
-void CommunicationSerie::statusSignal(QString status,QDateTime dateTime) {
+void CommunicationSerie::statusSignal(const QString status,const QDateTime dateTime) {
     qDebug() << dateTime.time().toString() << " : " << status << "\n";
 }
 
@@ -277,6 +273,6 @@ void CommunicationSerie::bytesWrittenSlot(qint64 bytes) {
 /////////////////
 // Slots publics
 /////////////////
-void CommunicationSerie::sendData(QString data) {
+void CommunicationSerie::sendData(const QString data) {
     this->write(data);
 }

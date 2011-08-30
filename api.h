@@ -49,15 +49,15 @@ protected:
     // \param TypeCommandesApi Type de commande API
     // \param data Données facultatives
     ///////////////////////////////////////////////////////////////////////////*/
-    QString* creerTrameCommande(QString const & typeCommande,QString const & data="");
+    QString* creerTrameCommande(const QString & typeCommande,const QString & data="");
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void demandeMesureNox()
     // \brief Demande de mesure immédiate pour le NOX
     //
-    // \return QVector<float> Tableau des mesures
+    // \return QWeakPointer<MesureIndividuelle> Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    QVector<float>* demandeMesureNox();
+    QWeakPointer<MesureIndividuelle> demandeMesureNox();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn float getFloatFromMesureString(QString mesure)
@@ -65,11 +65,11 @@ protected:
     //
     // \return float Mesure au format flottant
     ///////////////////////////////////////////////////////////////////////////*/
-    float getFloatFromMesureString(QString const & mesure);
+    float getFloatFromMesureString(const QString & mesure);
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn Api(QString adressePeriph, TypePeripherique typePeriph, Protocoles const & protocoleUtilise, TypePolluant typePolluant)
+    // \fn Api(QString adressePeriph, TypePeripherique typePeriph, DesignationProtocole & protocoleUtilise, TypePolluant typePolluant)
     // \brief Constructeur
     //
     // \param adressePeriph Adresse du périphérique
@@ -77,15 +77,15 @@ public:
     // \param TypePolluant Polluant associé au périphérique
     // \param protocoleUtilise Version de protocole utilisée
     ///////////////////////////////////////////////////////////////////////////*/
-    Api(QString const & adressePeriph, TypePeripherique const & typePeriph, Protocoles const & protocoleUtilise, TypePolluant const & typePolluant);
+    Api(const QString & adressePeriph,const TypePeripherique & typePeriph, const DesignationProtocole & protocoleUtilise);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeMesure()
     // \brief Demande de mesure immédiate
     //
-    // \return QVector<float> Tableau des mesures
+    // \return QWeakPointer<MesureIndividuelle> Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual QVector<float>* demandeMesure();
+    virtual QWeakPointer<MesureIndividuelle> demandeMesure();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeAlarme()
@@ -114,37 +114,37 @@ public:
     virtual void passageMesure();
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void void commandeSpan(SpanHandler const & spanData)
+    // \fn virtual void void commandeSpan(const SpanHandler & spanData)
     // \brief Commande au diluteur de se mettre à un certain point de gaz
     //
     // \param spanData Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpan(SpanHandler const & spanData);
+    virtual void commandeSpan(const SpanHandler & spanData);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void commandeSpanZero(QString const & canal="")
+    // \fn virtual void commandeSpanZero(const QString & canal="")
     // \brief Commande au diluteur de se mettre au point de gaz zero
     //
     // \param canal Canal associé au polluant voulu
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpanZero(QString const & canal="");
+    virtual void commandeSpanZero(const QString & canal="");
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void commandeSpanTpg(SpanHandler const & spanTpgData)
+    // \fn virtual void commandeSpanTpg(const SpanHandler & spanTpgData)
     // \brief Commande au diluteur de se mettre à un certain point de gaz
     //  pour effectuer un Titrage en Phase Gazeuse
     //
     // \param spanTpgData Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpanTpg(SpanHandler const & spanTpgData);
+    virtual void commandeSpanTpg(const SpanHandler & spanTpgData);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual void commandeSpan03(SpanHandler const & spanO3Data)
+    // \fn virtual void commandeSpan03(const SpanHandler & spanO3Data)
     // \brief Commande au diluteur de se mettre à un certain point de gaz O3
     //
     // \param spanO3Data Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpanO3(SpanHandler const & spanO3Data);
+    virtual void commandeSpanO3(const SpanHandler & spanO3Data);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void standBy()

@@ -43,7 +43,7 @@ private:
 
     int afficherDlg_Equipement(const QString & filtreType,const int index=-1);
 
-private slots:
+private Q_SLOTS:
     void changementSelection(const QModelIndex & idxSelection);
     void buttonSupprimerClicked();
     void buttonAjouterClicked();

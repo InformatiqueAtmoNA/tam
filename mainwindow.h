@@ -32,6 +32,8 @@
 #include <QSettings>
 #include "creationtest.h"
 #include "homewidget.h"
+#include "et_interfaceexecutiontest.h"
+#include "et_listeattentetests.h"
 
 namespace Ui {
     class MainWindow;
@@ -46,8 +48,10 @@ public:
 protected:
     QPointer<BdHandler> m_bdHandler;
     QPointer<HomeWidget> m_homeWidget;
-    QPointer<CreationTest> m_dlg_test;
-    QPointer<QGridLayout> m_gridLayout;
+    QPointer<CreationTest> m_dlgCreationtest;
+    QPointer<et_InterfaceExecutionTest> m_dlgExecutionTest;
+    QPointer<et_listeAttenteTests> m_dlgListeAttenteTest;
+    ExecutionTest* testAExecuter;
 
     void changeEvent(QEvent *e);
     void afficherHomeWidget();
@@ -56,11 +60,13 @@ protected:
 private:
     Ui::MainWindow *ui;
 
-public slots:
+public Q_SLOTS:
     void nouveauTest();
     void modifierTest(const QString fichierDescription);
-    void executerTest(const QString fichierDescription);
-    void fermetureCreationTestWidget();
+    void executerTest(const ushort idTestXML, const QString fichierDescription);
+    void fermetureTestWidget();
+    void afficherDlgEquipement();
+    void programmerSerieTests();
 };
 
 #endif // MAINWINDOW_H

@@ -26,7 +26,7 @@
 
 #include "tei.h"
 
-Tei::Tei(QString const & adressePeriph, TypePeripherique const & typePeriph, TypePolluant const & typePolluant,OptionTpg const & optionTpg) {
+Tei::Tei(const QString & adressePeriph,const TypePeripherique & typePeriph,const OptionTpg & optionTpg) {
     bool conversionOK;
     ushort adresseCodeAscii = adressePeriph.toUShort(&conversionOK,10);
     if(conversionOK) {
@@ -37,12 +37,11 @@ Tei::Tei(QString const & adressePeriph, TypePeripherique const & typePeriph, Typ
         this->adresse = adressePeriph;
 
     this->typePeripherique = typePeriph;
-    this->polluantAssocie = typePolluant;
     this->optionTpg = optionTpg;
 }
 
 // Crée une trame au format TEI
-QString* Tei::creerTrameCommande(QString const & commande) {
+QString* Tei::creerTrameCommande(const QString & commande) {
     QString* trame = new QString();
     trame->append(this->adresse);
     trame->append(commande);
@@ -99,9 +98,9 @@ float Tei::getFloatFromMesureString(QString reponse) {
 }
 
 // Demande de mesure immédiate pour le NOX
-QVector<float>* Tei::demandeMesureNox() {
+QWeakPointer<MesureIndividuelle> Tei::demandeMesureNox() {
     QString cmd;
-    QVector<float>* tabMesures = new QVector<float>(3);
+    QWeakPointer<MesureIndividuelle> tabMesures = new MesureIndividuelle();
 
     for(int i=0;i<3;i++) {
         switch(i) {
@@ -118,16 +117,14 @@ QVector<float>* Tei::demandeMesureNox() {
 
         QString reponse = this->transaction(cmd);
         if(reponse.isEmpty())
-            return NULL;
-
-        (*tabMesures)[i]=this->getFloatFromMesureString(reponse);
+            return tabMesures;
+        tabMesures.data()->append(this->getFloatFromMesureString(reponse));
     }
     return tabMesures;
 }
 
-
 // Demande de mesure immediate
-QVector<float>* Tei::demandeMesure() {
+QWeakPointer<MesureIndividuelle> Tei::demandeMesure() {
     QString cmd;
 
     switch(this->polluantAssocie) {
@@ -140,6 +137,8 @@ QVector<float>* Tei::demandeMesure() {
     case SO2 :
         cmd = *(this->creerTrameCommande("so2"));
         break;
+    case NO:
+    case NO2:
     case NOX:
         return this->demandeMesureNox();
         break;
@@ -148,11 +147,12 @@ QVector<float>* Tei::demandeMesure() {
     }
 
     QString reponse = this->transaction(cmd);
-    if(reponse.isEmpty())
-        return NULL;
+    QWeakPointer<MesureIndividuelle> tabMesures = new MesureIndividuelle();
 
-    QVector<float>* tabMesures = new QVector<float>(1);
-    (*tabMesures)[0]=this->getFloatFromMesureString(reponse);
+    if(reponse.isEmpty())
+        return tabMesures;
+
+    tabMesures.data()->append(this->getFloatFromMesureString(reponse));
 
     return tabMesures;
 }
@@ -162,23 +162,13 @@ ushort Tei::demandeAlarme() {
     QString cmd = *(this->creerTrameCommande("flags"));
     QString reponse = this->transaction(cmd);
     if(reponse.isEmpty())
-        return NULL;
+        return 0;
 
     if(reponse.contains("*"))
         reponse.remove("*");
     reponse.remove(reponse.length()-1,1);
     QString flagsAlarme = reponse.right(4);
 
-//    for(int i=0;i<4;i++) {
-//        if(flagsAlarme.at(i)=='0' || flagsAlarme.at(i)=='1' ||
-//           flagsAlarme.at(i)=='4' || flagsAlarme.at(i)=='5')
-//            qDebug()<<"Pas d'alarme : "<<flagsAlarme;
-//        else {
-//            qDebug()<<"Alarme générale : "<<flagsAlarme;
-//            emit(this->alarmeGenerale());
-//            return 1;
-//        }
-//    }
     for(int i=0;i<4;i++) {
         if(flagsAlarme.at(i)!='0') {
             qDebug()<<"Alarme générale : "<<flagsAlarme;

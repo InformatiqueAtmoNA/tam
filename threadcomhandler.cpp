@@ -41,10 +41,11 @@ void ThreadComHandler::run() {
     while(!flagStop) {
         QCoreApplication::processEvents();
     }
+    this->comRS232->close();
 }
 
 // Configure la liaison RS232
-void ThreadComHandler::configureRS232(QString deviceName) {
+void ThreadComHandler::configureRS232(const QString deviceName) {
     this->comRS232 = new CommunicationSerie(deviceName);
 
     if(!this->comRS232->open(AbstractSerial::ReadWrite)) {
@@ -81,7 +82,7 @@ void ThreadComHandler::configureRS232(QString deviceName) {
         emit(this->ouverturePort(false));
         return;
     }
-    if(!comRS232->setCharTimeOut(300)) {
+    if(!comRS232->setCharTimeOut(200)) {
         this->comRS232->close();
         emit(this->ouverturePort(false));
         return;

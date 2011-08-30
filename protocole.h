@@ -1,6 +1,6 @@
 /*////////////////////////////////////////////////////
 // \file protocole.h
-// \brief Interface pour les protocoles
+// \brief Interface pour les DesignationProtocole
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 31/03/2011
@@ -36,7 +36,7 @@
 // \brief classe abstraite définissant les méthodes d'un protocole
 //
 // Cette classe sert d'interface pour définir les membres et méthodes
-// communes à tous les protocoles.
+// communes à tous les DesignationProtocole.
 // Les méthodes de cette classe doivent être réimplémentées dans les classes filles
 ////////////////////////////////////////////////////////////////////////////////////*/
 
@@ -45,7 +45,7 @@ class Protocole : public QObject
     Q_OBJECT
 protected:
     QString adresse; // Adresse du périphérique
-    ThreadComHandler const* threadCommunication; // Gère la communication RS232
+    QPointer<ThreadComHandler> threadCommunication; // Gère la communication RS232
     ushort flagEtatCom; // Flag de gestion de l'état de la communication
     ushort timeout; // Temps maximum d'attente lors d'une communication en ms
     bool timerFini; // Signifie la fin du timeout de communication
@@ -53,28 +53,28 @@ protected:
     TypePeripherique typePeripherique; // Analyseur ou diluteur
     TypePolluant polluantAssocie; // Polluant associé
     OptionTpg optionTpg; // Option pour le tirtrage en phase gazeuse
-    Protocoles versionProtocole; // Version de protocole
-
+    DesignationProtocole versionProtocole; // Version de protocole
+    bool m_avorterTransaction;
 
 public:
     Protocole();
     virtual ~Protocole();
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn void setThreadComHandler(CommunicationSerie* newThreadComHandler)
+    // \fn void setThreadComHandler(QPointer<ThreadComHandler> newThreadComHandler)
     // \brief Affecte une nouvelle instance de la classe ThreadComHandler
     //
     // \param newThreadComHandler Nouvelle instance de la classe ThreadComHandler
     ///////////////////////////////////////////////////////////////////////////*/
-    void setThreadComHandler(ThreadComHandler const & newThreadComHandler);
+    void setThreadComHandler(const QPointer<ThreadComHandler> newThreadComHandler);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn ThreadComHandler* getThreadComHandler()
+    // \fn QPointer<ThreadComHandler> getThreadComHandler()
     // \brief Retourne l'instance de la classe ThreadComHandler
     //
-    // \return ThreadComHandler* Pointeur sur l'instance de la classe ThreadComHandler
+    // \return QPointer<ThreadComHandler> Pointeur sur l'instance de la classe ThreadComHandler
     ///////////////////////////////////////////////////////////////////////////*/
-    ThreadComHandler const* getThreadComHandler();
+    QPointer<ThreadComHandler> getThreadComHandler();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setTimeOut(ushort timeout)
@@ -82,7 +82,15 @@ public:
     //
     // \param newTimeOut Nouvelle valeur de timeout en ms
     ///////////////////////////////////////////////////////////////////////////*/
-    void setTimeOut(ushort const & newTimeOut);
+    void setTimeOut(const ushort newTimeOut);
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setTypePolluant(const TypePolluant & typePolluant)
+    // \brief Initialise le type de polluant associé à l'appareil
+    //
+    // \param typePolluant Type de polluant associé à l'appareil
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setTypePolluant(const TypePolluant & typePolluant) {this->polluantAssocie = typePolluant;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getTimeOut()
@@ -96,7 +104,7 @@ public:
     // \fn void changementEtat(ushort newEtatCom)
     // \brief Affecte un nouvel état de la communication RS232
     ///////////////////////////////////////////////////////////////////////////*/
-    void changementEtat(ushort const & newEtatCom);
+    void changementEtat(const ushort newEtatCom);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getEtatCom()
@@ -155,12 +163,12 @@ public:
     inline virtual bool commandeEvent() {return false;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual QVector<float> demandeMesure()
+    // \fn virtual QWeakPointer<MesureIndividuelle> demandeMesure()
     // \brief Demande de mesure immédiate
     //
-    // \return QVector<float> Tableau des mesures
+    // \return QWeakPointer<MesureIndividuelle> Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual QVector<float>* demandeMesure()=0;
+    virtual QWeakPointer<MesureIndividuelle> demandeMesure()=0;
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeAlarme()
@@ -202,7 +210,7 @@ public:
     //
     // \param spanData Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpan(SpanHandler const & spanData);
+    virtual void commandeSpan(const SpanHandler & spanData);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void commandeSpanZero(QString const & canal="")
@@ -210,7 +218,7 @@ public:
     //
     // \param canal Canal associé au polluant voulu
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpanZero(QString const & canal=0);
+    virtual void commandeSpanZero(const QString & canal=0);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void commandeSpanTpg(SpanHandler const & spanTpgData)
@@ -219,7 +227,7 @@ public:
     //
     // \param spanTpgData Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpanTpg(SpanHandler const & spanTpgData);
+    virtual void commandeSpanTpg(const SpanHandler & spanTpgData);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void commandeSpan03(SpanHandler const & spanO3Data)
@@ -227,7 +235,7 @@ public:
     //
     // \param spanO3Data Instance de la classe SpanHandler contenant les infos de span
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual void commandeSpanO3(SpanHandler const & spanO3Data);
+    virtual void commandeSpanO3(const SpanHandler & spanO3Data);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn QString transaction(QString commande)
@@ -236,7 +244,7 @@ public:
     // \param commande Trame de commande
     // \return QString reponse du périphérique
     ///////////////////////////////////////////////////////////////////////////*/
-    QString transaction(QString const & commande);
+    QString transaction(const QString & commande);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual QVector<Commandes> const* getListeCommandes()
@@ -256,14 +264,24 @@ public:
     ///////////////////////////////////////////////////////////////////////////*/
     virtual SpanHandler* getSpanHandler(Commandes commandeSpan)=0;
 
-signals:
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn static QPointer<Protocole> getProtocoleObject(const DesignationProtocole & designationProtocole, const QString & adresse)
+    // \brief Retourne un objet protocole en fonction des paramètres
+    //
+    // \param protocole Identifiant du protocole de l'appareil
+    // \param adresse Adresse de l'appareil
+    // \return SpanHandler* Instance de SpanHandler contenant les infos sur les arguments de la commande
+    ///////////////////////////////////////////////////////////////////////////*/
+    static QPointer<Protocole> getProtocoleObject(const DesignationProtocole & designationProtocole, const QString & adresse);
+
+Q_SIGNALS:
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void envoiTrame(QString data)
     // \brief Envoi d'une trame par RS232
     //
     // \param data Trame de commande
     ///////////////////////////////////////////////////////////////////////////*/
-    void envoiTrame(QString const & data);
+    void envoiTrame(const QString & data);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void afficheTrame(QString data)
@@ -271,7 +289,7 @@ signals:
     //
     // \param data Trame à afficher
     ///////////////////////////////////////////////////////////////////////////*/
-    void afficheTrame(QString const & data);
+    void afficheTrame(const QString & data);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void afficheTrame(QString data)
@@ -279,7 +297,7 @@ signals:
     //
     // \param data Trame à afficher
     ///////////////////////////////////////////////////////////////////////////*/
-    void afficheTrame(QStringList* data);
+    void afficheTrame(const QStringList* data);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void erreurTransmission()
@@ -299,14 +317,18 @@ signals:
     ///////////////////////////////////////////////////////////////////////////*/
     void alarmeGenerale();
 
-protected slots:
+public Q_SLOTS:
+
+    inline void quitter() {m_avorterTransaction=true;}
+
+protected Q_SLOTS:
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void lectureTrame(QString data)
     // \brief Slot de lecture d'une trame
     //
     // \param data Trame reçue
     ///////////////////////////////////////////////////////////////////////////*/
-    void lectureTrame(QString const & data);
+    void lectureTrame(const QString & data);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void timeoutCom()

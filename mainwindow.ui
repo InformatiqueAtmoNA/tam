@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1024</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -28,7 +28,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1024</width>
      <height>23</height>
     </rect>
    </property>
@@ -38,11 +38,35 @@
     </property>
     <addaction name="action_Fichier_Quitter"/>
    </widget>
+   <widget class="QMenu" name="menuBaseDonnees">
+    <property name="title">
+     <string>&amp;Base de données</string>
+    </property>
+    <addaction name="actionDlgEquipement"/>
+   </widget>
+   <widget class="QMenu" name="menuTests_M_trologiques">
+    <property name="title">
+     <string>&amp;Tests Métrologiques</string>
+    </property>
+    <addaction name="action_SerieTest"/>
+   </widget>
    <addaction name="menu_Fichier"/>
+   <addaction name="menuTests_M_trologiques"/>
+   <addaction name="menuBaseDonnees"/>
   </widget>
   <action name="action_Fichier_Quitter">
    <property name="text">
     <string>&amp;Quitter</string>
+   </property>
+  </action>
+  <action name="actionDlgEquipement">
+   <property name="text">
+    <string>Equipements</string>
+   </property>
+  </action>
+  <action name="action_SerieTest">
+   <property name="text">
+    <string>&amp;Programmer une série de tests</string>
    </property>
   </action>
  </widget>

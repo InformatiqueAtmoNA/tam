@@ -28,9 +28,12 @@
 #define BDHANDLER_H
 
 #include "definitions_globales.h"
+#include "spanhandler.h"
 
 class BdHandler : public QObject
 {
+    Q_OBJECT
+
 protected :
     QSqlDatabase m_baseMySql;
 
@@ -48,8 +51,8 @@ public:
     QPointer<QSqlRelationalTableModel> getSystemeEtalonModel(const uint idSystemeEtalon=0);
     QPointer<QSqlRelationalTableModel> getPolluantAssocieModel(const uint idEquipement);
     QPointer<QSqlRelationalTableModel> getConcentrationAssocieeModel(const uint idConcentration=0);
-    QPointer<QSqlQueryModel> getPolluantsParSystemeEtalon(const uint idSystemeEtalon,const bool filtrerRdf=false);
     QPointer<QSqlQueryModel> getEquipementFiltreParModele(const QString & filtre);
+    QPointer<QSqlQueryModel> getPolluantsParSystemeEtalon(const uint idSystemeEtalon,const bool filtrerRdf=false);
     QPointer<QSqlTableModel> getSystemeEtalonModelSansRelation();
     QPointer<QSqlTableModel> getMoleculesModel();
     QPointer<QSqlQueryModel> getMoleculesModel(const uint idmoleculeFiltre);
@@ -59,9 +62,25 @@ public:
     QPointer<QSqlTableModel> getTestXmlModel(const uint idTestXml=0);
     QPointer<QSqlTableModel> getConcentrationModel(const uint idSystemeEtalon,const uint idPolluant);
     QPointer<QSqlTableModel> getConcentrationAssocieeModel();
+    QPointer<QSqlTableModel> getOperateurModel();
+    QPointer<QSqlTableModel> getLieuModel();
+    QPointer<QSqlTableModel> getTestMetroModel();
     QSqlRecord* getConcentrationRow(const uint idConcentration);
     QSqlRecord* getConcentrationRow(const uint idSystemeEtalon, const uint idMolecule, const uint pointGaz);
     QSqlRecord* getMoleculeRow(const uint idMolecule);
+    QSqlRecord* getEquipementRow(const ushort idEquipement);
+    QSqlRecord* getSystemeEtalonRow(const ushort idSystemeEtalon);
+    QSqlRecord* getEquipementModeledRow(const ushort idEquipement);
+    QString getEquipementNumSerie(const ushort idEquipement);
+    ushort getTxTransmission(const ushort idTxTransmission);
+    DesignationProtocole getDesignationProtocole(const ushort idEquipement);
+    ushort getIdCalibrateur(const uint idSystemeEtalon);
+
+    bool insertIntoMesure(const MesureInfo mesuresInfos);
+    void setSpanHandlerFromIdConcentration(ushort idConcentration, QString canal, SpanHandler* spanHandler);
+
+Q_SIGNALS:
+    void afficherTrace(QString trace);
 };
 
 #endif // BDHANDLER_H

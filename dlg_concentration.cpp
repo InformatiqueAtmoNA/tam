@@ -334,7 +334,7 @@ void Dlg_Concentration::buttonSupprimerClicked()
        return;
 
     if(!m_model->removeRow(m_indexSelection.row()))
-       QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé",QMessageBox::Ok);
+       QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé.",QMessageBox::Ok);
     else {
        m_model->submitAll();
        this->initialiserChamps();
@@ -343,15 +343,12 @@ void Dlg_Concentration::buttonSupprimerClicked()
 
 void Dlg_Concentration::buttonValiderClicked()
 {
-    int row;
-    if(m_modifEnCours) {
-        row = this->ui->tableView->currentIndex().row();
-    }
-    else {
-        row = m_model->rowCount();
-        if(row>0) row-=1;
-        m_model->insertRow(row);
-    }
+    int row = m_model->rowCount();
+    if(row>0) row-=1;
+
+    ushort idConcentration = m_model->record(m_indexSelection.row()).value(CONCENTRATION_ID).toUInt();
+
+    m_model->insertRow(row);
     m_model->setData(m_model->index(row,CONCENTRATION_SYS_ETALON),QVariant::fromValue(this->m_idSystemeEtalon));
     m_model->setData(m_model->index(row,CONCENTRATION_ID_MOLECULE),QVariant::fromValue(this->m_idPolluant));
     m_model->setData(m_model->index(row,CONCENTRATION_POINT),QVariant::fromValue(this->ui->spinBox_PointGaz->value()));
@@ -359,6 +356,10 @@ void Dlg_Concentration::buttonValiderClicked()
     m_model->setData(m_model->index(row,CONCENTRATION_OZONE),QVariant::fromValue(this->ui->spinBox_ConcO3->value()));
 
     m_model->submitAll();
+
+    if(m_modifEnCours) {
+        QWeakPointer<QSqlRelationalTableModel> modelConcAssociee = m_bdHandler->getConcentrationAssocieeModel(idConcentration).data();
+    }
 
     this->initialiserChamps();
 }

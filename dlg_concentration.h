@@ -77,7 +77,7 @@ private:
     void editCurrentRow(const QModelIndex & idxSelection);
     void editConcAssocieeCurrentRow(const QModelIndex & idxSelection);
 
-private slots:
+private Q_SLOTS:
     inline void tableViewItemDoubleClicked(const QModelIndex & idxSelection) {this->editCurrentRow(idxSelection);}
     inline void buttonFermerClicked() {this->m_model->submitAll();this->reject();}
     inline void buttonSelectionnerClicked() {this->accept();}

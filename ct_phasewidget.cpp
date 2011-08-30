@@ -42,12 +42,9 @@ ct_PhaseWidget::ct_PhaseWidget(const int idSystemeEtalon,const TypeTest typeTest
     this->m_bdHandler = bdHandler;
     this->m_typeTest = typeTest;
 
-    this->ui->tableWidget_Polluants->setColumnHidden(PHASEW_TABLEW_POLLUANTS_IDMOLECULE,true);
-    this->ui->tableWidget_Polluants->resizeColumnsToContents();
     if(phase.isEmpty())
         this->m_phase.setNoPhase(noPhase);
 
-    connect(this->ui->tableWidget_Polluants,SIGNAL(clicked(QModelIndex)),this,SLOT(tableViewPolluantsIndexChanged(QModelIndex)));
     connect(this->ui->button_AjouterPolluant,SIGNAL(clicked()),this,SLOT(buttonAjouterPolluantClicked()));
     connect(this->ui->button_RetirerPolluant,SIGNAL(clicked()),this,SLOT(buttonSupprimerPolluantClicked()));
     connect(this->ui->button_Annuler,SIGNAL(clicked()),this,SLOT(buttonAnnulerClicked()));
@@ -84,24 +81,35 @@ void ct_PhaseWidget::afficherPhase()
         this->ui->gb_CmdDebut_Phase->setVisible(true);
         if(m_phase.critereArretExiste()) {
             this->ui->ckb_CritereArret->setChecked(true);
+            this->ui->timeEdit_TempsMaxPhase->setEnabled(true);
             this->ui->spinBox_NbCycleMesureArret->setValue(m_phase.getCritereArret_NbCyclesMesures());
             this->ui->spinBox_PourcentageArret->setValue(m_phase.getCritereArret_PourcentageStabilisation());
         }
+        else
+            this->ui->timeEdit_TempsMaxPhase->setEnabled(false);
     }
     else {
         this->ui->gb_CritereArret->setVisible(false);
         this->ui->gb_CmdDebut_Phase->setVisible(false);
     }
-    if(this->m_phase.getListePolluants().count()>0) {
-        QMapIterator<ushort,uint> iterator(this->m_phase.getListePolluants());
-        while(iterator.hasNext()) {
-            iterator.next();
-            ushort idMolecule = iterator.key();
-            uint idConcentration = iterator.value();
-            QSqlRecord* concentrationRecord = this->m_bdHandler->getConcentrationRow(idConcentration);
-            Q_ASSERT_X(concentrationRecord,"afficherPhase()","concentration record==NULL");
+    ushort idMolecule = this->m_phase.getIdMolecule();
+    if(idMolecule>0) {
+        ushort idMolecule = m_phase.getIdMolecule();
+        uint idConcentration = m_phase.getIdConcentration();
+
+        QSqlRecord* concentrationRecord = this->m_bdHandler->getConcentrationRow(idConcentration);
+        if(concentrationRecord == NULL) {
+            QMessageBox msgBox;
+            msgBox.setText("Problème lors du chargement de la concentration");
+            msgBox.setInformativeText("La concentration de polluant enregistrée n'est pas pas valide. Veuillez en sélectionner une autre.");
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.exec();
+
+            m_phase.supprimerPolluant();
+        }
+        else {
             QSqlRecord* moleculeRecord = this->m_bdHandler->getMoleculeRow(idMolecule);
-            Q_ASSERT_X(moleculeRecord,"afficherPhase()","molecule record==NULL");
             this->afficherPolluants(concentrationRecord,moleculeRecord);
             delete concentrationRecord;
             delete moleculeRecord;
@@ -131,33 +139,24 @@ void ct_PhaseWidget::afficherPhase()
 }
 
 void ct_PhaseWidget::afficherPolluants(QSqlRecord* concentrationRecord,QSqlRecord* moleculeRecord) {
-    QTableWidgetItem* item_IdMolecule = new QTableWidgetItem(concentrationRecord->value(CONCENTRATION_ID_MOLECULE).toString());
-    QTableWidgetItem* item_MoleculeFormule = new QTableWidgetItem(moleculeRecord->value(MOLECULE_FORMULE).toString());
-    QTableWidgetItem* item_CodeMolecule = new QTableWidgetItem(moleculeRecord->value(MOLECULE_CODE).toString());
-    QTableWidgetItem* item_ConcentrationPoint = new QTableWidgetItem(concentrationRecord->value(CONCENTRATION_POINT).toString());
-    QTableWidgetItem* item_ConcentrationReelle = new QTableWidgetItem(concentrationRecord->value(CONCENTRATION_REELLE).toString());
-    QTableWidgetItem* item_ConcentrationOzone = new QTableWidgetItem(concentrationRecord->value(CONCENTRATION_OZONE).toString());
+    m_idConcentration = concentrationRecord->value(CONCENTRATION_ID_MOLECULE).toUInt();
 
-    uint idxNewRecord = this->ui->tableWidget_Polluants->rowCount();
-    this->ui->tableWidget_Polluants->insertRow(idxNewRecord);
-    this->ui->tableWidget_Polluants->setItem(idxNewRecord,PHASEW_TABLEW_POLLUANTS_IDMOLECULE,item_IdMolecule);
-    this->ui->tableWidget_Polluants->setItem(idxNewRecord,PHASEW_TABLEW_POLLUANTS_CODE,item_CodeMolecule);
-    this->ui->tableWidget_Polluants->setItem(idxNewRecord,PHASEW_TABLEW_POLLUANTS_FORMULE,item_MoleculeFormule);
-    this->ui->tableWidget_Polluants->setItem(idxNewRecord,PHASEW_TABLEW_POLLUANTS_POINT,item_ConcentrationPoint);
-    this->ui->tableWidget_Polluants->setItem(idxNewRecord,PHASEW_TABLEW_POLLUANTS_REELLE,item_ConcentrationReelle);
-    this->ui->tableWidget_Polluants->setItem(idxNewRecord,PHASEW_TABLEW_POLLUANTS_OZONE,item_ConcentrationOzone);
+    this->ui->lineEdit_Formule->setText(moleculeRecord->value(MOLECULE_FORMULE).toString());
+    this->ui->lineEdit_Point->setText(concentrationRecord->value(CONCENTRATION_POINT).toString());
+    this->ui->lineEdit_ConcReelle->setText(concentrationRecord->value(CONCENTRATION_REELLE).toString());
+    this->ui->lineEdit_ConcOzone->setText(concentrationRecord->value(CONCENTRATION_OZONE).toString());
 }
 
 void ct_PhaseWidget::cb_CmdDebutPhaseIndexChanged(const int index) {
     switch(index) {
     case CMD_DEBUT_PHASE_NOCMD:
-        this->m_phase.setCmdFinTs(NO_CMD);
+        this->m_phase.setCmdDebutPhase(NO_CMD);
         break;
     case CMD_DEBUT_PHASE_MODE_MESURE:
-        this->m_phase.setCmdFinTs(MODE_MESURE);
+        this->m_phase.setCmdDebutPhase(MODE_MESURE);
         break;
     case CMD_DEBUT_PHASE_MODE_ETALON:
-        this->m_phase.setCmdFinTs(MODE_ETALON);
+        this->m_phase.setCmdDebutPhase(MODE_ETALON);
         break;
     default:
         QMessageBox msgBox;
@@ -183,16 +182,6 @@ void ct_PhaseWidget::buttonAjouterPolluantClicked()
         QSqlRecord* concentrationRecord = m_bdHandler->getConcentrationRow(idSelection);
         Q_ASSERT_X(concentrationRecord,"buttonAjouterPolluantClicked()","concentration==NULL");
         uint idMolecule = concentrationRecord->value(CONCENTRATION_ID_MOLECULE).toUInt();
-        // Si le polluant est déja présent dans la liste
-        if(!m_phase.getListePolluants().isEmpty() && m_phase.polluantPresent(idMolecule)) {
-            QMessageBox msgBox;
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setWindowTitle("Attention");
-            msgBox.setText("Une concentration est déja programmée pour ce polluant");
-            msgBox.setStandardButtons(QMessageBox::Ok);
-            msgBox.exec();
-            return;
-        }
         QSqlRecord* moleculeRecord = m_bdHandler->getMoleculeRow(idMolecule);
 
         this->afficherPolluants(concentrationRecord,moleculeRecord);
@@ -204,17 +193,15 @@ void ct_PhaseWidget::buttonAjouterPolluantClicked()
 }
 
 void ct_PhaseWidget::buttonSupprimerPolluantClicked() {
-    if(m_indexListePolluant.isValid()) {
-        int row = m_indexListePolluant.row();
-        uint idMolecule = this->ui->tableWidget_Polluants->item(row,PHASEW_TABLEW_POLLUANTS_IDMOLECULE)->text().toUInt();
-        this->ui->tableWidget_Polluants->removeRow(row);
-        this->m_phase.supprimerPolluant(idMolecule);
-    }
+    this->ui->lineEdit_Formule->clear();
+    this->ui->lineEdit_Point->clear();
+    this->ui->lineEdit_ConcReelle->clear();
+    this->ui->lineEdit_ConcOzone->clear();
+    this->m_phase.supprimerPolluant();
 }
 
 void ct_PhaseWidget::tableViewPolluantsIndexChanged(const QModelIndex index) {
-    if(!m_isReadOnly)
-        this->ui->button_RetirerPolluant->setEnabled(index.isValid());
+    this->ui->button_RetirerPolluant->setEnabled(index.isValid());
     this->m_indexListePolluant = index;
 }
 
@@ -226,7 +213,11 @@ void ct_PhaseWidget::ckb_CritereArretStateChanged(const int state) {
     this->ui->label_CritereArret2->setEnabled(enableWidgets);
     this->ui->label_CritereArret3->setEnabled(enableWidgets);
     this->ui->label_CritereArret4->setEnabled(enableWidgets);
+    this->ui->timeEdit_TempsMaxPhase->setEnabled(enableWidgets);
     this->m_phase.setCritereArretPrevu(enableWidgets);
+    if(!enableWidgets) {
+        this->ui->timeEdit_TempsMaxPhase->setTime(QTime(0,0));
+    }
 }
 
 void ct_PhaseWidget::setReadOnly(bool readOnly) {

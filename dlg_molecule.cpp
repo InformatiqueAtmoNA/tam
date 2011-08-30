@@ -53,12 +53,11 @@ Dlg_Molecule::Dlg_Molecule(QWidget *parent,const QPointer<BdHandler> bdHandler) 
 Dlg_Molecule::~Dlg_Molecule()
 {
     delete ui;
-    bdHandler.data()->deconnexionBD();
 }
 
 void Dlg_Molecule::afficherTable() {
-    bdHandler.data()->connexionBD();
-    model = bdHandler.data()->getMoleculesModel();
+    bdHandler->connexionBD();
+    model = bdHandler->getMoleculesModel();
     this->ui->tableView->setModel(model);
     this->ui->tableView->setColumnHidden(MOLECULE_ID, true);
     this->ui->tableView->resizeColumnToContents(MOLECULE_CODE);
@@ -88,7 +87,7 @@ void Dlg_Molecule::buttonSupprimerClicked() {
     if (reponse == QMessageBox::No)
         return;
 
-    if(!model.data()->removeRow(indexSelection.row()))
+    if(!model->removeRow(indexSelection.row()))
         QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé",QMessageBox::Ok);
 }
 
@@ -103,12 +102,12 @@ void Dlg_Molecule::buttonAjouterClicked() {
 }
 
 void Dlg_Molecule::buttonValiderClicked() {
-    QSqlRecord enregistrement = model.data()->record();
+    QSqlRecord enregistrement = model->record();
     enregistrement.setValue(MOLECULE_CODE,this->ui->lineEdit_Code->text());
     enregistrement.setValue(MOLECULE_NOM,this->ui->lineEdit_Nom->text());
     enregistrement.setValue(MOLECULE_FORMULE,this->ui->lineEdit_Formule->text());
 
-    model.data()->insertRecord(-1,enregistrement);
+    model->insertRecord(-1,enregistrement);
 
     this->initialiserChamps();
 }

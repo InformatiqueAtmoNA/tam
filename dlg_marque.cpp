@@ -63,8 +63,6 @@ Dlg_Marque::Dlg_Marque(QWidget *parent,const QPointer<BdHandler> bdHandler,
 Dlg_Marque::~Dlg_Marque()
 {
     delete ui;
-    if(!this->m_returnSelection)
-        m_bdHandler->deconnexionBD();
 }
 
 void Dlg_Marque::afficherTable() {

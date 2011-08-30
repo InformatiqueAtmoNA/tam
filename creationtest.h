@@ -57,14 +57,14 @@ private:
     QPointer<ct_PhaseWidget> m_phaseWidget;
     ushort m_etape;
     bool m_autoriserCreationPhase;
+    bool m_insertionEnCours;
 
     void initialiserChamps();
     void afficherPhaseWidget(const ushort noPhase, bool readOnly=false);
     void incrementerNbPhases();
     void decrementerNbPhases();
 
-private slots:
-    inline void timeEdit_TempsMaxTestValueChanged(const QTime & time) {this->m_test->setTempsMaxTest(time);}
+private Q_SLOTS:
     inline void spinBox_TempsAcquisitionValueChanged(const int value) {this->m_test->setTempsAcquisition(value);}
     inline void spinBox_nbCyclesMesuresValueChanged(const int value) {this->m_test->setNbCyclesMesureParPhase(value);}
     inline void spinBox_nbCyclesPhasesValueChanged(const int value) {this->m_test->setNbCyclesDePhase(value);}
@@ -88,11 +88,11 @@ private slots:
     void listWidgetCurrentRowChanged(const int row);
     void lineEditNomTestTextChanged(const QString nomTest);
 
-public slots:
+public Q_SLOTS:
     void editionPhaseAnnulee();
     void editionPhaseValidee(const Phase & phase);
 
-signals:
+Q_SIGNALS:
     void fermeture();
 };
 

@@ -56,10 +56,11 @@ private:
     QPointer<BdHandler> m_bdHandler;
     bool m_isReadOnly;
     TypeTest m_typeTest;
+    ushort m_idConcentration;
 
     void afficherPhase();
     void afficherPolluants(QSqlRecord* concentrationRecord,QSqlRecord* moleculeRecord);
-private slots:
+private Q_SLOTS:
     inline void spinBoxNbCyclesMesuresValueChanged(const int value) {this->m_phase.setNbCyclesMesures(value);}
     inline void spinBox_NbCycleMesureArretValueChanged(const int value) {this->m_phase.setCritereArret_NbCyclesMesures(value);}
     inline void spinBoxPourcentageArretValueChanged(const int value) {this->m_phase.setCritereArret_PourcentageStabilisation(value);}
@@ -76,7 +77,7 @@ private slots:
     void buttonSupprimerPolluantClicked();
     void ckb_CritereArretStateChanged(const int state);
 
-signals:
+Q_SIGNALS:
     void annulation();
     void phaseValidee(const Phase & phase);
 };

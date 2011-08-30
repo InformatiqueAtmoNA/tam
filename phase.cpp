@@ -30,6 +30,8 @@ Phase::Phase()
 {
     this->m_noPhase = 0;
     this->m_nbCyclesMesures = 0;
+    this->m_idMolecule = 0;
+    this->m_idConcentration = 0;
     this->m_commandeDebutPhase= NO_CMD;
     this->m_critereArretPrevu = false;
     this->m_criteresArret.reserve(2);
@@ -41,7 +43,8 @@ Phase::Phase(const Phase & phase) : QObject() {
     this->m_noPhase = phase.m_noPhase;
     this->m_tempsMaxPhase = phase.m_tempsMaxPhase;
     this->m_nbCyclesMesures = phase.m_nbCyclesMesures;
-    this->m_listePolluants = phase.m_listePolluants;
+    this->m_idConcentration = phase.m_idConcentration;
+    this->m_idMolecule = phase.m_idMolecule;
     this->m_tempsMaxPhase = phase.m_tempsMaxPhase;
     this->m_tempsStabilisation = phase.m_tempsStabilisation;
     this->m_tempsMoyennageMesure = phase.m_tempsMoyennageMesure;
@@ -55,7 +58,8 @@ Phase& Phase::operator=(const Phase& newPhase) {
     this->m_noPhase = newPhase.m_noPhase;
     this->m_tempsMaxPhase = newPhase.m_tempsMaxPhase;
     this->m_nbCyclesMesures = newPhase.m_nbCyclesMesures;
-    this->m_listePolluants = newPhase.m_listePolluants;
+    this->m_idConcentration = newPhase.m_idConcentration;
+    this->m_idMolecule = newPhase.m_idMolecule;
     this->m_tempsMaxPhase = newPhase.m_tempsMaxPhase;
     this->m_tempsStabilisation = newPhase.m_tempsStabilisation;
     this->m_tempsMoyennageMesure = newPhase.m_tempsMoyennageMesure;
@@ -82,15 +86,11 @@ QDomElement Phase::exportToXml(QDomDocument & xmlTest) {
     if(!this->m_tempsAttenteEntreMesure.isNull())
         newPhase.setAttribute("tps_attente_entre_mesure",this->m_tempsAttenteEntreMesure.toString("hh:mm:ss"));
 
-    // Création et ajout des éléments XML polluant
-    QMapIterator<ushort,uint> i(m_listePolluants);
-    while (i.hasNext()) {
-        i.next();
-        QDomElement polluant = xmlTest.createElement("polluant");
-        polluant.setAttribute("type",i.key());
-        polluant.setAttribute("id_concentration",QString::number(i.value()));
-        newPhase.appendChild(polluant);
-    }
+    // Création et ajout de l'élément XML polluant
+    QDomElement polluant = xmlTest.createElement("polluant");
+    polluant.setAttribute("type",m_idMolecule);
+    polluant.setAttribute("id_concentration",m_idConcentration);
+    newPhase.appendChild(polluant);
 
     // Création et ajout de l'élément XML critere_arret s'il existe
     if(this->m_critereArretPrevu) {
@@ -100,12 +100,12 @@ QDomElement Phase::exportToXml(QDomDocument & xmlTest) {
         newPhase.appendChild(el_critereArret);
     }
 
-    // Création et ajout de l'élément XML commande_fin_ts s'il existe
+    // Création et ajout de l'élément XML commande_debut_phase s'il existe
     if(this->m_commandeDebutPhase != NO_CMD) {
-        QDomElement el_commandeFinTs = xmlTest.createElement("commande_fin_ts");
+        QDomElement el_commandeDebutPhase = xmlTest.createElement("commande_debut_phase");
         QDomText str_cmdFinTs = xmlTest.createTextNode(commandesToString(this->m_commandeDebutPhase));
-        el_commandeFinTs.appendChild(str_cmdFinTs);
-        newPhase.appendChild(el_commandeFinTs);
+        el_commandeDebutPhase.appendChild(str_cmdFinTs);
+        newPhase.appendChild(el_commandeDebutPhase);
     }
 
     return newPhase;
@@ -130,17 +130,14 @@ QPointer<Phase> Phase::importFromXml(const QDomElement & domPhase) {
         newPhase->setCritereArret_PourcentageStabilisation(pourcentageStabilisation);
     }
 
-    QDomNodeList nodeList_polluant = domPhase.elementsByTagName("polluant");
-    for(int i=0;i<nodeList_polluant.count();i++) {
-        QDomElement polluant = nodeList_polluant.at(i).toElement();
-        newPhase->ajouterPolluant(polluant.attribute("type").toUShort(),polluant.attribute("id_concentration").toUShort());
-    }
+    QDomElement polluant = domPhase.firstChildElement("polluant");
+    newPhase->ajouterPolluant(polluant.attribute("type").toUShort(),polluant.attribute("id_concentration").toUShort());
 
-    QDomElement el_commandeFinTs = domPhase.firstChildElement("commande_fin_ts");
-    if(!el_commandeFinTs.isNull())
-        newPhase->setCmdFinTs(stringToCommande(el_commandeFinTs.text()));
+    QDomElement el_commandeDebutPhase = domPhase.firstChildElement("commande_debut_phase");
+    if(!el_commandeDebutPhase.isNull())
+        newPhase->setCmdDebutPhase(stringToCommande(el_commandeDebutPhase.text()));
     else
-        newPhase->setCmdFinTs(NO_CMD);
+        newPhase->setCmdDebutPhase(NO_CMD);
 
     return newPhase;
 }
@@ -158,12 +155,8 @@ QPointer<Phase> Phase::getPhaseFromConf(const PhaseConfig & config) {
 
 QDebug operator<<(QDebug dbg, const Phase & phase) {
     dbg.nospace() << "Phase n° " << phase.getNoPhase()<<"\n";
-    dbg.nospace() << "Listes des identifiants de la table concentration associés :\n";
-    QMapIterator<ushort,uint> iterator(phase.getListePolluants());
-    while(iterator.hasNext()) {
-        iterator.next();
-        dbg.nospace()<<iterator.key()<<" --> "<<iterator.value();
-    }
+    dbg.nospace() << "Identifiant Molecule " << phase.getIdMolecule()<<"\n";
+    dbg.nospace() << "Identifiant Concentration " << phase.getIdConcentration()<<"\n";
 
     return dbg.space();
 }

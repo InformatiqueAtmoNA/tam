@@ -4,17 +4,11 @@
 		type (REPETABILITE_1|REPETABILITE_2|LINEARITE|TEMPS_REPONSE|RENDEMENT_FOUR|PERSO) #REQUIRED
 	>
 
-	<!ELEMENT equipement (etalon | polluant)>
+	<!ELEMENT equipement (etalon)>
 		<!ELEMENT etalon EMPTY>
 			<!ATTLIST etalon
 				id #REQUIRED
 			>
-		<!ELEMENT polluant EMPTY>
-			<!ATTLIST polluant
-					type (CO|O3|SO2|NO|NO2|NOX) #REQUIRED
-					point_gaz CDATA #IMPLIED
-			>
-
 	<!ELEMENT deroulement (phase+)>
 		<!ATTLIST deroulement
 			tps_max_test CDATA #REQUIRED
@@ -25,6 +19,11 @@
 			tps_attente_entre_mesure_par_phase CDATA #IMPLIED
 			nb_cycles_mesures_par_phase CDATA #IMPLIED
 		>
+		<!ELEMENT polluant EMPTY>
+			<!ATTLIST polluant
+					type (CO|O3|SO2|NO|NO2|NOX) #REQUIRED
+					point_gaz CDATA #IMPLIED
+			>
 		<!ELEMENT phase (polluant,commande_fin_ts?,critere_arret?)>
 			<!ATTLIST phase
 				no_phase CDATA #REQUIRED

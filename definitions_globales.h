@@ -50,6 +50,9 @@
 #include <QMessageBox>
 #include <QSqlRecord>
 #include <QSqlRelationalDelegate>
+#include <QStateMachine>
+#include <QErrorMessage>
+#include "MesureIndividuelle.h"
 
 // \def ETAT_REPOS Pas de communication en cours
 #define ETAT_REPOS 0
@@ -78,17 +81,19 @@
 // \def SH_CONCO3 Index de la concentration d'O3 dans les données membres de la classe SpanHandler
 #define SH_CONCO3 2
 
+// \enum DesignationProtocole DesignationProtocole de communication supportés
+// A MODIFIER LORS DE L'AJOUT DE NOUVEAUX DesignationProtocole
+enum DesignationProtocole {MODE4_ANA_CMD04,MODE4_ANA_CMD16,MODE4_SX6000_17,MODE4_LNI,TEI_ANA,TEI_146i,TEI_146i_OZONISEUR,
+                 TEI_146i_PHOTOMETRE,TEI_146c,TEI_146c_V2,TEI_49ps,API_ANA,API_DIL,PROTOCOLE_INCONNU};
+
 // \enum TypePeripherique Type d'appareil
-enum TypePeripherique {ANALYSEUR,ETALON,BOUTEILLE,GO3,GZERO};
+enum TypePeripherique {ANALYSEUR,ETALON,DILUTEUR,BOUTEILLE,GO3,GZERO};
 // \enum TypePolluant Polluant associé à  l'appareil
 enum TypePolluant {CO,O3,SO2,NO,NO2,NOX,DIL};
 // \enum TypeTest Type de test
 enum TypeTest {REPETABILITE_1,REPETABILITE_2,LINEARITE,TEMPS_REPONSE,RENDEMENT_FOUR,PERSO};
 // \enum OptionTpg Option d'étalonnage permettant la TPG
 enum OptionTpg {AUCUNE,OZONISEUR,PHOTOMETRE};
-// \enum Protocoles Protocoles de communication supportés
-// A MODIFIER LORS DE L'AJOUT DE NOUVEAUX PROTOCOLES
-enum Protocoles {MODE4_ANA,MODE4_SX6000_17,MODE4_LNI,TEI_ANA,TEI_146i,TEI_146c,TEI_49ps,API_ANA,API_DIL};
 // \enum Commandes Listes des commandes
 enum Commandes {OFFSET,MESURES,ALARME,DATE_HEURE,MODE_ZERO,MODE_ETALON,MODE_MESURE,
                 SPAN,SPAN_ZERO,SPAN_TPG,SPAN_O3,RESET,STAND_BY,EVENT,NO_CMD};
@@ -125,8 +130,18 @@ enum table_concentration_associee {CONC_ASSOCIEE_ID,CONC_ASSOCIEE_ID_CONCENTRATI
                                    CONC_ASSOCIEE_CONCENTRATION};
 // \enum Colonnes de la table Polluant_Associe
 enum table_polluant_associe {POLLUANT_ASSOCIE_ID,POLLUANT_ASSOCIE_ID_EQUIPEMENT,POLLUANT_ASSOCIE_ID_MOLECULE};
+// \enum Colonnes de la table Test_Metro
+enum table_test_metro {TEST_METRO_ID,TEST_METRO_ID_TEST_XML,TEST_METRO_ID_OPERATEUR,TEST_METRO_ID_LIEU,
+                     TEST_METRO_PRESSION,TEST_METRO_TEMPERATURE,TEST_METRO_DATE_DEBUT,TEST_METRO_DATE_FIN};
 // \enum Colonnes de la table Test_XML
 enum table_test_xml {TEST_XML_ID,TEST_XML_NOM_FICHIER,TEST_XML_TYPE_TEST,TEST_XML_ID_SYSTEME_ETALON};
+// \enum Colonnes de la table Operateur
+enum table_operateur {OPERATEUR_ID,OPERATEUR_NOM,OPERATEUR_PRENOM};
+// \enum Colonnes de la table Lieu
+enum table_lieu {LIEU_ID,LIEU_DESIGNATION};
+// \enum Colonnes de la table Mesure
+enum table_mesure {MESURE_ID,MESURE_ID_TEST,MESURE_ID_EQUIPEMENT,MESURE_NO_CYCLE_PHASE,MESURE_NO_PHASE,
+                   MESURE_NO_CYCLE_MESURE,MESURE_MESURE};
 
 // \enum Colonnes du modèle PolluantByIdSystemeEtalon
 enum modele_polluant_by_systeme_etalon {POLLUANT_BY_SYS_ETALON_ID,POLLUANT_BY_SYS_ETALON_FORMULE};
@@ -140,13 +155,59 @@ enum phasewidget_tablewidget_polluant {PHASEW_TABLEW_POLLUANTS_IDMOLECULE,PHASEW
 enum homewidget_tablewidget_test {HOMEW_TABLEW_TEST_ID_TEST,HOMEW_TABLEW_TEST_FICHIER,HOMEW_TABLEW_TEST_TYPE,
                                   HOMEW_TABLEW_TEST_DILUTEUR,HOMEW_TABLEW_TEST_BOUTEILLE,HOMEW_TABLEW_TEST_GZERO};
 
-// \struct PhaseConfig Informations de configration de ct_phasewidget
+// \enum Colonnes du modèle relationnel de la table Equipement
+enum model_relationnel_equipement {REL_EQUIPEMENT_ID,REL_EQUIPEMENT_NUM_SERIE,REL_EQUIPEMENT_MODELE,REL_EQUIPEMENT_MARQUE,
+                                   REL_EQUIPEMENT_MIN_GAMME,REL_EQUIPEMENT_MAX_GAMME,REL_EQUIPEMENT_OFFSET,REL_EQUIPEMENT_ADRESSE};
+
+// \enum Colonnes du TableWidget Analyseurs de et_interfaceExecutionTest
+enum et_interfaceExecutionTest_tablewidget_Analyseurs
+   {ET_TABLEW_ANALYSEURS_ID_EQUIPEMENT,ET_TABLEW_ANALYSEURS_NUM_SERIE,ET_TABLEW_ANALYSEURS_MODELE,
+    ET_TABLEW_ANALYSEURS_MARQUE,ET_TABLEW_ANALYSEURS_MIN_GAMME,ET_TABLEW_ANALYSEURS_MAX_GAMME,
+    ET_TABLEW_ANALYSEURS_OFFSET,ET_TABLEW_ANALYSEURS_ADRESSE};
+
+// \enum Colonnes du TableWidget Communications de et_interfaceExecutionTest
+enum et_interfaceExecutionTest_tablewidget_Communication
+   {ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT,ET_TABLEW_COMMUNICATION_NUM_SERIE,
+    ET_TABLEW_COMMUNICATION_INTERFACE,ET_TABLEW_COMMUNICATION_ETAT_COM};
+
+// \enum Colonnes du TableWidget TestsEnAttente de et_listeAttenteTest
+enum et_listeAttenteTest_tablewidget_TestsEnAttente
+   {ET_TABLEW_TEST_ATTENTE_ID_TEST,ET_TABLEW_TEST_ATTENTE_NOM_TEST,ET_TABLEW_TEST_ATTENTE_DATE_HEURE_DEBUT,
+    ET_TABLEW_TEST_ATTENTE_ETAT,ET_TABLEW_TEST_ATTENTE_INTERFACE_CALIBRATEUR,
+    ET_TABLEW_TEST_ATTENTE_CANAL_CALIBRATEUR};
+
+// \enum Codes d'erreurs de l'exécution de test
+enum erreur_execution_test {AUCUNE_ERREUR,ERREUR_COMMUNICATION,ERREUR_ALARME};
+
+// \enum Choix de début de test
+enum choix_debut_test {DEBUT_TEST_IMMEDIAT,DEBUT_TEST_DATE_HEURE};
+
+// \struct PhaseConfig Informations de configuration de ct_phasewidget
 struct PhaseConfig {
     ushort nbCyclesMesures; // Nombre de cycles de mesures à effectuer après le temps de stabilisation
     QTime tempsStabilisation; // Temps de stabilisation pendant lequel aucune mesure n'est effectuée
     QTime tempsMoyennageMesure; // Temps correspondant à un cycle sur lequel les mesures seront moyennées
     QTime tempsAttenteEntreMesure; // Temps d'attente entre chaque cycle de mesure
 };
+
+// \struct MesureInfo Informations de mesure
+struct MesureInfo {
+    ushort idTest;
+    ushort idEquipement;
+    ushort noCyclePhase;
+    ushort noPhase;
+    ushort noCycleMesure;
+    QWeakPointer<MesureIndividuelle> mesure;
+};
+
+/*///////////////////////////////////////////////////////////////////////////
+// \fn extern DesignationProtocole stringToTypePolluant(QString protocole)
+// \brief Renvoi le DesignationProtocole contenu dans la chaine en paramètre
+//
+// \param DesignationProtocole Chaine de caractères représentant le protocole
+// \return protocole Type de polluant
+///////////////////////////////////////////////////////////////////////////*/
+extern DesignationProtocole stringToProtocole(QString protocole);
 
 /*///////////////////////////////////////////////////////////////////////////
 // \fn extern TypePolluant stringToTypePolluant(QString type)

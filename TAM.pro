@@ -20,7 +20,6 @@ SOURCES += main.cpp\
     mode4_sx_6000_17.cpp \
     mode4.cpp \
     communicationserie.cpp \
-    commandesliste.cpp \
     api.cpp \
     test.cpp \
     phase.cpp \
@@ -37,8 +36,15 @@ SOURCES += main.cpp\
     dlg_equipement.cpp \
     dlg_concentration.cpp \
     dlg_systeme_etalon.cpp \
+    homewidget.cpp \
+    tei_146c_v2.cpp \
+    executiontest.cpp \
     ct_phasewidget.cpp \
-    homewidget.cpp
+    et_interfaceexecutiontest.cpp \
+    et_infostestencours.cpp \
+    dlg_testxml.cpp \
+    et_listeattentetests.cpp \
+    generateurrapporttest.cpp
 
 HEADERS  += mainwindow.h \
     threadcomhandler.h \
@@ -50,7 +56,6 @@ HEADERS  += mainwindow.h \
     mode4StructConfig.h \
     mode4.h \
     communicationserie.h \
-    commandesliste.h \
     api.h \
     test.h \
     phase.h \
@@ -67,8 +72,25 @@ HEADERS  += mainwindow.h \
     dlg_equipement.h \
     dlg_concentration.h \
     dlg_systeme_etalon.h \
+    homewidget.h \
+    tei_146c_v2.h \
+    tei_49c.h \
+    executiontest.h \
+    et_TransitionTempsMaxTest.h \
+    et_TransitionTempsMaxPhase.h \
+    et_TransitionPhasesRestantes.h \
+    et_TransitionNbCyclesMesure.h \
+    et_TransitionCritereArret.h \
+    et_TransitionCmdDebutPhase.h \
+    et_TransitionCyclesPhases.h \
     ct_phasewidget.h \
-    homewidget.h
+    et_interfaceexecutiontest.h \
+    et_paramsTest.h \
+    et_infostestencours.h \
+    dlg_testxml.h \
+    et_listeattentetests.h \
+    generateurrapporttest.h \
+    MesureIndividuelle.h
 
 FORMS    += mainwindow.ui \
     creationtest.ui \
@@ -80,8 +102,12 @@ FORMS    += mainwindow.ui \
     dlg_equipement.ui \
     dlg_concentration.ui \
     dlg_systeme_etalon.ui \
+    homewidget.ui \
     ct_phasewidget.ui \
-    homewidget.ui
+    et_interfaceexecutiontest.ui \
+    et_infostestencours.ui \
+    dlg_testxml.ui \
+    et_listeattentetests.ui
 
 INCLUDEPATH += ./qserialdevice \
                ./

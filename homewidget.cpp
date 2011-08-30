@@ -1,3 +1,28 @@
+/*////////////////////////////////////////////////////////////
+// \file homewidget.cpp
+// \brief Widget d'interface graphique de la fenetre principale
+// \author FOUQUART Christophe
+// \version 1.0
+// \date 26/06/2011
+//
+// TAM - Tests Automatiques Métrologiques
+// Copyright (C) 2011 FOUQUART Christophe
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+//
+////////////////////////////////////////////////////////////*/
 #include "homewidget.h"
 #include "ui_homewidget.h"
 
@@ -10,12 +35,20 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
     this->m_bdHandler = bdHandler;
     this->getListeTests();
 
+    QHeaderView *headers = this->ui->tableWidget_TestXml->horizontalHeader();
+    headers->setResizeMode(QHeaderView::Stretch);
+
     connect(this->ui->button_Afficher,SIGNAL(clicked()),this,SLOT(buttonAfficherClicked()));
     connect(this->ui->button_Executer,SIGNAL(clicked()),this,SLOT(buttonExecuterClicked()));
     connect(this->ui->button_Modifier,SIGNAL(clicked()),this,SLOT(buttonModifierClicked()));
     connect(this->ui->button_Nouveau,SIGNAL(clicked()),this,SLOT(buttonNouveauClicked()));
     connect(this->ui->button_Supprimer,SIGNAL(clicked()),this,SLOT(buttonSupprimerClicked()));
+    connect(this->ui->button_ProgrammerSerieTests,SIGNAL(clicked()),this,SIGNAL(programmerSerieTest()));
     connect(this->ui->tableWidget_TestXml,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetTestXmlIndexChanged(QModelIndex)));
+
+    this->ui->button_Executer->setEnabled(false);
+    this->ui->button_Modifier->setEnabled(false);
+    this->ui->button_Supprimer->setEnabled(false);
 }
 
 HomeWidget::~HomeWidget()
@@ -52,15 +85,15 @@ void HomeWidget::getListeTests()
             this->ui->tableWidget_TestXml->setColumnHidden(HOMEW_TABLEW_TEST_ID_TEST,true);
         }
     }
-    else {
-        this->ui->button_Executer->setEnabled(false);
-        this->ui->button_Modifier->setEnabled(false);
-    }
 }
 
 void HomeWidget::tableWidgetTestXmlIndexChanged(const QModelIndex & index)
 {
     this->m_idxSelectionTest = index;
+
+    this->ui->button_Executer->setEnabled(m_idxSelectionTest.isValid());
+    this->ui->button_Modifier->setEnabled(m_idxSelectionTest.isValid());
+    this->ui->button_Supprimer->setEnabled(m_idxSelectionTest.isValid());
 }
 
 void HomeWidget::buttonNouveauClicked()
@@ -70,14 +103,19 @@ void HomeWidget::buttonNouveauClicked()
 
 void HomeWidget::buttonModifierClicked()
 {
-    QString fichierDescription = this->ui->tableWidget_TestXml->item(m_idxSelectionTest.row(),HOMEW_TABLEW_TEST_FICHIER)->text();
-    emit(this->modifierTest(fichierDescription));
+    if(ui->tableWidget_TestXml->currentIndex().isValid()) {
+        QString fichierDescription = this->ui->tableWidget_TestXml->item(ui->tableWidget_TestXml->currentIndex().row(),HOMEW_TABLEW_TEST_FICHIER)->text();
+        emit(this->modifierTest(fichierDescription));
+    }
 }
 
 void HomeWidget::buttonExecuterClicked()
 {
-    QString fichierDescription = this->ui->tableWidget_TestXml->item(m_idxSelectionTest.row(),HOMEW_TABLEW_TEST_FICHIER)->text();
-    emit(this->executerTest(fichierDescription));
+    if(ui->tableWidget_TestXml->currentIndex().isValid()) {
+        ushort idTestXml = this->ui->tableWidget_TestXml->item(ui->tableWidget_TestXml->currentIndex().row(),HOMEW_TABLEW_TEST_ID_TEST)->text().toUInt();
+        QString fichierDescription = this->ui->tableWidget_TestXml->item(ui->tableWidget_TestXml->currentIndex().row(),HOMEW_TABLEW_TEST_FICHIER)->text();
+        emit(this->executerTest(idTestXml,fichierDescription));
+    }
 }
 
 void HomeWidget::buttonSupprimerClicked() {
@@ -94,6 +132,9 @@ void HomeWidget::buttonSupprimerClicked() {
     if(!this->m_modelTestXml->submitAll())
         qDebug()<<this->m_modelTestXml->lastError();
     this->ui->tableWidget_TestXml->removeRow(this->m_idxSelectionTest.row());
+    this->ui->button_Executer->setEnabled(false);
+    this->ui->button_Modifier->setEnabled(false);
+    this->ui->button_Supprimer->setEnabled(false);
 }
 
 void HomeWidget::buttonAfficherClicked()

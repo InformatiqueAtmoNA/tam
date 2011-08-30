@@ -26,8 +26,8 @@
 
 #include "tei_146c.h"
 
-Tei_146c::Tei_146c(QString const & adressePeriph, TypePeripherique const & typePeriph, TypePolluant const & typePolluant,OptionTpg const & optionTpg)
-    :Tei(adressePeriph, typePeriph,typePolluant,optionTpg) {}
+Tei_146c::Tei_146c(const QString & adressePeriph, const TypePeripherique & typePeriph, const OptionTpg & optionTpg)
+    :Tei(adressePeriph,typePeriph,optionTpg) {}
 
 // Mise en stand-by du périphérique
 bool Tei_146c::standBy() {
@@ -41,7 +41,7 @@ ushort Tei_146c::demandeAlarme() {
     QString cmd = *(this->creerTrameCommande("flags"));
     QString reponse = this->transaction(cmd);
     if(reponse.isEmpty())
-        return NULL;
+        return 0;
 
     if(reponse.contains("*"))
         reponse.remove("*");
@@ -59,7 +59,7 @@ ushort Tei_146c::demandeAlarme() {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Tei_146c::commandeSpan(SpanHandler const & spanData) {
+void Tei_146c::commandeSpan(const SpanHandler & spanData) {
     QString cmd;
     QString canal = spanData.getCanal();
     if(canal.isEmpty())
@@ -95,13 +95,13 @@ void Tei_146c::commandeSpan(SpanHandler const & spanData) {
 }
 
 // Commande au diluteur de se mettre au point de gaz zero
-void Tei_146c::commandeSpanZero(QString const & canal) {
+void Tei_146c::commandeSpanZero(const QString & canal) {
     QString cmd = canal+*(this->creerTrameCommande("set flow mode 1"));
     this->transaction(cmd);
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Tei_146c::commandeSpanTpg(SpanHandler const & spanTpgData) {
+void Tei_146c::commandeSpanTpg(const SpanHandler & spanTpgData) {
     QString cmd = *(this->creerTrameCommande("set flow mode 7"));
     QString reponse = this->transaction(cmd);
     if(reponse.isEmpty())
@@ -112,7 +112,7 @@ void Tei_146c::commandeSpanTpg(SpanHandler const & spanTpgData) {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz O3
-void Tei_146c::commandeSpanO3(SpanHandler const & spanO3Data) {
+void Tei_146c::commandeSpanO3(const SpanHandler & spanO3Data) {
     QString cmd = *(this->creerTrameCommande("set flow mode 6"));
     QString reponse = this->transaction(cmd);
     if(reponse.isEmpty())

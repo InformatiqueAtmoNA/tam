@@ -87,9 +87,6 @@ Dlg_Modele::Dlg_Modele(QWidget *parent,const QPointer<BdHandler> bdHandler,
 Dlg_Modele::~Dlg_Modele()
 {
     delete ui;
-
-    if(!this->m_returnSelection)
-        m_bdHandler->deconnexionBD();
 }
 
 void Dlg_Modele::afficherTable() {

@@ -19,6 +19,36 @@
 
 #include "definitions_globales.h"
 
+DesignationProtocole stringToProtocole(QString protocole) {
+    if(protocole=="MODE4_ANA_CMD04")
+        return MODE4_ANA_CMD04;
+    if(protocole=="MODE4_ANA_CMD16")
+        return MODE4_ANA_CMD16;
+    if(protocole=="MODE4_SX6000_17")
+        return MODE4_SX6000_17;
+    if(protocole=="MODE4_LNI")
+        return MODE4_LNI;
+    if(protocole=="TEI_ANA")
+        return TEI_ANA;
+    if(protocole=="TEI_146i")
+        return TEI_146i;
+    if(protocole=="TEI_146i_OZONISEUR")
+        return TEI_146i_OZONISEUR;
+    if(protocole=="TEI_146i_PHOTOMETRE")
+        return TEI_146i_PHOTOMETRE;
+    if(protocole=="TEI_146c")
+        return TEI_146c;
+    if(protocole=="TEI_146c_V2")
+        return TEI_146c;
+    if(protocole=="TEI_49ps")
+        return TEI_49ps;
+    if(protocole=="API_ANA")
+        return API_ANA;
+    if(protocole=="API_DIL")
+        return API_DIL;
+    return PROTOCOLE_INCONNU;
+}
+
 TypePolluant stringToTypePolluant(QString type) {
     if(type=="CO")
         return CO;
