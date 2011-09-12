@@ -59,6 +59,7 @@ public:
     QPointer<QSqlTableModel> getProtocolesModel();
     QPointer<QSqlTableModel> getMarquesModel();
     QPointer<QSqlTableModel> getTxTransmissionModel();
+    QPointer<QSqlTableModel> getNoPortSerie();
     QPointer<QSqlTableModel> getTestXmlModel(const uint idTestXml=0);
     QPointer<QSqlTableModel> getConcentrationModel(const uint idSystemeEtalon,const uint idPolluant);
     QPointer<QSqlTableModel> getConcentrationAssocieeModel();
@@ -73,6 +74,8 @@ public:
     QSqlRecord* getEquipementModeledRow(const ushort idEquipement);
     QString getEquipementNumSerie(const ushort idEquipement);
     ushort getTxTransmission(const ushort idTxTransmission);
+    ushort getDesignationPortSerie(const ushort noPortSerie);
+
     DesignationProtocole getDesignationProtocole(const ushort idEquipement);
     ushort getIdCalibrateur(const uint idSystemeEtalon);
 

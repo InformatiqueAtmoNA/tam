@@ -67,6 +67,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel()
     model->setTable("Equipement");
     model->setRelation(EQUIPEMENT_ID_MODELE, QSqlRelation("Modele_Equipement", "id_modele", "designation"));
     model->setRelation(EQUIPEMENT_ID_TX_TRANSMISSION, QSqlRelation("Taux_Transmission","id_tx_transmission","taux_transmission"));
+    //model->setRelation(EQUIPEMENT_PORT,QSqlRelation("Port_Serie","no_port","designation"));
 
     model->setHeaderData(EQUIPEMENT_ID_MODELE, Qt::Horizontal, "Modèle");
     model->setHeaderData(EQUIPEMENT_NO_SERIE, Qt::Horizontal, "N° Série");
@@ -81,6 +82,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel()
     model->setHeaderData(EQUIPEMENT_NB_BITS_TRANSMISSION, Qt::Horizontal, "Nb. bits de transmission");
     model->setHeaderData(EQUIPEMENT_PARITE, Qt::Horizontal, "Parité");
     model->setHeaderData(EQUIPEMENT_OFFSET, Qt::Horizontal, "Offset");
+    //model->setHeaderData(EQUIPEMENT_PORT, Qt::Horizontal, "Port Série");
     model->setSort(EQUIPEMENT_ID, Qt::AscendingOrder);
     if(!model->select())
         emit(afficherTrace(model->lastError().text()));
@@ -156,6 +158,17 @@ QPointer<QSqlTableModel> BdHandler::getTxTransmissionModel()
     QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
     model->setTable("Taux_Transmission");
     model->setSort(TX_TRANSMISSION_DESIGNATION, Qt::AscendingOrder);
+    if(!model->select())
+        emit(afficherTrace(model->lastError().text()));
+
+    return model;
+}
+
+QPointer<QSqlTableModel> BdHandler::getNoPortSerie()
+{
+    QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
+    model->setTable("Port_Serie");
+    model->setSort(PORT_SERIE_DESIGNATION, Qt::AscendingOrder);
     if(!model->select())
         emit(afficherTrace(model->lastError().text()));
 
@@ -440,6 +453,13 @@ ushort BdHandler::getTxTransmission(const ushort idTxTransmission)
     emit(afficherTrace("call getTxTransmissionRow("+QString::number(idTxTransmission)+")"));
     QSqlRecord* record = getTableRow(QString("SELECT * FROM Taux_Transmission WHERE id_tx_transmission=%1").arg(idTxTransmission));
     return record->value(TX_TRANSMISSION_DESIGNATION).toInt();
+}
+
+ushort BdHandler::getDesignationPortSerie(const ushort noPortSerie)
+{
+    emit(afficherTrace("call getDesignationPortSerie("+QString::number(noPortSerie)+")"));
+    QSqlRecord* record = getTableRow(QString("SELECT * FROM Port_Serie WHERE no_port=0").arg(noPortSerie));
+    return record->value(PORT_SERIE_DESIGNATION).toInt();
 }
 
 DesignationProtocole BdHandler::getDesignationProtocole(const ushort idEquipement)

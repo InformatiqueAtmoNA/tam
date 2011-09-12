@@ -28,6 +28,7 @@ private:
     QPointer<QSqlRelationalTableModel> m_model_polluant_associe;
     QPointer<QSqlTableModel> m_model_Modele;
     QPointer<QSqlTableModel> m_model_tx_transmission;
+    QPointer<QSqlTableModel> m_model_port_serie;
     QPointer<QSqlTableModel> m_model_molecule;
 
     QModelIndex m_indexSelection;

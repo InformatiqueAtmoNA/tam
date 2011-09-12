@@ -121,6 +121,8 @@ void Dlg_Equipement::peuplerTable() {
 
     m_model_tx_transmission = m_bdHandler->getTxTransmissionModel();
     m_model_tx_transmission->setParent(this);
+    m_model_port_serie=m_bdHandler->getNoPortSerie();
+    m_model_port_serie->setParent(this);
 
     this->ui->tableView->setModel(m_model);
     this->ui->tableView->setColumnHidden(EQUIPEMENT_ID, true);
@@ -131,6 +133,8 @@ void Dlg_Equipement::peuplerTable() {
     this->ui->cb_Modele->setModelColumn(MODELE_DESIGNATION);
     this->ui->cb_Tx_Transmission->setModel(m_model_tx_transmission);
     this->ui->cb_Tx_Transmission->setModelColumn(TX_TRANSMISSION_DESIGNATION);
+    this->ui->cb_Port->setModel(m_model_port_serie);
+    this->ui->cb_Port->setModelColumn(PORT_SERIE_DESIGNATION);
 
     connect(this->ui->tableView,SIGNAL(clicked(QModelIndex)),
             this,SLOT(changementSelection(QModelIndex)));
@@ -421,6 +425,8 @@ void Dlg_Equipement::buttonModifierClicked()
     this->ui->lineEdit_MaxGamme->setText(selection.value(EQUIPEMENT_MAX_GAMME).toString());
     this->ui->lineEdit_Offset->setText(selection.value(EQUIPEMENT_OFFSET).toString());
     this->ui->lineEdit_Adresse->setText(selection.value(EQUIPEMENT_ADRESSE).toString());
+
+
 
     this->ui->cb_Nb_Bits_Transmission->setCurrentIndex(this->ui->cb_Nb_Bits_Transmission->findText(selection.value(EQUIPEMENT_NB_BITS_TRANSMISSION).toString(),Qt::MatchExactly));
     this->ui->cb_Nb_Bits_Stop->setCurrentIndex(this->ui->cb_Nb_Bits_Stop->findText(selection.value(EQUIPEMENT_NB_BITS_STOP).toString(),Qt::MatchExactly));

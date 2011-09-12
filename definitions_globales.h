@@ -114,6 +114,8 @@ enum table_protocole {PROTOCOLE_ID,PROTOCOLE_DESIGNATION};
 enum table_marque {MARQUE_ID,MARQUE_DESIGNATION};
 // \enum Colonnes de la table Taux_Transmission
 enum table_tx_transmission {TX_TRANSMISSION_ID,TX_TRANSMISSION_DESIGNATION};
+// \enum Colonnes de la table Port_Serie
+enum table_port_serie {PORT_SERIE_NO,PORT_SERIE_DESIGNATION};
 // \enum Colonnes de la table Modele_Equipement
 enum table_modele {MODELE_ID,MODELE_ID_MARQUE,MODELE_ID_PROTOCOLE,MODELE_DESIGNATION,MODELE_TYPE};
 // \enum Colonnes de la table Equipement
@@ -121,7 +123,7 @@ enum table_equipement {EQUIPEMENT_ID,EQUIPEMENT_ID_MODELE,EQUIPEMENT_NO_SERIE,
                        EQUIPEMENT_EN_SERVICE,EQUIPEMENT_MIN_GAMME,
                        EQUIPEMENT_MAX_GAMME,EQUIPEMENT_OFFSET,EQUIPEMENT_ID_TX_TRANSMISSION,
                        EQUIPEMENT_ADRESSE,EQUIPEMENT_NB_BITS_TRANSMISSION, EQUIPEMENT_NB_BITS_STOP,
-                       EQUIPEMENT_CONTROLE_FLUX,EQUIPEMENT_PARITE};
+                       EQUIPEMENT_CONTROLE_FLUX,EQUIPEMENT_PARITE,EQUIPEMENT_PORT};
 // \enum Colonnes de la table Systeme_Etalon
 enum table_systeme_etalon {SYS_ETALON_ID,SYS_ETALON_DILUTEUR,SYS_ETALON_BOUTEILLE,SYS_ETALON_GZERO};
 // \enum Colonnes de la table Concentration
