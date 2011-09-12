@@ -90,6 +90,12 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
 
     ui->dateTime_DebutTest->setDateTime(QDateTime::currentDateTime());
 
+    ushort idCalibrateur = m_bdHandler->getIdCalibrateur(m_test->getIdSystemeEtalon());
+    QSqlRecord record = *(m_bdHandler->getDesignationPortSerie(idCalibrateur));
+    ui->lineEdit_InterfaceCalibrateur->setText(record.value("designation").toString());
+
+
+
     connect(this->ui->tableWidget_Analyseurs,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetAnalyseursClicked(QModelIndex)));
     connect(this->ui->tableWidget_Communication,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetCommunicationClicked(QModelIndex)));
     connect(this->ui->button_Annuler,SIGNAL(clicked()),this,SLOT(buttonAnnulerClicked()));
@@ -222,6 +228,7 @@ void et_InterfaceExecutionTest::buttonAjouterClicked()
     QTableWidgetItem* item_maxGamme = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_MAX_GAMME).toString());
     QTableWidgetItem* item_offset = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_OFFSET).toString());
     QTableWidgetItem* item_adresse = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_ADRESSE).toString());
+    QTableWidgetItem* item_portSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_PORTSERIE).toString());
 
     uint idxNewRecord = this->ui->tableWidget_Analyseurs->rowCount();
     this->ui->tableWidget_Analyseurs->insertRow(idxNewRecord);
@@ -233,14 +240,17 @@ void et_InterfaceExecutionTest::buttonAjouterClicked()
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_MAX_GAMME,item_maxGamme);
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_OFFSET,item_offset);
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_ADRESSE,item_adresse);
+    this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_PORTSERIE,item_portSerie);
 
     this->ui->tableWidget_Communication->insertRow(idxNewRecord);
     QTableWidgetItem* itemCom_idEquipement = new QTableWidgetItem(QString::number(idEquipement));
     QTableWidgetItem* itemCom_noSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_NUM_SERIE).toString());
+    QTableWidgetItem* itemCom_portSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_PORTSERIE).toString());
     QTableWidgetItem* itemCom_etat = new QTableWidgetItem("En attente de test...");
 
     this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT,itemCom_idEquipement);
     this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_NUM_SERIE,itemCom_noSerie);
+    this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_INTERFACE,itemCom_portSerie);
     this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
 }
 
@@ -429,6 +439,8 @@ void et_InterfaceExecutionTest::tableWidgetCommunicationClicked(const QModelInde
 
     this->ui->lineEdit_InterfaceAnalyseur->setEnabled(m_idxCommunicationAnalyseurs.isValid());
     this->ui->lineEdit_InterfaceAnalyseur->setFocus();
+    int ligneSelect = this->ui->tableWidget_Communication->currentRow();
+    this->ui->lineEdit_InterfaceAnalyseur->setText(this->ui->tableWidget_Communication->item(ligneSelect,2)->text());
 }
 
 void et_InterfaceExecutionTest::lineEditCanalCalibrateurTextChanged(const QString text)

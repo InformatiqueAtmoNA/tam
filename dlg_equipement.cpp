@@ -46,6 +46,8 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
             this,SLOT(cb_ModeleChanged(int)));
     connect(this->ui->cb_Tx_Transmission, SIGNAL(currentIndexChanged(int)),
             this,SLOT(cb_tauxTransmissionChanged(int)));
+    connect(this->ui->cb_Port, SIGNAL(currentIndexChanged(int)),
+            this,SLOT(cb_noPortSerieChanged(int)));
     connect(this->ui->button_Supprimer,SIGNAL(clicked()),
             this,SLOT(buttonSupprimerClicked()));
     connect(this->ui->button_Ajouter,SIGNAL(clicked()),
@@ -231,6 +233,9 @@ void Dlg_Equipement::initialiserChamps() {
     this->ui->cb_Tx_Transmission->setCurrentIndex(idxTxTransmissionDefaut);
     this->ui->cb_Type_Controle_Flux->setCurrentIndex(0);
     this->ui->cb_Type_Parite->setCurrentIndex(0);
+    int noPortDefaut = this->ui->cb_Port->findText("NON_DEF");
+    this->m_noport = m_model_port_serie->record(noPortDefaut).value(PORT_SERIE_NO).toUInt();
+    this->ui->cb_Port->setCurrentIndex(noPortDefaut);
 }
 
 void Dlg_Equipement::changementSelection(const QModelIndex & idxSelection) {
@@ -289,6 +294,7 @@ void Dlg_Equipement::buttonValiderClicked()
     m_model->setData(m_model->index(row,EQUIPEMENT_NB_BITS_STOP),QVariant::fromValue(this->ui->cb_Nb_Bits_Stop->currentText().toInt()));
     m_model->setData(m_model->index(row,EQUIPEMENT_CONTROLE_FLUX),QVariant::fromValue(this->ui->cb_Type_Controle_Flux->currentText()));
     m_model->setData(m_model->index(row,EQUIPEMENT_PARITE),QVariant::fromValue(this->ui->cb_Type_Parite->currentText()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_PORT),QVariant::fromValue(this->m_noport));
 
     m_model->submitAll();
 
@@ -348,6 +354,13 @@ void Dlg_Equipement::cb_tauxTransmissionChanged(const int index)
     qDebug()<<"-----------------------------------------";
     qDebug()<<"call Dlg_Equipement::cb_tauxTransmissionChanged("<<QString::number(index)<<")";
     this->m_idTxTransmission = this->m_model_tx_transmission->record(index).value(TX_TRANSMISSION_ID).toUInt();
+}
+
+void Dlg_Equipement::cb_noPortSerieChanged(const int index)
+{
+    qDebug()<<"-----------------------------------------";
+    qDebug()<<"call Dlg_Equipement::cb_noPortSerieChanged("<<QString::number(index)<<")";
+    this->m_noport = this->m_model_port_serie->record(index).value(PORT_SERIE_NO).toUInt();
 }
 
 void Dlg_Equipement::buttonEditTxTransmissionClicked()
@@ -418,6 +431,12 @@ void Dlg_Equipement::buttonModifierClicked()
                                                                 Qt::DisplayRole,selection.value(EQUIPEMENT_ID_TX_TRANSMISSION),
                                                                 1,Qt::MatchExactly|Qt::MatchWrap);
     this->ui->cb_Tx_Transmission->setCurrentIndex(listIndexCbSelection.at(0).row());
+
+    QVariant noPortSerie = selection.value(EQUIPEMENT_PORT);
+    listIndexCbSelection = this->m_model_port_serie->match(this->m_model_port_serie->index(0,PORT_SERIE_DESIGNATION),
+                                                                Qt::DisplayRole,selection.value(EQUIPEMENT_PORT),
+                                                                1,Qt::MatchExactly|Qt::MatchWrap);
+    this->ui->cb_Port->setCurrentIndex(listIndexCbSelection.at(0).row());
 
     this->ui->lineEdit_NoSerie->setText(selection.value(EQUIPEMENT_NO_SERIE).toString());
     this->ui->ckB_EnService->setChecked(selection.value(EQUIPEMENT_EN_SERVICE).toBool());

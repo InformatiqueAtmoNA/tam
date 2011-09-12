@@ -41,6 +41,7 @@ private:
     bool m_nouvelEnregistrement;
     int m_idModele;
     ushort m_idTxTransmission;
+    ushort m_noport;
     int m_idModifie;
 
     void peuplerTable();
@@ -57,6 +58,7 @@ private Q_SLOTS:
     void cb_ModeleChanged(const int index);
     void buttonEditModeleClicked();
     void cb_tauxTransmissionChanged(const int index);
+    void cb_noPortSerieChanged(const int index);
     void buttonEditTxTransmissionClicked();
     void buttonModifierClicked();
     void buttonAddPolluantClicked();

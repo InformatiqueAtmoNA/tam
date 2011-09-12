@@ -374,9 +374,9 @@ D'export des mesures brutes :</string>
                 <property name="textElideMode">
                  <enum>Qt::ElideNone</enum>
                 </property>
-                <attribute name="horizontalHeaderDefaultSectionSize">
-                 <number>100</number>
-                </attribute>
+                <property name="columnCount">
+                 <number>9</number>
+                </property>
                 <attribute name="horizontalHeaderDefaultSectionSize">
                  <number>100</number>
                 </attribute>
@@ -418,6 +418,11 @@ D'export des mesures brutes :</string>
                 <column>
                  <property name="text">
                   <string>Adresse</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Port Série</string>
                  </property>
                 </column>
                </widget>
@@ -504,12 +509,6 @@ D'export des mesures brutes :</string>
                   </attribute>
                   <attribute name="horizontalHeaderStretchLastSection">
                    <bool>true</bool>
-                  </attribute>
-                  <attribute name="horizontalHeaderStretchLastSection">
-                   <bool>true</bool>
-                  </attribute>
-                  <attribute name="horizontalHeaderDefaultSectionSize">
-                   <number>200</number>
                   </attribute>
                   <column>
                    <property name="text">

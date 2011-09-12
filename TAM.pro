@@ -44,7 +44,8 @@ SOURCES += main.cpp \
     et_listeattentetests.cpp \
     generateurrapporttest.cpp \
     dlg_lieu.cpp \
-    dlg_operateur.cpp
+    dlg_operateur.cpp \
+    dlg_port_serie.cpp
 HEADERS += mainwindow.h \
     threadcomhandler.h \
     tei_146i.h \
@@ -91,7 +92,8 @@ HEADERS += mainwindow.h \
     generateurrapporttest.h \
     MesureIndividuelle.h \
     dlg_lieu.h \
-    dlg_operateur.h
+    dlg_operateur.h \
+    dlg_port_serie.h
 FORMS += mainwindow.ui \
     creationtest.ui \
     dlg_molecule.ui \
@@ -109,7 +111,8 @@ FORMS += mainwindow.ui \
     dlg_testxml.ui \
     et_listeattentetests.ui \
     dlg_lieu.ui \
-    dlg_operateur.ui
+    dlg_operateur.ui \
+    dlg_port_serie.ui
 INCLUDEPATH += ./qserialdevice \
     ./
 LIBS += -L./ \

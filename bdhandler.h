@@ -74,7 +74,7 @@ public:
     QSqlRecord* getEquipementModeledRow(const ushort idEquipement);
     QString getEquipementNumSerie(const ushort idEquipement);
     ushort getTxTransmission(const ushort idTxTransmission);
-    ushort getDesignationPortSerie(const ushort noPortSerie);
+    QSqlRecord* getDesignationPortSerie(const ushort idEquipement);
 
     DesignationProtocole getDesignationProtocole(const ushort idEquipement);
     ushort getIdCalibrateur(const uint idSystemeEtalon);

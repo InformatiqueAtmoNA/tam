@@ -67,7 +67,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel()
     model->setTable("Equipement");
     model->setRelation(EQUIPEMENT_ID_MODELE, QSqlRelation("Modele_Equipement", "id_modele", "designation"));
     model->setRelation(EQUIPEMENT_ID_TX_TRANSMISSION, QSqlRelation("Taux_Transmission","id_tx_transmission","taux_transmission"));
-    //model->setRelation(EQUIPEMENT_PORT,QSqlRelation("Port_Serie","no_port","designation"));
+    model->setRelation(EQUIPEMENT_PORT,QSqlRelation("Port_Serie","no_port","designation"));
 
     model->setHeaderData(EQUIPEMENT_ID_MODELE, Qt::Horizontal, "Modèle");
     model->setHeaderData(EQUIPEMENT_NO_SERIE, Qt::Horizontal, "N° Série");
@@ -82,7 +82,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel()
     model->setHeaderData(EQUIPEMENT_NB_BITS_TRANSMISSION, Qt::Horizontal, "Nb. bits de transmission");
     model->setHeaderData(EQUIPEMENT_PARITE, Qt::Horizontal, "Parité");
     model->setHeaderData(EQUIPEMENT_OFFSET, Qt::Horizontal, "Offset");
-    //model->setHeaderData(EQUIPEMENT_PORT, Qt::Horizontal, "Port Série");
+    model->setHeaderData(EQUIPEMENT_PORT, Qt::Horizontal, "Port Série");
     model->setSort(EQUIPEMENT_ID, Qt::AscendingOrder);
     if(!model->select())
         emit(afficherTrace(model->lastError().text()));
@@ -430,9 +430,9 @@ QSqlRecord* BdHandler::getSystemeEtalonRow(const ushort idSystemeEtalon)
 QSqlRecord* BdHandler::getEquipementModeledRow(const ushort idEquipement)
 {
     QString requete = "SELECT E.id_equipement,E.numero_serie,MO.designation,MA.designation,E.min_gamme,";
-    requete.append("E.max_gamme,E.offset,E.adresse ");
-    requete.append("FROM Equipement E,Modele_Equipement MO, Marque_Equipement MA ");
-    requete.append("WHERE E.id_modele = MO.id_modele AND MO.id_marque = MA.id_marque ");
+    requete.append("E.max_gamme,E.offset,E.adresse,PS.designation ");
+    requete.append("FROM Equipement E,Modele_Equipement MO, Marque_Equipement MA, Port_Serie PS ");
+    requete.append("WHERE E.id_modele = MO.id_modele AND MO.id_marque = MA.id_marque AND E.no_port = PS.no_port ");
     requete.append(QString("AND id_equipement=%1").arg(idEquipement));
 
     emit(afficherTrace("call getEquipementRow("+QString::number(idEquipement)+")"));
@@ -455,11 +455,13 @@ ushort BdHandler::getTxTransmission(const ushort idTxTransmission)
     return record->value(TX_TRANSMISSION_DESIGNATION).toInt();
 }
 
-ushort BdHandler::getDesignationPortSerie(const ushort noPortSerie)
+QSqlRecord* BdHandler::getDesignationPortSerie(const ushort idEquipement)
 {
-    emit(afficherTrace("call getDesignationPortSerie("+QString::number(noPortSerie)+")"));
-    QSqlRecord* record = getTableRow(QString("SELECT * FROM Port_Serie WHERE no_port=0").arg(noPortSerie));
-    return record->value(PORT_SERIE_DESIGNATION).toInt();
+    QString str_requete = "SELECT PS.designation FROM Equipement E,Port_Serie PS ";
+    str_requete.append("WHERE E.no_port = PS.no_port ");
+    str_requete.append(QString("AND id_equipement=%1").arg(idEquipement));
+
+    return getTableRow(str_requete);
 }
 
 DesignationProtocole BdHandler::getDesignationProtocole(const ushort idEquipement)

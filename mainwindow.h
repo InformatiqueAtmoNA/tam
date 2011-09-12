@@ -36,6 +36,7 @@
 #include "et_listeattentetests.h"
 #include "dlg_lieu.h"
 #include "dlg_operateur.h"
+#include "dlg_port_serie.h"
 
 namespace Ui {
     class MainWindow;
@@ -70,6 +71,7 @@ public Q_SLOTS:
     void afficherDlgEquipement();
     void afficherDlgLieu();
     void afficherDlgOperateur();
+    void afficherDlgPortSerie();
     void programmerSerieTests();
 };
 
