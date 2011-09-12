@@ -87,6 +87,10 @@ CREATE TABLE IF NOT EXISTS `Equipement` (
 -- Contenu de la table `Equipement`
 --
 
+INSERT INTO `Equipement` (`id_equipement`, `id_modele`, `numero_serie`, `en_service`, `min_gamme`, `max_gamme`, `offset`, `id_tx_transmission`, `adresse`, `nb_bits_transmission`, `nb_bits_stop`, `controle_flux`, `type_parite`) VALUES
+(1, 1, 'aucune', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
+(2, 2, 'aucun', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -182,7 +186,7 @@ INSERT INTO `Marque_Equipement` (`id_marque`, `designation`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `Mesure` (
-  `id_mesure` smallint(5) unsigned NOT NULL,
+  `id_mesure` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `id_test` smallint(5) unsigned NOT NULL,
   `id_equipement` smallint(5) unsigned NOT NULL,
   `no_cyclePhase` smallint(6) DEFAULT NULL,
@@ -327,19 +331,20 @@ CREATE TABLE IF NOT EXISTS `Protocole` (
 --
 
 INSERT INTO `Protocole` (`id_Protocole`, `designation`) VALUES
-(10, 'API_ANA'),
-(11, 'API_DIL'),
 (1, 'INCONNU'),
 (2, 'MODE4_ANA_CMD04'),
 (3, 'MODE4_ANA_CMD16'),
-(5, 'MODE4_LNI'),
 (4, 'MODE4_SX6000_17'),
+(5, 'MODE4_LNI'),
+(6, 'TEI_ANA'),
 (7, 'TEI_146c'),
-(8, 'TEI_146i'),
-(13, 'TEI_146i_OZONISEUR'),
-(12, 'TEI_146i_PHOTOMETRE'),
-(9, 'TEI_49ps'),
-(6, 'TEI_ANA');
+(8, 'TEI_146c_V2'),
+(9, 'TEI_146i'),
+(10, 'TEI_49ps'),
+(11, 'API_ANA'),
+(12, 'API_DIL'),
+(13, 'TEI_146i_PHOTOMETRE'),
+(14, 'TEI_146i_OZONISEUR');
 
 -- --------------------------------------------------------
 
