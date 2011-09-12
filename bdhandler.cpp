@@ -475,24 +475,37 @@ ushort BdHandler::getIdCalibrateur(const uint idSystemeEtalon)
 
 bool BdHandler::insertIntoMesure(const MesureInfo mesureInfos)
 {
-    QString strRequete = "INSERT INTO `Mesure` (`id_test`,`id_equipement`,`no_cyclePhase`,`no_phase`,";
-    strRequete.append("`no_cycleMesure`,`mesure_1`,`mesure_2`,`mesure_3`) VALUES (");
-    strRequete.append(QString::number(mesureInfos.idTest)+",");
-    strRequete.append(QString::number(mesureInfos.idEquipement)+",");
-    strRequete.append(QString::number(mesureInfos.noCyclePhase)+",");
-    strRequete.append(QString::number(mesureInfos.noPhase)+",");
-    strRequete.append(QString::number(mesureInfos.noCycleMesure)+",");
-    strRequete.append(QString::number(mesureInfos.mesure.data()->at(0))+",");
-    if(mesureInfos.mesure.data()->count()>1)
-        strRequete.append(QString::number(mesureInfos.mesure.data()->at(1))+",");
-    if(mesureInfos.mesure.data()->count()>2)
-        strRequete.append(QString::number(mesureInfos.mesure.data()->at(2))+",");
+    QString strRequeteDebut = "INSERT INTO `Mesure` (`id_test`,`id_equipement`,`no_cyclePhase`,`no_phase`,";
+    strRequeteDebut.append("`no_cycleMesure`,`mesure_1`");
 
-    m_baseMySql.transaction();
+    QString strRequeteValeurs = QString::number(mesureInfos.idTest)+",";
+    strRequeteValeurs.append(QString::number(mesureInfos.idEquipement)+",");
+    strRequeteValeurs.append(QString::number(mesureInfos.noCyclePhase)+",");
+    strRequeteValeurs.append(QString::number(mesureInfos.noPhase)+",");
+    strRequeteValeurs.append(QString::number(mesureInfos.noCycleMesure)+",");
+    strRequeteValeurs.append(QString::number(mesureInfos.mesure.data()->at(0)));
+    if(mesureInfos.mesure.data()->count()>1) {
+        strRequeteDebut.append(",`mesure_2`");
+        strRequeteValeurs.append(","+QString::number(mesureInfos.mesure.data()->at(1)));
+        if(mesureInfos.mesure.data()->count()>2) {
+            strRequeteDebut.append(",`mesure_3`");
+            strRequeteValeurs.append(","+QString::number(mesureInfos.mesure.data()->at(2))+");");
+        }
+        else
+            strRequeteValeurs.append(");");
+    }
+    else strRequeteValeurs.append(");");
+
+    strRequeteDebut.append(") VALUES (");
+
+    QString strRequete = strRequeteDebut+strRequeteValeurs;
+    bool succes = m_baseMySql.transaction();
     QSqlQuery requete;
-    bool succes = requete.exec(strRequete);
-    m_baseMySql.commit();
-
+    succes = requete.exec(strRequete);
+    qDebug()<<strRequete;
+    if(!succes)
+        emit(afficherTrace("Problème lors de l'enregistrement de la mesure moyenne"));
+    succes = m_baseMySql.commit();
     return succes;
 }
 

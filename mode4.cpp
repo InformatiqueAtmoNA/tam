@@ -226,21 +226,30 @@ QWeakPointer<MesureIndividuelle> Mode4::demandeMesure() {
         // On enleve la partie de la trame correspondant à la voie 1
         reponse.remove(0,reponse.indexOf(" ")+1);
         // Le nouveau debut de trame est la voie 2
-        mesures.data()->append(reponse.left(reponse.indexOf(" ")).toFloat());
+        QString mesure = reponse.left(reponse.indexOf(" "));
+        if(!mesure.contains("inf")) {
+            mesures.data()->append(mesure.toFloat());
+        }
         // Et on recommence pour avoir la voie 3
         reponse.remove(0,reponse.indexOf(" ")+1);
-        mesures.data()->append(reponse.left(reponse.indexOf(" ")).toFloat());
+        if(!mesure.contains("inf")) {
+            mesures.data()->append(mesure.toFloat());
+        }
     }
     else {
         qDebug()<<"Mesure 1: "<<reponse.mid(16,8);
         QString mesure = reponse.mid(16,8);
         mesures.data()->append(this->getMesureFromString(mesure));
         mesure = reponse.mid(24,8);
-        qDebug()<<"Mesure 2: "<<reponse.mid(24,8);
-        mesures.data()->append(this->getMesureFromString(mesure));
+        if(!mesure.contains("inf")) {
+            qDebug()<<"Mesure 2: "<<reponse.mid(24,8);
+            mesures.data()->append(this->getMesureFromString(mesure));
+        }
         mesure = reponse.mid(32,8);
-        qDebug()<<"Mesure 3: "<<reponse.mid(32,8);
-        mesures.data()->append(this->getMesureFromString(mesure));
+        if(!mesure.contains("inf")) {
+            qDebug()<<"Mesure 3: "<<reponse.mid(32,8);
+            mesures.data()->append(this->getMesureFromString(mesure));
+        }
     }
     return mesures;
 }

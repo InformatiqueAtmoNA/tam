@@ -1,17 +1,15 @@
-#-------------------------------------------------
-#
+# -------------------------------------------------
 # Project created by QtCreator 2011-03-18T09:33:21
-#
-#-------------------------------------------------
-
-QT       += sql xml
-
+# -------------------------------------------------
+QT += sql \
+    xml
 TARGET = TAM
 TEMPLATE = app
-
-CONFIG += static += console
-SOURCES += main.cpp\
-        mainwindow.cpp \
+CONFIG += static \
+    += \
+    console
+SOURCES += main.cpp \
+    mainwindow.cpp \
     threadcomhandler.cpp \
     tei_146i.cpp \
     tei_146c.cpp \
@@ -44,9 +42,10 @@ SOURCES += main.cpp\
     et_infostestencours.cpp \
     dlg_testxml.cpp \
     et_listeattentetests.cpp \
-    generateurrapporttest.cpp
-
-HEADERS  += mainwindow.h \
+    generateurrapporttest.cpp \
+    dlg_lieu.cpp \
+    dlg_operateur.cpp
+HEADERS += mainwindow.h \
     threadcomhandler.h \
     tei_146i.h \
     tei_146c.h \
@@ -90,9 +89,10 @@ HEADERS  += mainwindow.h \
     dlg_testxml.h \
     et_listeattentetests.h \
     generateurrapporttest.h \
-    MesureIndividuelle.h
-
-FORMS    += mainwindow.ui \
+    MesureIndividuelle.h \
+    dlg_lieu.h \
+    dlg_operateur.h
+FORMS += mainwindow.ui \
     creationtest.ui \
     dlg_molecule.ui \
     dlg_protocole.ui \
@@ -107,14 +107,13 @@ FORMS    += mainwindow.ui \
     et_interfaceexecutiontest.ui \
     et_infostestencours.ui \
     dlg_testxml.ui \
-    et_listeattentetests.ui
-
+    et_listeattentetests.ui \
+    dlg_lieu.ui \
+    dlg_operateur.ui
 INCLUDEPATH += ./qserialdevice \
-               ./
+    ./
 LIBS += -L./ \
     -lqserialdevice
-
-OTHER_FILES += \
-    licence.txt \
+OTHER_FILES += licence.txt \
     StructureTest.dtd \
     CreationBaseMySql.sql

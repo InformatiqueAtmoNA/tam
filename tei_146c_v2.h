@@ -26,6 +26,14 @@ public:
     ///////////////////////////////////////////////////////////////////////////*/
     Tei_146c_v2(const QString & adressePeriph, const TypePeripherique & typePeriph, const OptionTpg & optionTpg=AUCUNE);
 
+/*///////////////////////////////////////////////////////////////////////////
+    // \fn virtual void standBy()
+    // \brief mise en stand-by du périphérique
+    //
+    // \return bool faux si non disponible pour le protocole
+    ///////////////////////////////////////////////////////////////////////////*/
+    virtual bool standBy();
+
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void commandeSpan(ushort canal,ushort point)
     // \brief Commande au diluteur de se mettre à un certain point de gaz

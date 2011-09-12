@@ -101,7 +101,7 @@ private Q_SLOTS:
     void buttonMettreEnAttenteClicked();
     void bgChoixDebutTestValueChanged(int idButton);
     void dateTimeDebutTestValueChanged(QDateTime dateTimeDebutTest);
-    inline void finTest() {qDebug()<<"Findu thread"; delete m_testAExecuter;}
+    inline void finTest() {delete m_testAExecuter;}
     inline void tableWidgetAnalyseursClicked(const QModelIndex index) {m_idxSelectionAnalyseurs = index;}
 
 Q_SIGNALS:

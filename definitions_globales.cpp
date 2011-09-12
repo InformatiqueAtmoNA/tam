@@ -39,7 +39,7 @@ DesignationProtocole stringToProtocole(QString protocole) {
     if(protocole=="TEI_146c")
         return TEI_146c;
     if(protocole=="TEI_146c_V2")
-        return TEI_146c;
+        return TEI_146c_V2;
     if(protocole=="TEI_49ps")
         return TEI_49ps;
     if(protocole=="API_ANA")

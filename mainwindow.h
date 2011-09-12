@@ -34,6 +34,8 @@
 #include "homewidget.h"
 #include "et_interfaceexecutiontest.h"
 #include "et_listeattentetests.h"
+#include "dlg_lieu.h"
+#include "dlg_operateur.h"
 
 namespace Ui {
     class MainWindow;
@@ -66,6 +68,8 @@ public Q_SLOTS:
     void executerTest(const ushort idTestXML, const QString fichierDescription);
     void fermetureTestWidget();
     void afficherDlgEquipement();
+    void afficherDlgLieu();
+    void afficherDlgOperateur();
     void programmerSerieTests();
 };
 

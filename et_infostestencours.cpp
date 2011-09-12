@@ -285,6 +285,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             }
             delete model;
         }
+        ui->textEdit_ParametresTest->append("\n");
     }
 
     if(remplirFichierCSV) {
@@ -448,7 +449,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             trace.append("\n");
             paramsTest->m_fichierCSV->write(trace.toAscii());
         }
-
+        trace = "Date et heure;Cycle de phase N°;Phase N°;Position durant phase;";
         paramsTest->m_fichierCSV->write(trace.toAscii());
         paramsTest->m_fichierCSV->flush();
     }
@@ -460,15 +461,24 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
 
     QSqlRecord enregistrement = model->record();
 
-    enregistrement.setValue(TEST_METRO_ID_TEST_XML,paramsTest->m_id_TestXML);
-    enregistrement.setValue(TEST_METRO_ID_OPERATEUR,paramsTest->m_idOperateur);
-    enregistrement.setValue(TEST_METRO_ID_LIEU,paramsTest->m_idLieu);
-    enregistrement.setValue(TEST_METRO_PRESSION,paramsTest->m_pression);
-    enregistrement.setValue(TEST_METRO_TEMPERATURE,paramsTest->m_temperature);
-    enregistrement.setValue(TEST_METRO_DATE_DEBUT,paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"));
+    afficherTraceTest("Enregistrement des informations de test",2);
+    afficherTraceTest("ID Test_XML "+QString::number(paramsTest->m_id_TestXML),2);
+    enregistrement.setValue(TEST_METRO_ID_TEST_XML,QVariant::fromValue(paramsTest->m_id_TestXML));
+    afficherTraceTest("ID Opérateur "+QString::number(paramsTest->m_idOperateur),2);
+    enregistrement.setValue(TEST_METRO_ID_OPERATEUR,QVariant::fromValue(paramsTest->m_idOperateur));
+    afficherTraceTest("ID Lieu "+QString::number(paramsTest->m_idLieu),2);
+    enregistrement.setValue(TEST_METRO_ID_LIEU,QVariant::fromValue(paramsTest->m_idLieu));
+    afficherTraceTest("Pression "+QString::number(paramsTest->m_pression),2);
+    enregistrement.setValue(TEST_METRO_PRESSION,QVariant::fromValue(paramsTest->m_pression));
+    afficherTraceTest("Température "+QString::number(paramsTest->m_temperature),2);
+    enregistrement.setValue(TEST_METRO_TEMPERATURE,QVariant::fromValue(paramsTest->m_temperature));
+    afficherTraceTest("Date début "+paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"),2);
+    enregistrement.setValue(TEST_METRO_DATE_DEBUT,QVariant::fromValue(paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
     model->insertRecord(-1,enregistrement);
 
     model->submitAll();
+
+    enregistrement = model->record(model->rowCount()-1);
 
     paramsTest->m_id_TestMetro = enregistrement.value(TEST_METRO_ID).toUInt();
 

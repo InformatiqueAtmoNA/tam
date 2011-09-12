@@ -65,7 +65,7 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
     if(nomFichier.contains("./"))
         nomFichier.remove("./");
 
-    this->ui->lineEdit_FichierCSV->setText("$DATE_HEURE_"+nomFichier+".csv");
+    this->ui->lineEdit_FichierCSV->setText("DATE_HEURE_"+nomFichier+".csv");
     this->ui->lineEdit_FichierDescription->setText(nomFichier);
     this->ui->lineEdit_TypeTest->setText(typeTestToString(m_test->getTypeTest()));
 
@@ -287,6 +287,7 @@ void et_InterfaceExecutionTest::buttonSuivantClicked()
         else return;
         break;
     case 2:
+        QCoreApplication::flush();
         if(controleEtape2()) {
             m_etape = 3;
             this->ui->button_Precedent->setEnabled(true);
@@ -339,6 +340,8 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     analyseur->setThreadComHandler(threadCommunication);
     analyseur->setTimeOut(500);
 
+    analyseur->init();
+
     m_listeInterfaceAnalyseurs[idAnalyseur] = interface;
     m_listeEtatComAnalyseurs[idAnalyseur] = true;
 
@@ -359,6 +362,9 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     QTableWidgetItem* itemCom_interface = new QTableWidgetItem(interface);
     itemCom_interface->setTextColor(QColor(255,0,0));
     this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_INTERFACE,itemCom_interface);
+    analyseur->quitter();
+    analyseur->deleteLater();
+    QCoreApplication::processEvents();
 }
 
 void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
@@ -396,7 +402,9 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     threadCommunication->configureRS232(ui->lineEdit_InterfaceCalibrateur->text());
 
     calibrateur->setThreadComHandler(threadCommunication);
-    calibrateur->setTimeOut(1000);
+    calibrateur->setTimeOut(500);
+
+    calibrateur->init();
 
     if(calibrateur->demandeAlarme() > 0) {
         QMessageBox msgBox;
@@ -410,6 +418,9 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
             m_etatComCalibrateur = false;
         }
     }
+    calibrateur->quitter();
+    calibrateur->deleteLater();
+    QCoreApplication::processEvents();
 }
 
 void et_InterfaceExecutionTest::tableWidgetCommunicationClicked(const QModelIndex index)
@@ -505,9 +516,10 @@ void et_InterfaceExecutionTest::tabWidgetExecutionTestIndexChanged(const int ind
 
 void et_InterfaceExecutionTest::buttonExecuterClicked()
 {
-    if(!m_appareilEnTest.isNull())
-        delete m_appareilEnTest;
-
+    if(!m_appareilEnTest.isNull()) {
+        m_appareilEnTest->deleteLater();
+        QCoreApplication::flush();
+    }
     ui->button_Precedent->setEnabled(false);
     ui->button_Executer->setEnabled(false);
     ui->button_MettreEnAttente->setEnabled(false);
@@ -519,13 +531,16 @@ void et_InterfaceExecutionTest::buttonExecuterClicked()
 
     connect(m_testAExecuter,SIGNAL(traceTest(QString,ushort)),m_infosTestEnCours,SLOT(afficherTraceTest(QString,ushort)));
 
-    m_testAExecuter->moveToThread(&m_threadExecutionTest);
+// m_testAExecuter->moveToThread(&m_threadExecutionTest);
 
-    connect(&m_threadExecutionTest,SIGNAL(started()),m_testAExecuter,SLOT(run()));
-    connect(m_testAExecuter,SIGNAL(exitTest()),&m_threadExecutionTest,SLOT(quit()));
-    connect(&m_threadExecutionTest,SIGNAL(finished()),this,SLOT(finTest()));
+//    connect(&m_threadExecutionTest,SIGNAL(started()),m_testAExecuter,SLOT(run()));
+//    connect(m_testAExecuter,SIGNAL(exitTest()),&m_threadExecutionTest,SLOT(quit()));
+//    connect(&m_threadExecutionTest,SIGNAL(finished()),this,SLOT(finTest()));
 
-    m_threadExecutionTest.start();
+//    m_threadExecutionTest.start();
+    connect(m_testAExecuter,SIGNAL(exitTest()),this,SLOT(finTest()));
+
+    m_testAExecuter->run();
 
     ui->button_Precedent->setEnabled(true);
     ui->button_Executer->setEnabled(true);
@@ -541,10 +556,10 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
 {
     QString nomFichierCSV = ui->lineEdit_FichierCSV->text();
 
-    if(nomFichierCSV.contains("$DATE_HEURE")) {
+    if(nomFichierCSV.contains("DATE_HEURE")) {
         QDateTime currentDateTime = QDateTime::currentDateTime();
-        QString strCurrentDateTime = currentDateTime.toString("dd-MM-yyyy-hh:mm:ss");
-        nomFichierCSV.replace("$DATE_HEURE",strCurrentDateTime);
+        QString strCurrentDateTime = currentDateTime.toString("ddMMyyyy_hhmm");
+        nomFichierCSV.replace("DATE_HEURE",strCurrentDateTime);
     }
 
     QPointer<QFile> fichierCSV = new QFile(nomFichierCSV);
@@ -586,7 +601,7 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
     paramsTest->m_pression = ui->doubleSpinBox_Pression->value();
     paramsTest->m_temperature = ui->doubleSpinBox_Temperature->value();
     paramsTest->m_debutImmediat = m_debutImmediat;
-    paramsTest->m_dateHeureDebut = m_dateHeureDebutTest;
+    paramsTest->m_dateHeureDebut = QDateTime::currentDateTime();
 
     QString operateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_NOM).toString();
     operateur.append(" ");

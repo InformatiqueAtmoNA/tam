@@ -27,8 +27,7 @@
 #ifndef COMMUNICATIONSERIE_H
 #define COMMUNICATIONSERIE_H
 
-#include <QtCore/QDebug>
-#include <QtCore/QByteArray>
+#include <QtCore>
 #include <iostream>
 #include <string>
 #include <QtCore/qstring.h>

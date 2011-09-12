@@ -95,6 +95,8 @@ void et_listeAttenteTests::buttonExecuterClicked()
 
 void et_listeAttenteTests::verifierTestsExecutables()
 {
+    QCoreApplication::processEvents();
+
     QMapIterator<ushort, QPointer<et_ParamsTest> > it_listeTestEnAttente(m_listeParamsTestsEnAttente);
 
     while(it_listeTestEnAttente.hasNext()) {
@@ -155,9 +157,9 @@ void et_listeAttenteTests::miseEnAttente(QPointer<et_ParamsTest> paramsTest)
     this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_ID_TEST,item_idtest);
     this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_NOM_TEST,item_nomTest);
     this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_DATE_HEURE_DEBUT,item_DateHeureDebut);
-    this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_ETAT,item_Etat);
+    this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_CANAL_CALIBRATEUR,item_Etat);
     this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_INTERFACE_CALIBRATEUR,item_Interface);
-    this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_CANAL_CALIBRATEUR,item_Canal);
+    this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_ETAT,item_Canal);
 
     m_listeParamsTestsEnAttente.insert(idxNewRecord,paramsTest);
 
@@ -167,6 +169,8 @@ void et_listeAttenteTests::miseEnAttente(QPointer<et_ParamsTest> paramsTest)
 
 void et_listeAttenteTests::lancerTest(ushort idxTest)
 {
+    QCoreApplication::processEvents();
+
     QPointer<et_InfosTestEnCours> infosTestEnCours = new et_InfosTestEnCours(m_bdHandler,this);
 
     m_listeInfosTestsEnCours.insert(idxTest,infosTestEnCours);
@@ -183,18 +187,18 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
     m_listeParamsTestsEnCours.insert(idxTest,m_listeParamsTestsEnAttente.value(idxTest));
     m_listeParamsTestsEnAttente.remove(idxTest);
 
-    QPointer<QThreadEx> threadExecution = new QThreadEx();
+//    QPointer<QThreadEx> threadExecution = new QThreadEx();
 
-    m_listeThreadsExecution.insert(idxTest,threadExecution);
+//    m_listeThreadsExecution.insert(idxTest,threadExecution);
     m_listeTestsEnExecution.insert(idxTest,testAExecuter);
 
-    testAExecuter->moveToThread(threadExecution);
+//    testAExecuter->moveToThread(threadExecution);
 
-    connect(threadExecution,SIGNAL(started()),testAExecuter,SLOT(run()));
-    connect(testAExecuter,SIGNAL(exitTest()),threadExecution,SLOT(quit()));
+//    connect(threadExecution,SIGNAL(started()),testAExecuter,SLOT(run()));
+//    connect(testAExecuter,SIGNAL(exitTest()),threadExecution,SLOT(quit()));
     connect(testAExecuter,SIGNAL(killMeAndMyThread(short)),this,SLOT(killExecutionTestEtThread(short)));
-
-    threadExecution->start();
+    testAExecuter->run();
+//    threadExecution->start();
 }
 
 void et_listeAttenteTests::killExecutionTestEtThread(const short id)
@@ -204,13 +208,13 @@ void et_listeAttenteTests::killExecutionTestEtThread(const short id)
         delete testEnCours;
     m_listeTestsEnExecution.remove(id);
 
-    QPointer<QThreadEx> thread = m_listeThreadsExecution.value(id);
-    if(!thread.isNull()) {
-        thread->quit();
-        thread->wait();
-        delete thread;
-    }
-    m_listeThreadsExecution.remove(id);
+//    QPointer<QThreadEx> thread = m_listeThreadsExecution.value(id);
+//    if(!thread.isNull()) {
+//        thread->quit();
+//        thread->wait();
+//        delete thread;
+//    }
+//    m_listeThreadsExecution.remove(id);
     QPointer<et_ParamsTest> paramsTest = m_listeParamsTestsEnCours.value(id);
     if(!paramsTest.isNull())
         delete paramsTest;

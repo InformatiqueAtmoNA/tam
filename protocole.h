@@ -55,6 +55,7 @@ protected:
     OptionTpg optionTpg; // Option pour le tirtrage en phase gazeuse
     DesignationProtocole versionProtocole; // Version de protocole
     bool m_avorterTransaction;
+    QTimer m_timerFinTransaction;
 
 public:
     Protocole();
@@ -274,6 +275,10 @@ public:
     ///////////////////////////////////////////////////////////////////////////*/
     static QPointer<Protocole> getProtocoleObject(const DesignationProtocole & designationProtocole, const QString & adresse);
 
+public Q_SLOTS:
+
+    void quitter();
+
 Q_SIGNALS:
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void envoiTrame(QString data)
@@ -316,10 +321,6 @@ Q_SIGNALS:
     // \brief Envoi un signal d'alarme générale
     ///////////////////////////////////////////////////////////////////////////*/
     void alarmeGenerale();
-
-public Q_SLOTS:
-
-    inline void quitter() {m_avorterTransaction=true;}
 
 protected Q_SLOTS:
     /*///////////////////////////////////////////////////////////////////////////

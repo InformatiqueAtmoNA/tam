@@ -3,6 +3,13 @@
 Tei_146c_v2::Tei_146c_v2(const QString & adressePeriph, const TypePeripherique & typePeriph, const OptionTpg & optionTpg)
         :Tei(adressePeriph, typePeriph,optionTpg) {}
 
+// Mise en stand-by du périphérique
+bool Tei_146c_v2::standBy() {
+    QString cmd = *(this->creerTrameCommande("sel gas off"));
+    this->transaction(cmd);
+    return true;
+}
+
 // Commande au diluteur de se mettre à un certain point de gaz
 void Tei_146c_v2::commandeSpan(const SpanHandler & spanData) {
     QString cmd;

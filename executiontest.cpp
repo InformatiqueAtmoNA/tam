@@ -77,20 +77,20 @@ ExecutionTest::ExecutionTest(const QPointer<et_ParamsTest> paramsTest,const QPoi
 
 ExecutionTest::~ExecutionTest()
 {
-    delete m_machine;
+    m_machine->deleteLater();
 
     QMapIterator<ushort,QPointer<Protocole> > it_anaDesignProto(m_analyseursProtocole);
     while (it_anaDesignProto.hasNext()) {
         it_anaDesignProto.next();
         if(!it_anaDesignProto.value().isNull()) {
-            it_anaDesignProto.value()->quitter();
-            delete it_anaDesignProto.value();
+            it_anaDesignProto.value()->deleteLater();
         }
     }
     if(!m_protocoleCalibrateur.isNull()) {
-        m_protocoleCalibrateur->quitter();
-        delete m_protocoleCalibrateur;
+        m_protocoleCalibrateur->deleteLater();
     }
+
+    QCoreApplication::processEvents();
 
     delete m_infosCalibrateur;
 
@@ -138,6 +138,8 @@ void ExecutionTest::getInfosEquipements()
         protocoleAnalyseur->setThreadComHandler(threadCommunication);
         protocoleAnalyseur->setTimeOut(500);
 
+        protocoleAnalyseur->init();
+
         m_analyseursProtocole.insert(idAnalyseur,protocoleAnalyseur);
         delete equipementRecord;
 
@@ -163,6 +165,8 @@ void ExecutionTest::getInfosEquipements()
 
     m_protocoleCalibrateur->setThreadComHandler(threadCommunication);
     m_protocoleCalibrateur->setTimeOut(500);
+
+    m_protocoleCalibrateur->init();
 }
 
 void ExecutionTest::constructionMachineEtat()
@@ -252,6 +256,7 @@ void ExecutionTest::constructionMachineEtat()
     QState* st_testTempsMaxPhase = new QState(st_tempsMaxPhase);
     QState* st_attenteTempsMaxPhase = new QState(st_tempsMaxPhase);
     QFinalState* st_finTempsMaxPhase = new QFinalState(st_tempsMaxPhase);
+
     st_tempsMaxPhase->setInitialState(st_testTempsMaxPhase);
     connect(st_testTempsMaxPhase,SIGNAL(entered()),this,SLOT(testerTempsMaxPhase()));
     connect(st_attenteTempsMaxPhase,SIGNAL(entered()),this,SLOT(lancerTimerTempsMaxPhase()));
@@ -282,8 +287,11 @@ void ExecutionTest::constructionMachineEtat()
     st_lancementTempsAcquisition->addTransition(m_timerTempsAcquisition,SIGNAL(timeout()),st_enregistrementMesures);
     st_lancementTempsAcquisition->addTransition(this,SIGNAL(testMetroTermine()),st_finAcquisition);
     st_lancementTempsAcquisition->addTransition(this,SIGNAL(phaseTerminee()),st_finAcquisition);
+    st_lancementTempsAcquisition->addTransition(m_timerTempsMaxPhase,SIGNAL(timeout()),st_finAcquisition);
 
     st_enregistrementMesures->addTransition(this,SIGNAL(mesuresEnregistrees()),st_lancementTempsAcquisition);
+    st_enregistrementMesures->addTransition(m_timerTempsMaxPhase,SIGNAL(timeout()),st_finAcquisition);
+
     connect(st_lancementTempsAcquisition,SIGNAL(entered()),this,SLOT(lancerTimerTempsAcquisition()));
     connect(st_enregistrementMesures,SIGNAL(entered()),this,SLOT(enregistrerMesures()));
 
@@ -473,7 +481,7 @@ void ExecutionTest::enregistrerMesures()
 
     QDateTime date = QDateTime::currentDateTime();
 
-    QString strMesure = "\n" + date.toString("yyyy-MM-dd HH:mm:ss,zzz") + ";";
+    QString strMesure = "\n" + date.toString("yyyy-MM-dd HH:mm:ss") + ";";
 
     strMesure.append(QString::number(m_cyclePhaseEnCours)+";"+QString::number(m_noPhaseSuivante)+";"+m_etatAutomate+";");
 
@@ -487,6 +495,7 @@ void ExecutionTest::enregistrerMesures()
             strMesure.append(";NULL;NULL;NULL");
         else {
             for(ushort i=0;i< mesures.data()->count();i++) {
+                emit(traceTest("Mesure polluant "+QString::number(i)+" = "+QString::number(mesures.data()->at(i)),1));
                 strMesure.append(QString::number(mesures.data()->at(i)));
                 if(i+1 < mesures.data()->count())
                      strMesure.append(";");
@@ -598,12 +607,18 @@ void ExecutionTest::enregistrerMoyenneMesures()
             for(ushort i=0;i<tableaumesureParCycle.count();i++) {
                 QWeakPointer<MesureIndividuelle> mesure = tableaumesureParCycle.at(i);
                 if(j<mesure.data()->count()) {
-                    sommeMesuresIndividuelles += mesure.data()->at(j);
+                    float mesureIndividuelle = mesure.data()->at(j);
+                    sommeMesuresIndividuelles += mesureIndividuelle;
                     nbMesuresMoyennees++;
                 }
             }
-            moyenneMesure.data()->append(sommeMesuresIndividuelles/nbMesuresMoyennees);
+            if(!QString::number(sommeMesuresIndividuelles/nbMesuresMoyennees).contains("inf")) {
+                emit(traceTest("Moyenne polluant "+QString::number(j)+" = "+QString::number(sommeMesuresIndividuelles/nbMesuresMoyennees),0));
+                moyenneMesure.data()->append(sommeMesuresIndividuelles/nbMesuresMoyennees);
+            }
         }
+
+        m_tabMoyennesMesuresParPhase[it_tabMesuresParCycle.key()].append(moyenneMesure);
 
         MesureInfo mesureInfos;
         mesureInfos.idTest = m_paramsTest.data()->m_id_TestMetro;
@@ -613,7 +628,6 @@ void ExecutionTest::enregistrerMoyenneMesures()
         mesureInfos.noCycleMesure = m_cycleMesureEnCours;
         mesureInfos.mesure = moyenneMesure;
 
-        m_tableauCompletMesures->append(mesureInfos);
         m_bdHandler->insertIntoMesure(mesureInfos);
     }
 
@@ -624,14 +638,34 @@ void ExecutionTest::testTermine()
 {
     emit(traceTest("test terminé",0));
 
-    emit(traceTest("Génération du fichier de rapport",0));
+    m_timerTempsAttenteFinAcquisition = new QTimer;
 
-    GenerateurRapportTest generateurRapportTest(m_paramsTest,m_tableauCompletMesures,m_bdHandler.data());
-    generateurRapportTest.genererRapport();
+    QMapIterator<ushort,QPointer<Protocole> > it_anaDesignProto(m_analyseursProtocole);
+    while (it_anaDesignProto.hasNext()) {
+        it_anaDesignProto.next();
+        if(!it_anaDesignProto.value().isNull()) {
+            it_anaDesignProto.value()->passageMesure();
+            it_anaDesignProto.value()->quitter();
+        }
+    }
+    if(!m_protocoleCalibrateur.isNull()) {
+        m_protocoleCalibrateur->quitter();
+    }
 
+    m_timerTempsAttenteFinAcquisition->setInterval(1000);
+    m_timerTempsAttenteFinAcquisition->setSingleShot(true);
+
+    connect(m_timerTempsAttenteFinAcquisition,SIGNAL(timeout()),this,SLOT(attenteFinAcquisition()));
+
+    m_timerTempsAttenteFinAcquisition->start();
+}
+
+void ExecutionTest::attenteFinAcquisition()
+{
     if(m_idListeTestEnCours>-1)
         emit(killMeAndMyThread(m_idListeTestEnCours));
-    emit(exitTest());
+    else
+        emit(exitTest());
 }
 
 void ExecutionTest::tempsStabilisationFini()
@@ -656,18 +690,26 @@ void ExecutionTest::verifierCritereArret()
             emit(this->critereArretNonAtteint());
             return;
         }
+        float min = FLT_MAX;
+        float max = FLT_MIN;
 
         for(ushort i=(nbMoyenneEnregistrees-nbCyclesMesuresCritereArret);i<tableauMoyennesMesuresParPhase.count()-1;i++) {
-            float variation = (abs(tableauMoyennesMesuresParPhase.at(i+1).data()->at(0)
-                                 - tableauMoyennesMesuresParPhase.at(i).data()->at(0)));
-            if(uniteCritereArret==POURCENTAGE) variation /=100;
-            if((variation) > m_paramsTest.data()->m_test->getPhase(m_noPhaseSuivante).getCritereArret_PourcentageStabilisation())
-            {
+            if(tableauMoyennesMesuresParPhase.at(i).data()->at(0)<min)
+                min = tableauMoyennesMesuresParPhase.at(i).data()->at(0);
+            if(tableauMoyennesMesuresParPhase.at(i).data()->at(0)>max)
+                max = tableauMoyennesMesuresParPhase.at(i).data()->at(0);
+        }
 
-                emit(traceTest("Critère d'arrêt non atteint",0));
-                emit(this->critereArretNonAtteint());
-                return;
-            }
+        float variation = (fabs(max -min));
+        if(uniteCritereArret==POURCENTAGE) variation = (variation*100) / max;
+        float critereStabilisation = m_paramsTest.data()->m_test->getPhase(m_noPhaseSuivante).getCritereArret_PourcentageStabilisation();
+        emit(traceTest("Critère de stabilisation = "+QString::number(critereStabilisation),0));
+        emit(traceTest("Variation = "+QString::number(variation),0));
+        if(variation > critereStabilisation)
+        {
+            emit(traceTest("Critère d'arrêt non atteint",0));
+            emit(this->critereArretNonAtteint());
+            return;
         }
     }
     emit(traceTest("Critère d'arrêt atteint",0));

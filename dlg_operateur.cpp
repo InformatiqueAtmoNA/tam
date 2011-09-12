@@ -1,5 +1,5 @@
 /*////////////////////////////////////////////////////////////
-// \file dlg_tx_transmission.cpp
+// \file dlg_modele.cpp
 // \brief Classe d'interface graphique de la fenetre principale
 // \author FOUQUART Christophe
 // \version 1.0
@@ -23,17 +23,19 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 ////////////////////////////////////////////////////////////*/
-#include "dlg_tx_transmission.h"
-#include "ui_dlg_tx_transmission.h"
 
-Dlg_Tx_Transmission::Dlg_Tx_Transmission(QWidget *parent,const QPointer<BdHandler> m_bdHandler,const bool returnSelection,const int indexSelection) :
-        QDialog(parent),
-        ui(new Ui::Dlg_Tx_Transmission)
+#include "dlg_operateur.h"
+#include "ui_dlg_operateur.h"
+
+Dlg_Operateur::Dlg_Operateur(QWidget *parent,const QPointer<BdHandler> bdHandler,
+                             const bool returnSelection,const int indexSelection) :
+    QDialog(parent),
+    ui(new Ui::Dlg_Operateur)
 {
     ui->setupUi(this);
-    this->setWindowTitle("Taux de transmission");
+    this->setWindowTitle("Opérateurs");
 
-    this->m_bdHandler = m_bdHandler;
+    this->m_bdHandler = bdHandler;
     this->m_returnSelection = returnSelection;
 
     this->afficherTable();
@@ -46,57 +48,71 @@ Dlg_Tx_Transmission::Dlg_Tx_Transmission(QWidget *parent,const QPointer<BdHandle
             this,SLOT(buttonSupprimerClicked()));
     connect(this->ui->button_Ajouter,SIGNAL(clicked()),
             this,SLOT(buttonAjouterClicked()));
+    connect(this->ui->button_Selectionner,SIGNAL(clicked()),
+            this,SLOT(buttonSelectionnerClicked()));
+    connect(this->ui->button_Fermer,SIGNAL(clicked()),
+            this,SLOT(buttonFermerClicked()));
     connect(this->ui->button_Annuler,SIGNAL(clicked()),
             this,SLOT(initialiserChamps()));
     connect(this->ui->button_Valider,SIGNAL(clicked()),
             this,SLOT(buttonValiderClicked()));
-    connect(this->ui->button_Fermer,SIGNAL(clicked()),
-            this,SLOT(buttonFermerClicked()));
-    connect(this->ui->button_Selectionner,SIGNAL(clicked()),
-            this,SLOT(buttonSelectionnerClicked()));
 
     if(indexSelection > -1) {
         this->ui->tableView->selectRow(indexSelection);
     }
 }
 
-Dlg_Tx_Transmission::~Dlg_Tx_Transmission()
+Dlg_Operateur::~Dlg_Operateur()
 {
     delete ui;
 }
 
-void Dlg_Tx_Transmission::afficherTable() {
-    if(!this->m_returnSelection)
-       m_bdHandler->connexionBD();
-    m_model = m_bdHandler->getTxTransmissionModel();
-    this->ui->tableView->setModel(m_model);
-    this->ui->tableView->setColumnHidden(TX_TRANSMISSION_ID, true);
-    this->ui->tableView->resizeColumnsToContents();
+void Dlg_Operateur::changeEvent(QEvent *e)
+{
+    QDialog::changeEvent(e);
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        ui->retranslateUi(this);
+        break;
+    default:
+        break;
+    }
 }
 
-void Dlg_Tx_Transmission::initialiserChamps() {
-    this->ui->gb_edit_champs->setVisible(false);
+void Dlg_Operateur::afficherTable() {
+    if(!this->m_bdHandler->isOpen())
+       m_bdHandler->connexionBD();
 
-    this->ui->lineEdit_Designation->clear();
+    m_model = m_bdHandler->getOperateurModel();
+    m_model->setParent(this);
+
+    this->ui->tableView->setModel(m_model);
+    this->ui->tableView->setColumnHidden(OPERATEUR_ID, true);
+    this->ui->tableView->setColumnHidden(OPERATEUR_MDP, true);
+    this->ui->tableView->setColumnHidden(OPERATEUR_ADMIN, true);
+    this->ui->tableView->resizeColumnsToContents();
+    this->ui->tableView->setItemDelegate(new QSqlRelationalDelegate(this));
+}
+
+void Dlg_Operateur::initialiserChamps() {
+    this->ui->gb_edit_champs->setVisible(false);
+    this->ui->lineEdit_Nom->clear();
+    this->ui->lineEdit_Prenom->clear();
     this->ui->button_Ajouter->setEnabled(true);
     this->ui->button_Supprimer->setEnabled(true);
     this->ui->button_Fermer->setEnabled(true);
-    this->ui->button_Selectionner->setEnabled(true);
-
-    int height = this->ui->tableView->geometry().height()+(this->ui->gb_edit_champs->geometry().height());
-    this->ui->tableView->setGeometry(this->ui->tableView->geometry().x(),this->ui->tableView->geometry().y(),
-                      this->ui->tableView->geometry().width(),height);
+    this->ui->button_Selectionner->setVisible(true);
 
     if(!this->m_returnSelection || this->m_model->rowCount()==0) {
         this->ui->button_Selectionner->setVisible(false);
     }
 }
 
-void Dlg_Tx_Transmission::changementSelection(const QModelIndex & idxSelection) {
+void Dlg_Operateur::changementSelection(const QModelIndex & idxSelection) {
     this->m_indexSelection = idxSelection;
 }
 
-void Dlg_Tx_Transmission::buttonSupprimerClicked() {
+void Dlg_Operateur::buttonSupprimerClicked() {
     if(!m_indexSelection.isValid())
         return;
     int reponse = QMessageBox::question(this, "Supprimer un élément", "êtes-vous sûr de vouloir effacer cet enregistrement?",
@@ -107,46 +123,47 @@ void Dlg_Tx_Transmission::buttonSupprimerClicked() {
 
     if(!m_model.data()->removeRow(m_indexSelection.row()))
         QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé",QMessageBox::Ok);
+    else {
+        m_model->submitAll();
+        this->initialiserChamps();
+    }
 }
 
-void Dlg_Tx_Transmission::buttonAjouterClicked() {
-
-    int height = this->ui->tableView->geometry().height()-(this->ui->gb_edit_champs->geometry().height());
-    this->ui->tableView->setGeometry(this->ui->tableView->geometry().x(),this->ui->tableView->geometry().y(),
-                      this->ui->tableView->geometry().width(),height);
-
+void Dlg_Operateur::buttonAjouterClicked() {
     this->ui->gb_edit_champs->setVisible(true);
     this->ui->button_Ajouter->setEnabled(false);
     this->ui->button_Supprimer->setEnabled(false);
     this->ui->button_Fermer->setEnabled(false);
+
+    this->ui->lineEdit_Nom->setFocus();
+
+    this->ui->button_Valider->setDefault(true);
     this->ui->button_Selectionner->setEnabled(false);
-
-    this->ui->button_Valider->setDefault(true);
-
-    this->ui->lineEdit_Designation->setFocus();
-    this->ui->button_Valider->setDefault(true);
 }
 
-void Dlg_Tx_Transmission::buttonValiderClicked() {
-    QSqlRecord enregistrement = m_model.data()->record();
-    enregistrement.setValue(TX_TRANSMISSION_DESIGNATION,this->ui->lineEdit_Designation->text());
+void Dlg_Operateur::buttonValiderClicked() {
+    int row = m_model->rowCount();
 
-    m_model->insertRecord(-1,enregistrement);
+    if(row>0)
+        row-=1;
+    m_model->insertRow(row);
+
+    m_model->setData(m_model->index(row,OPERATEUR_NOM),QVariant::fromValue(this->ui->lineEdit_Nom->text()));
+    m_model->setData(m_model->index(row,OPERATEUR_PRENOM),QVariant::fromValue(this->ui->lineEdit_Prenom->text()));
 
     m_model->submitAll();
 
     this->initialiserChamps();
 }
 
-void Dlg_Tx_Transmission::buttonFermerClicked() {
+void Dlg_Operateur::buttonFermerClicked() {
     this->reject();
 }
 
-void Dlg_Tx_Transmission::buttonSelectionnerClicked() {
+void Dlg_Operateur::buttonSelectionnerClicked() {
     this->accept();
 }
 
-int Dlg_Tx_Transmission::getIdSelection() {
-    uint idTxTransmission = this->m_model->record(m_indexSelection.row()).value(TX_TRANSMISSION_ID).toInt();
-    return idTxTransmission;
+int Dlg_Operateur::getIdSelection() {
+    return this->m_model->record(m_indexSelection.row()).value(MODELE_ID).toInt();
 }

@@ -118,7 +118,8 @@ QWeakPointer<MesureIndividuelle> Tei::demandeMesureNox() {
         QString reponse = this->transaction(cmd);
         if(reponse.isEmpty())
             return tabMesures;
-        tabMesures.data()->append(this->getFloatFromMesureString(reponse));
+        if(!reponse.contains("inf"))
+            tabMesures.data()->append(this->getFloatFromMesureString(reponse));
     }
     return tabMesures;
 }

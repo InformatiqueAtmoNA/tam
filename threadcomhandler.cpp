@@ -35,12 +35,13 @@ ThreadComHandler::~ThreadComHandler() {
     if(this->comRS232->isOpen())
         this->comRS232->close();
     this->comRS232->deleteLater();
+    QCoreApplication::flush();
+    QCoreApplication::processEvents();
 }
 
 void ThreadComHandler::run() {
-    while(!flagStop) {
-        QCoreApplication::processEvents();
-    }
+    exec();
+    qDebug()<<"Fin du thread de communication";
     this->comRS232->close();
 }
 

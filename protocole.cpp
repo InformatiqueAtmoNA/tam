@@ -20,9 +20,17 @@ Protocole::Protocole() {
 }
 
 Protocole::~Protocole() {
-    if(threadCommunication->isRunning())
-        threadCommunication->stop();
-    delete threadCommunication;
+//    if(threadCommunication->isRunning())
+//        threadCommunication->stop();
+    threadCommunication->deleteLater();
+    while(threadCommunication->isRunning()) {
+        QCoreApplication::processEvents();
+        QCoreApplication::flush();
+    }
+}
+
+void Protocole::quitter() {
+    m_avorterTransaction=true;
 }
 
 // Affecte une nouvelle instance de la classe CommunicationSerie

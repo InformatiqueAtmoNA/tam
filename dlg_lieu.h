@@ -1,9 +1,9 @@
-/*///////////////////////////////////////////////////////////////////////////////////
-// \file dlg_molecule.h
-// \brief Classe d'interface gérant la table Molecule
+/*////////////////////////////////////////////////////////////
+// \file dlg_lieu.h
+// \brief Classe d'interface graphique gérant la table Lieu
 // \author FOUQUART Christophe
 // \version 1.0
-// \date 07/04/2011
+// \date 31/08/2011
 //
 // TAM - Tests Automatiques Métrologiques
 // Copyright (C) 2011 FOUQUART Christophe
@@ -22,31 +22,30 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-///////////////////////////////////////////////////////////////////////////////////*/
-
-#ifndef DLG_MOLECULE_H
-#define DLG_MOLECULE_H
+////////////////////////////////////////////////////////////*/
+#ifndef DLG_LIEU_H
+#define DLG_LIEU_H
 
 #include <QDialog>
 #include "bdhandler.h"
 
 namespace Ui {
-    class Dlg_Molecule;
+    class Dlg_Lieu;
 }
 
-class Dlg_Molecule : public QDialog
-{
+class Dlg_Lieu : public QDialog {
     Q_OBJECT
-
 public:
-    explicit Dlg_Molecule(QWidget *parent = 0,const QPointer<BdHandler> bdHandler = new BdHandler());
-    ~Dlg_Molecule();
-
+    Dlg_Lieu(QWidget *parent = 0,const QPointer<BdHandler> bdHandler = new BdHandler(),
+                        const bool returnSelection=false, const int indexSelection =-1);
+    ~Dlg_Lieu();
+    int getIdSelection();
 private:
-    Ui::Dlg_Molecule *ui;
-    QPointer<QSqlTableModel> model;
-    QModelIndex indexSelection;
-    QPointer<BdHandler> bdHandler;
+    Ui::Dlg_Lieu *ui;
+    QPointer<QSqlTableModel> m_model;
+    QModelIndex m_indexSelection;
+    QPointer<BdHandler> m_bdHandler;
+    bool m_returnSelection;
 
     void afficherTable();
 
@@ -56,6 +55,12 @@ private Q_SLOTS:
     void buttonAjouterClicked();
     void initialiserChamps();
     void buttonValiderClicked();
+    void buttonFermerClicked();
+    void buttonSelectionnerClicked();
+
+protected:
+    void changeEvent(QEvent *e);
+
 };
 
-#endif // DLG_MOLECULE_H
+#endif // DLG_LIEU_H

@@ -57,6 +57,7 @@ CommunicationSerie::~CommunicationSerie() {
     if(this->device->isOpen())
         this->device->close();
     this->device->deleteLater();
+    QCoreApplication::processEvents();
 }
 
 //////////////////////////////////////////////////

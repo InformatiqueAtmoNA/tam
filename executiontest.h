@@ -55,7 +55,7 @@ protected:
 // Classe implémentant l'exécution des tests métrologiques
 ////////////////////////////////////////////////////////////////////////////////////*/
 //class ExecutionTest : public QThread
-class ExecutionTest : public QThread
+class ExecutionTest : public QObject
 {
     Q_OBJECT
 private :
@@ -83,7 +83,6 @@ private :
     QMap<ushort,QWeakPointer<MesureIndividuelle> > m_tabMesuresIndividuelles;
     QMap<ushort,QVector<QWeakPointer<MesureIndividuelle> > > m_tabMesuresParCycle;
     QMap<ushort,QVector<QWeakPointer<MesureIndividuelle> > > m_tabMoyennesMesuresParPhase;
-    QSharedPointer<QVector<MesureInfo> > m_tableauCompletMesures;
 
     QPointer<QTimer> m_timerDemmarageMachine;
     QPointer<QTimer> m_timerTempsMaxPhase;
@@ -91,6 +90,7 @@ private :
     QPointer<QTimer> m_timerTempsStabilisation;
     QPointer<QTimer> m_timerTempsMoyennageMesures;
     QPointer<QTimer> m_timerTempsAttenteEntreMesures;
+    QPointer<QTimer> m_timerTempsAttenteFinAcquisition;
 
     QString m_etatAutomate;
 
@@ -254,6 +254,8 @@ private Q_SLOTS:
     void messageBdHandler(const QString trace);
 
     void finPhase() {qDebug("Phase terminée");emit(this->phaseTerminee());}
+
+    void attenteFinAcquisition();
 
 public Q_SLOTS:
     /*///////////////////////////////////////////////////////////////////////////

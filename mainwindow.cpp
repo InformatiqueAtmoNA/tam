@@ -44,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_bdHandler->connexionBD();
 
     connect(this->ui->actionDlgEquipement,SIGNAL(triggered()),this,SLOT(afficherDlgEquipement()));
+    connect(this->ui->actionDlgLieu,SIGNAL(triggered()),this,SLOT(afficherDlgLieu()));
+    connect(this->ui->actionDlgOperateur,SIGNAL(triggered()),this,SLOT(afficherDlgOperateur()));
 
     this->afficherHomeWidget();
 }
@@ -174,6 +176,18 @@ void MainWindow::afficherDlgEquipement()
 {
     Dlg_Equipement dlgEquipement(this,this->m_bdHandler);
     dlgEquipement.exec();
+}
+
+void MainWindow::afficherDlgLieu()
+{
+    Dlg_Lieu dlgLieu(this,this->m_bdHandler);
+    dlgLieu.exec();
+}
+
+void MainWindow::afficherDlgOperateur()
+{
+    Dlg_Operateur dlgOperateur(this,this->m_bdHandler);
+    dlgOperateur.exec();
 }
 
 void MainWindow::programmerSerieTests()

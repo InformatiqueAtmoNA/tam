@@ -72,8 +72,8 @@ QWeakPointer<MesureIndividuelle> Api::demandeMesureNox() {
         QString reponse = this->transaction(cmd);
         if(reponse.isEmpty())
             return mesures;
-
-        mesures.data()->append(this->getFloatFromMesureString(reponse));
+        if(!reponse.contains("inf"))
+            mesures.data()->append(this->getFloatFromMesureString(reponse));
     }
     return mesures;
 }
