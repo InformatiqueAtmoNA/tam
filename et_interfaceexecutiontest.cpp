@@ -611,7 +611,7 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
     for(int i =0;i<ui->tableWidget_Communication->rowCount();i++) {
         ushort idAnalyseur = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_NUM_SERIE)->text().toUInt();
         QString numSerieAna = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_NUM_SERIE)->text();
-        paramsTest->m_listeNumSerieAnalyseurs.insert(idAnalyseur,numSerieAna);
+        paramsTest->m_listeNumSerieAnalyseurs.insertMulti(idAnalyseur,numSerieAna);
     }
 
     return paramsTest;
