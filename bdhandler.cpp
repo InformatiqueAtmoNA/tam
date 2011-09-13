@@ -217,6 +217,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel(const uint i
     model->setHeaderData(SYS_ETALON_DILUTEUR, Qt::Horizontal, "Diluteur ou Générateur O3");
     model->setHeaderData(SYS_ETALON_BOUTEILLE, Qt::Horizontal, "Bouteille");
     model->setHeaderData(SYS_ETALON_GZERO, Qt::Horizontal, "Générateur air zéro");
+    model->setHeaderData(SYS_CANAL_DEFAUT, Qt::Horizontal, "Canal par defaut");
     model->setSort(SYS_ETALON_ID, Qt::AscendingOrder);
 
     if(idSystemeEtalon>0)

@@ -357,6 +357,7 @@ CREATE TABLE IF NOT EXISTS `Systeme_Etalonnage` (
   `id_etalon` smallint(5) unsigned NOT NULL,
   `id_bouteille` smallint(5) unsigned NOT NULL,
   `id_gzero` smallint(5) unsigned NOT NULL,
+  `canal_defaut` varchar(6) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_systeme_etalon`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=65 ;
 

@@ -34,6 +34,7 @@ private:
     int m_idDiluteur;
     int m_idBouteille;
     int m_idGenAirZero;
+    QString m_canaldefaut;
     int m_ligneModifiee;
     bool m_modifEnCours;
     bool m_returnSelection;

@@ -90,6 +90,9 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
 
     ui->dateTime_DebutTest->setDateTime(QDateTime::currentDateTime());
 
+    QSqlRecord canalDefCalibrateur = *(m_bdHandler->getSystemeEtalonRow(m_test->getIdSystemeEtalon()));
+    ui->lineEdit_CanalCalibrateur->setText(canalDefCalibrateur.value("canal_defaut").toString());
+
     ushort idCalibrateur = m_bdHandler->getIdCalibrateur(m_test->getIdSystemeEtalon());
     QSqlRecord record = *(m_bdHandler->getDesignationPortSerie(idCalibrateur));
     ui->lineEdit_InterfaceCalibrateur->setText(record.value("designation").toString());

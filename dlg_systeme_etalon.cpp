@@ -82,12 +82,14 @@ void Dlg_Systeme_Etalon::initialiserChamps() {
     this->m_idDiluteur = 0;
     this->m_idBouteille = 0;
     this->m_idGenAirZero = 0;
+    this->m_canaldefaut.clear();
 
     this->ui->gb_edit_champs->setVisible(false);
 
     this->ui->lineEdit_ChoixDiluteur->clear();
     this->ui->lineEdit_ChoixBouteille->clear();
     this->ui->lineEdit_ChoixGenAirZero->clear();
+    this->ui->lineEdit_ChoixCanalDefaut->clear();
     this->ui->button_Ajouter->setEnabled(true);
     this->ui->button_Supprimer->setEnabled(true);
     this->ui->button_Fermer->setEnabled(true);
@@ -108,6 +110,7 @@ void Dlg_Systeme_Etalon::changementSelection(const QModelIndex & idxSelection) {
     this->m_idDiluteur = record.value(SYS_ETALON_DILUTEUR).toInt();
     this->m_idBouteille = record.value(SYS_ETALON_BOUTEILLE).toInt();
     this->m_idGenAirZero = record.value(SYS_ETALON_GZERO).toInt();
+    this->m_canaldefaut = record.value(SYS_CANAL_DEFAUT).toString();
 }
 
 void Dlg_Systeme_Etalon::buttonSupprimerClicked() {
@@ -155,6 +158,7 @@ void Dlg_Systeme_Etalon::buttonValiderClicked() {
         m_model->setData(m_model->index(row,SYS_ETALON_GZERO),QVariant::fromValue(this->m_idGenAirZero));
     else
         m_model->setData(m_model->index(row,SYS_ETALON_GZERO),QVariant::fromValue(2));
+    m_model->setData(m_model->index(row,SYS_CANAL_DEFAUT),QVariant::fromValue(this->ui->lineEdit_ChoixCanalDefaut->text()));
 
     m_model->submitAll();
     m_model_sansRelation->select();
@@ -237,6 +241,7 @@ void Dlg_Systeme_Etalon::buttonModifierClicked() {
     this->ui->lineEdit_ChoixDiluteur->setText(selection.value(SYS_ETALON_DILUTEUR).toString());
     this->ui->lineEdit_ChoixBouteille->setText(selection.value(SYS_ETALON_BOUTEILLE).toString());
     this->ui->lineEdit_ChoixGenAirZero->setText(selection.value(SYS_ETALON_GZERO).toString());
+    this->ui->lineEdit_ChoixCanalDefaut->setText(selection.value(SYS_CANAL_DEFAUT).toString());
 
     this->afficherFormulaire();
 }
