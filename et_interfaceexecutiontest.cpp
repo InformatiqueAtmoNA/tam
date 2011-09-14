@@ -264,6 +264,8 @@ void et_InterfaceExecutionTest::buttonSupprimerClicked()
             this->ui->lineEdit_InterfaceAnalyseur->setEnabled(false);
         this->ui->tableWidget_Communication->removeRow(m_idxSelectionAnalyseurs.row());
         this->ui->tableWidget_Analyseurs->removeRow(m_idxSelectionAnalyseurs.row());
+        this->ui->lineEdit_InterfaceAnalyseur->clear();
+        this->ui->button_TestAnalyseur->setEnabled(false);
     }
 }
 
@@ -464,7 +466,10 @@ void et_InterfaceExecutionTest::lineEditInterfaceCalibrateurTextChanged(const QS
 
 void et_InterfaceExecutionTest::lineEditInterfaceAnalyseurTextChanged(const QString text)
 {
-    this->ui->button_TestAnalyseur->setEnabled((text.count()>0));
+    if(text.count()>0)
+        this->ui->button_TestAnalyseur->setEnabled(true);
+    else
+        this->ui->button_TestAnalyseur->setEnabled(false);
 }
 
 void et_InterfaceExecutionTest::lineEditParamsCalibrateurEnterPressed()

@@ -19,7 +19,7 @@
      <item>
       <widget class="QTabWidget" name="tabWidget_ExecutionTest">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="Page_Parametres">
         <attribute name="title">
@@ -559,7 +559,7 @@ D'export des mesures brutes :</string>
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>/dev/ttyMI0</string>
+                     <string/>
                     </property>
                    </widget>
                   </item>
@@ -624,7 +624,7 @@ D'export des mesures brutes :</string>
                 <item>
                  <widget class="QLineEdit" name="lineEdit_InterfaceCalibrateur">
                   <property name="text">
-                   <string>/dev/ttyMI1</string>
+                   <string/>
                   </property>
                  </widget>
                 </item>

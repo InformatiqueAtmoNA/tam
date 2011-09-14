@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `Equipement` (
   `nb_bits_stop` tinyint(4) DEFAULT '0',
   `controle_flux` enum('AUCUN','HARDWARE','XON/XOFF') COLLATE latin1_general_ci DEFAULT 'AUCUN',
   `type_parite` enum('AUCUNE','ODD','EVEN','MARK','SPACE') COLLATE latin1_general_ci DEFAULT 'AUCUNE',
-  `no_port` smallint(6) DEFAULT NULL,
+  `no_port` smallint(6) DEFAULT '0',
   PRIMARY KEY (`id_equipement`),
   UNIQUE KEY `numero_serie_UNIQUE` (`numero_serie`),
   KEY `fk_eq_tx_transmission` (`id_tx_transmission`),
@@ -312,6 +312,8 @@ CREATE TABLE IF NOT EXISTS `Port_Serie` (
 -- Contenu de la table `Port_Serie`
 --
 
+INSERT INTO `Port_Serie` (`no_port`, `designation`) VALUES
+(0, 'NON_DEF');
 
 -- --------------------------------------------------------
 
