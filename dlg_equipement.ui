@@ -123,7 +123,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="tab_general">
              <attribute name="title">
@@ -371,7 +371,7 @@
              <attribute name="title">
               <string>Paramètres de communications</string>
              </attribute>
-             <widget class="QWidget" name="">
+             <widget class="QWidget" name="layoutWidget">
               <property name="geometry">
                <rect>
                 <x>1</x>

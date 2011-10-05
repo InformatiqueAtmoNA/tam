@@ -82,9 +82,6 @@ Dlg_Concentration::Dlg_Concentration(QWidget *parent,const QPointer<BdHandler> b
 Dlg_Concentration::~Dlg_Concentration()
 {
     delete ui;
-
-    if(!this->m_returnSelection)
-        m_bdHandler->deconnexionBD();
 }
 
 void Dlg_Concentration::peuplerCbPolluant() {
@@ -341,7 +338,7 @@ void Dlg_Concentration::buttonSupprimerClicked()
     }
 }
 
-void Dlg_Concentration::buttonValiderClicked()
+/*void Dlg_Concentration::buttonValiderClicked()
 {
     int row = m_model->rowCount();
     if(row>0) row-=1;
@@ -362,7 +359,30 @@ void Dlg_Concentration::buttonValiderClicked()
     }
 
     this->initialiserChamps();
+}*/
+
+void Dlg_Concentration::buttonValiderClicked()
+{
+    int row;
+    if(m_modifEnCours) {
+        row = this->ui->tableView->currentIndex().row();
+    }
+    else {
+        row = m_model->rowCount();
+        if(row>0) row-=1;
+        m_model->insertRow(row);
+    }
+    m_model->setData(m_model->index(row,CONCENTRATION_SYS_ETALON),QVariant::fromValue(this->m_idSystemeEtalon));
+    m_model->setData(m_model->index(row,CONCENTRATION_ID_MOLECULE),QVariant::fromValue(this->m_idPolluant));
+    m_model->setData(m_model->index(row,CONCENTRATION_POINT),QVariant::fromValue(this->ui->spinBox_PointGaz->value()));
+    m_model->setData(m_model->index(row,CONCENTRATION_REELLE),QVariant::fromValue(this->ui->doubleSpinBox_ConcReelle->value()));
+    m_model->setData(m_model->index(row,CONCENTRATION_OZONE),QVariant::fromValue(this->ui->spinBox_ConcO3->value()));
+
+    m_model->submitAll();
+
+    this->initialiserChamps();
 }
+
 
 void Dlg_Concentration::buttonModifierClicked()
 {

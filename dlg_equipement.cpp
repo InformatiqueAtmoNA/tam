@@ -299,6 +299,7 @@ void Dlg_Equipement::buttonValiderClicked()
     m_model->submitAll();
 
     bool afficherForm = this->m_nouvelEnregistrement;
+    this->peuplerTable();
     this->initialiserChamps();
     this->changementSelection(this->m_model->index(row,EQUIPEMENT_ID));
     if(afficherForm) {
