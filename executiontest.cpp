@@ -598,12 +598,12 @@ void ExecutionTest::enregistrerMoyenneMesures()
     while(it_tabMesuresParCycle.hasNext()) {
         it_tabMesuresParCycle.next();
 
-        float sommeMesuresIndividuelles=0;
         QVector<QWeakPointer<MesureIndividuelle> > tableaumesureParCycle = it_tabMesuresParCycle.value();
 
         QWeakPointer<MesureIndividuelle> moyenneMesure= new MesureIndividuelle();
         for(ushort j=0;j<3;j++) {
             ushort nbMesuresMoyennees=0;
+            float sommeMesuresIndividuelles=0;
             for(ushort i=0;i<tableaumesureParCycle.count();i++) {
                 QWeakPointer<MesureIndividuelle> mesure = tableaumesureParCycle.at(i);
                 if(j<mesure.data()->count()) {
@@ -612,7 +612,8 @@ void ExecutionTest::enregistrerMoyenneMesures()
                     nbMesuresMoyennees++;
                 }
             }
-            if(!QString::number(sommeMesuresIndividuelles/nbMesuresMoyennees).contains("inf")) {
+            //if(!QString::number(sommeMesuresIndividuelles/nbMesuresMoyennees).contains("inf")) {
+            if(!nbMesuresMoyennees==0) {
                 emit(traceTest("Moyenne polluant "+QString::number(j)+" = "+QString::number(sommeMesuresIndividuelles/nbMesuresMoyennees),0));
                 moyenneMesure.data()->append(sommeMesuresIndividuelles/nbMesuresMoyennees);
             }
