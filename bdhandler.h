@@ -63,9 +63,12 @@ public:
     QPointer<QSqlTableModel> getTestXmlModel(const uint idTestXml=0);
     QPointer<QSqlTableModel> getConcentrationModel(const uint idSystemeEtalon,const uint idPolluant);
     QPointer<QSqlTableModel> getConcentrationAssocieeModel();
+    QPointer<QSqlTableModel> getConcentrationAssocieeModelRow(const uint idConcentration);
     QPointer<QSqlTableModel> getOperateurModel();
     QPointer<QSqlTableModel> getLieuModel();
     QPointer<QSqlTableModel> getTestMetroModel();
+    QPointer<QSqlTableModel> getListeAnalyseurTestModel();
+    QPointer<QSqlTableModel> getConcTestMetro();
     QSqlRecord* getConcentrationRow(const uint idConcentration);
     QSqlRecord* getConcentrationRow(const uint idSystemeEtalon, const uint idMolecule, const uint pointGaz);
     QSqlRecord* getMoleculeRow(const uint idMolecule);

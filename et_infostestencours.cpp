@@ -269,7 +269,6 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
         if(model->rowCount()>nbMaxConcentrationAssociees)
             nbMaxConcentrationAssociees = model->rowCount();
         mapConcentrationsAssociee.insert(i,model);
-        delete model;
 
         for(int j=0;j<nbMaxConcentrationAssociees;j++) {
             trace = "Polluant associe " + QString::number(j+1)+" : ";
@@ -277,13 +276,13 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
             QPointer<QSqlRelationalTableModel> model = mapConcentrationsAssociee.value(i);
 
-            QSqlRecord record = model->record(i);
+            QSqlRecord record = model->record(j);
             if(!record.isEmpty()) {
-                trace.append(record.value(CONC_ASSOCIEE_ID_MOLECULE).toString());
+                trace.append(record.value(CONC_ASSOCIEE_FORMULE).toString());
                 trace2.append(record.value(CONC_ASSOCIEE_CONCENTRATION).toString());
                 ui->textEdit_ParametresTest->append(trace);
+                ui->textEdit_ParametresTest->append(trace2);
             }
-            delete model;
         }
         ui->textEdit_ParametresTest->append("\n");
     }
@@ -425,7 +424,6 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             if(model->rowCount()>nbMaxConcentrationAssociees)
                 nbMaxConcentrationAssociees = model->rowCount();
             mapConcentrationsAssociee.insert(i,model);
-            delete model;
         }
 
         for(int i=0;i<nbMaxConcentrationAssociees;i++) {
@@ -441,13 +439,14 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
                     trace2.append("-;");
                 }
                 else {
-                    trace.append(record.value(CONC_ASSOCIEE_ID_MOLECULE).toString()+";");
+                    trace.append(record.value(CONC_ASSOCIEE_FORMULE).toString()+";");
                     trace2.append(record.value(CONC_ASSOCIEE_CONCENTRATION).toString()+";");
                 }
-                delete model;
             }
             trace.append("\n");
+            trace2.append("\n");
             paramsTest->m_fichierCSV->write(trace.toAscii());
+            paramsTest->m_fichierCSV->write(trace2.toAscii());
         }
         trace = "Date et heure;Cycle de phase N°;Phase N°;Position durant phase;";
         paramsTest->m_fichierCSV->write(trace.toAscii());
@@ -463,9 +462,12 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
 
     afficherTraceTest("Enregistrement des informations de test",2);
     afficherTraceTest("ID Test_XML "+QString::number(paramsTest->m_id_TestXML),2);
-    enregistrement.setValue(TEST_METRO_ID_TEST_XML,QVariant::fromValue(paramsTest->m_id_TestXML));
+    afficherTraceTest("Type de Test "+typeTestToString( paramsTest->m_test->getTypeTest()),2);
+    enregistrement.setValue(TEST_METRO__TYPE_TEST,QVariant::fromValue(typeTestToString( paramsTest->m_test->getTypeTest())));
     afficherTraceTest("ID Opérateur "+QString::number(paramsTest->m_idOperateur),2);
     enregistrement.setValue(TEST_METRO_ID_OPERATEUR,QVariant::fromValue(paramsTest->m_idOperateur));
+    afficherTraceTest("ID Système Etalon "+QString::number(paramsTest->m_test->getIdSystemeEtalon()),2);
+    enregistrement.setValue(TEST_METRO_ID_SYSTEME_ETALON,QVariant::fromValue(paramsTest->m_test->getIdSystemeEtalon()));
     afficherTraceTest("ID Lieu "+QString::number(paramsTest->m_idLieu),2);
     enregistrement.setValue(TEST_METRO_ID_LIEU,QVariant::fromValue(paramsTest->m_idLieu));
     afficherTraceTest("Pression "+QString::number(paramsTest->m_pression),2);
@@ -480,10 +482,83 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
 
     enregistrement = model->record(model->rowCount()-1);
 
+    delete model;
+
     paramsTest->m_id_TestMetro = enregistrement.value(TEST_METRO_ID).toUInt();
+
+    enregistrerAnalyseurTest(paramsTest);
+
+    enregistrerConcTestMetro(paramsTest);
 
     afficherParamsTest(paramsTest);
 }
+
+
+void et_InfosTestEnCours::enregistrerAnalyseurTest(QPointer<et_ParamsTest> paramsTest)
+{
+    QMapIterator<ushort,QString> it_id_Analyseur (paramsTest->m_listeNumSerieAnalyseurs);
+
+    while(it_id_Analyseur.hasNext()){
+        it_id_Analyseur.next();
+        ushort idAnalyseur = it_id_Analyseur.key();
+        QPointer<QSqlTableModel> model = m_bdHandler->getListeAnalyseurTestModel();
+        QSqlRecord enregistrement_ana = model->record();
+        enregistrement_ana.setValue(LISTE_ANA_TEST_ID_TEST,QVariant::fromValue(paramsTest->m_id_TestMetro));
+        enregistrement_ana.setValue(LISTE_ANA_ID_EQUIPEMENT,QVariant::fromValue(idAnalyseur));
+        model->insertRecord(-1,enregistrement_ana);
+        model->submitAll();
+        delete model;
+        }
+}
+
+void et_InfosTestEnCours::enregistrerConcTestMetro(QPointer<et_ParamsTest> paramsTest)
+{
+
+    QPointer<QSqlTableModel> model = m_bdHandler->getConcTestMetro();
+    QSqlRecord enregistrement_conc = model->record();
+    enregistrement_conc.setValue(CONC_TEST_METRO_ID_TEST,QVariant::fromValue(paramsTest->m_id_TestMetro));
+
+    for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
+        QSqlRecord* record = m_bdHandler->getConcentrationRow(paramsTest->m_test->getPhase(i).getIdConcentration());
+        QString concentration = record->value(CONCENTRATION_REELLE).toString();
+        QString id_molecule = record->value(CONCENTRATION_ID_MOLECULE).toString();
+
+        enregistrement_conc.setValue(CONC_TEST_METRO_NO_PHASE,QVariant::fromValue(i));
+        enregistrement_conc.setValue(CONC_TEST_METRO_ID_MOLECULE,QVariant::fromValue(id_molecule));
+        enregistrement_conc.setValue(CONC_TEST_METRO_CONCENTRATION,QVariant::fromValue(concentration));
+        model->insertRecord(-1,enregistrement_conc);
+        model->submitAll();
+        delete record;
+
+        QMap<ushort, QPointer<QSqlTableModel> > mapConcentrationsAssociee;
+        ushort nbMaxConcentrationAssociees=0;
+
+        QPointer<QSqlTableModel> model1 = m_bdHandler->getConcentrationAssocieeModelRow(paramsTest->m_test->getPhase(i).getIdConcentration());
+        if(model1->rowCount()>nbMaxConcentrationAssociees)
+            nbMaxConcentrationAssociees = model1->rowCount();
+        mapConcentrationsAssociee.insert(i,model1);
+
+        for(int j=0;j<nbMaxConcentrationAssociees;j++) {
+            QPointer<QSqlTableModel> model1 = mapConcentrationsAssociee.value(i);
+
+            QSqlRecord record = model1->record(j);
+            if(!record.isEmpty()) {
+                enregistrement_conc.setValue(CONC_TEST_METRO_ID_TEST,QVariant::fromValue(paramsTest->m_id_TestMetro));
+                enregistrement_conc.setValue(CONC_TEST_METRO_NO_PHASE,QVariant::fromValue(i));
+                enregistrement_conc.setValue(CONC_TEST_METRO_CONCENTRATION,QVariant::fromValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toString()));
+                enregistrement_conc.setValue(CONC_TEST_METRO_ID_MOLECULE,QVariant::fromValue(record.value(CONC_ASSOCIEE_FORMULE).toString()));
+                qDebug()<<enregistrement_conc;
+                model->insertRecord(-1,enregistrement_conc);
+                model->submitAll();
+
+
+            }      
+        }
+
+    }
+    delete model;
+  }
+
 
 void et_InfosTestEnCours::comboBoxNiveauInfosIndexChanged(const int index)
 {

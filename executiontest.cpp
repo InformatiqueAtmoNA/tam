@@ -638,6 +638,8 @@ void ExecutionTest::testTermine()
 {
     emit(traceTest("test terminé",0));
 
+    m_bdHandler->miseAjourDateHeureFinTest(m_paramsTest.data()->m_id_TestMetro);
+
     m_timerTempsAttenteFinAcquisition = new QTimer;
 
     QMapIterator<ushort,QPointer<Protocole> > it_anaDesignProto(m_analyseursProtocole);

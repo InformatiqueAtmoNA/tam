@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS `Concentration` (
   `conc_ozone` smallint(5) unsigned NOT NULL DEFAULT '0',
   `archivee` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_Concentration`),
-  KEY `fk_Molecule` (`id_molecule`),
-  KEY `fk_Concentration_Systeme_Etalon` (`id_systeme_etalon`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=5 ;
+  UNIQUE KEY `fk_Concentration_Systeme_Etalon` (`id_systeme_etalon`,`id_molecule`,`point_consigne`),
+  KEY `fk_Molecule` (`id_molecule`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=15 ;
 
 --
 -- Contenu de la table `Concentration`
@@ -46,14 +46,36 @@ CREATE TABLE IF NOT EXISTS `Concentration_Associee` (
   `id_molecule` smallint(5) unsigned NOT NULL,
   `concentration` decimal(10,2) unsigned NOT NULL,
   PRIMARY KEY (`id_concentration_associee`),
-  KEY `fk_Concentration_Associee_Concentration` (`id_concentration`),
+  UNIQUE KEY `fk_Concentration_Associee_id_Concentration` (`id_concentration`,`id_molecule`),
+  KEY `fk_Concentration_Associee_Concentration` (`concentration`),
   KEY `fk_Concentration_Associee_Molecule` (`id_molecule`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=34 ;
 
 --
 -- Contenu de la table `Concentration_Associee`
 --
 
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Concentration_Test_Metro`
+--
+
+CREATE TABLE IF NOT EXISTS `Concentration_Test_Metro` (
+  `idConcentration_Test_Metro` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_test` smallint(5) unsigned NOT NULL,
+  `noPhase` tinyint(3) unsigned NOT NULL,
+  `id_molecule` smallint(5) unsigned NOT NULL,
+  `concentration` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`idConcentration_Test_Metro`),
+  KEY `fk_Concentration_Test_Metro_1` (`id_test`),
+  KEY `fk_Concentration_id_molecule` (`id_molecule`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63 ;
+
+--
+-- Contenu de la table `Concentration_Test_Metro`
+--
 
 -- --------------------------------------------------------
 
@@ -81,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `Equipement` (
   KEY `fk_eq_tx_transmission` (`id_tx_transmission`),
   KEY `fk_eq_modele` (`id_modele`),
   KEY `fk_eq_port_serie` (`no_port`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=13 ;
 
 --
 -- Contenu de la table `Equipement`
@@ -123,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `Lieu` (
   `id_lieu` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(45) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_lieu`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=3 ;
 
 --
 -- Contenu de la table `Lieu`
@@ -146,7 +168,6 @@ CREATE TABLE IF NOT EXISTS `Liste_Analyseurs_Test` (
 --
 -- Contenu de la table `Liste_Analyseurs_Test`
 --
-
 
 -- --------------------------------------------------------
 
@@ -198,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `Mesure` (
   PRIMARY KEY (`id_mesure`,`id_test`,`id_equipement`),
   KEY `fk_mesure_test` (`id_test`),
   KEY `fk_mesure_equipement` (`id_equipement`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
 
 --
 -- Contenu de la table `Mesure`
@@ -220,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `Modele_Equipement` (
   PRIMARY KEY (`id_modele`),
   KEY `fk_Modele_Equipement_Marque` (`id_marque`),
   KEY `fk_Modele_Equipement_Protocole` (`id_protocole`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=11 ;
 
 --
 -- Contenu de la table `Modele_Equipement`
@@ -271,7 +292,7 @@ CREATE TABLE IF NOT EXISTS `Operateur` (
   `Mot_de_passe` varchar(45) COLLATE latin1_general_ci DEFAULT NULL,
   `Administrateur` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_operateur`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=3 ;
 
 --
 -- Contenu de la table `Operateur`
@@ -290,7 +311,7 @@ CREATE TABLE IF NOT EXISTS `Polluant_Associe` (
   PRIMARY KEY (`id_polluant_associe`),
   KEY `fk_Polluant_Associe_Equipement` (`id_pa_equipement`),
   KEY `fk_Polluant_Associe_Molecule` (`id_pa_molecule`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=28 ;
 
 --
 -- Contenu de la table `Polluant_Associe`
@@ -326,7 +347,7 @@ CREATE TABLE IF NOT EXISTS `Protocole` (
   `designation` varchar(20) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_Protocole`),
   UNIQUE KEY `designation_UNIQUE` (`designation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=15 ;
 
 --
 -- Contenu de la table `Protocole`
@@ -361,7 +382,7 @@ CREATE TABLE IF NOT EXISTS `Systeme_Etalonnage` (
   `id_gzero` smallint(5) unsigned NOT NULL,
   `canal_defaut` varchar(6) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_systeme_etalon`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=65 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=67 ;
 
 --
 -- Contenu de la table `Systeme_Etalonnage`
@@ -415,24 +436,23 @@ INSERT INTO `Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALU
 
 CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
   `id_test` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `id_description_xml` smallint(5) unsigned NOT NULL,
+  `test_metro_type_test` enum('REPETABILITE_1','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','RENDEMENT_FOUR','PERSO') COLLATE latin1_general_ci NOT NULL,
   `id_operateur` smallint(5) unsigned NOT NULL,
+  `id_systeme_etalon` int(10) unsigned NOT NULL,
   `id_lieu` smallint(5) unsigned NOT NULL,
   `pression` int(11) DEFAULT NULL,
   `temperature` decimal(10,0) DEFAULT NULL,
   `date_debut` datetime NOT NULL,
   `date_fin` datetime NOT NULL,
-  `rapport` blob,
   PRIMARY KEY (`id_test`),
-  KEY `fk_test_xml` (`id_description_xml`),
   KEY `fk_test_operateur` (`id_operateur`),
-  KEY `fk_test_lieu` (`id_lieu`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
+  KEY `fk_test_lieu` (`id_lieu`),
+  KEY `fk_test_system_etalon` (`id_systeme_etalon`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=96 ;
 
 --
 -- Contenu de la table `Test_Metrologique`
 --
-
 
 -- --------------------------------------------------------
 
@@ -448,7 +468,7 @@ CREATE TABLE IF NOT EXISTS `Test_XML` (
   PRIMARY KEY (`id_Test_Xml`),
   UNIQUE KEY `fichier_description_UNIQUE` (`fichier_description`),
   KEY `fk_Test_XML_SystemeEtalon` (`id_systeme_etalon`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=8 ;
 
 --
 -- Contenu de la table `Test_XML`
@@ -462,8 +482,8 @@ CREATE TABLE IF NOT EXISTS `Test_XML` (
 -- Contraintes pour la table `Concentration`
 --
 ALTER TABLE `Concentration`
-  ADD CONSTRAINT `fk_Molecule` FOREIGN KEY (`id_molecule`) REFERENCES `Molecule` (`id_molecule`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_Concentration_Systeme_Etalon` FOREIGN KEY (`id_systeme_etalon`) REFERENCES `Systeme_Etalonnage` (`id_systeme_etalon`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_Concentration_Systeme_Etalon` FOREIGN KEY (`id_systeme_etalon`) REFERENCES `Systeme_Etalonnage` (`id_systeme_etalon`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_Molecule` FOREIGN KEY (`id_molecule`) REFERENCES `Molecule` (`id_molecule`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `Concentration_Associee`
@@ -473,12 +493,19 @@ ALTER TABLE `Concentration_Associee`
   ADD CONSTRAINT `fk_Concentration_Associee_Molecule` FOREIGN KEY (`id_molecule`) REFERENCES `Molecule` (`id_molecule`) ON UPDATE CASCADE;
 
 --
+-- Contraintes pour la table `Concentration_Test_Metro`
+--
+ALTER TABLE `Concentration_Test_Metro`
+  ADD CONSTRAINT `Concentration_Test_Metro_ibfk_1` FOREIGN KEY (`id_molecule`) REFERENCES `Molecule` (`id_molecule`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_Concentration_Test_Metro_1` FOREIGN KEY (`id_test`) REFERENCES `Test_Metrologique` (`id_test`) ON UPDATE CASCADE;
+
+--
 -- Contraintes pour la table `Equipement`
 --
 ALTER TABLE `Equipement`
-  ADD CONSTRAINT `fk_eq_tx_transmission` FOREIGN KEY (`id_tx_transmission`) REFERENCES `Taux_Transmission` (`id_tx_transmission`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_eq_modele` FOREIGN KEY (`id_modele`) REFERENCES `Modele_Equipement` (`id_modele`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_eq_port_serie` FOREIGN KEY (`no_port`) REFERENCES `Port_Serie` (`no_port`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_eq_port_serie` FOREIGN KEY (`no_port`) REFERENCES `Port_Serie` (`no_port`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_eq_tx_transmission` FOREIGN KEY (`id_tx_transmission`) REFERENCES `Taux_Transmission` (`id_tx_transmission`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `Equipement_Reforme`
@@ -490,15 +517,15 @@ ALTER TABLE `Equipement_Reforme`
 -- Contraintes pour la table `Liste_Analyseurs_Test`
 --
 ALTER TABLE `Liste_Analyseurs_Test`
-  ADD CONSTRAINT `fk_liste_ana_test` FOREIGN KEY (`id_test`) REFERENCES `Test_Metrologique` (`id_test`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_liste_ana_equipement` FOREIGN KEY (`id_equipement`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_liste_ana_equipement` FOREIGN KEY (`id_equipement`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_liste_ana_test` FOREIGN KEY (`id_test`) REFERENCES `Test_Metrologique` (`id_test`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `Mesure`
 --
 ALTER TABLE `Mesure`
-  ADD CONSTRAINT `fk_mesure_test` FOREIGN KEY (`id_test`) REFERENCES `Test_Metrologique` (`id_test`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_mesure_equipement` FOREIGN KEY (`id_equipement`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_mesure_equipement` FOREIGN KEY (`id_equipement`) REFERENCES `Equipement` (`id_equipement`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_mesure_test` FOREIGN KEY (`id_test`) REFERENCES `Test_Metrologique` (`id_test`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `Modele_Equipement`
@@ -518,9 +545,9 @@ ALTER TABLE `Polluant_Associe`
 -- Contraintes pour la table `Test_Metrologique`
 --
 ALTER TABLE `Test_Metrologique`
-  ADD CONSTRAINT `fk_test_xml` FOREIGN KEY (`id_description_xml`) REFERENCES `Test_XML` (`id_Test_Xml`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_test_lieu` FOREIGN KEY (`id_lieu`) REFERENCES `Lieu` (`id_lieu`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_test_operateur` FOREIGN KEY (`id_operateur`) REFERENCES `Operateur` (`id_operateur`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_test_lieu` FOREIGN KEY (`id_lieu`) REFERENCES `Lieu` (`id_lieu`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `Test_Metrologique_ibfk_1` FOREIGN KEY (`id_systeme_etalon`) REFERENCES `Systeme_Etalonnage` (`id_systeme_etalon`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `Test_XML`

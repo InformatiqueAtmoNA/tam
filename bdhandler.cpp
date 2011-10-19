@@ -94,9 +94,9 @@ QPointer<QSqlRelationalTableModel> BdHandler::getConcentrationAssocieeModel(cons
 {
     QPointer<QSqlRelationalTableModel> model = new QSqlRelationalTableModel(this);
     model->setTable("Concentration_Associee");
-    model->setRelation(CONC_ASSOCIEE_ID_MOLECULE, QSqlRelation("Molecule", "id_molecule", "formule"));
+    model->setRelation(CONC_ASSOCIEE_FORMULE, QSqlRelation("Molecule", "id_molecule", "formule"));
 
-    model->setHeaderData(CONC_ASSOCIEE_ID_MOLECULE, Qt::Horizontal, "Molécule");
+    model->setHeaderData(CONC_ASSOCIEE_FORMULE, Qt::Horizontal, "Molécule");
     model->setHeaderData(CONC_ASSOCIEE_CONCENTRATION, Qt::Horizontal, "Concentration");
     model->setSort(EQUIPEMENT_ID, Qt::AscendingOrder);
     if(idConcentration>0)
@@ -259,7 +259,7 @@ QPointer<QSqlTableModel> BdHandler::getConcentrationModel(const uint idSystemeEt
     model->setTable("Concentration");
     QString filtre = QString("id_systeme_etalon = %1 AND id_molecule = %2").arg(QString::number(idSystemeEtalon),QString::number(idPolluant));
     model->setFilter(filtre);
-    model->setSort(CONCENTRATION_ID, Qt::AscendingOrder);
+    model->setSort(CONCENTRATION_POINT, Qt::AscendingOrder);
     model->setHeaderData(CONCENTRATION_POINT, Qt::Horizontal, "Point consigne");
     model->setHeaderData(CONCENTRATION_REELLE, Qt::Horizontal, "Concentration réelle");
     model->setHeaderData(CONCENTRATION_OZONE, Qt::Horizontal, "Concentration O3");
@@ -277,6 +277,22 @@ QPointer<QSqlTableModel> BdHandler::getConcentrationAssocieeModel()
     QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
     model->setTable("Concentration_Associee");
 
+    model->setSort(CONC_ASSOCIEE_ID, Qt::AscendingOrder);
+
+    if(!model->select())
+        emit(afficherTrace(model->lastError().text()));
+
+    emit(afficherTrace("Concentration_Associee model rowcount()="+ QString::number(model->rowCount())));
+
+    return model;
+}
+
+QPointer<QSqlTableModel> BdHandler::getConcentrationAssocieeModelRow(const uint idConcentration)
+{
+    QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
+    model->setTable("Concentration_Associee");
+    QString filtre = QString("id_concentration = %1").arg(QString::number(idConcentration));
+    model->setFilter(filtre);
     model->setSort(CONC_ASSOCIEE_ID, Qt::AscendingOrder);
 
     if(!model->select())
@@ -331,6 +347,38 @@ QPointer<QSqlTableModel> BdHandler::getTestMetroModel()
 
     return model;
 }
+
+
+ QPointer<QSqlTableModel> BdHandler:: getListeAnalyseurTestModel()
+ {
+     QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
+     model->setTable("Liste_Analyseurs_Test");
+
+     model->setSort(LISTE_ANA_TEST_ID_TEST, Qt::AscendingOrder);
+
+     if(!model->select())
+         emit(afficherTrace(model->lastError().text()));
+
+     emit(afficherTrace("Liste_Analyseurs_Test model rowcount()=" + QString::number(model->rowCount())));
+
+     return model;
+ }
+
+
+ QPointer<QSqlTableModel> BdHandler:: getConcTestMetro()
+ {
+     QPointer<QSqlTableModel> model = new QSqlTableModel(0,m_baseMySql);
+     model->setTable("Concentration_Test_Metro");
+
+     model->setSort(LISTE_ANA_TEST_ID_TEST, Qt::AscendingOrder);
+
+     if(!model->select())
+         emit(afficherTrace(model->lastError().text()));
+
+     emit(afficherTrace("Concentration_Test_Metro rowcount()=" + QString::number(model->rowCount())));
+
+     return model;
+ }
 
 QPointer<QSqlRelationalTableModel> BdHandler::getPolluantAssocieModel(const uint idEquipement)
 {
@@ -412,6 +460,7 @@ QSqlRecord* BdHandler::getConcentrationRow(const uint idSystemeEtalon, const uin
 
     return getTableRow(requete);
 }
+
 
 QSqlRecord* BdHandler::getMoleculeRow(const uint idMolecule)
 {
@@ -541,12 +590,13 @@ void BdHandler::setSpanHandlerFromIdConcentration(ushort idConcentration, QStrin
 
 bool BdHandler::miseAjourDateHeureFinTest(const ushort idTestMetro)
 {
-    QString strRequete = "UPDATE `Test_Metrologique` SET `date_fin` = "+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QString strRequete = "UPDATE `Test_Metrologique` SET `date_fin` = '"+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    strRequete.append(QString("' WHERE `id_test` = %1 ").arg(idTestMetro));
     QSqlQuery requete;
     bool succes = requete.exec(strRequete);
     if(!succes) {
-        emit(afficherTrace("Problème lors de la mise à jour du champs date_fin de la table Test_Metrologique"));
-        emit(afficherTrace("id_testMetro ="+QString::number(idTestMetro)));
+        emit(afficherTrace("Problème lors de la mise à jour du champs date_fin de la table Test_Metrologique"),2);
+        emit(afficherTrace("id_testMetro ="+QString::number(idTestMetro)),2);
     }
     return succes;
 }

@@ -380,6 +380,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     analyseur->quitter();
     analyseur->deleteLater();
     QCoreApplication::processEvents();
+    m_listeEtatComAnalyseurs[idAnalyseur] = true;
 }
 
 void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
@@ -436,6 +437,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     calibrateur->quitter();
     calibrateur->deleteLater();
     QCoreApplication::processEvents();
+    m_etatComCalibrateur = true;
 }
 
 void et_InterfaceExecutionTest::tableWidgetCommunicationClicked(const QModelIndex index)
@@ -629,7 +631,7 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
     paramsTest->m_nomOperateur = operateur;
 
     for(int i =0;i<ui->tableWidget_Communication->rowCount();i++) {
-        ushort idAnalyseur = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_NUM_SERIE)->text().toUInt();
+        ushort idAnalyseur = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT)->text().toUInt();
         QString numSerieAna = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_NUM_SERIE)->text();
         paramsTest->m_listeNumSerieAnalyseurs.insertMulti(idAnalyseur,numSerieAna);
     }

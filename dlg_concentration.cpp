@@ -247,7 +247,7 @@ void Dlg_Concentration::editConcAssocieeCurrentRow(const QModelIndex & idxSelect
     this->setGbEditChampsConcAssocieeReadOnly(false);
 
     QSqlRecord record = m_modelConcentrationAssociee->record(idxSelection.row());
-    QString formuleMolecule = record.value(CONC_ASSOCIEE_ID_MOLECULE).toString();
+    QString formuleMolecule = record.value(CONC_ASSOCIEE_FORMULE).toString();
     this->ui->comboBox_ConcAssociee_Polluant->setCurrentIndex(this->ui->comboBox_ConcAssociee_Polluant->findText(formuleMolecule));
     this->ui->doubleSpinBox_ConcAssociee_Concentration->setValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toDouble());
 }
@@ -296,7 +296,7 @@ void Dlg_Concentration::tableViewConcAssocieeItemChanged(const QModelIndex & idx
         this->ui->button_Supprimer_ConcAssociee->setEnabled(true);
 
         QSqlRecord record = m_modelConcentrationAssociee->record(m_indexConcAssocieSelection.row());
-        QString formuleMolecule = record.value(CONC_ASSOCIEE_ID_MOLECULE).toString();
+        QString formuleMolecule = record.value(CONC_ASSOCIEE_FORMULE).toString();
 
         qDebug()<<formuleMolecule<<"  "<<this->ui->comboBox_ConcAssociee_Polluant->findText(formuleMolecule);
         this->ui->comboBox_ConcAssociee_Polluant->setCurrentIndex(this->ui->comboBox_ConcAssociee_Polluant->findText(formuleMolecule));
@@ -477,7 +477,7 @@ void Dlg_Concentration::buttonValiderConcAssocieeClicked()
     QVariant idConcentration = this->m_model->record(m_indexSelection.row()).value(CONCENTRATION_ID);
 
     m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_ID_CONCENTRATION),idConcentration);
-    m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_ID_MOLECULE),QVariant::fromValue(this->m_idMoleculeConcentrationAssocie));
+    m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_FORMULE),QVariant::fromValue(this->m_idMoleculeConcentrationAssocie));
     m_modelConcentrationAssociee->setData(m_modelConcentrationAssociee->index(row,CONC_ASSOCIEE_CONCENTRATION),QVariant::fromValue(this->ui->doubleSpinBox_ConcAssociee_Concentration->value()));
 
     m_modelConcentrationAssociee->submitAll();

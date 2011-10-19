@@ -130,14 +130,13 @@ enum table_systeme_etalon {SYS_ETALON_ID,SYS_ETALON_DILUTEUR,SYS_ETALON_BOUTEILL
 enum table_concentration {CONCENTRATION_ID,CONCENTRATION_SYS_ETALON,CONCENTRATION_ID_MOLECULE,
                           CONCENTRATION_POINT,CONCENTRATION_REELLE,CONCENTRATION_OZONE};
 // \enum Colonnes de la table Concentration_Associee
-enum table_concentration_associee {CONC_ASSOCIEE_ID,CONC_ASSOCIEE_ID_CONCENTRATION,CONC_ASSOCIEE_ID_MOLECULE,
+enum table_concentration_associee {CONC_ASSOCIEE_ID,CONC_ASSOCIEE_ID_CONCENTRATION,CONC_ASSOCIEE_FORMULE,
                                    CONC_ASSOCIEE_CONCENTRATION};
 // \enum Colonnes de la table Polluant_Associe
 enum table_polluant_associe {POLLUANT_ASSOCIE_ID,POLLUANT_ASSOCIE_ID_EQUIPEMENT,POLLUANT_ASSOCIE_ID_MOLECULE};
 // \enum Colonnes de la table Test_Metro
-enum table_test_metro {TEST_METRO_ID,TEST_METRO_ID_TEST_XML,TEST_METRO_ID_OPERATEUR,TEST_METRO_ID_LIEU,
-                     TEST_METRO_PRESSION,TEST_METRO_TEMPERATURE,TEST_METRO_DATE_DEBUT,TEST_METRO_DATE_FIN,
-                      TEST_METRO_RAPPORT};
+enum table_test_metro {TEST_METRO_ID,TEST_METRO__TYPE_TEST,TEST_METRO_ID_OPERATEUR,TEST_METRO_ID_SYSTEME_ETALON,TEST_METRO_ID_LIEU,
+                     TEST_METRO_PRESSION,TEST_METRO_TEMPERATURE,TEST_METRO_DATE_DEBUT,TEST_METRO_DATE_FIN};
 // \enum Colonnes de la table Test_XML
 enum table_test_xml {TEST_XML_ID,TEST_XML_NOM_FICHIER,TEST_XML_TYPE_TEST,TEST_XML_ID_SYSTEME_ETALON};
 // \enum Colonnes de la table Operateur
@@ -147,7 +146,11 @@ enum table_lieu {LIEU_ID,LIEU_DESIGNATION};
 // \enum Colonnes de la table Mesure
 enum table_mesure {MESURE_ID,MESURE_ID_TEST,MESURE_ID_EQUIPEMENT,MESURE_NO_CYCLE_PHASE,MESURE_NO_PHASE,
                    MESURE_NO_CYCLE_MESURE,MESURE_MESURE};
-
+// \enum Colonnes de la table Liste_Analyseurs_Test
+enum table_liste_analyseurs_test {LISTE_ANA_TEST_ID_TEST,LISTE_ANA_ID_EQUIPEMENT};
+// \enum Colonnes de la table Concentration_Test_Metro
+enum table_Concentration_Test_Metro {CONC_TEST_METRO_ID,CONC_TEST_METRO_ID_TEST,CONC_TEST_METRO_NO_PHASE,
+                                     CONC_TEST_METRO_ID_MOLECULE,CONC_TEST_METRO_CONCENTRATION};
 // \enum Colonnes du modèle PolluantByIdSystemeEtalon
 enum modele_polluant_by_systeme_etalon {POLLUANT_BY_SYS_ETALON_ID,POLLUANT_BY_SYS_ETALON_FORMULE};
 

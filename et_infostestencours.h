@@ -44,6 +44,7 @@ public:
     ~et_InfosTestEnCours();
 
     void enregistrerParamsTest(QPointer<et_ParamsTest> paramsTest);
+
 private:
     Ui::et_InfosTestEnCours *ui;
 
@@ -51,6 +52,8 @@ private:
     et_ParamsTest m_param_Test;
     ushort m_niveauInfos;
     void afficherParamsTest(QPointer<et_ParamsTest> paramsTest);
+    void enregistrerAnalyseurTest(QPointer<et_ParamsTest> paramsTest);
+    void enregistrerConcTestMetro(QPointer<et_ParamsTest> paramsTest);
 
 public Q_SLOTS:
     void afficherTraceTest(const QString trace, const ushort niveau);
