@@ -448,8 +448,7 @@ CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
   KEY `fk_test_operateur` (`id_operateur`),
   KEY `fk_test_lieu` (`id_lieu`),
   KEY `fk_test_system_etalon` (`id_systeme_etalon`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=96 ;
-
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=123 ;
 --
 -- Contenu de la table `Test_Metrologique`
 --

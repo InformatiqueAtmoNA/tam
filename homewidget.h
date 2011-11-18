@@ -47,11 +47,15 @@ private:
     QPointer<BdHandler> m_bdHandler;
     QPointer<QSqlTableModel> m_modelTestXml;
     QModelIndex m_idxSelectionTest;
+    QPointer<QSqlQueryModel> m_modelRapport;
+    QModelIndex m_idxSelectionRapport;
 
     void getListeTests();
+    void getListeRapports();
 
 private Q_SLOTS:
     void tableWidgetTestXmlIndexChanged(const QModelIndex & index);
+    void tableViewTestRapportIndexChanged(const QModelIndex & index);
     void buttonNouveauClicked();
     void buttonModifierClicked();
     void buttonExecuterClicked();

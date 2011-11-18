@@ -231,6 +231,21 @@ QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel(const uint i
     return model;
 }
 
+QPointer<QSqlQueryModel> BdHandler::getTestRapportModel()
+{
+    QString requete(QString("SELECT T.id_Test,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut FROM Equipement E , Liste_Analyseurs_Test L , Test_Metrologique T WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement order by T.date_debut DESC"));
+
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(requete,m_baseMySql);
+    model->setHeaderData(HOMEW_TABVIEW_TEST_ID_TEST, Qt::Horizontal, tr("Numero Test"));
+    model->setHeaderData(HOMEW_TABVIEW_TEST_ID_EQUIP, Qt::Horizontal, tr("id_equipement"));
+    model->setHeaderData(HOMEW_TABVIEW_TEST_NO_EQUIP, Qt::Horizontal, tr("Numero Equipement"));
+    model->setHeaderData(HOMEW_TABVIEW_TEST_TYPE_TEST, Qt::Horizontal, tr("Type de Test"));
+    model->setHeaderData(HOMEW_TABVIEW_TEST_DATE, Qt::Horizontal, tr("Date de Début"));
+    return model;
+}
+
+
 QPointer<QSqlQueryModel> BdHandler::getEquipementFiltreParModele(const QString & filtre) {
     QString requete(QString("SELECT E.id_equipement,E.id_modele,M.type FROM Equipement E, Modele_Equipement M WHERE E.id_modele=M.id_modele AND (%1) ORDER BY E.id_equipement ASC").arg(filtre));
 

@@ -34,6 +34,7 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
 
     this->m_bdHandler = bdHandler;
     this->getListeTests();
+    this->getListeRapports();
 
     QHeaderView *headers = this->ui->tableWidget_TestXml->horizontalHeader();
     headers->setResizeMode(QHeaderView::Stretch);
@@ -45,10 +46,12 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
     connect(this->ui->button_Supprimer,SIGNAL(clicked()),this,SLOT(buttonSupprimerClicked()));
     connect(this->ui->button_ProgrammerSerieTests,SIGNAL(clicked()),this,SIGNAL(programmerSerieTest()));
     connect(this->ui->tableWidget_TestXml,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetTestXmlIndexChanged(QModelIndex)));
+    connect(this->ui->tableView_TestRapport,SIGNAL(clicked(QModelIndex)),this,SLOT(tableViewTestRapportIndexChanged(QModelIndex)));
 
     this->ui->button_Executer->setEnabled(false);
     this->ui->button_Modifier->setEnabled(false);
     this->ui->button_Supprimer->setEnabled(false);
+    this->ui->button_Afficher->setEnabled(false);
 }
 
 HomeWidget::~HomeWidget()
@@ -87,6 +90,22 @@ void HomeWidget::getListeTests()
     }
 }
 
+void HomeWidget::getListeRapports()
+{
+            //if(!this->m_bdHandler->isOpen())
+            //   m_bdHandler->connexionBD();
+
+            m_modelRapport = this->m_bdHandler->getTestRapportModel();
+
+            m_modelRapport->setParent(this);
+            this->ui->tableView_TestRapport->setModel(m_modelRapport);
+            this->ui->tableView_TestRapport->resizeColumnsToContents();
+            this->ui->tableView_TestRapport->setColumnHidden(HOMEW_TABVIEW_TEST_ID_TEST,true);
+            this->ui->tableView_TestRapport->setColumnHidden(HOMEW_TABVIEW_TEST_ID_EQUIP,true);
+
+}
+
+
 void HomeWidget::tableWidgetTestXmlIndexChanged(const QModelIndex & index)
 {
     this->m_idxSelectionTest = index;
@@ -95,6 +114,17 @@ void HomeWidget::tableWidgetTestXmlIndexChanged(const QModelIndex & index)
     this->ui->button_Modifier->setEnabled(m_idxSelectionTest.isValid());
     this->ui->button_Supprimer->setEnabled(m_idxSelectionTest.isValid());
 }
+
+void HomeWidget::tableViewTestRapportIndexChanged(const QModelIndex & index)
+{
+    this->m_idxSelectionRapport = index;
+
+    //QVariant texte = this->m_idxSelectionRapport.data(0);
+    //this ->ui->lineEdit->setText(texte.toString());
+
+    this->ui->button_Afficher->setEnabled(m_idxSelectionRapport.isValid());
+}
+
 
 void HomeWidget::buttonNouveauClicked()
 {
@@ -139,5 +169,11 @@ void HomeWidget::buttonSupprimerClicked() {
 
 void HomeWidget::buttonAfficherClicked()
 {
+    if(ui->tableView_TestRapport->currentIndex().isValid()) {
 
+         ushort idTest = this->m_modelRapport->record(m_idxSelectionRapport.row()).value(HOMEW_TABVIEW_TEST_ID_TEST).toUInt();
+         QString numeroAnalyseur = this->m_modelRapport->record(m_idxSelectionRapport.row()).value(HOMEW_TABVIEW_TEST_NO_EQUIP).toString();
+
+         this ->ui->lineEdit->setText(numeroAnalyseur);
+    }
 }

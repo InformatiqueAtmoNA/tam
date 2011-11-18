@@ -51,6 +51,7 @@ public:
     QPointer<QSqlRelationalTableModel> getSystemeEtalonModel(const uint idSystemeEtalon=0);
     QPointer<QSqlRelationalTableModel> getPolluantAssocieModel(const uint idEquipement);
     QPointer<QSqlRelationalTableModel> getConcentrationAssocieeModel(const uint idConcentration=0);
+    QPointer<QSqlQueryModel> getTestRapportModel();
     QPointer<QSqlQueryModel> getEquipementFiltreParModele(const QString & filtre);
     QPointer<QSqlQueryModel> getPolluantsParSystemeEtalon(const uint idSystemeEtalon,const bool filtrerRdf=false);
     QPointer<QSqlTableModel> getSystemeEtalonModelSansRelation();
