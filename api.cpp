@@ -62,10 +62,10 @@ QWeakPointer<MesureIndividuelle> Api::demandeMesureNox() {
             cmd = *(this->creerTrameCommande("T","NO"));
             break;
         case 1:
-            cmd = *(this->creerTrameCommande("T","NO2"));
+            cmd = *(this->creerTrameCommande("T","NOX"));
             break;
         case 2:
-            cmd = *(this->creerTrameCommande("T","NOX"));
+            cmd = *(this->creerTrameCommande("T","NO2"));
             break;
         }
 

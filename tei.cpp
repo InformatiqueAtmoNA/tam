@@ -108,10 +108,10 @@ QWeakPointer<MesureIndividuelle> Tei::demandeMesureNox() {
             cmd = *(this->creerTrameCommande("no"));
             break;
         case 1:
-            cmd = *(this->creerTrameCommande("no2"));
+            cmd = *(this->creerTrameCommande("nox"));
             break;
         case 2:
-            cmd = *(this->creerTrameCommande("nox"));
+            cmd = *(this->creerTrameCommande("no2"));
             break;
         }
 
