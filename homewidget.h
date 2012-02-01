@@ -30,6 +30,8 @@
 #include "creationtest.h"
 #include "executiontest.h"
 
+
+
 namespace Ui {
     class HomeWidget;
 }
@@ -42,6 +44,7 @@ public:
     explicit HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent = 0);
     ~HomeWidget();
 
+
 private:
     Ui::HomeWidget *ui;
     QPointer<BdHandler> m_bdHandler;
@@ -49,6 +52,9 @@ private:
     QModelIndex m_idxSelectionTest;
     QPointer<QSqlQueryModel> m_modelRapport;
     QModelIndex m_idxSelectionRapport;
+    QModelIndex m_idxSelectionItemRapport;
+    QStandardItemModel *m_itemModele;
+
 
     void getListeTests();
     void getListeRapports();
@@ -56,6 +62,7 @@ private:
 private Q_SLOTS:
     void tableWidgetTestXmlIndexChanged(const QModelIndex & index);
     void tableViewTestRapportIndexChanged(const QModelIndex & index);
+    void treeViewTestRapportIndexChanged(const QModelIndex & index);
     void buttonNouveauClicked();
     void buttonModifierClicked();
     void buttonExecuterClicked();
@@ -66,6 +73,7 @@ Q_SIGNALS:
     void creerTest();
     void modifierTest(const QString fichierDescription);
     void executerTest(const ushort idTestXML, const QString fichierDescription);
+    void afficherRapport(const ushort idTest,const ushort idAnalyseur, const ushort typeTest);
     void programmerSerieTest();
 };
 

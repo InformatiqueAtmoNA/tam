@@ -37,7 +37,7 @@
 #include "bdhandler.h"
 #include "protocole.h"
 #include "et_paramsTest.h"
-#include "generateurrapporttest.h"
+#include "et_generateurrapporttest.h"
 
 class QThreadEx : public QThread
 {

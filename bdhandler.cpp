@@ -233,7 +233,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel(const uint i
 
 QPointer<QSqlQueryModel> BdHandler::getTestRapportModel()
 {
-    QString requete(QString("SELECT T.id_Test,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut FROM Equipement E , Liste_Analyseurs_Test L , Test_Metrologique T WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement order by T.date_debut DESC"));
+    QString requete(QString("SELECT T.id_Test,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut FROM Equipement E , Liste_Analyseurs_Test L , Test_Metrologique T WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement order by T.date_debut DESC LIMIT 20"));
 
     QPointer<QSqlQueryModel> model = new QSqlQueryModel;
     model->setQuery(requete,m_baseMySql);
@@ -245,7 +245,6 @@ QPointer<QSqlQueryModel> BdHandler::getTestRapportModel()
     return model;
 }
 
-
 QPointer<QSqlQueryModel> BdHandler::getEquipementFiltreParModele(const QString & filtre) {
     QString requete(QString("SELECT E.id_equipement,E.id_modele,M.type FROM Equipement E, Modele_Equipement M WHERE E.id_modele=M.id_modele AND (%1) ORDER BY E.id_equipement ASC").arg(filtre));
 
@@ -253,6 +252,55 @@ QPointer<QSqlQueryModel> BdHandler::getEquipementFiltreParModele(const QString &
     model->setQuery(requete,m_baseMySql);
 
     emit(afficherTrace("getEquipementFiltreParModele rowCount " + QString::number(model->rowCount())));
+
+    return model;
+}
+
+QPointer<QSqlQueryModel> BdHandler::getModeleAnalyseur() {
+    QString requete(QString("SELECT M.id_Modele,M.designation FROM Modele_Equipement M WHERE M.type = 'ANALYSEUR' ORDER BY M.designation ASC"));
+
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(requete,m_baseMySql);
+
+    emit(afficherTrace("getModeleAnalyseur rowCount " + QString::number(model->rowCount())));
+
+    return model;
+}
+
+
+QPointer<QSqlQueryModel> BdHandler::getListeEquipementParModele(const uint id_Modele) {
+    QString requete(QString("SELECT E.id_equipement,E.numero_serie FROM Equipement E WHERE E.id_modele=%1 ORDER BY E.id_equipement ASC").arg(id_Modele));
+
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(requete,m_baseMySql);
+
+    emit(afficherTrace("getListeEquipementParModele rowCount " + QString::number(model->rowCount())));
+
+    return model;
+}
+
+QPointer<QSqlQueryModel> BdHandler::getListeTypeTestParEquipement(const uint id_Equipement) {
+    QString requete = "SELECT TM.id_test , TM.test_metro_type_test FROM Test_Metrologique TM, Liste_Analyseurs_Test LAM ";
+    requete.append(QString("WHERE TM.id_Test = LAM.id_test and LAM.id_equipement =%1 ").arg(id_Equipement));
+    requete.append("GROUP BY TM.test_metro_type_test");
+
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(requete,m_baseMySql);
+
+    emit(afficherTrace("getListeTypeTestParEquipement rowCount " + QString::number(model->rowCount())));
+
+    return model;
+}
+
+QPointer<QSqlQueryModel> BdHandler::getListeDateTestParEquipParTypeTest(const uint id_Test,const QString & id_TypeTest) {
+    QString requete = "SELECT TM.date_debut FROM Test_Metrologique TM ";
+    requete.append(QString("WHERE TM.id_Test = %1 ").arg(id_Test));
+    requete.append(QString("AND TM.test_metro_type_test = '%1' ").arg(id_TypeTest));
+    requete.append("ORDER BY TM.date_debut desc");
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(requete,m_baseMySql);
+
+    emit(afficherTrace("getListeTypeTestParEquipement rowCount " + QString::number(model->rowCount())));
 
     return model;
 }
@@ -404,7 +452,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getPolluantAssocieModel(const uint
     model->setRelation(POLLUANT_ASSOCIE_ID_EQUIPEMENT,QSqlRelation("Equipement","id_equipement","numero_serie"));
     model->setRelation(POLLUANT_ASSOCIE_ID_MOLECULE,QSqlRelation("Molecule","id_molecule","formule"));
     model->setHeaderData(POLLUANT_ASSOCIE_ID_MOLECULE, Qt::Horizontal, "Polluant");
-    model->setSort(POLLUANT_ASSOCIE_ID_MOLECULE, Qt::AscendingOrder);
+    model->setSort(POLLUANT_ASSOCIE_ID, Qt::AscendingOrder);
     if(!model->select())
         emit(afficherTrace(model->lastError().text()));
 
@@ -560,6 +608,66 @@ ushort BdHandler::getIdCalibrateur(const uint idSystemeEtalon)
     return idCalibrateur;
 }
 
+//Récupération des informations du test
+
+QSqlRecord* BdHandler::getInformationsTest(const ushort idTest)
+{
+    QString strequete = QString("SELECT TM.id_test, TM.test_metro_type_test, O.Nom, O.Prenom, L.designation, TM.pression,");
+    strequete.append("TM.temperature, TM.date_debut, TM.date_fin, TM.id_systeme_etalon FROM Test_Metrologique TM, Operateur O, Lieu L");
+    strequete.append(QString (" WHERE TM.id_operateur = O.id_operateur AND TM.id_lieu = L.id_lieu AND TM.id_test =%1").arg(idTest));
+
+    return getTableRow(strequete);
+}
+
+//Récupération des concentrations de chaque phase du test par polluant
+
+QPointer<QSqlQueryModel> BdHandler::getTestPhaseConcentration (const ushort idTest,const ushort idmolecule)
+{
+    QString strRequete = QString("SELECT noPhase , concentration FROM Concentration_Test_Metro WHERE id_test =%1 AND id_molecule = %2")
+            .arg(QString::number(idTest),QString::number(idmolecule));
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(strRequete,m_baseMySql);
+    return model;
+
+}
+
+//Récupération des polluants définis dans la totalité des phases du tests
+
+QPointer<QSqlQueryModel> BdHandler::getPolluantTestConcentration (const ushort idTest)
+{
+    QString strRequete = QString("SELECT CTM.id_molecule, M.code, M.formule FROM Concentration_Test_Metro CTM, Molecule M WHERE CTM.id_molecule = M.id_molecule AND CTM.id_test = %1 GROUP BY M.code").arg(idTest);
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(strRequete,m_baseMySql);
+    return model;
+
+}
+
+//Récupération des mesures d'un test d'un analyseur
+
+QPointer<QSqlQueryModel> BdHandler::getMesureTestAnalyseur (const ushort idTest , const ushort idEquipement , const ushort codeMolecule, const ushort noPhase)
+{
+    QString strRequete = "SELECT `no_cyclePhase` , `no_phase` , `no_cycleMesure` ";
+    //for (ushort idMesEquip=1;idMesEquip<nbMesureEquipement+1;idMesEquip++) {
+    if (codeMolecule==3){
+        strRequete.append(QString(", mesure_3"));
+    }
+    else if (codeMolecule==12){
+        strRequete.append(QString(", mesure_2"));
+    }
+    else {
+        strRequete.append(QString(", mesure_1"));
+    }
+    //}
+    strRequete.append(QString (" FROM Mesure WHERE id_test=%1 ").arg(idTest));
+    strRequete.append(QString ("AND id_equipement=%2 ").arg(idEquipement));
+    strRequete.append(QString ("AND no_phase=%3 ").arg(noPhase));
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(strRequete,m_baseMySql);
+    return model;
+}
+
+
+
 bool BdHandler::insertIntoMesure(const MesureInfo mesureInfos)
 {
     QString strRequeteDebut = "INSERT INTO `Mesure` (`id_test`,`id_equipement`,`no_cyclePhase`,`no_phase`,";
@@ -589,7 +697,7 @@ bool BdHandler::insertIntoMesure(const MesureInfo mesureInfos)
     bool succes = m_baseMySql.transaction();
     QSqlQuery requete;
     succes = requete.exec(strRequete);
-    qDebug()<<strRequete;
+
     if(!succes)
         emit(afficherTrace("Problème lors de l'enregistrement de la mesure moyenne"));
     succes = m_baseMySql.commit();
@@ -614,4 +722,53 @@ bool BdHandler::miseAjourDateHeureFinTest(const ushort idTestMetro)
         emit(afficherTrace("id_testMetro ="+QString::number(idTestMetro)),2);
     }
     return succes;
+}
+
+
+QPointer<QStandardItemModel> BdHandler::getItemModelListeRapport(){
+
+    QPointer<QSqlQueryModel> modeleAnalyseur = this->getModeleAnalyseur();
+    QStandardItemModel *model = new QStandardItemModel;
+
+    for (int i=0;i<modeleAnalyseur->rowCount();i++) {
+        QSqlRecord recModeleAnalyseur = modeleAnalyseur->record(i);
+        QString designModelAna = recModeleAnalyseur.value("designation").toString();
+        QStandardItem * itemTypeAnalyseur = new QStandardItem(designModelAna);
+        model->appendRow(itemTypeAnalyseur);
+        itemTypeAnalyseur->setEditable(false);
+        QPointer<QSqlQueryModel>  listeAnalyseur = this->getListeEquipementParModele(recModeleAnalyseur.value("id_modele").toInt());
+        for (int j=0;j<listeAnalyseur->rowCount();j++) {
+            QSqlRecord recAnalyseur = listeAnalyseur->record(j);
+            QString numSerieAnalyseur = recAnalyseur.value("numero_serie").toString();
+            QStandardItem * itemAnalyseur = new QStandardItem(numSerieAnalyseur);
+            itemTypeAnalyseur->appendRow(itemAnalyseur);
+            itemAnalyseur->setEditable(false);
+            QPointer<QSqlQueryModel>  listeTypeTestAnalyseur = this->getListeTypeTestParEquipement(recAnalyseur.value("id_equipement").toInt());
+            for (int k=0; k<listeTypeTestAnalyseur->rowCount();k++){
+                QSqlRecord recTypeTest = listeTypeTestAnalyseur->record(k);
+                QString NomTypeTest = recTypeTest.value("test_metro_type_test").toString();
+                QStandardItem * itemTypeTest = new QStandardItem(NomTypeTest);
+                itemAnalyseur->appendRow(itemTypeTest);
+                itemTypeTest->setEditable(false);
+                QPointer<QSqlQueryModel> listeDateTest = this->getListeDateTestParEquipParTypeTest(recTypeTest.value("id_test").toInt(),recTypeTest.value("test_metro_type_test").toString());
+                for (int l=0; l<listeDateTest->rowCount();l++){
+                    QSqlRecord recDateTest = listeDateTest->record(l);
+                    QString DateDebtest = recDateTest.value("date_debut").toString();
+                    QStandardItem * itemDateDeb = new QStandardItem(DateDebtest);
+                    itemTypeTest->appendRow(itemDateDeb);
+                    itemDateDeb->setEditable(false);
+                    QString IdTest = recTypeTest.value("id_test").toString();
+                    QStandardItem * itemIdTest = new QStandardItem (IdTest);
+                    itemDateDeb->appendRow(itemIdTest);
+                    itemIdTest->setEditable(false);
+                    QString IdEquip = recAnalyseur.value("id_equipement").toString();
+                    QStandardItem * itemIdEquip = new QStandardItem (IdEquip);
+                    itemDateDeb->appendRow(itemIdEquip);
+                    itemIdEquip->setEditable(false);
+
+                }
+            }
+        }
+     }
+    return model;
 }

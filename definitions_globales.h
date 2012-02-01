@@ -53,6 +53,7 @@
 #include <QStateMachine>
 #include <QErrorMessage>
 #include "MesureIndividuelle.h"
+#include <QStandardItemModel>
 
 // \def ETAT_REPOS Pas de communication en cours
 #define ETAT_REPOS 0
@@ -163,9 +164,9 @@ enum phasewidget_tablewidget_polluant {PHASEW_TABLEW_POLLUANTS_IDMOLECULE,PHASEW
 enum homewidget_tablewidget_test {HOMEW_TABLEW_TEST_ID_TEST,HOMEW_TABLEW_TEST_FICHIER,HOMEW_TABLEW_TEST_TYPE,
                                   HOMEW_TABLEW_TEST_DILUTEUR,HOMEW_TABLEW_TEST_BOUTEILLE,HOMEW_TABLEW_TEST_GZERO};
 
-// \enum Colonnes du TableWidget TestsRapport de HomWidget
-enum homewidget_tableview_testrappport{HOMEW_TABVIEW_TEST_ID_TEST,HOMEW_TABVIEW_TEST_ID_EQUIP,HOMEW_TABVIEW_TEST_NO_EQUIP,HOMEW_TABVIEW_TEST_TYPE_TEST,
-                                       HOMEW_TABVIEW_TEST_DATE};
+// \enum Colonnes du TableWiew TestsRapport de HomWidget
+enum homewidget_tableview_testrappport{HOMEW_TABVIEW_TEST_ID_TEST,HOMEW_TABVIEW_TEST_ID_EQUIP,HOMEW_TABVIEW_TEST_NO_EQUIP,
+                                       HOMEW_TABVIEW_TEST_TYPE_TEST,HOMEW_TABVIEW_TEST_DATE};
 // \enum Colonnes du modèle relationnel de la table Equipement
 enum model_relationnel_equipement {REL_EQUIPEMENT_ID,REL_EQUIPEMENT_NUM_SERIE,REL_EQUIPEMENT_MODELE,REL_EQUIPEMENT_MARQUE,
                                    REL_EQUIPEMENT_MIN_GAMME,REL_EQUIPEMENT_MAX_GAMME,REL_EQUIPEMENT_OFFSET,REL_EQUIPEMENT_ADRESSE,REL_EQUIPEMENT_PORTSERIE};
@@ -186,6 +187,8 @@ enum et_listeAttenteTest_tablewidget_TestsEnAttente
    {ET_TABLEW_TEST_ATTENTE_ID_TEST,ET_TABLEW_TEST_ATTENTE_NOM_TEST,ET_TABLEW_TEST_ATTENTE_DATE_HEURE_DEBUT,
     ET_TABLEW_TEST_ATTENTE_ETAT,ET_TABLEW_TEST_ATTENTE_INTERFACE_CALIBRATEUR,
     ET_TABLEW_TEST_ATTENTE_CANAL_CALIBRATEUR};
+
+// \enum C
 
 
 // \enum Codes d'erreurs de l'exécution de test

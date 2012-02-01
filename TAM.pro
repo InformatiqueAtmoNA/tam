@@ -42,10 +42,11 @@ SOURCES += main.cpp \
     et_infostestencours.cpp \
     dlg_testxml.cpp \
     et_listeattentetests.cpp \
-    generateurrapporttest.cpp \
     dlg_lieu.cpp \
     dlg_operateur.cpp \
-    dlg_port_serie.cpp
+    dlg_port_serie.cpp \
+    et_generateurrapporttest.cpp \
+    et_resultatpolluant.cpp
 HEADERS += mainwindow.h \
     threadcomhandler.h \
     tei_146i.h \
@@ -89,11 +90,12 @@ HEADERS += mainwindow.h \
     et_infostestencours.h \
     dlg_testxml.h \
     et_listeattentetests.h \
-    generateurrapporttest.h \
     MesureIndividuelle.h \
     dlg_lieu.h \
     dlg_operateur.h \
-    dlg_port_serie.h
+    dlg_port_serie.h \
+    et_generateurrapporttest.h \
+    et_resultatpolluant.h
 FORMS += mainwindow.ui \
     creationtest.ui \
     dlg_molecule.ui \
@@ -112,7 +114,9 @@ FORMS += mainwindow.ui \
     et_listeattentetests.ui \
     dlg_lieu.ui \
     dlg_operateur.ui \
-    dlg_port_serie.ui
+    dlg_port_serie.ui \
+    et_generateurrapporttest.ui \
+    et_resultatpolluant.ui
 INCLUDEPATH += ./qserialdevice \
     ./
 LIBS += -L./ \
@@ -120,3 +124,15 @@ LIBS += -L./ \
 OTHER_FILES += licence.txt \
     StructureTest.dtd \
     CreationBaseMySql.sql
+
+
+
+
+
+
+
+
+
+
+
+

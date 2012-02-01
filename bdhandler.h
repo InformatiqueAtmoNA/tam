@@ -79,9 +79,18 @@ public:
     QString getEquipementNumSerie(const ushort idEquipement);
     ushort getTxTransmission(const ushort idTxTransmission);
     QSqlRecord* getDesignationPortSerie(const ushort idEquipement);
-
+    QSqlRecord* getInformationsTest(const ushort idTest);
+    QPointer<QSqlQueryModel> getTestPhaseConcentration (const ushort idTest,const ushort idmolecule);
+    QPointer<QSqlQueryModel> getPolluantTestConcentration (const ushort idTest);
+    QPointer<QSqlQueryModel> getMesureTestAnalyseur (const ushort idTest , const ushort idEquipement , const ushort nbMesureEquipement,const ushort noPhase);
     DesignationProtocole getDesignationProtocole(const ushort idEquipement);
+    QPointer<QSqlQueryModel> getModeleAnalyseur();
+    QPointer<QSqlQueryModel> getListeEquipementParModele(const uint id_Modele);
+    QPointer<QSqlQueryModel> getListeTypeTestParEquipement(const uint id_Equipement);
+    QPointer<QSqlQueryModel> getListeDateTestParEquipParTypeTest(const uint id_Test,const QString & id_TypeTest);
     ushort getIdCalibrateur(const uint idSystemeEtalon);
+
+    QPointer<QStandardItemModel> getItemModelListeRapport();
 
     bool miseAjourDateHeureFinTest(const ushort idTestMetro);
     bool insertIntoMesure(const MesureInfo mesuresInfos);

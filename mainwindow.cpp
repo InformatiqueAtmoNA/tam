@@ -98,6 +98,7 @@ void MainWindow::afficherHomeWidget()
     connect(this->m_homeWidget,SIGNAL(creerTest()),this,SLOT(nouveauTest()));
     connect(this->m_homeWidget,SIGNAL(modifierTest(QString)),this,SLOT(modifierTest(QString)));
     connect(this->m_homeWidget,SIGNAL(executerTest(ushort,QString)),this,SLOT(executerTest(ushort,QString)));
+    connect(this->m_homeWidget,SIGNAL(afficherRapport(ushort,ushort,ushort)),this,SLOT(afficherRapport(ushort,ushort,ushort)));
     connect(this->m_homeWidget,SIGNAL(programmerSerieTest()),this,SLOT(programmerSerieTests()));
 
     m_homeWidget->show();
@@ -166,6 +167,22 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
     m_dlgExecutionTest->show();
 
     connect(this->m_dlgExecutionTest,SIGNAL(fermeture()),this,SLOT(fermetureTestWidget()));
+}
+
+void MainWindow::afficherRapport(const ushort idTest,const ushort idAnalyseur, const ushort typeTest)
+{
+
+    this->m_dlgGenerateurRapportTest = new et_GenerateurRapportTest(m_bdHandler,idTest,idAnalyseur,typeTest,this);
+
+    if(!this->m_homeWidget.isNull()) {
+        delete m_homeWidget;
+    }
+
+    this->setCentralWidget(m_dlgGenerateurRapportTest);
+    m_dlgGenerateurRapportTest->show();
+
+    connect(this->m_dlgGenerateurRapportTest,SIGNAL(fermeture()),this,SLOT(fermetureTestWidget()));
+
 }
 
 void MainWindow::fermetureTestWidget()

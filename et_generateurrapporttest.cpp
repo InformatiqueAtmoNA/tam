@@ -1,0 +1,449 @@
+/*////////////////////////////////////////////////////////////
+// \file et_generateurrapporttest.cpp
+// \brief Classe d'interface gérant la génération des rapports des tests
+// \author PIET Régis
+// \version 1.0
+// \date 10/08/2011
+//
+// TAM - Tests Automatiques Métrologiques
+// Copyright (C) 2011 FOUQUART Christophe
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+//
+////////////////////////////////////////////////////////////*/
+
+#include "et_generateurrapporttest.h"
+#include "ui_et_generateurrapporttest.h"
+#include <math.h>
+#include <stdlib.h>
+
+et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler,
+                                             const ushort idTest,
+                                             const ushort idAnalyseur,
+                                             const ushort typeTest,
+                                             QWidget *parent):
+    QWidget(parent),
+    ui(new Ui::et_GenerateurRapportTest)
+{
+    ui->setupUi(this);
+
+    m_idTest = idTest;
+    m_idAnalyseur = idAnalyseur;
+    m_typeTest = typeTest;
+
+
+    if(bdHandler.isNull()) {
+        QString driver = getParam("BD_Driver").toString();
+        QString host = getParam("Host").toString();
+        QString userName = getParam("UserName").toString();
+        QString password = getParam("Password").toString();
+        QString dbName = getParam("DB_Name").toString();
+
+        m_bdHandler = new BdHandler(driver,host,userName,password,dbName);
+    }
+    else
+        m_bdHandler = bdHandler;
+
+    QSqlRecord* informationTest =  m_bdHandler->getInformationsTest(m_idTest);
+    m_NomTest = informationTest->value("test_metro_type_test").toString();
+    ui->label_TypeTest->setText(m_NomTest);
+    m_Operateur = informationTest->value("Nom").toString() + " " + informationTest->value("Prenom").toString();
+    ui->labelOperateur->setText(m_Operateur);
+    m_DateDeb = informationTest->value("date_debut").toDateTime();
+    ui->dateTimeEdit_datedebut->setDateTime(m_DateDeb);
+    m_DateFin = informationTest->value("date_fin").toDateTime();
+    ui->dateTimeEdit_datefin->setDateTime(m_DateFin);
+    m_Lieu = informationTest->value("designation").toString();
+    ui->labelLieu->setText(m_Lieu);
+    m_Temperature = informationTest->value("temperature").toString();
+    ui->labelTemp->setText(m_Temperature);
+    m_Pression = informationTest->value("pression").toString();
+    ui->labelPression->setText(m_Pression);
+
+    affichageEquipement(m_idAnalyseur,"ANALYSEUR");
+
+    QSqlRecord* systemEtalon = m_bdHandler->getSystemeEtalonRow(informationTest->value("id_systeme_etalon").toInt());
+
+    affichageEquipement(systemEtalon->value("id_etalon").toInt(),"ETALON");
+    affichageEquipement(systemEtalon->value("id_bouteille").toInt(),"BOUTEILLE");
+    affichageEquipement(systemEtalon->value("id_gzero").toInt(),"GENERATEUR AIR ZERO");
+
+    this->ui->tableWidget_Equip->setVerticalHeaderLabels(m_listeEnteteLigne);
+    this->ui->tableWidget_Equip->resizeColumnsToContents();
+    this->ui->tableWidget_Equip->resizeRowsToContents();
+
+    genererRapport();
+
+    connect(this->ui->button_Fermer,SIGNAL(clicked()),this,SLOT(buttonFermerClicked()));
+
+}
+
+et_GenerateurRapportTest::~et_GenerateurRapportTest()
+{
+    delete ui;
+}
+
+void et_GenerateurRapportTest::buttonFermerClicked()
+{
+    QMessageBox msgBox;
+    msgBox.setText("Fermer?");
+    msgBox.setInformativeText("Voulez-vous fermer et revenir à l'acceuil?");
+    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+
+    if(msgBox.exec()==QMessageBox::Ok)
+        emit(this->fermeture());
+}
+
+//Mise en forme du tableau de mesure par phase par polluant
+void et_GenerateurRapportTest::tableauMesure(int idMolecule, int codeMolecule)
+{
+
+    m_ConcTestAnalyseur = m_bdHandler->getTestPhaseConcentration(m_idTest,idMolecule);
+    m_tabMesures.clear();
+    m_tabConcentration.clear();
+    m_tabMoyenne.clear();
+    m_tabEcartType.clear();
+
+    for (int i = 0; i < m_ConcTestAnalyseur->rowCount();i++){
+        m_tabMesures.append(QVector<float>());
+        m_MesureTestAnalyseur = m_bdHandler->getMesureTestAnalyseur(
+                    m_idTest,m_idAnalyseur,codeMolecule,m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,0)).toInt());
+        for (int j = 0; j < m_MesureTestAnalyseur->rowCount();j++ ) {
+            float mesure = m_MesureTestAnalyseur->data(m_MesureTestAnalyseur->index(j,3)).toFloat();
+            m_tabMesures[i].append(mesure);
+            }
+        float moyenneTab = moyenne(m_tabMesures[i],m_tabMesures[i].count());
+        float ecarttypeTab = ecarttype(m_tabMesures[i],m_tabMesures[i].count());
+        m_tabMoyenne.append(moyenneTab);
+        m_tabEcartType.append(ecarttypeTab);
+        m_tabConcentration.append(m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,1)).toFloat());
+    }
+
+}
+
+
+void et_GenerateurRapportTest::affichageTableauResidu ()
+{
+    m_tabResidu.clear();
+    m_tabResiduRel.clear();
+    m_tabResiduInc.clear();
+    m_tabValeurPourCritere.clear();
+    m_pente = pente(m_tabConcentration,m_tabMoyenne,m_tabConcentration.count());
+    m_ordonnee = ordonnee(m_tabConcentration,m_tabMoyenne,m_tabConcentration.count());
+    for (int i = 0 ; i < m_tabConcentration.count() ;i ++){
+        if (!m_tabConcentration[i] == 0){
+            m_tabResidu.append(m_tabMoyenne[i]-(m_ordonnee + m_pente * m_tabConcentration[i]));
+            m_tabResiduRel.append(m_tabResidu[i]/m_tabConcentration[i]*100);
+            m_tabResiduInc.append((m_tabConcentration[i]-m_tabMoyenne[i])/m_tabConcentration[i]*100);
+        }
+        else {
+            m_tabResidu.append(m_tabMoyenne[i]);
+            m_ResiduZero =  m_tabMoyenne[i];
+            m_tabResiduRel.append(-99);
+            m_tabResiduInc.append(-99);
+        }
+    }
+    m_tabValeurPourCritere.append(m_ResiduZero);
+    m_tabValeurPourCritere.append(rmax(m_tabConcentration,m_tabResiduRel));
+    m_tabValeurPourCritere.append(m_pente);
+    m_tabValeurPourCritere.append(m_ordonnee);
+}
+
+void et_GenerateurRapportTest::affichageEquipement(ushort idEquipement,QString nomLigne)
+{
+        QSqlRecord recordEquipement = *(m_bdHandler->getEquipementModeledRow(idEquipement));
+
+        QTableWidgetItem* item_noSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_NUM_SERIE).toString());
+        QTableWidgetItem* item_modele = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_MODELE).toString());
+        QTableWidgetItem* item_marque = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_MARQUE).toString());
+
+
+        uint idxNewRecord = this->ui->tableWidget_Equip->rowCount();
+        this->ui->tableWidget_Equip->insertRow(idxNewRecord);
+        this->ui->tableWidget_Equip->setItem(idxNewRecord,0,item_noSerie);
+        this->ui->tableWidget_Equip->setItem(idxNewRecord,1,item_modele);
+        this->ui->tableWidget_Equip->setItem(idxNewRecord,2,item_marque);
+
+        m_listeEnteteLigne.append(QString("%1").arg(nomLigne));
+
+}
+
+bool et_GenerateurRapportTest::genererRapport()
+{
+    switch(this->   m_typeTest) {
+    case REPETABILITE_1:
+        return genererRapportRepetabilite_1();
+        break;
+    case REPETABILITE_2:
+        return genererRapportRepetabilite_2();
+        break;
+    case LINEARITE:
+        return genererRapportLinearite();
+        break;
+    case TEMPS_REPONSE:
+        return genererRapportTempsReponse();
+        break;
+    case RENDEMENT_FOUR:
+        return genererRapportRendementFour();
+        break;
+    default:
+        return true;
+    }
+}
+
+bool et_GenerateurRapportTest::genererRapportRepetabilite_1()
+{
+    m_PolluantTest = m_bdHandler->getPolluantTestConcentration(m_idTest);
+    for (int i=0;i<m_PolluantTest->rowCount();i++){
+        tableauMesure(m_PolluantTest->data(m_PolluantTest->index(i,0)).toInt(),
+                      m_PolluantTest->data(m_PolluantTest->index(i,1)).toInt());
+        QWidget* resultatPolluant = new et_Resultatpolluant(m_tabConcentration,m_tabMesures,
+                                                            m_tabMoyenne,m_tabEcartType,this);
+        ui->tabWidget->addTab(resultatPolluant,m_PolluantTest->data(m_PolluantTest->index(i,2)).toString());
+    }
+    return true;
+}
+
+bool et_GenerateurRapportTest::genererRapportRepetabilite_2()
+{
+
+    return true;
+}
+
+bool et_GenerateurRapportTest::genererRapportLinearite()
+{
+
+    m_PolluantTest = m_bdHandler->getPolluantTestConcentration(m_idTest);
+    for (int i=0;i<m_PolluantTest->rowCount();i++){
+        tableauMesure(m_PolluantTest->data(m_PolluantTest->index(i,0)).toInt(),
+                      m_PolluantTest->data(m_PolluantTest->index(i,1)).toInt());
+        affichageTableauResidu();
+        QWidget* resultatPolluant = new et_Resultatpolluant(m_tabConcentration,m_tabMesures,m_tabMoyenne,
+                                                            m_tabEcartType,m_tabValeurPourCritere,
+                                                            m_tabResidu,m_tabResiduRel,m_tabResiduInc,this);
+        ui->tabWidget->addTab(resultatPolluant,m_PolluantTest->data(m_PolluantTest->index(i,2)).toString());
+    }
+    return true;
+}
+
+bool et_GenerateurRapportTest::genererRapportTempsReponse()
+{
+    return true;
+}
+
+bool et_GenerateurRapportTest::genererRapportRendementFour()
+{
+
+    return true;
+}
+
+
+
+int et_GenerateurRapportTest::test_zero(QVector<float> &tab)
+{
+    for(int i=0;i<tab.count();i++)
+    {
+            if(tab[i]==0)
+            { return i;}
+    }
+
+    return -1;
+}
+
+int et_GenerateurRapportTest::test_negatif(QVector<float> &tab)
+{
+    for(int i=0;i<tab.count();i++)
+    {
+            if(tab[i]<0)
+            { return i;}
+    }
+
+    return -1;
+}
+
+float et_GenerateurRapportTest::val_abs(float x)
+{
+    if(x<0) {return -x;}
+    else {return x;}
+}
+
+float et_GenerateurRapportTest::rmax(QVector<float> &Xi,QVector<float> &Yi)
+{
+    float temp=0;
+
+    for(int i=0;i<Yi.count();i++)
+    {
+        if((val_abs(Yi[i])>val_abs(temp))&&(!Xi[i]==0))
+            {
+                 temp=Yi[i];
+            }
+    }
+
+    return temp;
+}
+
+int et_GenerateurRapportTest::somme(QVector<int> &tab)
+{
+    int somme=0;
+
+    for (int i=0;i<tab.count();i++)
+    {
+     somme=((tab[i])+(somme));
+    }
+
+    return(somme);
+}
+
+float et_GenerateurRapportTest::somme(QVector<float> &tab)
+{
+    float somme=0;
+
+    for (int i=0;i<tab.count();i++)
+    {
+     somme=((tab[i])+(somme));
+    }
+
+    return(somme);
+}
+
+float et_GenerateurRapportTest::moyenne(QVector<int> &tab,int n)
+{
+    float moyenne = float(somme(tab))/n;
+
+    return (moyenne);
+}
+
+float et_GenerateurRapportTest::moyenne(QVector<float> &tab,int n)
+{
+    float moyenne = somme(tab)/n;
+
+    return (moyenne);
+}
+
+float et_GenerateurRapportTest::moyenne2(float somme,int n)
+{
+    float moyenne = somme/n;
+
+    return (moyenne);
+}
+
+void et_GenerateurRapportTest::produittab(QVector<float> &tab1,QVector<float> &tab2,int n)
+{
+    m_tabTemp.resize(n);
+
+    for (int i=0;i<n;i++)
+    {
+        m_tabTemp[i]=(tab1[i]*tab2[i]);
+    }
+}
+
+void et_GenerateurRapportTest::lntab(QVector<float> &tab,QVector<float> &tabTemp,int n)
+{
+    tabTemp.resize(n);
+
+    for (int i=0;i<n;i++)
+    {
+            tabTemp[i]=(log(tab[i]));
+    }
+}
+
+void et_GenerateurRapportTest::logtab(QVector<float> &tab,QVector<float> &tabTemp,int n)
+{
+    tabTemp.resize(n);
+
+    for (int i=0;i<n;i++)
+    {
+            tabTemp[i]=(log10(tab[i]));
+    }
+}
+
+void et_GenerateurRapportTest::invtab(QVector<float> &tab,QVector<float> &tabTemp,int n)
+{
+    tabTemp.resize(n);
+
+    for (int i=0;i<n;i++)
+    {
+            tabTemp[i]=(1/tab[i]);
+    }
+}
+
+void et_GenerateurRapportTest::ecart_a_moyenne(QVector<float> &tab,float Moyenne,int n)
+{
+    m_tabTemp.resize(n);
+
+    for (int i=0;i<n;i++)
+    {
+            m_tabTemp[i]=(tab[i] - Moyenne);
+    }
+}
+
+float et_GenerateurRapportTest::covariance(QVector<float> &Xi,QVector<float> &Yi,int n)
+{
+    float cov;
+
+    produittab(Xi,Yi,n);
+    //cov = moyenne(m_tabTemp,n) - ( moyenne(Xi,n) * moyenne(Yi,n) );
+    cov = moyenne(m_tabTemp,n) - ( moyenne(Xi,n) * moyenne(Yi,n) );
+    return (cov);
+}
+
+float et_GenerateurRapportTest::variance(QVector<float> &val,int n)
+{
+    float sce;
+
+    ecart_a_moyenne(val,moyenne(val,n),n);
+    produittab(m_tabTemp,m_tabTemp,n);
+    sce = somme(m_tabTemp)/(n-1);
+
+    return (sce);
+}
+
+float et_GenerateurRapportTest::ecarttype(QVector<float> &val,int n)
+{
+    float ect= sqrt(variance(val,n));
+
+    return (ect);
+}
+
+float et_GenerateurRapportTest::pente(QVector<float> &Xi,QVector<float> &Yi,int n)
+{
+    float Xz = moyenne(Xi,n);
+    ecart_a_moyenne(Xi,Xz,n);
+    produittab(Yi,m_tabTemp,n);
+    float a1 = somme (m_tabTemp);
+    ecart_a_moyenne(Xi,Xz,n);
+    produittab(m_tabTemp,m_tabTemp,n);
+    float a2 = somme (m_tabTemp);
+    float a = a1/a2;
+
+    return (a);
+}
+
+float et_GenerateurRapportTest::ordonnee(QVector<float> &Xi,QVector<float> &Yi,int n)
+{
+    float b = moyenne(Yi,n) - ( pente(Xi,Yi,n) * moyenne(Xi,n) );
+
+    return (b);
+}
+
+float et_GenerateurRapportTest::corr(QVector<float> &Xi,QVector<float> &Yi,int n)
+{
+    float r = covariance(Xi,Yi,n)/(ecarttype(Xi,n)*ecarttype(Yi,n));
+    //float r=pente(Xi,Yi,n)*pente(Xi,Yi,n)*(variance(Xi,n)/variance(Yi,n));
+    return (r);
+}
+
+

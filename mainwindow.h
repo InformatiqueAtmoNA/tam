@@ -37,6 +37,7 @@
 #include "dlg_lieu.h"
 #include "dlg_operateur.h"
 #include "dlg_port_serie.h"
+#include "et_generateurrapporttest.h"
 
 namespace Ui {
     class MainWindow;
@@ -53,6 +54,7 @@ protected:
     QPointer<HomeWidget> m_homeWidget;
     QPointer<CreationTest> m_dlgCreationtest;
     QPointer<et_InterfaceExecutionTest> m_dlgExecutionTest;
+    QPointer<et_GenerateurRapportTest> m_dlgGenerateurRapportTest;
     QPointer<et_listeAttenteTests> m_dlgListeAttenteTest;
     ExecutionTest* testAExecuter;
 
@@ -67,6 +69,7 @@ public Q_SLOTS:
     void nouveauTest();
     void modifierTest(const QString fichierDescription);
     void executerTest(const ushort idTestXML, const QString fichierDescription);
+    void afficherRapport(const ushort idTest,const ushort idAnalyseur, const ushort typeTest);
     void fermetureTestWidget();
     void afficherDlgEquipement();
     void afficherDlgLieu();

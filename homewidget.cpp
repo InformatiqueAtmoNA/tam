@@ -26,6 +26,7 @@
 #include "homewidget.h"
 #include "ui_homewidget.h"
 
+
 HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
     QWidget(parent),
     ui(new Ui::HomeWidget)
@@ -47,6 +48,7 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
     connect(this->ui->button_ProgrammerSerieTests,SIGNAL(clicked()),this,SIGNAL(programmerSerieTest()));
     connect(this->ui->tableWidget_TestXml,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetTestXmlIndexChanged(QModelIndex)));
     connect(this->ui->tableView_TestRapport,SIGNAL(clicked(QModelIndex)),this,SLOT(tableViewTestRapportIndexChanged(QModelIndex)));
+    connect(this->ui->treeView,SIGNAL(clicked(QModelIndex)),this,SLOT(treeViewTestRapportIndexChanged(QModelIndex)));
 
     this->ui->button_Executer->setEnabled(false);
     this->ui->button_Modifier->setEnabled(false);
@@ -103,13 +105,25 @@ void HomeWidget::getListeRapports()
             this->ui->tableView_TestRapport->setColumnHidden(HOMEW_TABVIEW_TEST_ID_TEST,true);
             this->ui->tableView_TestRapport->setColumnHidden(HOMEW_TABVIEW_TEST_ID_EQUIP,true);
 
+
+            //m_Sysmodel.setRootPath(QDir::rootPath());
+            //modele = model;
+
+            m_itemModele = m_bdHandler->getItemModelListeRapport();
+            this->ui->treeView->setModel(m_itemModele);
+
+
+            //this->ui->treeView->hideColumn(HOMEW_TABVIEW_TEST_ID_TEST);
+           // this->ui->treeView->hideColumn(HOMEW_TABVIEW_TEST_ID_EQUIP);
+
 }
+
+
 
 
 void HomeWidget::tableWidgetTestXmlIndexChanged(const QModelIndex & index)
 {
     this->m_idxSelectionTest = index;
-
     this->ui->button_Executer->setEnabled(m_idxSelectionTest.isValid());
     this->ui->button_Modifier->setEnabled(m_idxSelectionTest.isValid());
     this->ui->button_Supprimer->setEnabled(m_idxSelectionTest.isValid());
@@ -118,13 +132,21 @@ void HomeWidget::tableWidgetTestXmlIndexChanged(const QModelIndex & index)
 void HomeWidget::tableViewTestRapportIndexChanged(const QModelIndex & index)
 {
     this->m_idxSelectionRapport = index;
-
-    //QVariant texte = this->m_idxSelectionRapport.data(0);
-    //this ->ui->lineEdit->setText(texte.toString());
-
+    this->ui->treeView->reset();
     this->ui->button_Afficher->setEnabled(m_idxSelectionRapport.isValid());
 }
 
+void HomeWidget::treeViewTestRapportIndexChanged(const QModelIndex & index)
+{
+    this->m_idxSelectionItemRapport = index;
+    if (!m_itemModele->hasChildren(m_idxSelectionItemRapport.child(0,0))){
+        this->ui->button_Afficher->setEnabled(m_idxSelectionItemRapport.isValid());
+    }
+    else {
+        this->ui->button_Afficher->setDisabled(m_idxSelectionItemRapport.isValid());
+    }
+
+}
 
 void HomeWidget::buttonNouveauClicked()
 {
@@ -170,10 +192,17 @@ void HomeWidget::buttonSupprimerClicked() {
 void HomeWidget::buttonAfficherClicked()
 {
     if(ui->tableView_TestRapport->currentIndex().isValid()) {
-
          ushort idTest = this->m_modelRapport->record(m_idxSelectionRapport.row()).value(HOMEW_TABVIEW_TEST_ID_TEST).toUInt();
-         QString numeroAnalyseur = this->m_modelRapport->record(m_idxSelectionRapport.row()).value(HOMEW_TABVIEW_TEST_NO_EQUIP).toString();
-
-         this ->ui->lineEdit->setText(numeroAnalyseur);
+         ushort idAnalyseur = this->m_modelRapport->record(m_idxSelectionRapport.row()).value(HOMEW_TABVIEW_TEST_ID_EQUIP).toUInt();
+         ushort typeTest = stringToTypeTest(this->m_modelRapport->record(m_idxSelectionRapport.row()).value(HOMEW_TABVIEW_TEST_TYPE_TEST).toString());
+         emit(this->afficherRapport(idTest,idAnalyseur,typeTest));
     }
+    else if (ui->treeView->currentIndex().isValid()){
+
+        ushort typeTest = stringToTypeTest(m_idxSelectionItemRapport.parent().data().toString());
+        ushort idTest = m_idxSelectionItemRapport.child(0,0).data().toInt();
+        ushort idAnalyseur = m_idxSelectionItemRapport.child(1,0).data().toInt();
+
+        emit(this->afficherRapport(idTest,idAnalyseur,typeTest));
+     }
 }
