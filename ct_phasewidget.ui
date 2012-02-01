@@ -96,11 +96,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QSpinBox" name="spinBox_nbCyclesMesures">
-       <property name="value">
-        <number>1</number>
-       </property>
-      </widget>
+      <widget class="QSpinBox" name="spinBox_nbCyclesMesures"/>
      </item>
     </layout>
    </item>
@@ -133,13 +129,6 @@
        </property>
        <property name="displayFormat">
         <string>HH:mm:ss</string>
-       </property>
-       <property name="time">
-        <time>
-         <hour>0</hour>
-         <minute>5</minute>
-         <second>0</second>
-        </time>
        </property>
       </widget>
      </item>

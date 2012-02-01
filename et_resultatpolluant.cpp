@@ -47,11 +47,12 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     this->ui->label_Valeur1->setText("Ecart-Type Zero =");
     this->ui->lineEdit_Valeur1->setText(QString::number(tabEcartType.value(0),'f',2));
     this->ui->label_Critere1->setText("Critère (ppb) <");
-    this->ui->lineEdit_Critere1->setText("5");
+    this->ui->lineEdit_Critere1->setText("1");
     this->ui->label_Valeur2->setText("Ecart-Type Cons =");
     this->ui->lineEdit_Valeur2->setText(QString::number(tabEcartType.value(1),'f',2));
     this->ui->label_Critere2->setText("Critère (ppb) <");
-    this->ui->lineEdit_Critere2->setText("4");
+    float critereEcartType = tabConcentration.value(1) * 0.015;
+    this->ui->lineEdit_Critere2->setText(QString::number(critereEcartType,'f',2));
 
 }
 

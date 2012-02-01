@@ -111,6 +111,10 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
         this->m_test->setNbCyclesDePhase(1);
         this->ui->spinBox_nbCyclesMesures->setValue(1);
         this->m_test->setNbCyclesMesureParPhase(1);
+        this->ui->timeEdit_TempsStabilisation->setTime(QTime(0,5,0));
+        this->m_test->setTempsStabilisation(QTime(0,5,0));
+        this->ui->timeEdit_TempsMoyennageMesures->setTime(QTime(0,1,0));
+        this->m_test->setTempsMoyennageMesure(QTime(0,1,0));
     }
     this->ui->tabWidget->setCurrentIndex(0);
 }

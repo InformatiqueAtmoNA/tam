@@ -327,7 +327,7 @@
                            <number>2</number>
                           </property>
                           <property name="value">
-                           <number>5</number>
+                           <number>10</number>
                           </property>
                          </widget>
                         </item>
@@ -399,13 +399,6 @@
                           </property>
                           <property name="displayFormat">
                            <string>HH:mm:ss</string>
-                          </property>
-                          <property name="time">
-                           <time>
-                            <hour>0</hour>
-                            <minute>5</minute>
-                            <second>0</second>
-                           </time>
                           </property>
                          </widget>
                         </item>
