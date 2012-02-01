@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `Concentration` (
   PRIMARY KEY (`id_Concentration`),
   UNIQUE KEY `fk_Concentration_Systeme_Etalon` (`id_systeme_etalon`,`id_molecule`,`point_consigne`),
   KEY `fk_Molecule` (`id_molecule`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Concentration`
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `Concentration_Associee` (
   UNIQUE KEY `fk_Concentration_Associee_id_Concentration` (`id_concentration`,`id_molecule`),
   KEY `fk_Concentration_Associee_Concentration` (`concentration`),
   KEY `fk_Concentration_Associee_Molecule` (`id_molecule`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=34 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Concentration_Associee`
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `Concentration_Test_Metro` (
   PRIMARY KEY (`idConcentration_Test_Metro`),
   KEY `fk_Concentration_Test_Metro_1` (`id_test`),
   KEY `fk_Concentration_id_molecule` (`id_molecule`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
 -- Contenu de la table `Concentration_Test_Metro`
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `Equipement` (
   KEY `fk_eq_tx_transmission` (`id_tx_transmission`),
   KEY `fk_eq_modele` (`id_modele`),
   KEY `fk_eq_port_serie` (`no_port`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Equipement`
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `Equipement_Reforme` (
   PRIMARY KEY (`id_equipement_reforme`),
   UNIQUE KEY `id_equipement_UNIQUE` (`id_equipement`),
   KEY `fk_eq_reforme_modele` (`id_modele`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Equipement_Reforme`
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `Lieu` (
   `id_lieu` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(45) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_lieu`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Lieu`
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `Marque_Equipement` (
   `designation` varchar(30) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_marque`),
   UNIQUE KEY `designation_UNIQUE` (`designation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ;
 
 --
 -- Contenu de la table `Marque_Equipement`
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `Mesure` (
   PRIMARY KEY (`id_mesure`,`id_test`,`id_equipement`),
   KEY `fk_mesure_test` (`id_test`),
   KEY `fk_mesure_equipement` (`id_equipement`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Mesure`
@@ -241,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `Modele_Equipement` (
   PRIMARY KEY (`id_modele`),
   KEY `fk_Modele_Equipement_Marque` (`id_marque`),
   KEY `fk_Modele_Equipement_Protocole` (`id_protocole`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Modele_Equipement`
@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS `Molecule` (
   PRIMARY KEY (`id_molecule`),
   UNIQUE KEY `code_UNIQUE` (`code`),
   UNIQUE KEY `formule_UNIQUE` (`formule`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Molecule`
@@ -292,7 +292,7 @@ CREATE TABLE IF NOT EXISTS `Operateur` (
   `Mot_de_passe` varchar(45) COLLATE latin1_general_ci DEFAULT NULL,
   `Administrateur` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_operateur`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Operateur`
@@ -311,7 +311,7 @@ CREATE TABLE IF NOT EXISTS `Polluant_Associe` (
   PRIMARY KEY (`id_polluant_associe`),
   KEY `fk_Polluant_Associe_Equipement` (`id_pa_equipement`),
   KEY `fk_Polluant_Associe_Molecule` (`id_pa_molecule`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=28 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Polluant_Associe`
@@ -347,7 +347,7 @@ CREATE TABLE IF NOT EXISTS `Protocole` (
   `designation` varchar(20) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_Protocole`),
   UNIQUE KEY `designation_UNIQUE` (`designation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Protocole`
@@ -382,7 +382,7 @@ CREATE TABLE IF NOT EXISTS `Systeme_Etalonnage` (
   `id_gzero` smallint(5) unsigned NOT NULL,
   `canal_defaut` varchar(6) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_systeme_etalon`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=67 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Systeme_Etalonnage`
@@ -399,7 +399,7 @@ CREATE TABLE IF NOT EXISTS `Taux_Transmission` (
   `taux_transmission` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id_tx_transmission`),
   UNIQUE KEY `taux_transmission_UNIQUE` (`taux_transmission`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Taux_Transmission`
@@ -441,14 +441,14 @@ CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
   `id_systeme_etalon` int(10) unsigned NOT NULL,
   `id_lieu` smallint(5) unsigned NOT NULL,
   `pression` int(11) DEFAULT NULL,
-  `temperature` decimal(10,0) DEFAULT NULL,
+  `temperature` decimal(10,1) DEFAULT NULL,
   `date_debut` datetime NOT NULL,
   `date_fin` datetime NOT NULL,
   PRIMARY KEY (`id_test`),
   KEY `fk_test_operateur` (`id_operateur`),
   KEY `fk_test_lieu` (`id_lieu`),
   KEY `fk_test_system_etalon` (`id_systeme_etalon`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=123 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 --
 -- Contenu de la table `Test_Metrologique`
 --
@@ -467,7 +467,7 @@ CREATE TABLE IF NOT EXISTS `Test_XML` (
   PRIMARY KEY (`id_Test_Xml`),
   UNIQUE KEY `fichier_description_UNIQUE` (`fichier_description`),
   KEY `fk_Test_XML_SystemeEtalon` (`id_systeme_etalon`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Contenu de la table `Test_XML`
