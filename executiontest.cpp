@@ -630,6 +630,7 @@ void ExecutionTest::enregistrerMoyenneMesures()
         mesureInfos.mesure = moyenneMesure;
 
         m_bdHandler->insertIntoMesure(mesureInfos);
+        m_tabMesuresParCycle.clear();
     }
 
     emit(this->moyenneMesuresEnregistree());

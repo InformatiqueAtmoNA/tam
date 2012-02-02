@@ -87,7 +87,7 @@ public:
     QPointer<QSqlQueryModel> getModeleAnalyseur();
     QPointer<QSqlQueryModel> getListeEquipementParModele(const uint id_Modele);
     QPointer<QSqlQueryModel> getListeTypeTestParEquipement(const uint id_Equipement);
-    QPointer<QSqlQueryModel> getListeDateTestParEquipParTypeTest(const uint id_Test,const QString & id_TypeTest);
+    QPointer<QSqlQueryModel> getListeDateTestParEquipParTypeTest(const uint id_Equipement,const QString & id_TypeTest);
     ushort getIdCalibrateur(const uint idSystemeEtalon);
 
     QPointer<QStandardItemModel> getItemModelListeRapport();

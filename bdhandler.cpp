@@ -280,7 +280,7 @@ QPointer<QSqlQueryModel> BdHandler::getListeEquipementParModele(const uint id_Mo
 }
 
 QPointer<QSqlQueryModel> BdHandler::getListeTypeTestParEquipement(const uint id_Equipement) {
-    QString requete = "SELECT TM.id_test , TM.test_metro_type_test FROM Test_Metrologique TM, Liste_Analyseurs_Test LAM ";
+    QString requete = "SELECT TM.test_metro_type_test FROM Test_Metrologique TM, Liste_Analyseurs_Test LAM ";
     requete.append(QString("WHERE TM.id_Test = LAM.id_test and LAM.id_equipement =%1 ").arg(id_Equipement));
     requete.append("GROUP BY TM.test_metro_type_test");
 
@@ -292,9 +292,9 @@ QPointer<QSqlQueryModel> BdHandler::getListeTypeTestParEquipement(const uint id_
     return model;
 }
 
-QPointer<QSqlQueryModel> BdHandler::getListeDateTestParEquipParTypeTest(const uint id_Test,const QString & id_TypeTest) {
-    QString requete = "SELECT TM.date_debut FROM Test_Metrologique TM ";
-    requete.append(QString("WHERE TM.id_Test = %1 ").arg(id_Test));
+QPointer<QSqlQueryModel> BdHandler::getListeDateTestParEquipParTypeTest(const uint id_Equipement,const QString & id_TypeTest) {
+    QString requete = "SELECT TM.id_test,TM.date_debut FROM Test_Metrologique TM, Liste_Analyseurs_Test LAM ";
+    requete.append(QString("WHERE TM.id_test = LAM.id_test and LAM.id_Equipement = %1 ").arg(id_Equipement));
     requete.append(QString("AND TM.test_metro_type_test = '%1' ").arg(id_TypeTest));
     requete.append("ORDER BY TM.date_debut desc");
     QPointer<QSqlQueryModel> model = new QSqlQueryModel;
@@ -750,14 +750,14 @@ QPointer<QStandardItemModel> BdHandler::getItemModelListeRapport(){
                 QStandardItem * itemTypeTest = new QStandardItem(NomTypeTest);
                 itemAnalyseur->appendRow(itemTypeTest);
                 itemTypeTest->setEditable(false);
-                QPointer<QSqlQueryModel> listeDateTest = this->getListeDateTestParEquipParTypeTest(recTypeTest.value("id_test").toInt(),recTypeTest.value("test_metro_type_test").toString());
+                QPointer<QSqlQueryModel> listeDateTest = this->getListeDateTestParEquipParTypeTest(recAnalyseur.value("id_equipement").toInt(),recTypeTest.value("test_metro_type_test").toString());
                 for (int l=0; l<listeDateTest->rowCount();l++){
                     QSqlRecord recDateTest = listeDateTest->record(l);
                     QString DateDebtest = recDateTest.value("date_debut").toString();
                     QStandardItem * itemDateDeb = new QStandardItem(DateDebtest);
                     itemTypeTest->appendRow(itemDateDeb);
                     itemDateDeb->setEditable(false);
-                    QString IdTest = recTypeTest.value("id_test").toString();
+                    QString IdTest = recDateTest.value("id_test").toString();
                     QStandardItem * itemIdTest = new QStandardItem (IdTest);
                     itemDateDeb->appendRow(itemIdTest);
                     itemIdTest->setEditable(false);
