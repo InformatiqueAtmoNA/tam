@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `Concentration` (
   `conc_ozone` smallint(5) unsigned NOT NULL DEFAULT '0',
   `archivee` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_Concentration`),
-  UNIQUE KEY `fk_Concentration_Systeme_Etalon` (`id_systeme_etalon`,`id_molecule`,`point_consigne`),
+  UNIQUE KEY `fk_Concentration_Systeme_Etalon` (`id_systeme_etalon`,`id_molecule`,`point_consigne`,`conc_reelle`),
   KEY `fk_Molecule` (`id_molecule`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 

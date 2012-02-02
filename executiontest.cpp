@@ -629,7 +629,10 @@ void ExecutionTest::enregistrerMoyenneMesures()
         mesureInfos.noCycleMesure = m_cycleMesureEnCours;
         mesureInfos.mesure = moyenneMesure;
 
-        m_bdHandler->insertIntoMesure(mesureInfos);
+        if (!mesureInfos.mesure.data()->isEmpty()){
+                m_bdHandler->insertIntoMesure(mesureInfos);
+            }
+
         m_tabMesuresParCycle.clear();
     }
 
