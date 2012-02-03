@@ -231,9 +231,10 @@ QWeakPointer<MesureIndividuelle> Mode4::demandeMesure() {
             mesures.data()->append(mesure.toFloat());
         }
         // Et on recommence pour avoir la voie 3
+        QString mesure2 = reponse.left(reponse.indexOf(" "));
         reponse.remove(0,reponse.indexOf(" ")+1);
         if(!mesure.contains("inf")) {
-            mesures.data()->append(mesure.toFloat());
+            mesures.data()->append(mesure2.toFloat());
         }
     }
     else {

@@ -420,7 +420,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     calibrateur->setThreadComHandler(threadCommunication);
     calibrateur->setTimeOut(500);
 
-    calibrateur->init();
+    //calibrateur->init();
 
     if(calibrateur->demandeAlarme() > 0) {
         QMessageBox msgBox;
