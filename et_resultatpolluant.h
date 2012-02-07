@@ -39,6 +39,8 @@ class et_Resultatpolluant : public QWidget
     Q_OBJECT
 
 public:
+    explicit et_Resultatpolluant(QList<QString> listNomMolecule,QVector<QVector<float> > tabMesPolluant,
+                                  QVector<float>  tabMoyenne,QWidget *parent = 0);
     explicit et_Resultatpolluant(
             QVector<float>tabConcentration,QVector<QVector<float> > tabMesPolluant,
             QVector<float>  tabMoyenne,QVector<float>  tabEcartType,
@@ -57,6 +59,7 @@ private:
     QStringList m_listeEnteteLigne;
 
     void creationColonneTab (QVector<float> tabPolluant);
+    void creationColonneTabTPG (QList<QString> listNomMolecule);
     void affichageTableauMesure (QVector<QVector<float> > tabMesure);
     void affichageTableauCalcul (QVector<float> tabCalcul,QString typeCalcul);
     void affichageTableauEcartType(QVector<float> tabEcartType);

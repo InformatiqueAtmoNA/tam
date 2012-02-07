@@ -81,6 +81,7 @@ public:
     QSqlRecord* getDesignationPortSerie(const ushort idEquipement);
     QSqlRecord* getInformationsTest(const ushort idTest);
     QPointer<QSqlQueryModel> getTestPhaseConcentration (const ushort idTest,const ushort idmolecule);
+    QPointer<QSqlQueryModel> getTestPhase (const ushort idTest);
     QPointer<QSqlQueryModel> getPolluantTestConcentration (const ushort idTest);
     QPointer<QSqlQueryModel> getMesureTestAnalyseur (const ushort idTest , const ushort idEquipement , const ushort nbMesureEquipement,const ushort noPhase);
     DesignationProtocole getDesignationProtocole(const ushort idEquipement);

@@ -54,7 +54,7 @@ private:
     ushort m_idAnalyseur;
     ushort m_typeTest;
     ushort m_nbPolluantTest;
-    QSqlRecord* m_TestConcPhase;
+    QPointer<QSqlQueryModel> m_TestPhase;
     QPointer<QSqlQueryModel> m_ConcTestAnalyseur;
     QPointer<QSqlQueryModel> m_MesureTestAnalyseur;
     QPointer<QSqlQueryModel> m_PolluantTest;
@@ -74,8 +74,10 @@ private:
     QString m_Pression;
     QStringList m_listeEnteteLigne;
     QVector <float>  m_tabValeurPourCritere;
+    QVector <int> m_tabCodeMolecule;
 
     void tableauMesure(int idMolecule, int codeMolecule);
+    void tableauMesure(int no_Phase);
     void affichageTableauResidu ();
     void affichageEquipement(ushort idEquipement,QString nomLigne);
 

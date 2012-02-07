@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>817</width>
-    <height>598</height>
+    <width>820</width>
+    <height>632</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -460,6 +460,13 @@
              </property>
              <property name="text">
               <string>&amp;Afficher</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="button_supprimer_test_resultat">
+             <property name="text">
+              <string>Supprimer</string>
              </property>
             </widget>
            </item>

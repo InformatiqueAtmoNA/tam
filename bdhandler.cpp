@@ -666,7 +666,17 @@ QPointer<QSqlQueryModel> BdHandler::getMesureTestAnalyseur (const ushort idTest 
     return model;
 }
 
+//Récupération des phases d'un test à partir table mesure
 
+QPointer<QSqlQueryModel> BdHandler::getTestPhase (const ushort idTest)
+{
+    QString strRequete = QString("SELECT no_Phase FROM Mesure WHERE id_test =%1 GROUP BY no_Phase")
+            .arg(QString::number(idTest));
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(strRequete,m_baseMySql);
+    return model;
+
+}
 
 bool BdHandler::insertIntoMesure(const MesureInfo mesureInfos)
 {

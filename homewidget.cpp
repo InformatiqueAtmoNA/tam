@@ -49,11 +49,17 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
     connect(this->ui->tableWidget_TestXml,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetTestXmlIndexChanged(QModelIndex)));
     connect(this->ui->tableView_TestRapport,SIGNAL(clicked(QModelIndex)),this,SLOT(tableViewTestRapportIndexChanged(QModelIndex)));
     connect(this->ui->treeView,SIGNAL(clicked(QModelIndex)),this,SLOT(treeViewTestRapportIndexChanged(QModelIndex)));
+    //connect(this->ui->button_supprimer_test_resultat,SIGNAL(clicked()),this,SLOT(buttonSupprimerTestResultatClicked()));
 
     this->ui->button_Executer->setEnabled(false);
     this->ui->button_Modifier->setEnabled(false);
     this->ui->button_Supprimer->setEnabled(false);
     this->ui->button_Afficher->setEnabled(false);
+    this->ui->button_supprimer_test_resultat->setEnabled(false);
+    this->ui->tabWidget_TestRapport->setCurrentIndex(0);
+    this->ui->listView_Rapports->hide();
+    this->ui->label_3->hide();
+
 }
 
 HomeWidget::~HomeWidget()
@@ -205,4 +211,21 @@ void HomeWidget::buttonAfficherClicked()
 
         emit(this->afficherRapport(idTest,idAnalyseur,typeTest));
      }
+}
+
+void HomeWidget::buttonSupprimerTestResultatClicked() {
+    if(!m_idxSelectionRapport.isValid())
+        return;
+    int reponse = QMessageBox::question(this, "Supprimer un élément", "êtes-vous sûr de vouloir effacer cet enregistrement?",
+                  QMessageBox::Yes | QMessageBox::No);
+
+    if (reponse == QMessageBox::No)
+        return;
+
+    if(!m_modelRapport->removeRow(m_idxSelectionRapport.row()))
+        QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé",QMessageBox::Ok);
+    else {
+        //m_modelRapport->();
+        this->getListeRapports();
+    }
 }

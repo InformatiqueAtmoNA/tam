@@ -68,6 +68,7 @@ private Q_SLOTS:
     void buttonExecuterClicked();
     void buttonAfficherClicked();
     void buttonSupprimerClicked();
+    void buttonSupprimerTestResultatClicked();
 
 Q_SIGNALS:
     void creerTest();

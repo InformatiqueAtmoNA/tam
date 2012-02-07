@@ -27,6 +27,19 @@
 #include "et_resultatpolluant.h"
 #include "ui_et_resultatpolluant.h"
 
+et_Resultatpolluant::et_Resultatpolluant(QList<QString> listNomMolecule,QVector<QVector<float> > tabMesPolluant,
+                                         QVector<float>  tabMoyenne,QWidget *parent):
+    QWidget(parent),
+    ui(new Ui::et_Resultatpolluant)
+{
+    ui->setupUi(this);
+    creationColonneTabTPG(listNomMolecule);
+    affichageTableauMesure(tabMesPolluant);
+    affichageTableauCalcul(tabMoyenne,"MOYENNE (ppb)");
+    this->ui->tableWidget->setVerticalHeaderLabels(m_listeEnteteLigne);
+    this->ui->groupBox->hide();
+}
+
 
 et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<QVector<float> > tabMesPolluant,
                                          QVector<float>  tabMoyenne,QVector<float>  tabEcartType,
@@ -103,6 +116,17 @@ void et_Resultatpolluant::creationColonneTab (QVector<float> tabConcPolluant)
     }
     this->ui->tableWidget->setHorizontalHeaderLabels(listeEnteteColonne);
 }
+
+void et_Resultatpolluant::creationColonneTabTPG (QList<QString> listNomMolecule)
+{
+    QStringList listeEnteteColonne;
+    for (int i =0; i < listNomMolecule.size();i++){
+        this->ui->tableWidget->insertColumn(i);
+        listeEnteteColonne.append(listNomMolecule.value(i));
+    }
+    this->ui->tableWidget->setHorizontalHeaderLabels(listeEnteteColonne);
+}
+
 
 void et_Resultatpolluant::affichageTableauMesure (QVector<QVector<float> > tabMesure)
 {

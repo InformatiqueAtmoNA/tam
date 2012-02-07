@@ -88,6 +88,9 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
 
     connect(this->ui->button_Fermer,SIGNAL(clicked()),this,SLOT(buttonFermerClicked()));
 
+    this->ui->Button_Exporter->setEnabled(false);
+    this->ui->Button_Valider->setEnabled(false);
+
 }
 
 et_GenerateurRapportTest::~et_GenerateurRapportTest()
@@ -130,6 +133,32 @@ void et_GenerateurRapportTest::tableauMesure(int idMolecule, int codeMolecule)
         m_tabMoyenne.append(moyenneTab);
         m_tabEcartType.append(ecarttypeTab);
         m_tabConcentration.append(m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,1)).toFloat());
+    }
+
+}
+
+//Mise en forme du tableau de mesure par phase pour TPG
+void et_GenerateurRapportTest::tableauMesure(int no_Phase)
+{
+
+    m_tabMesures.clear();
+    m_tabMoyenne.clear();
+    m_tabCodeMolecule.clear();
+
+    m_tabCodeMolecule.append(2);
+    m_tabCodeMolecule.append(3);
+    m_tabCodeMolecule.append(12);
+
+    for (int i = 0; i < 3;i++){
+        m_tabMesures.append(QVector<float>());
+        m_MesureTestAnalyseur = m_bdHandler->getMesureTestAnalyseur(
+                    m_idTest,m_idAnalyseur,m_tabCodeMolecule[i],no_Phase);
+        for (int j = 0; j < m_MesureTestAnalyseur->rowCount();j++ ) {
+            float mesure = m_MesureTestAnalyseur->data(m_MesureTestAnalyseur->index(j,3)).toFloat();
+            m_tabMesures[i].append(mesure);
+            }
+        float moyenneTab = moyenne(m_tabMesures[i],m_tabMesures[i].count());
+        m_tabMoyenne.append(moyenneTab);
     }
 
 }
@@ -246,6 +275,15 @@ bool et_GenerateurRapportTest::genererRapportTempsReponse()
 
 bool et_GenerateurRapportTest::genererRapportRendementFour()
 {
+
+    m_TestPhase = m_bdHandler->getTestPhase(m_idTest);
+    for (int i=0;i<m_TestPhase->rowCount();i++){
+        tableauMesure(m_TestPhase->data(m_TestPhase->index(i,0)).toInt());
+        QList<QString> listNomMolecule;
+        listNomMolecule << "NO" << "NOX" << "NO2";
+        QWidget* resultatPolluant = new et_Resultatpolluant(listNomMolecule,m_tabMesures,m_tabMoyenne,this);
+        ui->tabWidget->addTab(resultatPolluant,"Phase N°"+ QString::number(i+1));
+    }
 
     return true;
 }

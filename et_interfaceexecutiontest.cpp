@@ -321,6 +321,10 @@ void et_InterfaceExecutionTest::buttonSuivantClicked()
 
 void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
 {
+
+    this->ui->button_TestAnalyseur->setEnabled(false);
+    this->ui->button_TestCalibrateur->setEnabled(false);
+
     if(!m_appareilEnTest.isNull())
         delete m_appareilEnTest;
 
@@ -380,11 +384,16 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     analyseur->quitter();
     analyseur->deleteLater();
     QCoreApplication::processEvents();
+    this->ui->button_TestAnalyseur->setEnabled(true);
+    this->ui->button_TestCalibrateur->setEnabled(true);
     //m_listeEtatComAnalyseurs[idAnalyseur] = true;
 }
 
 void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
 {
+    this->ui->button_TestAnalyseur->setEnabled(false);
+    this->ui->button_TestCalibrateur->setEnabled(false);
+
     if(!m_appareilEnTest.isNull())
         delete m_appareilEnTest;
 
@@ -418,9 +427,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     threadCommunication->configureRS232(ui->lineEdit_InterfaceCalibrateur->text());
 
     calibrateur->setThreadComHandler(threadCommunication);
-    calibrateur->setTimeOut(500);
-
-    //calibrateur->init();
+    calibrateur->setTimeOut(750);
 
     if(calibrateur->demandeAlarme() > 0) {
         QMessageBox msgBox;
@@ -438,6 +445,8 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     calibrateur->deleteLater();
     QCoreApplication::processEvents();
     //m_etatComCalibrateur = true;
+    this->ui->button_TestAnalyseur->setEnabled(true);
+    this->ui->button_TestCalibrateur->setEnabled(true);
 }
 
 void et_InterfaceExecutionTest::tableWidgetCommunicationClicked(const QModelIndex index)
