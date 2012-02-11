@@ -146,8 +146,8 @@ void et_GenerateurRapportTest::tableauMesure(int no_Phase)
     m_tabCodeMolecule.clear();
 
     m_tabCodeMolecule.append(2);
-    m_tabCodeMolecule.append(3);
     m_tabCodeMolecule.append(12);
+    m_tabCodeMolecule.append(3);
 
     for (int i = 0; i < 3;i++){
         m_tabMesures.append(QVector<float>());
@@ -243,6 +243,8 @@ bool et_GenerateurRapportTest::genererRapportRepetabilite_1()
                                                             m_tabMoyenne,m_tabEcartType,this);
         ui->tabWidget->addTab(resultatPolluant,m_PolluantTest->data(m_PolluantTest->index(i,2)).toString());
     }
+    this->ui->tableWidget_Rdf->hide();
+    this->ui->label->hide();
     return true;
 }
 
@@ -265,6 +267,8 @@ bool et_GenerateurRapportTest::genererRapportLinearite()
                                                             m_tabResidu,m_tabResiduRel,m_tabResiduInc,this);
         ui->tabWidget->addTab(resultatPolluant,m_PolluantTest->data(m_PolluantTest->index(i,2)).toString());
     }
+    this->ui->tableWidget_Rdf->hide();
+    this->ui->label->hide();
     return true;
 }
 
@@ -281,10 +285,37 @@ bool et_GenerateurRapportTest::genererRapportRendementFour()
         tableauMesure(m_TestPhase->data(m_TestPhase->index(i,0)).toInt());
         QList<QString> listNomMolecule;
         listNomMolecule << "NO" << "NOX" << "NO2";
+        m_tabMoyenneCalculTPG.append(m_tabMoyenne);
         QWidget* resultatPolluant = new et_Resultatpolluant(listNomMolecule,m_tabMesures,m_tabMoyenne,this);
         ui->tabWidget->addTab(resultatPolluant,"Phase N°"+ QString::number(i+1));
     }
+    // Calcul des rendements de four et de la diff
+    for (int i=0;i<m_tabMoyenneCalculTPG.count();i++){
+        if (i%2 != 0){
+            float rdf = (1 - ((m_tabMoyenneCalculTPG[i-1].value(1)-m_tabMoyenneCalculTPG[i].value(1))/(m_tabMoyenneCalculTPG[i-1].value(0)-m_tabMoyenneCalculTPG[i].value(0))))*100;
+            m_tabResultatTPG.append(rdf);
+            QString enteteLigneTPG = "RdF (%) entre Phase " + QString::number(i) + " et " + QString::number(i+1);
+            m_listeEnteteLigneTPG.append(enteteLigneTPG);
+        }
+    }
 
+    if ((m_tabMoyenneCalculTPG.count()>1) && (m_tabMoyenneCalculTPG.count()%2 == 1)){
+        float diffNO = ((m_tabMoyenneCalculTPG[m_tabMoyenneCalculTPG.count()-1].value(0)-m_tabMoyenneCalculTPG[0].value(0))/m_tabMoyenneCalculTPG[0].value(0))*100;
+        m_tabResultatTPG.append(diffNO);
+        m_listeEnteteLigneTPG.append("Différence NO (%) :");
+        float diffNOX = ((m_tabMoyenneCalculTPG[m_tabMoyenneCalculTPG.count()-1].value(1)-m_tabMoyenneCalculTPG[0].value(1))/m_tabMoyenneCalculTPG[0].value(1))*100;
+        m_tabResultatTPG.append(diffNOX);
+        m_listeEnteteLigneTPG.append("Différence NOX (%) :");
+    }
+
+    //Remplissage tableWidgetTPG
+
+    for (int j=0;j<m_tabResultatTPG.count();j++){
+        this->ui->tableWidget_Rdf->insertRow(j);
+        QTableWidgetItem* item = new QTableWidgetItem(QString::number(m_tabResultatTPG.value(j),'f',2));
+        this->ui->tableWidget_Rdf->setItem(j,0,item);
+    }
+    this->ui->tableWidget_Rdf->setVerticalHeaderLabels(m_listeEnteteLigneTPG);
     return true;
 }
 

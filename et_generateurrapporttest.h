@@ -75,6 +75,10 @@ private:
     QStringList m_listeEnteteLigne;
     QVector <float>  m_tabValeurPourCritere;
     QVector <int> m_tabCodeMolecule;
+    QVector<QVector<float> > m_tabMoyenneCalculTPG;
+    QVector <float> m_tabResultatTPG;
+    QStringList m_listeEnteteLigneTPG;
+
 
     void tableauMesure(int idMolecule, int codeMolecule);
     void tableauMesure(int no_Phase);
