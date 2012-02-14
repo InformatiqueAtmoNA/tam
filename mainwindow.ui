@@ -46,6 +46,8 @@
     <addaction name="actionDlgLieu"/>
     <addaction name="actionDlgOperateur"/>
     <addaction name="actionDlgPortSerie"/>
+    <addaction name="separator"/>
+    <addaction name="action_Parametres"/>
    </widget>
    <widget class="QMenu" name="menuTests_M_trologiques">
     <property name="title">
@@ -85,6 +87,11 @@
   <action name="actionDlgPortSerie">
    <property name="text">
     <string>Port Série</string>
+   </property>
+  </action>
+  <action name="action_Parametres">
+   <property name="text">
+    <string>&amp;Parametres</string>
    </property>
   </action>
  </widget>

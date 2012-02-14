@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->ui->actionDlgLieu,SIGNAL(triggered()),this,SLOT(afficherDlgLieu()));
     connect(this->ui->actionDlgOperateur,SIGNAL(triggered()),this,SLOT(afficherDlgOperateur()));
     connect(this->ui->actionDlgPortSerie,SIGNAL(triggered()),this,SLOT(afficherDlgPortSerie()));
+    connect(this->ui->action_Parametres,SIGNAL(triggered()),this,SLOT(afficherParametres()));
 
     this->afficherHomeWidget();
 }
@@ -100,6 +101,7 @@ void MainWindow::afficherHomeWidget()
     connect(this->m_homeWidget,SIGNAL(executerTest(ushort,QString)),this,SLOT(executerTest(ushort,QString)));
     connect(this->m_homeWidget,SIGNAL(afficherRapport(ushort,ushort,ushort)),this,SLOT(afficherRapport(ushort,ushort,ushort)));
     connect(this->m_homeWidget,SIGNAL(programmerSerieTest()),this,SLOT(programmerSerieTests()));
+
 
     m_homeWidget->show();
 }
@@ -213,6 +215,14 @@ void MainWindow::afficherDlgPortSerie()
     Dlg_Port_Serie dlgPortSerie(this,this->m_bdHandler);
     dlgPortSerie.exec();
 }
+
+void MainWindow::afficherParametres()
+{
+    ParametresHandler parametresHandler(this);
+    parametresHandler.exec();
+}
+
+
 
 void MainWindow::programmerSerieTests()
 {

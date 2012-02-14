@@ -38,6 +38,7 @@
 #include "dlg_operateur.h"
 #include "dlg_port_serie.h"
 #include "et_generateurrapporttest.h"
+#include "parametreshandler.h"
 
 namespace Ui {
     class MainWindow;
@@ -76,6 +77,7 @@ public Q_SLOTS:
     void afficherDlgOperateur();
     void afficherDlgPortSerie();
     void programmerSerieTests();
+    void afficherParametres();
 };
 
 #endif // MAINWINDOW_H
