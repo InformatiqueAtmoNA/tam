@@ -84,6 +84,8 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     this->ui->tableWidget_Equip->resizeColumnsToContents();
     this->ui->tableWidget_Equip->resizeRowsToContents();
 
+    m_tpsAcquisition = informationTest->value("tps_acquisition").toInt();
+
     genererRapport();
 
     connect(this->ui->button_Fermer,SIGNAL(clicked()),this,SLOT(buttonFermerClicked()));
@@ -110,30 +112,70 @@ void et_GenerateurRapportTest::buttonFermerClicked()
         emit(this->fermeture());
 }
 
-//Mise en forme du tableau de mesure par phase par polluant
-void et_GenerateurRapportTest::tableauMesure(int idMolecule, int codeMolecule)
+//Mise en forme du tableau de mesure séparé par phase identique par polluant
+void et_GenerateurRapportTest::tableauMesure2(int idMolecule, int codeMolecule)
 {
 
     m_ConcTestAnalyseur = m_bdHandler->getTestPhaseConcentration(m_idTest,idMolecule);
+    m_CyclePhaseTest = m_bdHandler->getCyclePhaseTest(m_idTest);
     m_tabMesures.clear();
     m_tabConcentration.clear();
     m_tabMoyenne.clear();
     m_tabEcartType.clear();
 
-    for (int i = 0; i < m_ConcTestAnalyseur->rowCount();i++){
-        m_tabMesures.append(QVector<float>());
-        m_MesureTestAnalyseur = m_bdHandler->getMesureTestAnalyseur(
-                    m_idTest,m_idAnalyseur,codeMolecule,m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,0)).toInt());
-        for (int j = 0; j < m_MesureTestAnalyseur->rowCount();j++ ) {
-            float mesure = m_MesureTestAnalyseur->data(m_MesureTestAnalyseur->index(j,3)).toFloat();
-            m_tabMesures[i].append(mesure);
+
+    for (int k = 0; k < m_CyclePhaseTest->rowCount();k++){
+        for (int i = 0; i < m_ConcTestAnalyseur->rowCount();i++){
+            m_tabNbreAcquisition.append(m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,2)).toInt());
+            m_MesureTestAnalyseur = m_bdHandler->getMesureTestAnalyseur(
+                        m_idTest,m_idAnalyseur,codeMolecule,m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,0)).toInt(),k+1);
+            if (!m_MesureTestAnalyseur->rowCount()==0){
+                m_tabMesures.append(QVector<float>());
+                int l =  m_tabMesures.count();
+                for (int j = 0; j < m_MesureTestAnalyseur->rowCount();j++ ) {
+                    float mesure = m_MesureTestAnalyseur->data(m_MesureTestAnalyseur->index(j,3)).toFloat();
+                    m_tabMesures[l-1].append(mesure);
+                    }
+                float moyenneTab = moyenne(m_tabMesures[l-1],m_tabMesures[l-1].count());
+                float ecarttypeTab = ecarttype(m_tabMesures[l-1],m_tabMesures[l-1].count());
+                m_tabMoyenne.append(moyenneTab);
+                m_tabEcartType.append(ecarttypeTab);
+                m_tabConcentration.append(m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,1)).toFloat());
             }
-        float moyenneTab = moyenne(m_tabMesures[i],m_tabMesures[i].count());
-        float ecarttypeTab = ecarttype(m_tabMesures[i],m_tabMesures[i].count());
-        m_tabMoyenne.append(moyenneTab);
-        m_tabEcartType.append(ecarttypeTab);
-        m_tabConcentration.append(m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,1)).toFloat());
+         }
     }
+}
+
+//Mise en forme du tableau de mesure groupé par phase identique par polluant
+void et_GenerateurRapportTest::tableauMesure(int idMolecule, int codeMolecule)
+{
+
+    m_ConcTestAnalyseur = m_bdHandler->getTestPhaseConcentration(m_idTest,idMolecule);
+    //m_CyclePhaseTest = m_bdHandler->getCyclePhaseTest(m_idTest);
+    m_tabMesures.clear();
+    m_tabConcentration.clear();
+    m_tabMoyenne.clear();
+    m_tabEcartType.clear();
+
+
+
+    for (int i = 0; i < m_ConcTestAnalyseur->rowCount();i++){
+        m_MesureTestAnalyseur = m_bdHandler->getMesureTestAnalyseur(
+                    m_idTest,m_idAnalyseur,codeMolecule,m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,0)).toInt(),0);
+        if (!m_MesureTestAnalyseur->rowCount()==0){
+            m_tabMesures.append(QVector<float>());
+            int l =  m_tabMesures.count();
+            for (int j = 0; j < m_MesureTestAnalyseur->rowCount();j++ ) {
+                float mesure = m_MesureTestAnalyseur->data(m_MesureTestAnalyseur->index(j,3)).toFloat();
+                m_tabMesures[l-1].append(mesure);
+                }
+            float moyenneTab = moyenne(m_tabMesures[l-1],m_tabMesures[l-1].count());
+            float ecarttypeTab = ecarttype(m_tabMesures[l-1],m_tabMesures[l-1].count());
+            m_tabMoyenne.append(moyenneTab);
+            m_tabEcartType.append(ecarttypeTab);
+            m_tabConcentration.append(m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,1)).toFloat());
+        }
+     }
 
 }
 
@@ -152,7 +194,7 @@ void et_GenerateurRapportTest::tableauMesure(int no_Phase)
     for (int i = 0; i < 3;i++){
         m_tabMesures.append(QVector<float>());
         m_MesureTestAnalyseur = m_bdHandler->getMesureTestAnalyseur(
-                    m_idTest,m_idAnalyseur,m_tabCodeMolecule[i],no_Phase);
+                    m_idTest,m_idAnalyseur,m_tabCodeMolecule[i],no_Phase,1);
         for (int j = 0; j < m_MesureTestAnalyseur->rowCount();j++ ) {
             float mesure = m_MesureTestAnalyseur->data(m_MesureTestAnalyseur->index(j,3)).toFloat();
             m_tabMesures[i].append(mesure);
@@ -163,7 +205,7 @@ void et_GenerateurRapportTest::tableauMesure(int no_Phase)
 
 }
 
-
+//Mise en forme des Tableaux de résidus pour la linéarité
 void et_GenerateurRapportTest::affichageTableauResidu ()
 {
     m_tabResidu.clear();
@@ -191,22 +233,52 @@ void et_GenerateurRapportTest::affichageTableauResidu ()
     m_tabValeurPourCritere.append(m_ordonnee);
 }
 
+//Mise en forme du Tableau des temps de réponse
+void et_GenerateurRapportTest::affichageTableauTpsReponse ()
+{
+    //int tpsAcquisition = 5;
+
+    m_tabTpsReponse.clear();
+    m_tabMoyenneTpsReponse.clear();
+    m_tabValeurPourCritere.clear();
+
+    m_tabTpsReponse.append(QVector<float>());
+    m_tabTpsReponse.append(QVector<float>());
+    for (int i=0;i<m_tabMesures.size()-1;i++){
+        if (i%2 == 0){
+            int nbreAcquisition = m_tabNbreAcquisition[i];
+            QVector <float > tabMesureStable = m_tabMesures[i];
+            tabMesureStable.remove(0,tabMesureStable.size()-nbreAcquisition);
+            float moyenneMesureStable = moyenne(tabMesureStable,tabMesureStable.size());
+            m_tabTpsReponse[0].append(calculTpsReponseMontee(m_tabMesures[i],0.9*moyenneMesureStable,m_tpsAcquisition));
+            m_tabTpsReponse[1].append(calculTpsReponseDescente(m_tabMesures[i+1],0.1*moyenneMesureStable,m_tpsAcquisition));
+         }
+    }
+    m_tabMoyenneTpsReponse.append(moyenne(m_tabTpsReponse[0],m_tabTpsReponse[0].size()));
+    m_tabMoyenneTpsReponse.append(moyenne(m_tabTpsReponse[1],m_tabTpsReponse[1].size()));
+    m_tabValeurPourCritere.append(rmax(m_tabMoyenneTpsReponse,m_tabMoyenneTpsReponse));
+    m_tabValeurPourCritere.append(val_abs(m_tabMoyenneTpsReponse[0]-m_tabMoyenneTpsReponse[1]));
+
+    qDebug()<<m_tabMoyenneTpsReponse;
+}
+
+//Mise en forme du Tableau des Equipements
 void et_GenerateurRapportTest::affichageEquipement(ushort idEquipement,QString nomLigne)
 {
-        QSqlRecord recordEquipement = *(m_bdHandler->getEquipementModeledRow(idEquipement));
+    QSqlRecord recordEquipement = *(m_bdHandler->getEquipementModeledRow(idEquipement));
 
-        QTableWidgetItem* item_noSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_NUM_SERIE).toString());
-        QTableWidgetItem* item_modele = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_MODELE).toString());
-        QTableWidgetItem* item_marque = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_MARQUE).toString());
+    QTableWidgetItem* item_noSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_NUM_SERIE).toString());
+    QTableWidgetItem* item_modele = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_MODELE).toString());
+    QTableWidgetItem* item_marque = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_MARQUE).toString());
 
 
-        uint idxNewRecord = this->ui->tableWidget_Equip->rowCount();
-        this->ui->tableWidget_Equip->insertRow(idxNewRecord);
-        this->ui->tableWidget_Equip->setItem(idxNewRecord,0,item_noSerie);
-        this->ui->tableWidget_Equip->setItem(idxNewRecord,1,item_modele);
-        this->ui->tableWidget_Equip->setItem(idxNewRecord,2,item_marque);
+    uint idxNewRecord = this->ui->tableWidget_Equip->rowCount();
+    this->ui->tableWidget_Equip->insertRow(idxNewRecord);
+    this->ui->tableWidget_Equip->setItem(idxNewRecord,0,item_noSerie);
+    this->ui->tableWidget_Equip->setItem(idxNewRecord,1,item_modele);
+    this->ui->tableWidget_Equip->setItem(idxNewRecord,2,item_marque);
 
-        m_listeEnteteLigne.append(QString("%1").arg(nomLigne));
+    m_listeEnteteLigne.append(QString("%1").arg(nomLigne));
 
 }
 
@@ -274,21 +346,37 @@ bool et_GenerateurRapportTest::genererRapportLinearite()
 
 bool et_GenerateurRapportTest::genererRapportTempsReponse()
 {
+    m_PolluantTest = m_bdHandler->getPolluantTestConcentration(m_idTest);
+    for (int i=0;i<m_PolluantTest->rowCount();i++){
+        tableauMesure2(m_PolluantTest->data(m_PolluantTest->index(i,0)).toInt(),
+                      m_PolluantTest->data(m_PolluantTest->index(i,1)).toInt());
+        affichageTableauTpsReponse();
+        QList<QString> listEnteteColonne;
+        listEnteteColonne << "TpsMontee" << "TpsDescente";
+        QWidget* resultatPolluant = new et_Resultatpolluant(listEnteteColonne,m_tabTpsReponse,
+                                                            m_tabMoyenneTpsReponse,m_tabValeurPourCritere,this);
+        ui->tabWidget->addTab(resultatPolluant,m_PolluantTest->data(m_PolluantTest->index(i,2)).toString());
+    }
+
+    this->ui->tableWidget_Rdf->hide();
+    this->ui->label->hide();
     return true;
 }
 
 bool et_GenerateurRapportTest::genererRapportRendementFour()
 {
-
+    m_CyclePhaseTest = m_bdHandler->getCyclePhaseTest(m_idTest);
     m_TestPhase = m_bdHandler->getTestPhase(m_idTest);
-    for (int i=0;i<m_TestPhase->rowCount();i++){
-        tableauMesure(m_TestPhase->data(m_TestPhase->index(i,0)).toInt());
-        QList<QString> listNomMolecule;
-        listNomMolecule << "NO" << "NOX" << "NO2";
-        m_tabMoyenneCalculTPG.append(m_tabMoyenne);
-        QWidget* resultatPolluant = new et_Resultatpolluant(listNomMolecule,m_tabMesures,m_tabMoyenne,this);
-        ui->tabWidget->addTab(resultatPolluant,"Phase N°"+ QString::number(i+1));
-    }
+    for (int j=0;j<m_CyclePhaseTest->rowCount();j++){
+        for (int i=0;i<m_TestPhase->rowCount();i++){
+            tableauMesure(m_TestPhase->data(m_TestPhase->index(i,0)).toInt());
+            QList<QString> listNomMolecule;
+            listNomMolecule << "NO" << "NOX" << "NO2";
+            m_tabMoyenneCalculTPG.append(m_tabMoyenne);
+            QWidget* resultatPolluant = new et_Resultatpolluant(listNomMolecule,m_tabMesures,m_tabMoyenne,this);
+            ui->tabWidget->addTab(resultatPolluant,"Phase N°"+ QString::number(i+1));
+        }
+     }
     // Calcul des rendements de four et de la diff
     for (int i=0;i<m_tabMoyenneCalculTPG.count();i++){
         if (i%2 != 0){
@@ -515,4 +603,26 @@ float et_GenerateurRapportTest::corr(QVector<float> &Xi,QVector<float> &Yi,int n
     return (r);
 }
 
+float et_GenerateurRapportTest::calculTpsReponseMontee(QVector<float> &Xi,float moyenne,int tpsAcq){
 
+    for (int i=0;i<Xi.size()-1;i++){
+        if (Xi.value(i)<=moyenne && Xi.value(i+1)>=moyenne){
+            float tpsMontee = tpsAcq*(((moyenne - Xi.value(i))/(Xi.value(i+1) - Xi.value(i)))+i);
+            return tpsMontee;
+        }
+    }
+    return -99;
+
+}
+
+float et_GenerateurRapportTest::calculTpsReponseDescente(QVector<float> &Xi,float moyenne,int tpsAcq){
+
+    for (int i=0;i<Xi.size()-1;i++){
+        if (Xi.value(i)>=moyenne && Xi.value(i+1)<=moyenne){
+            float tpsMontee = tpsAcq*(((moyenne - Xi.value(i))/(Xi.value(i+1) - Xi.value(i)))+i);
+            return tpsMontee;
+        }
+    }
+    return -99;
+
+}

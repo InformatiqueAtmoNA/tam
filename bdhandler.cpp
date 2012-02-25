@@ -613,7 +613,7 @@ ushort BdHandler::getIdCalibrateur(const uint idSystemeEtalon)
 QSqlRecord* BdHandler::getInformationsTest(const ushort idTest)
 {
     QString strequete = QString("SELECT TM.id_test, TM.test_metro_type_test, O.Nom, O.Prenom, L.designation, TM.pression,");
-    strequete.append("TM.temperature, TM.date_debut, TM.date_fin, TM.id_systeme_etalon FROM Test_Metrologique TM, Operateur O, Lieu L");
+    strequete.append("TM.temperature, TM.date_debut, TM.date_fin, TM.id_systeme_etalon, TM.tps_acquisition FROM Test_Metrologique TM, Operateur O, Lieu L");
     strequete.append(QString (" WHERE TM.id_operateur = O.id_operateur AND TM.id_lieu = L.id_lieu AND TM.id_test =%1").arg(idTest));
 
     return getTableRow(strequete);
@@ -623,7 +623,7 @@ QSqlRecord* BdHandler::getInformationsTest(const ushort idTest)
 
 QPointer<QSqlQueryModel> BdHandler::getTestPhaseConcentration (const ushort idTest,const ushort idmolecule)
 {
-    QString strRequete = QString("SELECT noPhase , concentration FROM Concentration_Test_Metro WHERE id_test =%1 AND id_molecule = %2")
+    QString strRequete = QString("SELECT noPhase , concentration ,nbre_acquisition FROM Concentration_Test_Metro WHERE id_test =%1 AND id_molecule = %2")
             .arg(QString::number(idTest),QString::number(idmolecule));
     QPointer<QSqlQueryModel> model = new QSqlQueryModel;
     model->setQuery(strRequete,m_baseMySql);
@@ -642,9 +642,21 @@ QPointer<QSqlQueryModel> BdHandler::getPolluantTestConcentration (const ushort i
 
 }
 
+//Récupération des cycles de phases pour le test en argument
+
+QPointer<QSqlQueryModel> BdHandler::getCyclePhaseTest (const ushort idTest)
+{
+    QString strRequete = QString("SELECT M.no_cyclePhase FROM Mesure M WHERE M.id_test = %1 GROUP BY M.no_cyclePhase").arg(idTest);
+    QPointer<QSqlQueryModel> model = new QSqlQueryModel;
+    model->setQuery(strRequete,m_baseMySql);
+    return model;
+
+}
+
+
 //Récupération des mesures d'un test d'un analyseur
 
-QPointer<QSqlQueryModel> BdHandler::getMesureTestAnalyseur (const ushort idTest , const ushort idEquipement , const ushort codeMolecule, const ushort noPhase)
+QPointer<QSqlQueryModel> BdHandler::getMesureTestAnalyseur (const ushort idTest , const ushort idEquipement , const ushort codeMolecule, const ushort noPhase,const ushort noCycle)
 {
     QString strRequete = "SELECT `no_cyclePhase` , `no_phase` , `no_cycleMesure` ";
     //for (ushort idMesEquip=1;idMesEquip<nbMesureEquipement+1;idMesEquip++) {
@@ -661,6 +673,7 @@ QPointer<QSqlQueryModel> BdHandler::getMesureTestAnalyseur (const ushort idTest 
     strRequete.append(QString (" FROM Mesure WHERE id_test=%1 ").arg(idTest));
     strRequete.append(QString ("AND id_equipement=%2 ").arg(idEquipement));
     strRequete.append(QString ("AND no_phase=%3 ").arg(noPhase));
+    if (!noCycle==0) strRequete.append(QString ("AND no_cyclePhase=%4 ").arg(noCycle));
     QPointer<QSqlQueryModel> model = new QSqlQueryModel;
     model->setQuery(strRequete,m_baseMySql);
     return model;

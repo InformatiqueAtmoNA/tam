@@ -83,7 +83,8 @@ public:
     QPointer<QSqlQueryModel> getTestPhaseConcentration (const ushort idTest,const ushort idmolecule);
     QPointer<QSqlQueryModel> getTestPhase (const ushort idTest);
     QPointer<QSqlQueryModel> getPolluantTestConcentration (const ushort idTest);
-    QPointer<QSqlQueryModel> getMesureTestAnalyseur (const ushort idTest , const ushort idEquipement , const ushort nbMesureEquipement,const ushort noPhase);
+    QPointer<QSqlQueryModel> getCyclePhaseTest (const ushort idTest);
+    QPointer<QSqlQueryModel> getMesureTestAnalyseur (const ushort idTest , const ushort idEquipement , const ushort nbMesureEquipement,const ushort noPhase,const ushort noCycle);
     DesignationProtocole getDesignationProtocole(const ushort idEquipement);
     QPointer<QSqlQueryModel> getModeleAnalyseur();
     QPointer<QSqlQueryModel> getListeEquipementParModele(const uint id_Modele);

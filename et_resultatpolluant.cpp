@@ -33,13 +33,34 @@ et_Resultatpolluant::et_Resultatpolluant(QList<QString> listNomMolecule,QVector<
     ui(new Ui::et_Resultatpolluant)
 {
     ui->setupUi(this);
-    creationColonneTabTPG(listNomMolecule);
-    affichageTableauMesure(tabMesPolluant);
+    creationColonneTabListe(listNomMolecule);
+    affichageTableauMesure(tabMesPolluant,"Mesure "," (ppb)");
     affichageTableauCalcul(tabMoyenne,"MOYENNE (ppb)");
     this->ui->tableWidget->setVerticalHeaderLabels(m_listeEnteteLigne);
     this->ui->groupBox->hide();
 }
 
+et_Resultatpolluant::et_Resultatpolluant(QList<QString> listNomColTpsRep,QVector<QVector<float> > tabMesPolluant,
+                                         QVector<float>  tabMoyenne,QVector <float> tabValeurPourCritere,QWidget *parent):
+    QWidget(parent),
+    ui(new Ui::et_Resultatpolluant)
+{
+    ui->setupUi(this);
+    creationColonneTabListe(listNomColTpsRep);
+    affichageTableauMesure(tabMesPolluant,"Tps Reponse "," (s)");
+    affichageTableauCalcul(tabMoyenne,"MOYENNE Tps Reponse (s)");
+    this->ui->tableWidget->setVerticalHeaderLabels(m_listeEnteteLigne);
+    this->ui->label->hide();
+    this->ui->lineEditDroiteReg->hide();
+    this->ui->label_Valeur1->setText("Max Tps de Réponse =");
+    this->ui->lineEdit_Valeur1->setText(QString::number(tabValeurPourCritere.value(0),'f',2));
+    this->ui->label_Critere1->setText("Critère (s) <");
+    this->ui->lineEdit_Critere1->setText("180");
+    this->ui->label_Valeur2->setText("Difference Tps Réponse (s) =");
+    this->ui->lineEdit_Valeur2->setText(QString::number(tabValeurPourCritere.value(1),'f',2));
+    this->ui->label_Critere2->setText("Critère Max (s) <");
+    this->ui->lineEdit_Critere2->setText("10");
+}
 
 et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<QVector<float> > tabMesPolluant,
                                          QVector<float>  tabMoyenne,QVector<float>  tabEcartType,
@@ -49,7 +70,7 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
 {
     ui->setupUi(this);
     creationColonneTab(tabConcentration);
-    affichageTableauMesure(tabMesPolluant);
+    affichageTableauMesure(tabMesPolluant,"Mesure "," (ppb)");
     affichageTableauCalcul(tabMoyenne,"MOYENNE (ppb)");
     affichageTableauCalcul(tabEcartType,"ECART TYPE (ppb");
     this->ui->tableWidget->setVerticalHeaderLabels(m_listeEnteteLigne);
@@ -79,7 +100,7 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
 {
     ui->setupUi(this);
     creationColonneTab(tabConcentration);
-    affichageTableauMesure(tabMesPolluant);
+    affichageTableauMesure(tabMesPolluant,"Mesure "," (ppb)");
     affichageTableauCalcul(tabMoyenne,"MOYENNE (ppb)");
     affichageTableauCalcul(tabEcartType,"ECART TYPE (ppb)");
     affichageTableauCalcul(tabResidu,"RESIDU (ppb)");
@@ -117,7 +138,7 @@ void et_Resultatpolluant::creationColonneTab (QVector<float> tabConcPolluant)
     this->ui->tableWidget->setHorizontalHeaderLabels(listeEnteteColonne);
 }
 
-void et_Resultatpolluant::creationColonneTabTPG (QList<QString> listNomMolecule)
+void et_Resultatpolluant::creationColonneTabListe (QList<QString> listNomMolecule)
 {
     QStringList listeEnteteColonne;
     for (int i =0; i < listNomMolecule.size();i++){
@@ -128,21 +149,19 @@ void et_Resultatpolluant::creationColonneTabTPG (QList<QString> listNomMolecule)
 }
 
 
-void et_Resultatpolluant::affichageTableauMesure (QVector<QVector<float> > tabMesure)
+void et_Resultatpolluant::affichageTableauMesure (QVector<QVector<float> > tabMesure,QString intituleLigne,QString uniteLigne)
 {
-
     for (int i = 0;i <tabMesure.size(); i++){
         for (int j = 0;j <tabMesure[i].size(); j++){
             if (i==0){
                 this->ui->tableWidget->insertRow(j);
-                m_listeEnteteLigne.append("Mesure " + QString::number(j+1) +" (ppb)");
+                m_listeEnteteLigne.append(QString("%1").arg(intituleLigne) + QString::number(j+1) + QString("%2").arg(uniteLigne));
             }
             QTableWidgetItem* item = new QTableWidgetItem(QString::number(tabMesure[i].value(j),'f',2));         
             this->ui->tableWidget->setItem(j,i,item);
         }
     }
 }
-
 
 void et_Resultatpolluant::affichageTableauCalcul (QVector<float> tabCalcul,QString typeCalcul)
 {

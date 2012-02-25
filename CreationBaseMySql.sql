@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `Concentration_Test_Metro` (
   `noPhase` tinyint(3) unsigned NOT NULL,
   `id_molecule` smallint(5) unsigned NOT NULL,
   `concentration` decimal(10,2) NOT NULL,
+  `nbre_acquisition` smallint(5) NOT NULL DEFAULT '0',
   PRIMARY KEY (`idConcentration_Test_Metro`),
   KEY `fk_Concentration_Test_Metro_1` (`id_test`),
   KEY `fk_Concentration_id_molecule` (`id_molecule`)
@@ -444,6 +445,7 @@ CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
   `temperature` decimal(10,1) DEFAULT NULL,
   `date_debut` datetime NOT NULL,
   `date_fin` datetime NOT NULL,
+  `tps_acquisition` smallint(5) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_test`),
   KEY `fk_test_operateur` (`id_operateur`),
   KEY `fk_test_lieu` (`id_lieu`),

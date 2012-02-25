@@ -476,6 +476,8 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_TEMPERATURE,QVariant::fromValue(paramsTest->m_temperature));
     afficherTraceTest("Date début "+paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"),2);
     enregistrement.setValue(TEST_METRO_DATE_DEBUT,QVariant::fromValue(paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
+    afficherTraceTest("Temps d'acquisistion "+paramsTest->m_test->getTempsAcquisition(),2);
+    enregistrement.setValue(TEST_METRO_TPS_ACQUISITION,QVariant::fromValue(paramsTest->m_test->getTempsAcquisition()));
     model->insertRecord(-1,enregistrement);
 
     model->submitAll();
@@ -522,10 +524,13 @@ void et_InfosTestEnCours::enregistrerConcTestMetro(QPointer<et_ParamsTest> param
         QSqlRecord* record = m_bdHandler->getConcentrationRow(paramsTest->m_test->getPhase(i).getIdConcentration());
         QString concentration = record->value(CONCENTRATION_REELLE).toString();
         QString id_molecule = record->value(CONCENTRATION_ID_MOLECULE).toString();
+        int nbreAcquisition = paramsTest->m_test->getPhase(i).getCritereArret_NbCyclesMesures();
 
         enregistrement_conc.setValue(CONC_TEST_METRO_NO_PHASE,QVariant::fromValue(i));
         enregistrement_conc.setValue(CONC_TEST_METRO_ID_MOLECULE,QVariant::fromValue(id_molecule));
         enregistrement_conc.setValue(CONC_TEST_METRO_CONCENTRATION,QVariant::fromValue(concentration));
+        enregistrement_conc.setValue(CONC_TEST_METRO_NBRE_ACQUISITION,QVariant::fromValue(nbreAcquisition));
+
         model->insertRecord(-1,enregistrement_conc);
         model->submitAll();
         delete record;
@@ -547,6 +552,8 @@ void et_InfosTestEnCours::enregistrerConcTestMetro(QPointer<et_ParamsTest> param
                 enregistrement_conc.setValue(CONC_TEST_METRO_NO_PHASE,QVariant::fromValue(i));
                 enregistrement_conc.setValue(CONC_TEST_METRO_CONCENTRATION,QVariant::fromValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toString()));
                 enregistrement_conc.setValue(CONC_TEST_METRO_ID_MOLECULE,QVariant::fromValue(record.value(CONC_ASSOCIEE_FORMULE).toString()));
+                enregistrement_conc.setValue(CONC_TEST_METRO_NBRE_ACQUISITION,QVariant::fromValue(nbreAcquisition));
+
                 qDebug()<<enregistrement_conc;
                 model->insertRecord(-1,enregistrement_conc);
                 model->submitAll();

@@ -58,6 +58,7 @@ private:
     QPointer<QSqlQueryModel> m_ConcTestAnalyseur;
     QPointer<QSqlQueryModel> m_MesureTestAnalyseur;
     QPointer<QSqlQueryModel> m_PolluantTest;
+    QPointer<QSqlQueryModel> m_CyclePhaseTest;
     float m_pente;
     float m_ordonnee;
     QVector <float> m_tabResidu;
@@ -78,11 +79,16 @@ private:
     QVector<QVector<float> > m_tabMoyenneCalculTPG;
     QVector <float> m_tabResultatTPG;
     QStringList m_listeEnteteLigneTPG;
+    QVector<QVector<float> > m_tabTpsReponse;
+    QVector <float> m_tabMoyenneTpsReponse;
+    QVector <int> m_tabNbreAcquisition;
+    int m_tpsAcquisition;
 
-
+    void tableauMesure2(int idMolecule, int codeMolecule);
     void tableauMesure(int idMolecule, int codeMolecule);
     void tableauMesure(int no_Phase);
     void affichageTableauResidu ();
+    void affichageTableauTpsReponse ();
     void affichageEquipement(ushort idEquipement,QString nomLigne);
 
     bool genererRapport();
@@ -112,7 +118,8 @@ private:
     float pente(QVector<float> &Xi,QVector<float> &Yi,int n);
     float ordonnee(QVector<float> &Xi,QVector<float> &Yi,int n);
     float corr(QVector<float> &Xi,QVector<float> &Yi,int n);
-
+    float calculTpsReponseMontee(QVector<float> &Xi,float moyenne,int tpsAcq);
+    float calculTpsReponseDescente(QVector<float> &Xi,float moyenne,int tpsAcq);
 
 public:
     explicit et_GenerateurRapportTest(QPointer<BdHandler> bdHandler,const ushort idTest,const ushort idAnalyseur,const ushort typeTest,QWidget *parent = 0);

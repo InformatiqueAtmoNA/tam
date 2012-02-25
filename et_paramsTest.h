@@ -50,6 +50,7 @@ public :
     float m_temperature;
     bool m_debutImmediat;
     QDateTime m_dateHeureDebut;
+    int m_tpsAcquisition;
 
     et_ParamsTest() {}
     et_ParamsTest(const et_ParamsTest& paramsTest) : QObject()
