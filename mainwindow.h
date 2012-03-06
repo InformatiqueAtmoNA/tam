@@ -30,6 +30,7 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QSettings>
+#include <QCloseEvent>
 #include "creationtest.h"
 #include "homewidget.h"
 #include "et_interfaceexecutiontest.h"
@@ -39,6 +40,7 @@
 #include "dlg_port_serie.h"
 #include "et_generateurrapporttest.h"
 #include "parametreshandler.h"
+
 
 namespace Ui {
     class MainWindow;
@@ -67,6 +69,8 @@ private:
     Ui::MainWindow *ui;
 
 public Q_SLOTS:
+    void quitter();
+    void closeEvent(QCloseEvent *event);
     void nouveauTest();
     void modifierTest(const QString fichierDescription);
     void executerTest(const ushort idTestXML, const QString fichierDescription);

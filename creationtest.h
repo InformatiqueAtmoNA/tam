@@ -31,6 +31,7 @@
 #include "ct_phasewidget.h"
 #include "test.h"
 #include "dlg_systeme_etalon.h"
+#include <QFileDialog>
 
 namespace Ui {
     class CreationTest;
@@ -48,6 +49,7 @@ public:
 private:
     Ui::CreationTest *ui;
     QPointer<Test> m_test;
+    QString m_nomCheminXml;
     QString m_nomFichier;
     QString m_nomFichierAEffacer;
     QPointer<BdHandler> m_bdHandler;
@@ -87,6 +89,7 @@ private Q_SLOTS:
     void listWidgetItemDoubleClicked(QListWidgetItem* item);
     void listWidgetCurrentRowChanged(const int row);
     void lineEditNomTestTextChanged(const QString nomTest);
+    void button_choixEnregistrementXML();
 
 public Q_SLOTS:
     void editionPhaseAnnulee();

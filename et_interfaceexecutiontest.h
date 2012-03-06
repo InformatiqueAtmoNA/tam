@@ -35,6 +35,7 @@
 #include "protocole.h"
 #include "executiontest.h"
 #include "et_infostestencours.h"
+#include <QFileDialog>
 
 namespace Ui {
     class et_InterfaceExecutionTest;
@@ -68,6 +69,7 @@ private:
     bool m_miseEnAttente;
     bool m_debutImmediat;
     QDateTime m_dateHeureDebutTest;
+    QString m_nomCheminCSV;
 
     bool controleEtape1();
     bool controleEtape2();
@@ -103,6 +105,7 @@ private Q_SLOTS:
     void dateTimeDebutTestValueChanged(QDateTime dateTimeDebutTest);
     inline void finTest() {delete m_testAExecuter;}
     inline void tableWidgetAnalyseursClicked(const QModelIndex index) {m_idxSelectionAnalyseurs = index;}
+    void button_choixEnregistrementCSV();
 
 Q_SIGNALS:
     void fermeture();

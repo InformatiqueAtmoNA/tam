@@ -19,15 +19,16 @@ public:
 
 private:
     Ui::ParametresHandler *ui;
+    QStringList choixRepertoire(QString repertoire);
 
 private Q_SLOTS:
     void buttonAnnulerClicked();
     void buttonOkClicked();
-    void buttonParcourirClicked();
+    void buttonParcourirXMLClicked();
+    void buttonParcourirCSVClicked();
+    void buttonParcourirRapportClicked();
     void controlValueChanged();
 
-Q_SIGNALS:
-    void fermeture();
 };
 
 #endif // PARAMETRESHANDLER_H

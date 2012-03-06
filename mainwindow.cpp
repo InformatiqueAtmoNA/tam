@@ -28,6 +28,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -48,6 +49,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->ui->actionDlgOperateur,SIGNAL(triggered()),this,SLOT(afficherDlgOperateur()));
     connect(this->ui->actionDlgPortSerie,SIGNAL(triggered()),this,SLOT(afficherDlgPortSerie()));
     connect(this->ui->action_Parametres,SIGNAL(triggered()),this,SLOT(afficherParametres()));
+    connect(this->ui->action_Fichier_Quitter,SIGNAL(triggered()),this,SLOT(quitter()));
+
 
     this->afficherHomeWidget();
 }
@@ -66,6 +69,26 @@ MainWindow::~MainWindow()
 
     delete ui;
 }
+
+void MainWindow::quitter()
+{
+    emit(this->close());
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+ {
+
+    QMessageBox msgBox;
+    msgBox.setText("Fermer?");
+    msgBox.setInformativeText("Voulez-vous quitter l'application ?");
+    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+
+    if(msgBox.exec()==QMessageBox::Ok)
+         event->accept();
+    else
+        event->ignore();
+ }
 
 void MainWindow::changeEvent(QEvent *e)
 {

@@ -57,6 +57,7 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
         m_bdHandler = bdHandler;
 
     QSqlRecord* informationTest =  m_bdHandler->getInformationsTest(m_idTest);
+
     m_NomTest = informationTest->value("test_metro_type_test").toString();
     ui->label_TypeTest->setText(m_NomTest);
     m_Operateur = informationTest->value("Nom").toString() + " " + informationTest->value("Prenom").toString();

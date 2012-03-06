@@ -39,6 +39,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     m_nbPhases=0;
     m_etape=0;
     m_insertionEnCours = false;
+    m_nomCheminXml = getParam("Path_XML").toString();
 
     this->m_autoriserCreationPhase=true;
 
@@ -63,6 +64,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     connect(this->ui->listWidget_Phases,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(listWidgetItemDoubleClicked(QListWidgetItem*)));
     connect(this->ui->listWidget_Phases,SIGNAL(currentRowChanged(int)),this,SLOT(listWidgetCurrentRowChanged(int)));
     connect(this->ui->lineEdit_NomTest,SIGNAL(textChanged(QString)),this,SLOT(lineEditNomTestTextChanged(QString)));
+    connect(this->ui->button_fichierXML,SIGNAL(clicked()),this,SLOT(button_choixEnregistrementXML()));
 
     if(!nomFichier.isEmpty()) {
         if(test.isNull())
@@ -84,13 +86,6 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
         this->initialiserChamps();
         this->m_nomFichier = nomFichier;
         this->m_nomFichierAEffacer = nomFichier;
-
-        if(m_nomFichier.indexOf(".xml")>0)
-            m_nomFichier.remove(".xml");
-        if(m_nomFichier.indexOf(".\\")>0)
-            m_nomFichier.remove(".\\");
-        if(m_nomFichier.contains("./"))
-            m_nomFichier.remove("./");
         this->ui->lineEdit_NomTest->setText(this->m_nomFichier);
     }
     else {
@@ -408,7 +403,7 @@ void CreationTest::button_SauvegarderClicked ()
     int row=0;
     if(this->m_test->getIdTest()==0) {
         if(model->rowCount()>0)
-            row = model->rowCount()-1;
+            row = model->rowCount();
         model->insertRow(row);
     }
 
@@ -421,6 +416,7 @@ void CreationTest::button_SauvegarderClicked ()
     model->setData(model->index(row,TEST_XML_NOM_FICHIER),QVariant::fromValue(this->m_nomFichier));
     model->setData(model->index(row,TEST_XML_TYPE_TEST),QVariant::fromValue(typeTestToString(this->m_typeTest)));
     model->setData(model->index(row,TEST_XML_ID_SYSTEME_ETALON),QVariant::fromValue(this->m_test->getIdSystemeEtalon()));
+    qDebug()<<model->index(row,TEST_XML_ID).data();
     model->submitAll();
 
     this->m_test->setIdTest(model->record(row).value(TEST_XML_ID).toInt());
@@ -474,7 +470,7 @@ void CreationTest::tabWidgetIndexChanged(const int index)
         }
         if(this->ui->lineEdit_NomTest->text().isEmpty()) {
             qDebug()<<typeTestToString(this->m_typeTest);
-            this->ui->lineEdit_NomTest->setText(QString("%2-%1").arg(typeTestToString(this->m_typeTest),QString::number(this->m_test->getIdSystemeEtalon())));
+            this->ui->lineEdit_NomTest->setText(QString("%3/%2-%1.xml").arg(typeTestToString(this->m_typeTest),QString::number(this->m_test->getIdSystemeEtalon()),this->m_nomCheminXml));
         }
         this->ui->button_Sauvegarder->setEnabled(true);
         this->ui->button_Suivant->setEnabled(false);
@@ -608,7 +604,8 @@ void CreationTest::listWidgetCurrentRowChanged(const int row)
 
 void CreationTest::lineEditNomTestTextChanged(const QString nomTest)
 {
-    this->m_nomFichier = "./"+nomTest+".xml";
+    //this->m_nomFichier = "./"+nomTest+".xml";
+    this->m_nomFichier = nomTest;
     this->ui->button_Sauvegarder->setEnabled(!nomTest.isEmpty());
 }
 
@@ -618,4 +615,20 @@ void CreationTest::button_AjouterPhaseClicked()
     this->ui->button_Suivant->setEnabled(false);
     this->ui->button_AjouterPhase->setEnabled(false);
     this->afficherPhaseWidget(m_nbPhases+1);
+}
+
+void CreationTest::button_choixEnregistrementXML()
+{
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setNameFilter("*.xml");
+    dialog.selectFile(this->ui->lineEdit_NomTest->text());
+    if(dialog.exec()==QFileDialog::Accepted){
+        QStringList chemin =  dialog.selectedFiles();
+        this->ui->lineEdit_NomTest->setText(chemin.value(0));
+    }
+    else {
+        return;
+    }
+
 }

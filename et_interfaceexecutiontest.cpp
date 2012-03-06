@@ -49,7 +49,7 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
         msgBox.setIcon(QMessageBox::Critical);
         msgBox.exec();
 
-        emit(this->fermeture());
+        emit(this->close());
         return;
     }
 
@@ -57,15 +57,16 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
 //    this->ui->tableWidget_Analyseurs->setColumnHidden(ET_TABLEW_ANALYSEURS_ID_EQUIPEMENT,true);
 //    this->ui->tableWidget_Communication->setColumnHidden(ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT,true);
 
-    QString nomFichier = m_fichierDescription;
+    QString nomFichier = m_fichierDescription.mid(m_fichierDescription.lastIndexOf('/')+1);;
     if(nomFichier.indexOf(".xml")>0)
         nomFichier.remove(".xml");
     if(nomFichier.indexOf(".\\")>0)
         nomFichier.remove(".\\");
     if(nomFichier.contains("./"))
         nomFichier.remove("./");
+    m_nomCheminCSV = getParam("Path_CSV").toString();
 
-    this->ui->lineEdit_FichierCSV->setText("DATE_HEURE_"+nomFichier+".csv");
+    this->ui->lineEdit_FichierCSV->setText(m_nomCheminCSV+"/DATE_HEURE_"+nomFichier+".csv");
     this->ui->lineEdit_FichierDescription->setText(nomFichier);
     this->ui->lineEdit_TypeTest->setText(typeTestToString(m_test->getTypeTest()));
 
@@ -118,6 +119,7 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
     connect(this->ui->button_Executer,SIGNAL(clicked()),this,SLOT(buttonExecuterClicked()));
     connect(this->ui->button_MettreEnAttente,SIGNAL(clicked()),this,SLOT(buttonMettreEnAttenteClicked()));
     connect(this->ui->bg_ChoixDebutTest,SIGNAL(buttonClicked(int)),this,SLOT(bgChoixDebutTestValueChanged(int)));
+    connect(this->ui->button_fichierCSV,SIGNAL(clicked()),this,SLOT(button_choixEnregistrementCSV()));
 }
 
 et_InterfaceExecutionTest::~et_InterfaceExecutionTest()
@@ -386,7 +388,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     QCoreApplication::processEvents();
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
-    //m_listeEtatComAnalyseurs[idAnalyseur] = true;
+    m_listeEtatComAnalyseurs[idAnalyseur] = true;
 }
 
 void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
@@ -444,7 +446,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     calibrateur->quitter();
     calibrateur->deleteLater();
     QCoreApplication::processEvents();
-    //m_etatComCalibrateur = true;
+    m_etatComCalibrateur = true;
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
 }
@@ -656,4 +658,20 @@ void et_InterfaceExecutionTest::bgChoixDebutTestValueChanged(int idButton)
 void et_InterfaceExecutionTest::dateTimeDebutTestValueChanged(QDateTime dateTimeDebutTest)
 {
     m_dateHeureDebutTest = dateTimeDebutTest;
+}
+
+void et_InterfaceExecutionTest::button_choixEnregistrementCSV()
+{
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setNameFilter("*.csv");
+    dialog.selectFile(this->ui->lineEdit_FichierCSV->text());
+    if(dialog.exec()==QFileDialog::Accepted){
+        QStringList chemin =  dialog.selectedFiles();
+        this->ui->lineEdit_FichierCSV->setText(chemin.value(0));
+    }
+    else {
+        return;
+    }
+
 }
