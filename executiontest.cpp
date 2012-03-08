@@ -125,6 +125,9 @@ void ExecutionTest::getInfosEquipements()
         QSqlRecord* equipementRecord= m_bdHandler->getEquipementRow(idAnalyseur);
         m_analyseursInfos.insert(idAnalyseur,equipementRecord);
 
+        ushort offset = equipementRecord->value(EQUIPEMENT_OFFSET).toUInt();
+        m_analyseursoffset.insert(idAnalyseur,offset);
+
         ushort idTxTransmission = equipementRecord->value(EQUIPEMENT_ID_TX_TRANSMISSION).toUInt();
         m_analyseursTxTransmission.insert(idAnalyseur,idTxTransmission);
 
@@ -496,7 +499,7 @@ void ExecutionTest::enregistrerMesures()
         else {
             for(ushort i=0;i< mesures.data()->count();i++) {
                 emit(traceTest("Mesure polluant "+QString::number(i)+" = "+QString::number(mesures.data()->at(i)),1));
-                strMesure.append(QString::number(mesures.data()->at(i)));
+                strMesure.append(QString::number(mesures.data()->at(i)-m_analyseursoffset.value(it_tableauMesures.key())));
                 if(i+1 < mesures.data()->count())
                      strMesure.append(";");
             }
@@ -607,7 +610,7 @@ void ExecutionTest::enregistrerMoyenneMesures()
             for(ushort i=0;i<tableaumesureParCycle.count();i++) {
                 QWeakPointer<MesureIndividuelle> mesure = tableaumesureParCycle.at(i);
                 if(j<mesure.data()->count()) {
-                    float mesureIndividuelle = mesure.data()->at(j);
+                    float mesureIndividuelle = mesure.data()->at(j)-m_analyseursoffset.value(it_tabMesuresParCycle.key());
                     sommeMesuresIndividuelles += mesureIndividuelle;
                     nbMesuresMoyennees++;
                 }
@@ -665,6 +668,7 @@ void ExecutionTest::testTermine()
     connect(m_timerTempsAttenteFinAcquisition,SIGNAL(timeout()),this,SLOT(attenteFinAcquisition()));
 
     m_timerTempsAttenteFinAcquisition->start();
+
 }
 
 void ExecutionTest::attenteFinAcquisition()

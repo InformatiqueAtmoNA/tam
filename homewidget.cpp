@@ -37,8 +37,8 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
     this->getListeTests();
     this->getListeRapports();
 
-    QHeaderView *headers = this->ui->tableWidget_TestXml->horizontalHeader();
-    headers->setResizeMode(QHeaderView::Stretch);
+    //QHeaderView *headers = this->ui->tableWidget_TestXml->horizontalHeader();
+    //headers->setResizeMode(QHeaderView::Stretch);
 
     connect(this->ui->button_Afficher,SIGNAL(clicked()),this,SLOT(buttonAfficherClicked()));
     connect(this->ui->button_Executer,SIGNAL(clicked()),this,SLOT(buttonExecuterClicked()));
@@ -94,6 +94,8 @@ void HomeWidget::getListeTests()
             this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_BOUTEILLE,item_numSerieBouteille);
             this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_GZERO,item_numSerieGoz);
             this->ui->tableWidget_TestXml->setColumnHidden(HOMEW_TABLEW_TEST_ID_TEST,true);
+
+            this->ui->tableWidget_TestXml->resizeColumnsToContents();
         }
     }
 }

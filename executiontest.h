@@ -65,6 +65,7 @@ private :
     QWeakPointer<et_ParamsTest> m_paramsTest;
     QPointer<BdHandler> m_bdHandler; // Pointeur vers une instance de la classe BdHandler
     QMap<ushort,QSqlRecord*> m_analyseursInfos; // Liste des analyseurs et de leur enregistrement dans la base de données
+    QMap<ushort,int> m_analyseursoffset; // // Liste des analyseurs et de leur offset
     QMap<ushort,int> m_analyseursTxTransmission; // // Liste des analyseurs et de leur taux de transmission de données
     QMap<ushort, QPointer<Protocole> > m_analyseursProtocole; // // Liste des analyseurs et des pointeurs vers leur instance de l'objet Protocole associé
     QPointer<QFile> m_fichierMesures;

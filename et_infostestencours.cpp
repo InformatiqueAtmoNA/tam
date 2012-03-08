@@ -146,9 +146,9 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
     while(it_listeNumSerieAna.hasNext()){
         it_listeNumSerieAna.next();
 
-        ui->textEdit_ParametresTest->append("ANA "+QString::number(cptAna)+it_listeNumSerieAna.value());
+        ui->textEdit_ParametresTest->append("ANA "+QString::number(cptAna)+":"+it_listeNumSerieAna.value());
         if(remplirFichierCSV)
-            paramsTest->m_fichierCSV->write(QString("ANA "+QString::number(cptAna)+";"+it_listeNumSerieAna.value()+"\n").toAscii());
+            paramsTest->m_fichierCSV->write(QString("ANA "+QString::number(cptAna)+": ;"+it_listeNumSerieAna.value()+"\n").toAscii());
         cptAna++;
     }
 

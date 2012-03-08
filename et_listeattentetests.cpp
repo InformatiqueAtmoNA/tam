@@ -176,6 +176,8 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
     m_listeInfosTestsEnCours.insert(idxTest,infosTestEnCours);
 
     ui->tabWidget->addTab(infosTestEnCours,m_listeParamsTestsEnAttente.value(idxTest)->m_nomTest);
+    int nbtab = ui->tabWidget->count();
+    ui->tabWidget->setCurrentIndex(nbtab-1);
 
     QPointer<et_ParamsTest> paramsTest = m_listeParamsTestsEnAttente.value(idxTest);
     infosTestEnCours->enregistrerParamsTest(paramsTest);
@@ -203,6 +205,10 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
 
 void et_listeAttenteTests::killExecutionTestEtThread(const short id)
 {
+
+    this->ui->tabWidget->activateWindow(); //astuce trouvée pour que les ports séries se ferment bien entre deux tests
+
+
     QPointer<ExecutionTest> testEnCours = m_listeTestsEnExecution.value(id);
     if(!testEnCours.isNull())
         delete testEnCours;
