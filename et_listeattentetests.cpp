@@ -206,7 +206,7 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
 void et_listeAttenteTests::killExecutionTestEtThread(const short id)
 {
 
-    this->ui->tabWidget->activateWindow(); //astuce trouvée pour que les ports séries se ferment bien entre deux tests
+    this->ui->tabWidget->setCurrentIndex(0); //astuce trouvée pour que les ports séries se ferment bien entre deux tests
 
 
     QPointer<ExecutionTest> testEnCours = m_listeTestsEnExecution.value(id);

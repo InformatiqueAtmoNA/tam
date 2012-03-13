@@ -44,7 +44,7 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     m_typeTest = typeTest;
 
 
-    if(bdHandler.isNull()) {
+    /*if(bdHandler.isNull()) {
         QString driver = getParam("BD_Driver").toString();
         QString host = getParam("Host").toString();
         QString userName = getParam("UserName").toString();
@@ -53,7 +53,7 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
 
         m_bdHandler = new BdHandler(driver,host,userName,password,dbName);
     }
-    else
+    else*/
         m_bdHandler = bdHandler;
 
     QSqlRecord* informationTest =  m_bdHandler->getInformationsTest(m_idTest);
@@ -127,6 +127,7 @@ void et_GenerateurRapportTest::tableauMesure2(int idMolecule, int codeMolecule)
 
     for (int k = 0; k < m_CyclePhaseTest->rowCount();k++){
         for (int i = 0; i < m_ConcTestAnalyseur->rowCount();i++){
+            qDebug() << m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,2)).toInt();
             m_tabNbreAcquisition.append(m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,2)).toInt());
             m_MesureTestAnalyseur = m_bdHandler->getMesureTestAnalyseur(
                         m_idTest,m_idAnalyseur,codeMolecule,m_ConcTestAnalyseur->data(m_ConcTestAnalyseur->index(i,0)).toInt(),k+1);

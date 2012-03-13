@@ -521,49 +521,51 @@ void et_InfosTestEnCours::enregistrerConcTestMetro(QPointer<et_ParamsTest> param
     enregistrement_conc.setValue(CONC_TEST_METRO_ID_TEST,QVariant::fromValue(paramsTest->m_id_TestMetro));
 
     for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
-        QSqlRecord* record = m_bdHandler->getConcentrationRow(paramsTest->m_test->getPhase(i).getIdConcentration());
-        QString concentration = record->value(CONCENTRATION_REELLE).toString();
-        QString id_molecule = record->value(CONCENTRATION_ID_MOLECULE).toString();
-        int nbreAcquisition = paramsTest->m_test->getPhase(i).getCritereArret_NbCyclesMesures();
+        QTime tpsMoyennageMesurePhase = paramsTest->m_test->getPhase(i).getTpsMoyennageMesure();
+        if (!(tpsMoyennageMesurePhase.toString("mm:ss")=="00:00")){
+            QSqlRecord* record = m_bdHandler->getConcentrationRow(paramsTest->m_test->getPhase(i).getIdConcentration());
+            QString concentration = record->value(CONCENTRATION_REELLE).toString();
+            QString id_molecule = record->value(CONCENTRATION_ID_MOLECULE).toString();
+            int nbreAcquisition = paramsTest->m_test->getPhase(i).getCritereArret_NbCyclesMesures();
 
-        enregistrement_conc.setValue(CONC_TEST_METRO_NO_PHASE,QVariant::fromValue(i));
-        enregistrement_conc.setValue(CONC_TEST_METRO_ID_MOLECULE,QVariant::fromValue(id_molecule));
-        enregistrement_conc.setValue(CONC_TEST_METRO_CONCENTRATION,QVariant::fromValue(concentration));
-        enregistrement_conc.setValue(CONC_TEST_METRO_NBRE_ACQUISITION,QVariant::fromValue(nbreAcquisition));
+            enregistrement_conc.setValue(CONC_TEST_METRO_NO_PHASE,QVariant::fromValue(i));
+            enregistrement_conc.setValue(CONC_TEST_METRO_ID_MOLECULE,QVariant::fromValue(id_molecule));
+            enregistrement_conc.setValue(CONC_TEST_METRO_CONCENTRATION,QVariant::fromValue(concentration));
+            enregistrement_conc.setValue(CONC_TEST_METRO_NBRE_ACQUISITION,QVariant::fromValue(nbreAcquisition));
 
-        model->insertRecord(-1,enregistrement_conc);
-        model->submitAll();
-        delete record;
+            model->insertRecord(-1,enregistrement_conc);
+            model->submitAll();
+            delete record;
 
-        QMap<ushort, QPointer<QSqlTableModel> > mapConcentrationsAssociee;
-        ushort nbMaxConcentrationAssociees=0;
+            QMap<ushort, QPointer<QSqlTableModel> > mapConcentrationsAssociee;
+            ushort nbMaxConcentrationAssociees=0;
 
-        QPointer<QSqlTableModel> model1 = m_bdHandler->getConcentrationAssocieeModelRow(paramsTest->m_test->getPhase(i).getIdConcentration());
-        if(model1->rowCount()>nbMaxConcentrationAssociees)
-            nbMaxConcentrationAssociees = model1->rowCount();
-        mapConcentrationsAssociee.insert(i,model1);
+            QPointer<QSqlTableModel> model1 = m_bdHandler->getConcentrationAssocieeModelRow(paramsTest->m_test->getPhase(i).getIdConcentration());
+            if(model1->rowCount()>nbMaxConcentrationAssociees)
+                nbMaxConcentrationAssociees = model1->rowCount();
+            mapConcentrationsAssociee.insert(i,model1);
 
-        for(int j=0;j<nbMaxConcentrationAssociees;j++) {
-            QPointer<QSqlTableModel> model1 = mapConcentrationsAssociee.value(i);
+            for(int j=0;j<nbMaxConcentrationAssociees;j++) {
+                QPointer<QSqlTableModel> model1 = mapConcentrationsAssociee.value(i);
 
-            QSqlRecord record = model1->record(j);
-            if(!record.isEmpty()) {
-                enregistrement_conc.setValue(CONC_TEST_METRO_ID_TEST,QVariant::fromValue(paramsTest->m_id_TestMetro));
-                enregistrement_conc.setValue(CONC_TEST_METRO_NO_PHASE,QVariant::fromValue(i));
-                enregistrement_conc.setValue(CONC_TEST_METRO_CONCENTRATION,QVariant::fromValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toString()));
-                enregistrement_conc.setValue(CONC_TEST_METRO_ID_MOLECULE,QVariant::fromValue(record.value(CONC_ASSOCIEE_FORMULE).toString()));
-                enregistrement_conc.setValue(CONC_TEST_METRO_NBRE_ACQUISITION,QVariant::fromValue(nbreAcquisition));
+                QSqlRecord record = model1->record(j);
+                if(!record.isEmpty()) {
+                    enregistrement_conc.setValue(CONC_TEST_METRO_ID_TEST,QVariant::fromValue(paramsTest->m_id_TestMetro));
+                    enregistrement_conc.setValue(CONC_TEST_METRO_NO_PHASE,QVariant::fromValue(i));
+                    enregistrement_conc.setValue(CONC_TEST_METRO_CONCENTRATION,QVariant::fromValue(record.value(CONC_ASSOCIEE_CONCENTRATION).toString()));
+                    enregistrement_conc.setValue(CONC_TEST_METRO_ID_MOLECULE,QVariant::fromValue(record.value(CONC_ASSOCIEE_FORMULE).toString()));
+                    enregistrement_conc.setValue(CONC_TEST_METRO_NBRE_ACQUISITION,QVariant::fromValue(nbreAcquisition));
 
-                qDebug()<<enregistrement_conc;
-                model->insertRecord(-1,enregistrement_conc);
-                model->submitAll();
+                    qDebug()<<enregistrement_conc;
+                    model->insertRecord(-1,enregistrement_conc);
+                    model->submitAll();
 
 
-            }      
+                }
+            }
+          }
         }
-
-    }
-    delete model;
+        delete model;
   }
 
 
