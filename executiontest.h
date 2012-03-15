@@ -97,6 +97,7 @@ private :
 
     bool m_moyennerMesures;
     bool m_flagPhaseInitialisee;
+    bool m_remplirFichierCSV;
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void getInfosEquipements()

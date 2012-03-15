@@ -103,7 +103,7 @@ void et_listeAttenteTests::verifierTestsExecutables()
         it_listeTestEnAttente.next();
         QPointer<et_ParamsTest>  paramTest = it_listeTestEnAttente.value();
 
-        if(paramTest->m_debutImmediat || paramTest->m_dateHeureDebut <= QDateTime::currentDateTime()) {
+        if(paramTest->m_debutImmediat || paramTest->m_dateHeureDebutPrevu <= QDateTime::currentDateTime()) {
             bool conflit=false;
 
             if(m_listeParamsTestsEnCours.isEmpty())
@@ -147,7 +147,7 @@ void et_listeAttenteTests::miseEnAttente(QPointer<et_ParamsTest> paramsTest)
 
     QTableWidgetItem* item_idtest = new QTableWidgetItem(QString::number(paramsTest->m_test->getIdTest()));
     QTableWidgetItem* item_nomTest = new QTableWidgetItem(paramsTest->m_nomTest);
-    QTableWidgetItem* item_DateHeureDebut = new QTableWidgetItem(paramsTest->m_dateHeureDebut.toString("dd/MM/yy hh:mm:ss"));
+    QTableWidgetItem* item_DateHeureDebut = new QTableWidgetItem(paramsTest->m_dateHeureDebutPrevu.toString("dd/MM/yy hh:mm:ss"));
     QTableWidgetItem* item_Etat = new QTableWidgetItem("En attente");
     QTableWidgetItem* item_Interface = new QTableWidgetItem(paramsTest->m_interfaceCalibrateur);
     QTableWidgetItem* item_Canal = new QTableWidgetItem(paramsTest->m_canalCalibrateur);

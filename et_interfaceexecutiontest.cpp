@@ -388,7 +388,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     QCoreApplication::processEvents();
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
-    //m_listeEtatComAnalyseurs[idAnalyseur] = true;
+    m_listeEtatComAnalyseurs[idAnalyseur] = true;
 }
 
 void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
@@ -446,7 +446,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     calibrateur->quitter();
     calibrateur->deleteLater();
     QCoreApplication::processEvents();
-    //m_etatComCalibrateur = true;
+    m_etatComCalibrateur = true;
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
 }
@@ -587,11 +587,11 @@ void et_InterfaceExecutionTest::buttonMettreEnAttenteClicked() {
 
 QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
 {
-    QString nomFichierCSV = ui->lineEdit_FichierCSV->text();
+    /*QString nomFichierCSV = ui->lineEdit_FichierCSV->text();
 
     if(nomFichierCSV.contains("DATE_HEURE")) {
         QDateTime currentDateTime = QDateTime::currentDateTime();
-        QString strCurrentDateTime = currentDateTime.toString("ddMMyyyy_hhmm");
+        QString strCurrentDateTime = currentDateTime.toString("ddMMyyyy_hhmmss");
         nomFichierCSV.replace("DATE_HEURE",strCurrentDateTime);
     }
 
@@ -617,7 +617,7 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
         return 0;
-    }
+    }*/
 
     QPointer<et_ParamsTest> paramsTest = new et_ParamsTest();
 
@@ -628,13 +628,13 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
     paramsTest->m_canalCalibrateur = ui->lineEdit_CanalCalibrateur->text();
     paramsTest->m_idOperateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_ID).toUInt();
     paramsTest->m_idLieu = m_modelLieu->record(ui->comboBox_Lieu->currentIndex()).value(LIEU_ID).toUInt();
-    paramsTest->m_fichierCSV = fichierCSV;
+    paramsTest->m_nomTmpFichierCSV = ui->lineEdit_FichierCSV->text();
     paramsTest->m_designationLieu = m_modelLieu->record(ui->comboBox_Lieu->currentIndex()).value(LIEU_DESIGNATION).toString();
     paramsTest->m_nomTest = this->ui->lineEdit_FichierDescription->text();
     paramsTest->m_pression = ui->doubleSpinBox_Pression->value();
     paramsTest->m_temperature = ui->doubleSpinBox_Temperature->value();
     paramsTest->m_debutImmediat = m_debutImmediat;
-    paramsTest->m_dateHeureDebut = QDateTime::currentDateTime();
+    paramsTest->m_dateHeureDebutPrevu = QDateTime::currentDateTime();
 
     QString operateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_NOM).toString();
     operateur.append(" ");

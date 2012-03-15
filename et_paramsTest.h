@@ -45,11 +45,12 @@ public :
     QString m_nomTest;
     QString m_nomOperateur;
     QString m_designationLieu;
+    QString m_nomTmpFichierCSV;
     QPointer<QFile> m_fichierCSV;
     float m_pression;
     float m_temperature;
     bool m_debutImmediat;
-    QDateTime m_dateHeureDebut;
+    QDateTime m_dateHeureDebutPrevu;
     int m_tpsAcquisition;
 
     et_ParamsTest() {}
@@ -64,6 +65,7 @@ public :
         this->m_canalCalibrateur = paramsTest.m_canalCalibrateur;
         this->m_idOperateur = paramsTest.m_idOperateur;
         this->m_idLieu = paramsTest.m_idLieu;
+        this->m_nomTmpFichierCSV = paramsTest.m_nomTmpFichierCSV;
         this->m_fichierCSV = paramsTest.m_fichierCSV;
         this->m_nomTest = paramsTest.m_nomTest;
         this->m_nomOperateur = paramsTest.m_nomOperateur;
@@ -71,7 +73,7 @@ public :
         this->m_pression = paramsTest.m_pression;
         this->m_temperature = paramsTest.m_temperature;
         this->m_debutImmediat = paramsTest.m_debutImmediat;
-        this->m_dateHeureDebut = paramsTest.m_dateHeureDebut;
+        this->m_dateHeureDebutPrevu = paramsTest.m_dateHeureDebutPrevu;
     }
     ~et_ParamsTest() {}
 
@@ -86,6 +88,7 @@ public :
         this->m_canalCalibrateur = paramsTest.m_canalCalibrateur;
         this->m_idOperateur = paramsTest.m_idOperateur;
         this->m_idLieu = paramsTest.m_idLieu;
+        this->m_nomTmpFichierCSV = paramsTest.m_nomTmpFichierCSV;
         this->m_fichierCSV = paramsTest.m_fichierCSV;
         this->m_nomTest = paramsTest.m_nomTest;
         this->m_nomOperateur = paramsTest.m_nomOperateur;
@@ -93,7 +96,7 @@ public :
         this->m_pression = paramsTest.m_pression;
         this->m_temperature = paramsTest.m_temperature;
         this->m_debutImmediat = paramsTest.m_debutImmediat;
-        this->m_dateHeureDebut = paramsTest.m_dateHeureDebut;
+        this->m_dateHeureDebutPrevu = paramsTest.m_dateHeureDebutPrevu;
         return *this;
     }
 

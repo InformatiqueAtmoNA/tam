@@ -51,6 +51,7 @@ private:
     QPointer<BdHandler> m_bdHandler;
     et_ParamsTest m_param_Test;
     ushort m_niveauInfos;
+    QDateTime  m_dateHeureDebut;
     void afficherParamsTest(QPointer<et_ParamsTest> paramsTest);
     void enregistrerAnalyseurTest(QPointer<et_ParamsTest> paramsTest);
     void enregistrerConcTestMetro(QPointer<et_ParamsTest> paramsTest);

@@ -67,8 +67,46 @@ void et_InfosTestEnCours::afficherTraceTest(const QString trace,const ushort niv
     qDebug()<<trace;
 }
 
+
+
+
 void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 {
+
+    QString nomFichierCSV = paramsTest->m_nomTmpFichierCSV;
+
+    if(nomFichierCSV.contains("DATE_HEURE")) {
+        //QDateTime currentDateTime = QDateTime::currentDateTime();
+        QString strCurrentDateTime = m_dateHeureDebut.toString("ddMMyyyy_hhmmss");
+        nomFichierCSV.replace("DATE_HEURE",strCurrentDateTime);
+    }
+
+    QPointer<QFile> fichierCSV = new QFile(nomFichierCSV);
+
+    if(fichierCSV.isNull()) {
+        QMessageBox msgBox;
+        msgBox.setText("Un problème a été rencontré lors de la création du fichier CSV");
+        msgBox.setInformativeText("Impossible de créer le fichier CSV");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+        return;
+    }
+
+    bool ouvertureFichierCSV = fichierCSV->open(QFile::WriteOnly | QFile::Append);
+
+    if(!ouvertureFichierCSV) {
+        QMessageBox msgBox;
+        msgBox.setText("Un problème a été rencontré lors de la création du fichier CSV");
+        msgBox.setInformativeText("Impossible de créer le fichier CSV");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+        return;
+    }
+
+    paramsTest->m_fichierCSV = fichierCSV;
+
     bool remplirFichierCSV = false;
     if(!paramsTest->m_fichierCSV.isNull() && paramsTest->m_fichierCSV->isOpen())
         remplirFichierCSV = true;
@@ -173,7 +211,8 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
     trace = "--Déroulement--";
     ui->textEdit_ParametresTest->append(trace);
-    paramsTest->m_fichierCSV->write(QString(trace+"\n").toAscii());
+    if(remplirFichierCSV)
+        paramsTest->m_fichierCSV->write(QString(trace+"\n").toAscii());
 
     for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
         trace = "Numéro de phase : ";
@@ -474,8 +513,11 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_PRESSION,QVariant::fromValue(paramsTest->m_pression));
     afficherTraceTest("Température "+QString::number(paramsTest->m_temperature),2);
     enregistrement.setValue(TEST_METRO_TEMPERATURE,QVariant::fromValue(paramsTest->m_temperature));
-    afficherTraceTest("Date début "+paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"),2);
-    enregistrement.setValue(TEST_METRO_DATE_DEBUT,QVariant::fromValue(paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
+    m_dateHeureDebut = QDateTime::currentDateTime();
+    //afficherTraceTest("Date début "+paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"),2);
+    //enregistrement.setValue(TEST_METRO_DATE_DEBUT,QVariant::fromValue(paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
+    afficherTraceTest("Date début "+m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"),0);
+    enregistrement.setValue(TEST_METRO_DATE_DEBUT,QVariant::fromValue(m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
     afficherTraceTest("Temps d'acquisistion "+paramsTest->m_test->getTempsAcquisition(),2);
     enregistrement.setValue(TEST_METRO_TPS_ACQUISITION,QVariant::fromValue(paramsTest->m_test->getTempsAcquisition()));
     model->insertRecord(-1,enregistrement);

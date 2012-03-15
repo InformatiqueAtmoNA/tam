@@ -50,6 +50,10 @@ ExecutionTest::ExecutionTest(const QPointer<et_ParamsTest> paramsTest,const QPoi
 
     connect(m_bdHandler,SIGNAL(afficherTrace(QString)),this,SLOT(messageBdHandler(QString)));
 
+    m_remplirFichierCSV = false;
+    if(!paramsTest->m_fichierCSV.isNull() && paramsTest->m_fichierCSV->isOpen())
+        m_remplirFichierCSV = true;
+
     this->getInfosEquipements();
 
     m_machine = new QStateMachine();
@@ -104,7 +108,8 @@ ExecutionTest::~ExecutionTest()
 //    }
     m_analyseursInfos.clear();
 
-    m_paramsTest.data()->m_fichierCSV->close();
+    if (m_remplirFichierCSV)
+        m_paramsTest.data()->m_fichierCSV->close();
 
     delete m_paramsTest.data()->m_fichierCSV;
     delete m_timerDemmarageMachine;
@@ -438,8 +443,10 @@ void ExecutionTest::lancerTimerTempsStabilisation()
 {
     m_etatAutomate = "S";
 
-    m_paramsTest.data()->m_fichierCSV->write("");
-    m_paramsTest.data()->m_fichierCSV->flush();
+    if(m_remplirFichierCSV){
+        m_paramsTest.data()->m_fichierCSV->write("");
+        m_paramsTest.data()->m_fichierCSV->flush();
+    }
 
     QTime temps_stabilisation = m_paramsTest.data()->m_test->getPhase(m_noPhaseSuivante).getTpsStabilisation();
     int msToTempsStabilisation = QTime(0,0,0,0).msecsTo(temps_stabilisation);
@@ -506,8 +513,10 @@ void ExecutionTest::enregistrerMesures()
         }
         strMesure.append(";");
 
-        m_paramsTest.data()->m_fichierCSV->write(strMesure.toAscii());
-        m_paramsTest.data()->m_fichierCSV->flush();
+        if(m_remplirFichierCSV){
+            m_paramsTest.data()->m_fichierCSV->write(strMesure.toAscii());
+            m_paramsTest.data()->m_fichierCSV->flush();
+        }
 
         strMesure.clear();
 
