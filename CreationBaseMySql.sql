@@ -437,7 +437,7 @@ INSERT INTO `Taux_Transmission` (`id_tx_transmission`, `taux_transmission`) VALU
 
 CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
   `id_test` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `test_metro_type_test` enum('REPETABILITE_1','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','RENDEMENT_FOUR','PERSO') COLLATE latin1_general_ci NOT NULL,
+  `test_metro_type_test` enum('REPETABILITE','LINEARITE','TEMPS_REPONSE','RENDEMENT_FOUR','PERSO') COLLATE latin1_general_ci NOT NULL,
   `id_operateur` smallint(5) unsigned NOT NULL,
   `id_systeme_etalon` int(10) unsigned NOT NULL,
   `id_lieu` smallint(5) unsigned NOT NULL,
@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
 CREATE TABLE IF NOT EXISTS `Test_XML` (
   `id_Test_Xml` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `fichier_description` varchar(100) COLLATE latin1_general_ci NOT NULL,
-  `type_test` enum('REPETABILITE_1','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','RENDEMENT_FOUR','PERSO') COLLATE latin1_general_ci NOT NULL DEFAULT 'PERSO',
+  `type_test` enum('REPETABILITE','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','RENDEMENT_FOUR','PERSO') COLLATE latin1_general_ci NOT NULL DEFAULT 'PERSO',
   `id_systeme_etalon` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id_Test_Xml`),
   UNIQUE KEY `fichier_description_UNIQUE` (`fichier_description`),

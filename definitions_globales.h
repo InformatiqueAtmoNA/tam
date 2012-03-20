@@ -92,7 +92,7 @@ enum TypePeripherique {ANALYSEUR,ETALON,DILUTEUR,BOUTEILLE,GO3,GZERO};
 // \enum TypePolluant Polluant associé à  l'appareil
 enum TypePolluant {CO,O3,SO2,NO,NO2,NOX,DIL};
 // \enum TypeTest Type de test
-enum TypeTest {REPETABILITE_1,REPETABILITE_2,LINEARITE,TEMPS_REPONSE,RENDEMENT_FOUR,PERSO};
+enum TypeTest {REPETABILITE,LINEARITE,TEMPS_REPONSE,RENDEMENT_FOUR,PERSO};
 // \enum OptionTpg Option d'étalonnage permettant la TPG
 enum OptionTpg {AUCUNE,OZONISEUR,PHOTOMETRE};
 // \enum Commandes Listes des commandes

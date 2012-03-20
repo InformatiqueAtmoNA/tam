@@ -84,10 +84,10 @@ QString typePolluantToString(TypePolluant type) {
 }
 
 QString typeTestToString(TypeTest type) {
-    if(type==REPETABILITE_1)
-        return "REPETABILITE_1";
-    if(type==REPETABILITE_2)
-        return "REPETABILITE_2";
+    if(type==REPETABILITE)
+        return "REPETABILITE";
+    //if(type==REPETABILITE_2)
+    //    return "REPETABILITE_2";
     if(type==LINEARITE)
         return "LINEARITE";
     if(type==TEMPS_REPONSE)
@@ -98,10 +98,10 @@ QString typeTestToString(TypeTest type) {
 }
 
 TypeTest stringToTypeTest(QString type) {
-    if(type=="REPETABILITE_1")
-        return REPETABILITE_1;
-    if(type=="REPETABILITE_2")
-        return REPETABILITE_2;
+    if(type=="REPETABILITE")
+        return REPETABILITE;
+    //if(type=="REPETABILITE_2")
+    //    return REPETABILITE_2;
     if(type=="LINEARITE")
         return LINEARITE;
     if(type=="TEMPS_REPONSE")

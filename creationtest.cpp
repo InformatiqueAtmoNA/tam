@@ -140,29 +140,29 @@ void CreationTest::initialiserChamps()
 
     this->m_typeTest = this->m_test->getTypeTest();
     switch(this->m_typeTest) {
-    case REPETABILITE_1:
+    case REPETABILITE:
         this->m_indexTypeTest = 0;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(0);
         break;
-    case REPETABILITE_2:
+    /*case REPETABILITE_2:
+        this->m_indexTypeTest = 1;
+        this->ui->cb_ChoixTypeTest->setCurrentIndex(1);
+        break;*/
+    case LINEARITE:
         this->m_indexTypeTest = 1;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(1);
         break;
-    case LINEARITE:
+    case TEMPS_REPONSE:
         this->m_indexTypeTest = 2;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(2);
         break;
-    case TEMPS_REPONSE:
+    case RENDEMENT_FOUR:
         this->m_indexTypeTest = 3;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(3);
         break;
-    case RENDEMENT_FOUR:
+    case PERSO:
         this->m_indexTypeTest = 4;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(4);
-        break;
-    case PERSO:
-        this->m_indexTypeTest = 5;
-        this->ui->cb_ChoixTypeTest->setCurrentIndex(5);
         break;
     }
     this->ui->cb_ChoixTypeTest->setEnabled(false);
@@ -222,12 +222,12 @@ void CreationTest::afficherPhaseWidget(const ushort noPhase, bool readOnly)
 void CreationTest::incrementerNbPhases()
 {
     this->m_nbPhases++;
-    if((this->m_typeTest==REPETABILITE_1 || this->m_typeTest==REPETABILITE_2) && this->m_nbPhases==2) {
+    /*if((this->m_typeTest==REPETABILITE_1 || this->m_typeTest==REPETABILITE_2) && this->m_nbPhases==2) {
         this->m_autoriserCreationPhase=false;
         this->ui->button_AjouterPhase->setEnabled(false);
         this->ui->button_Suivant->setEnabled(true);
         return;
-    }
+    }*/
     if(this->m_nbPhases>0)
         this->ui->button_Suivant->setEnabled(true);
 }
@@ -235,12 +235,12 @@ void CreationTest::incrementerNbPhases()
 void CreationTest::decrementerNbPhases()
 {
     this->m_nbPhases--;
-    if((this->m_typeTest==REPETABILITE_1 || this->m_typeTest==REPETABILITE_2) && this->m_nbPhases<2) {
+    /*if((this->m_typeTest==REPETABILITE_1 || this->m_typeTest==REPETABILITE_2) && this->m_nbPhases<2) {
         this->ui->button_AjouterPhase->setEnabled(true);
         this->m_autoriserCreationPhase=true;
         this->ui->button_Suivant->setEnabled(false);
         return;
-    }
+    }*/
     if(this->m_nbPhases==0)
         this->ui->button_Suivant->setEnabled(true);
 }
@@ -374,8 +374,8 @@ void CreationTest::button_SauvegarderClicked ()
     if(this->m_typeTest!=PERSO) {
         uint nbPhasesRequises=0;
         switch(this->m_typeTest) {
-        case REPETABILITE_1:
-        case REPETABILITE_2:
+        case REPETABILITE:
+        //case REPETABILITE_2:
         case TEMPS_REPONSE:
             nbPhasesRequises = 2;
             break;
@@ -543,24 +543,24 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
 
     switch(index) {
     case 0:
-        this->m_typeTest=REPETABILITE_1;
+        this->m_typeTest=REPETABILITE;
         break;
-    case 1:
+    /*case 1:
         this->m_typeTest=REPETABILITE_2;
         this->ui->spinBox_NbCyclesPhases->setValue(1);
-        break;
-    case 2:
+        break;*/
+    case 1:
         this->m_typeTest=LINEARITE;
         break;
-    case 3:
+    case 2:
         this->m_typeTest=TEMPS_REPONSE;
         break;
-    case 4:
+    case 3:
         this->m_typeTest=RENDEMENT_FOUR;
         this->ui->spinBox_nbCyclesMesures->setMinimum(1);
         this->ui->spinBox_nbCyclesMesures->setValue(4);
         break;
-    case 5:
+    case 4:
         this->m_typeTest=PERSO;
         break;
     }

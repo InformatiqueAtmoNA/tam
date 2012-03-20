@@ -92,8 +92,7 @@ private:
     void affichageEquipement(ushort idEquipement,QString nomLigne);
 
     bool genererRapport();
-    bool genererRapportRepetabilite_1();
-    bool genererRapportRepetabilite_2();
+    bool genererRapportRepetabilite();
     bool genererRapportLinearite();
     bool genererRapportTempsReponse();
     bool genererRapportRendementFour();

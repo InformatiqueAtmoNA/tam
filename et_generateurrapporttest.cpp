@@ -287,12 +287,12 @@ void et_GenerateurRapportTest::affichageEquipement(ushort idEquipement,QString n
 bool et_GenerateurRapportTest::genererRapport()
 {
     switch(this->   m_typeTest) {
-    case REPETABILITE_1:
-        return genererRapportRepetabilite_1();
+    case REPETABILITE:
+        return genererRapportRepetabilite();
         break;
-    case REPETABILITE_2:
+    /*case REPETABILITE_2:
         return genererRapportRepetabilite_2();
-        break;
+        break;*/
     case LINEARITE:
         return genererRapportLinearite();
         break;
@@ -307,7 +307,7 @@ bool et_GenerateurRapportTest::genererRapport()
     }
 }
 
-bool et_GenerateurRapportTest::genererRapportRepetabilite_1()
+bool et_GenerateurRapportTest::genererRapportRepetabilite()
 {
     m_PolluantTest = m_bdHandler->getPolluantTestConcentration(m_idTest);
     for (int i=0;i<m_PolluantTest->rowCount();i++){
@@ -322,11 +322,6 @@ bool et_GenerateurRapportTest::genererRapportRepetabilite_1()
     return true;
 }
 
-bool et_GenerateurRapportTest::genererRapportRepetabilite_2()
-{
-
-    return true;
-}
 
 bool et_GenerateurRapportTest::genererRapportLinearite()
 {
