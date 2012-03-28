@@ -5,8 +5,8 @@
 // \version 1.0
 // \date 25/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
-// Copyright (C) 2011 FOUQUART Christophe
+// TAM - Tests Automatiques Mtrologiques
+// Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -82,6 +82,7 @@ public Q_SLOTS:
     void afficherDlgPortSerie();
     void programmerSerieTests();
     void afficherParametres();
+    void aPropos();
 };
 
 #endif // MAINWINDOW_H

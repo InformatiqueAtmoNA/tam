@@ -55,9 +55,16 @@
     </property>
     <addaction name="action_SerieTest"/>
    </widget>
+   <widget class="QMenu" name="menu_Aide">
+    <property name="title">
+     <string>&amp;Aide</string>
+    </property>
+    <addaction name="action_aPropos"/>
+   </widget>
    <addaction name="menu_Fichier"/>
    <addaction name="menuTests_M_trologiques"/>
    <addaction name="menuBaseDonnees"/>
+   <addaction name="menu_Aide"/>
   </widget>
   <action name="action_Fichier_Quitter">
    <property name="text">
@@ -92,6 +99,11 @@
   <action name="action_Parametres">
    <property name="text">
     <string>&amp;Parametres</string>
+   </property>
+  </action>
+  <action name="action_aPropos">
+   <property name="text">
+    <string>A Propos de TAM</string>
    </property>
   </action>
  </widget>

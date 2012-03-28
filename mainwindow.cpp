@@ -6,7 +6,7 @@
 // \date 25/03/2011
 //
 // TAM - Tests Automatiques Métrologiques
-// Copyright (C) 2011 FOUQUART Christophe
+// Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->ui->actionDlgOperateur,SIGNAL(triggered()),this,SLOT(afficherDlgOperateur()));
     connect(this->ui->actionDlgPortSerie,SIGNAL(triggered()),this,SLOT(afficherDlgPortSerie()));
     connect(this->ui->action_Parametres,SIGNAL(triggered()),this,SLOT(afficherParametres()));
+    connect(this->ui->action_aPropos,SIGNAL(triggered()),this,SLOT(aPropos()));
     connect(this->ui->action_Fichier_Quitter,SIGNAL(triggered()),this,SLOT(quitter()));
 
 
@@ -245,7 +246,15 @@ void MainWindow::afficherParametres()
     parametresHandler.exec();
 }
 
-
+void MainWindow::aPropos()
+{
+    QMessageBox::about(this,"A propos de TAM","TAM 3.0.49 \n"
+                       "Version du 28/03/2012 \n\n"
+                       "Basé sur Qt " QT_VERSION_STR "\n\n"
+                       "Copyright (C) 2011-2012-2012 TAM Team \n"
+                       "TAM est distribué sous les termes de la \n"
+                       "Licence Publique Générale (GPL) V2 \n\n");
+}
 
 void MainWindow::programmerSerieTests()
 {
