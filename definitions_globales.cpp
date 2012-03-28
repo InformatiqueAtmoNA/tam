@@ -1,4 +1,4 @@
-/*    Copyright 2011 FOUQUART Christophe
+/*    Copyright 2011-2012 TAM Team
 //
 //    This file is part of Test_Automatiques_Metrologiques.
 //

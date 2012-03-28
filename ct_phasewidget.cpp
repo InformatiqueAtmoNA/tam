@@ -6,7 +6,7 @@
 // \date 22/04/2011
 //
 // TAM - Tests Automatiques Métrologiques
-// Copyright (C) 2011 FOUQUART Christophe
+// Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
