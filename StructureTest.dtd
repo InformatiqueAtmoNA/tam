@@ -3,7 +3,6 @@
 		id CDATA #REQUIRED
                 type (REPETABILITE|LINEARITE|TEMPS_REPONSE|RENDEMENT_FOUR|PERSO) #REQUIRED
 	>
-
 	<!ELEMENT equipement (etalon)>
 		<!ELEMENT etalon EMPTY>
 			<!ATTLIST etalon
@@ -17,7 +16,9 @@
 			tps_stabilisation CDATA #IMPLIED
 			tps_moyennage_mesure CDATA #IMPLIED
 			tps_attente_entre_mesure_par_phase CDATA #IMPLIED
-			nb_cycles_mesures_par_phase CDATA #IMPLIED
+                        nb_cycles_mesures_par_phase CDATA #IMPLIED
+                        critere_max1 CDATA #IMPLIED
+                        critere_max2 CDATA #IMPLIED
 		>
 		<!ELEMENT polluant EMPTY>
 			<!ATTLIST polluant

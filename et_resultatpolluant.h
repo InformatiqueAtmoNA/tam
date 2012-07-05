@@ -43,15 +43,16 @@ public:
     explicit et_Resultatpolluant(QList<QString> listNomMolecule,QVector<QVector<float> > tabMesPolluant,
                                   QVector<float>  tabMoyenne,QWidget *parent = 0);
     explicit et_Resultatpolluant(QList<QString> listNomMolecule,QVector<QVector<float> > tabMesPolluant,
-                                  QVector<float>  tabMoyenne,QVector <float> tabValeurPourCritere,QWidget *parent=0);
+                                 QVector<float>  tabMoyenne,QVector <float> tabValeurPourCritere,
+                                 QVector<double> tabCritere,QWidget *parent=0);
     explicit et_Resultatpolluant(
             QVector<float>tabConcentration,QVector<QVector<float> > tabMesPolluant,
-            QVector<float>  tabMoyenne,QVector<float>  tabEcartType,
+            QVector<float>  tabMoyenne,QVector<float>  tabEcartType,QVector<double> tabCritere,
             QWidget *parent = 0);
     explicit et_Resultatpolluant(
             QVector<float> tabConcentration,QVector<QVector<float> > tabMesPolluant,
             QVector<float>  tabMoyenneTypePolluant,QVector<float>  tabEcartType,QVector <float> tabValeurPourCritere,
-            QVector<float> tabResidu,QVector<float> tabResiduRel,QVector<float> tabResiduInc,
+            QVector<float> tabResidu,QVector<float> tabResiduRel,QVector<float> tabResiduInc,QVector<double> tabCritere,
             QWidget *parent = 0);
 
     ~et_Resultatpolluant();

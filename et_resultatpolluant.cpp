@@ -41,7 +41,8 @@ et_Resultatpolluant::et_Resultatpolluant(QList<QString> listNomMolecule,QVector<
 }
 
 et_Resultatpolluant::et_Resultatpolluant(QList<QString> listNomColTpsRep,QVector<QVector<float> > tabMesPolluant,
-                                         QVector<float>  tabMoyenne,QVector <float> tabValeurPourCritere,QWidget *parent):
+                                         QVector<float>  tabMoyenne,QVector <float> tabValeurPourCritere,
+                                         QVector<double> tabCritere,QWidget *parent):
     QWidget(parent),
     ui(new Ui::et_Resultatpolluant)
 {
@@ -55,16 +56,16 @@ et_Resultatpolluant::et_Resultatpolluant(QList<QString> listNomColTpsRep,QVector
     this->ui->label_Valeur1->setText("Max Tps de Réponse =");
     this->ui->lineEdit_Valeur1->setText(QString::number(tabValeurPourCritere.value(0),'f',2));
     this->ui->label_Critere1->setText("Critère (s) <");
-    this->ui->lineEdit_Critere1->setText("180");
+    this->ui->lineEdit_Critere1->setText(QString::number(tabCritere.value(0),'f',2));
     this->ui->label_Valeur2->setText("Difference Tps Réponse (s) =");
     this->ui->lineEdit_Valeur2->setText(QString::number(tabValeurPourCritere.value(1),'f',2));
     this->ui->label_Critere2->setText("Critère Max (s) <");
-    this->ui->lineEdit_Critere2->setText("10");
+    this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
 }
 
 et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<QVector<float> > tabMesPolluant,
                                          QVector<float>  tabMoyenne,QVector<float>  tabEcartType,
-                                         QWidget *parent):
+                                         QVector<double> tabCritere,QWidget *parent):
     QWidget(parent),
     ui(new Ui::et_Resultatpolluant)
 {
@@ -81,19 +82,18 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     this->ui->label_Valeur1->setText("Ecart-Type Zero =");
     this->ui->lineEdit_Valeur1->setText(QString::number(tabEcartType.value(0),'f',2));
     this->ui->label_Critere1->setText("Critère (ppb) <");
-    this->ui->lineEdit_Critere1->setText("1");
+    this->ui->lineEdit_Critere1->setText(QString::number(tabCritere.value(0),'f',2));
     this->ui->label_Valeur2->setText("Ecart-Type Cons =");
     this->ui->lineEdit_Valeur2->setText(QString::number(tabEcartType.value(1),'f',2));
     this->ui->label_Critere2->setText("Critère (ppb) <");
-    float critereEcartType = tabConcentration.value(1) * 0.015;
-    this->ui->lineEdit_Critere2->setText(QString::number(critereEcartType,'f',2));
+    this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
 
 }
 
 et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<QVector<float> > tabMesPolluant,
                                          QVector<float>  tabMoyenne,QVector<float>  tabEcartType,QVector <float> tabValeurPourCritere,
                                          QVector<float> tabResidu,QVector<float> tabResiduRel,QVector<float> tabResiduInc,
-                                         QWidget *parent):
+                                         QVector<double> tabCritere,QWidget *parent):
 
     QWidget(parent),
     ui(new Ui::et_Resultatpolluant)
@@ -112,11 +112,11 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     this->ui->label_Valeur1->setText("Résidu Zéro (ppb) =");
     this->ui->lineEdit_Valeur1->setText(QString::number(tabValeurPourCritere.value(0),'f',2));
     this->ui->label_Critere1->setText("Critère Zéro (ppb) <");
-    this->ui->lineEdit_Critere1->setText("5");
+    this->ui->lineEdit_Critere1->setText(QString::number(tabCritere.value(0),'f',2));
     this->ui->label_Valeur2->setText("Résidu Max (%) =");
     this->ui->lineEdit_Valeur2->setText(QString::number(tabValeurPourCritere.value(1),'f',2));
     this->ui->label_Critere2->setText("Critère Max (%) <");
-    this->ui->lineEdit_Critere2->setText("4");
+    this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
     this->ui->lineEditDroiteReg->setText("y = " + QString::number(tabValeurPourCritere.value(2),'f',3) +
                                          " x + " + QString::number(tabValeurPourCritere.value(3),'f',2));
 

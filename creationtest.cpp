@@ -65,6 +65,8 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     connect(this->ui->listWidget_Phases,SIGNAL(currentRowChanged(int)),this,SLOT(listWidgetCurrentRowChanged(int)));
     connect(this->ui->lineEdit_NomTest,SIGNAL(textChanged(QString)),this,SLOT(lineEditNomTestTextChanged(QString)));
     connect(this->ui->button_fichierXML,SIGNAL(clicked()),this,SLOT(button_choixEnregistrementXML()));
+    connect(this->ui->doubleSpinBox_critere1,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere1(double)));
+    connect(this->ui->doubleSpinBox_critere2,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere2(double)));
 
     if(!nomFichier.isEmpty()) {
         if(test.isNull())
@@ -87,6 +89,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
         this->m_nomFichier = nomFichier;
         this->m_nomFichierAEffacer = nomFichier;
         this->ui->lineEdit_NomTest->setText(this->m_nomFichier);
+        this->cb_ChoixTypeTestIndexChanged(this->ui->cb_ChoixTypeTest->currentIndex());
     }
     else {
         this->m_test = new Test();
@@ -128,6 +131,8 @@ void CreationTest::initialiserChamps()
     this->ui->spinBox_nbCyclesMesures->setValue(this->m_test->getNbCyclesMesureParPhase());
     this->ui->spinBox_NbCyclesPhases->setValue(this->m_test->getNbCyclesDePhases());
     this->ui->spinBox_NbCyclesPhases->setValue(this->m_test->getNbCyclesDePhases());
+    this->ui->doubleSpinBox_critere1->setValue(this->m_test->getCritere1());
+    this->ui->doubleSpinBox_critere2->setValue(this->m_test->getCritere2());
 
     QPointer<QSqlRelationalTableModel> model = this->m_bdHandler->getSystemeEtalonModel();
     model->setFilter(QString("id_systeme_etalon=%1").arg(this->m_test->getIdSystemeEtalon()));
@@ -144,10 +149,6 @@ void CreationTest::initialiserChamps()
         this->m_indexTypeTest = 0;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(0);
         break;
-    /*case REPETABILITE_2:
-        this->m_indexTypeTest = 1;
-        this->ui->cb_ChoixTypeTest->setCurrentIndex(1);
-        break;*/
     case LINEARITE:
         this->m_indexTypeTest = 1;
         this->ui->cb_ChoixTypeTest->setCurrentIndex(1);
@@ -342,6 +343,7 @@ void CreationTest::button_SuivantClicked()
 
         this->m_etape=2;
         this->ui->tabWidget->setCurrentIndex(2);
+
     }
 }
 
@@ -375,7 +377,7 @@ void CreationTest::button_SauvegarderClicked ()
         uint nbPhasesRequises=0;
         switch(this->m_typeTest) {
         case REPETABILITE:
-        //case REPETABILITE_2:
+
         case TEMPS_REPONSE:
             nbPhasesRequises = 2;
             break;
@@ -544,24 +546,28 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
     switch(index) {
     case 0:
         this->m_typeTest=REPETABILITE;
+        this->ui->label_critere1->setText("Ecart-type de répétabilité au zéro en ppb");
+        this->ui->label_critere2->setText("Ecart-type de répétabilité à la concentration en ppb");
         break;
-    /*case 1:
-        this->m_typeTest=REPETABILITE_2;
-        this->ui->spinBox_NbCyclesPhases->setValue(1);
-        break;*/
     case 1:
         this->m_typeTest=LINEARITE;
+        this->ui->label_critere1->setText("Résidu au zéro en ppb");
+        this->ui->label_critere2->setText("Résidu Maximal concentration > à 0 en %");
         break;
     case 2:
         this->m_typeTest=TEMPS_REPONSE;
+        this->ui->label_critere1->setText("Temps de réponse montée et descente en seconde");
+        this->ui->label_critere2->setText("Différence entre Temps de réponse montée et descente en seconde");
         break;
     case 3:
         this->m_typeTest=RENDEMENT_FOUR;
         this->ui->spinBox_nbCyclesMesures->setMinimum(1);
         this->ui->spinBox_nbCyclesMesures->setValue(4);
+        this->ui->label_critere1->setText("Rendement de conversion en %");
         break;
     case 4:
         this->m_typeTest=PERSO;
+        this->ui->groupBox_Critere->hide();
         break;
     }
     if(!this->m_test.isNull()) {

@@ -292,7 +292,8 @@ CREATE TABLE IF NOT EXISTS `Operateur` (
   `Prenom` varchar(30) COLLATE latin1_general_ci NOT NULL,
   `Mot_de_passe` varchar(45) COLLATE latin1_general_ci DEFAULT NULL,
   `Administrateur` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id_operateur`)
+  PRIMARY KEY (`id_operateur`),
+  UNIQUE KEY `id_nom_prenom` (`Nom`,`Prenom`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
@@ -446,6 +447,8 @@ CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
   `date_debut` datetime NOT NULL,
   `date_fin` datetime NOT NULL,
   `tps_acquisition` smallint(5) NOT NULL DEFAULT '0',
+  `critere1` double(6,1) NOT NULL,
+  `critere2` double(6,1) NOT NULL,
   PRIMARY KEY (`id_test`),
   KEY `fk_test_operateur` (`id_operateur`),
   KEY `fk_test_lieu` (`id_lieu`),

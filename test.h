@@ -50,6 +50,8 @@ class Test : public QObject
     uint m_idSystemeEtalon; // Id du système d'étalonnage
     QStringList m_polluants;
     QMap<ushort,Phase> m_listePhases; // Liste des différentes phases du test
+    double m_critere1; // critere de performance utilisé pour la génération des rapports
+    double m_critere2; // critere de performance utilisé pour la génération des rapports
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
@@ -83,6 +85,22 @@ public:
     // \return TypeTest Type de test
     ///////////////////////////////////////////////////////////////////////////*/
     inline TypeTest getTypeTest() {return this->m_typeTest;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn double getCritere1()
+    // \brief Renvoi le critere de performance 1
+    //
+    // \return double critere de performance 1
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline double getCritere1() {return this->m_critere1;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn double getCritere2()
+    // \brief Renvoi le critere de performance 2
+    //
+    // \return double critere de performance 2
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline double getCritere2() {return this->m_critere2;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getTempsAcquisition()
@@ -248,6 +266,22 @@ public:
     // \param typeTest Nouvel type de test
     ///////////////////////////////////////////////////////////////////////////*/
     inline void setTypeTest(const QString & typeTest) {this->m_typeTest = stringToTypeTest(typeTest);}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setCritere1(const double & critere1)
+    // \brief Ajoute un critere de performance
+    //
+    // \param Critere de performance 1
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setCritere1(const double & critere1) {this->m_critere1 = critere1;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setCritere2(const double & critere2)
+    // \brief Ajoute un critere de performance
+    //
+    // \param Critere de performance 2
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setCritere2(const double & critere2) {this->m_critere2 = critere2;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setTempsAcquisition(ushort const & tpsAcquisition)

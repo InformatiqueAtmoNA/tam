@@ -73,6 +73,8 @@ private Q_SLOTS:
     inline void timeEdit_TempsStabilisation(const QTime & time) {this->m_test->setTempsStabilisation(time);}
     inline void timeEdit_TempsMoyennageMesuresValueChanged(const QTime & time) {this->m_test->setTempsMoyennageMesure(time);}
     inline void timeEdit_TempsAttenteEntreMesureValueChanged(const QTime & time) {this->m_test->setTempsAttenteEntreMesure(time);}
+    inline void doubleSpinBox_Critere1(const double value) {this->m_test->setCritere1(value);}
+    inline void doubleSpinBox_Critere2(const double value) {this->m_test->setCritere2(value);}
 
     void button_AjouterPhaseClicked();
     void button_InsererPhaseClicked();

@@ -388,7 +388,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     QCoreApplication::processEvents();
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
-    //m_listeEtatComAnalyseurs[idAnalyseur] = true;
+    m_listeEtatComAnalyseurs[idAnalyseur] = true;
 }
 
 void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
@@ -446,7 +446,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     calibrateur->quitter();
     calibrateur->deleteLater();
     QCoreApplication::processEvents();
-    //m_etatComCalibrateur = true;
+    m_etatComCalibrateur = true;
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
 }
@@ -634,7 +634,7 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
     paramsTest->m_pression = ui->doubleSpinBox_Pression->value();
     paramsTest->m_temperature = ui->doubleSpinBox_Temperature->value();
     paramsTest->m_debutImmediat = m_debutImmediat;
-    paramsTest->m_dateHeureDebutPrevu = QDateTime::currentDateTime();
+    paramsTest->m_dateHeureDebutPrevu = QDateTime::currentDateTime(); 
 
     QString operateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_NOM).toString();
     operateur.append(" ");

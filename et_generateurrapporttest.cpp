@@ -73,6 +73,9 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     m_Pression = informationTest->value("pression").toString();
     ui->labelPression->setText(m_Pression);
 
+    m_tabCritere.append (informationTest->value("critere1").toDouble());
+    m_tabCritere.append(informationTest->value("critere2").toDouble());
+
     affichageEquipement(m_idAnalyseur,"ANALYSEUR");
 
     QSqlRecord* systemEtalon = m_bdHandler->getSystemeEtalonRow(informationTest->value("id_systeme_etalon").toInt());
@@ -314,7 +317,7 @@ bool et_GenerateurRapportTest::genererRapportRepetabilite()
         tableauMesure(m_PolluantTest->data(m_PolluantTest->index(i,0)).toInt(),
                       m_PolluantTest->data(m_PolluantTest->index(i,1)).toInt());
         QWidget* resultatPolluant = new et_Resultatpolluant(m_tabConcentration,m_tabMesures,
-                                                            m_tabMoyenne,m_tabEcartType,this);
+                                                            m_tabMoyenne,m_tabEcartType,m_tabCritere,this);
         ui->tabWidget->addTab(resultatPolluant,m_PolluantTest->data(m_PolluantTest->index(i,2)).toString());
     }
     this->ui->tableWidget_Rdf->hide();
@@ -333,7 +336,7 @@ bool et_GenerateurRapportTest::genererRapportLinearite()
         affichageTableauResidu();
         QWidget* resultatPolluant = new et_Resultatpolluant(m_tabConcentration,m_tabMesures,m_tabMoyenne,
                                                             m_tabEcartType,m_tabValeurPourCritere,
-                                                            m_tabResidu,m_tabResiduRel,m_tabResiduInc,this);
+                                                            m_tabResidu,m_tabResiduRel,m_tabResiduInc,m_tabCritere,this);
         ui->tabWidget->addTab(resultatPolluant,m_PolluantTest->data(m_PolluantTest->index(i,2)).toString());
     }
     this->ui->tableWidget_Rdf->hide();
@@ -351,7 +354,7 @@ bool et_GenerateurRapportTest::genererRapportTempsReponse()
         QList<QString> listEnteteColonne;
         listEnteteColonne << "TpsMontee" << "TpsDescente";
         QWidget* resultatPolluant = new et_Resultatpolluant(listEnteteColonne,m_tabTpsReponse,
-                                                            m_tabMoyenneTpsReponse,m_tabValeurPourCritere,this);
+                                                            m_tabMoyenneTpsReponse,m_tabValeurPourCritere,m_tabCritere,this);
         ui->tabWidget->addTab(resultatPolluant,m_PolluantTest->data(m_PolluantTest->index(i,2)).toString());
     }
 
