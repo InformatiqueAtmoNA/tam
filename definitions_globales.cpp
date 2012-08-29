@@ -176,12 +176,20 @@ QString commandesToString(Commandes cmd) {
 }
 
 QVariant getParam(QString const & key) {
+    #if defined (Q_OS_LINUX)
+    QSettings parametres("/etc/TAM/tam.conf",QSettings::IniFormat);
+    #else
     QSettings parametres("params.ini",QSettings::IniFormat);
+    #endif
     return parametres.value(key);
 }
 
 void setParam(QString const & key, QVariant const & param) {
+    #if defined (Q_OS_LINUX)
+    QSettings parametres("/etc/TAM/tam.conf",QSettings::IniFormat);
+    #else
     QSettings parametres("params.ini",QSettings::IniFormat);
+    #endif
     parametres.setValue(key,param);
     parametres.sync();
 }
