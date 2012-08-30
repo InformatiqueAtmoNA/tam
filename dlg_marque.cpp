@@ -123,7 +123,6 @@ void Dlg_Marque::buttonAjouterClicked() {
 void Dlg_Marque::buttonValiderClicked() {
     QSqlRecord enregistrement = m_model->record();
     enregistrement.setValue(MARQUE_DESIGNATION,this->ui->lineEdit_Designation->text());
-
     m_model->insertRecord(-1,enregistrement);
 
     this->initialiserChamps();

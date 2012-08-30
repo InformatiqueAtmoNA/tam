@@ -518,6 +518,7 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     //enregistrement.setValue(TEST_METRO_DATE_DEBUT,QVariant::fromValue(paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
     afficherTraceTest("Date début "+m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"),0);
     enregistrement.setValue(TEST_METRO_DATE_DEBUT,QVariant::fromValue(m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
+    enregistrement.setValue(TEST_METRO_DATE_FIN,QVariant::fromValue(m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
     afficherTraceTest("Temps d'acquisistion "+paramsTest->m_test->getTempsAcquisition(),2);
     enregistrement.setValue(TEST_METRO_TPS_ACQUISITION,QVariant::fromValue(paramsTest->m_test->getTempsAcquisition()));
     enregistrement.setValue(TEST_METRO_CRITERE_1,QVariant::fromValue(paramsTest->m_test->getCritere1()));
