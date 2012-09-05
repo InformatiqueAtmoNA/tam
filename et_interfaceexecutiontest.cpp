@@ -388,7 +388,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     QCoreApplication::processEvents();
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
-    m_listeEtatComAnalyseurs[idAnalyseur] = true;
+    //m_listeEtatComAnalyseurs[idAnalyseur] = true;
 }
 
 void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
@@ -446,7 +446,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     calibrateur->quitter();
     calibrateur->deleteLater();
     QCoreApplication::processEvents();
-    m_etatComCalibrateur = true;
+    //m_etatComCalibrateur = true;
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
 }

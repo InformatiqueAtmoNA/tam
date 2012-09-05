@@ -607,7 +607,7 @@ float et_GenerateurRapportTest::calculTpsReponseMontee(QVector<float> &Xi,float 
 
     for (int i=0;i<Xi.size()-1;i++){
         if (Xi.value(i)<=moyenne && Xi.value(i+1)>=moyenne){
-            float tpsMontee = tpsAcq*(((moyenne - Xi.value(i))/(Xi.value(i+1) - Xi.value(i)))+i);
+            float tpsMontee = tpsAcq*(((moyenne - Xi.value(i))/(Xi.value(i+1) - Xi.value(i)))+(i+1));
             return tpsMontee;
         }
     }
@@ -619,7 +619,7 @@ float et_GenerateurRapportTest::calculTpsReponseDescente(QVector<float> &Xi,floa
 
     for (int i=0;i<Xi.size()-1;i++){
         if (Xi.value(i)>=moyenne && Xi.value(i+1)<=moyenne){
-            float tpsMontee = tpsAcq*(((moyenne - Xi.value(i))/(Xi.value(i+1) - Xi.value(i)))+i);
+            float tpsMontee = tpsAcq*(((moyenne - Xi.value(i))/(Xi.value(i+1) - Xi.value(i)))+(i+1));
             return tpsMontee;
         }
     }
