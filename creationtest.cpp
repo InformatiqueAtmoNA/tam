@@ -564,6 +564,7 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
         this->ui->spinBox_nbCyclesMesures->setMinimum(1);
         this->ui->spinBox_nbCyclesMesures->setValue(4);
         this->ui->label_critere1->setText("Rendement de conversion en %");
+        this->ui->label_critere2->setText("Différence NO/NOX entre 1ere et derniere phase en %");
         break;
     case 4:
         this->m_typeTest=PERSO;

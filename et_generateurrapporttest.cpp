@@ -387,6 +387,9 @@ bool et_GenerateurRapportTest::genererRapportRendementFour()
         }
     }
 
+    m_tabResultatTPG.append(m_tabCritere.value(0));
+    m_listeEnteteLigneTPG.append("Critere RdF (%) >");
+
     if ((m_tabMoyenneCalculTPG.count()>1) && (m_tabMoyenneCalculTPG.count()%2 == 1)){
         float diffNO = ((m_tabMoyenneCalculTPG[m_tabMoyenneCalculTPG.count()-1].value(0)-m_tabMoyenneCalculTPG[0].value(0))/m_tabMoyenneCalculTPG[0].value(0))*100;
         m_tabResultatTPG.append(diffNO);
@@ -394,6 +397,9 @@ bool et_GenerateurRapportTest::genererRapportRendementFour()
         float diffNOX = ((m_tabMoyenneCalculTPG[m_tabMoyenneCalculTPG.count()-1].value(1)-m_tabMoyenneCalculTPG[0].value(1))/m_tabMoyenneCalculTPG[0].value(1))*100;
         m_tabResultatTPG.append(diffNOX);
         m_listeEnteteLigneTPG.append("Différence NOX (%) :");
+
+        m_tabResultatTPG.append(m_tabCritere.value(1));
+        m_listeEnteteLigneTPG.append("Critere Diff NO/NOX (%) <");
     }
 
     //Remplissage tableWidgetTPG
