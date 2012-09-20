@@ -45,10 +45,12 @@ MainWindow::MainWindow(QWidget *parent) :
     m_bdHandler->connexionBD();
 
     connect(this->ui->actionDlgEquipement,SIGNAL(triggered()),this,SLOT(afficherDlgEquipement()));
+    connect(this->ui->actionDlgSystemeEtalon,SIGNAL(triggered()),this,SLOT(afficherDlgSystemeEtalon()));
     connect(this->ui->actionDlgLieu,SIGNAL(triggered()),this,SLOT(afficherDlgLieu()));
     connect(this->ui->actionDlgOperateur,SIGNAL(triggered()),this,SLOT(afficherDlgOperateur()));
     connect(this->ui->actionDlgPortSerie,SIGNAL(triggered()),this,SLOT(afficherDlgPortSerie()));
     connect(this->ui->action_Parametres,SIGNAL(triggered()),this,SLOT(afficherParametres()));
+    connect(this->ui->action_SerieTest,SIGNAL(triggered()),this,SLOT(programmerSerieTests()));
     connect(this->ui->action_aPropos,SIGNAL(triggered()),this,SLOT(aPropos()));
     connect(this->ui->action_Fichier_Quitter,SIGNAL(triggered()),this,SLOT(quitter()));
 
@@ -222,6 +224,12 @@ void MainWindow::afficherDlgEquipement()
     dlgEquipement.exec();
 }
 
+void MainWindow::afficherDlgSystemeEtalon()
+{
+    Dlg_Systeme_Etalon dlgSystemeEtalon (this,this->m_bdHandler);
+    dlgSystemeEtalon.exec();
+}
+
 void MainWindow::afficherDlgLieu()
 {
     Dlg_Lieu dlgLieu(this,this->m_bdHandler);
@@ -248,8 +256,8 @@ void MainWindow::afficherParametres()
 
 void MainWindow::aPropos()
 {
-    QMessageBox::about(this,"A propos de TAM","TAM 3.0.55 \n"
-                       "Version du 19/09/2012 \n\n"
+    QMessageBox::about(this,"A propos de TAM","TAM 3.0.56 \n"
+                       "Version du 20/09/2012 \n\n"
                        "Basé sur Qt " QT_VERSION_STR "\n\n"
                        "Copyright (C) 2011-2012-2012 TAM Team \n"
                        "TAM est distribué sous les termes de la \n"

@@ -35,6 +35,7 @@
 #include "homewidget.h"
 #include "et_interfaceexecutiontest.h"
 #include "et_listeattentetests.h"
+#include "dlg_systeme_etalon.h"
 #include "dlg_lieu.h"
 #include "dlg_operateur.h"
 #include "dlg_port_serie.h"
@@ -77,6 +78,7 @@ public Q_SLOTS:
     void afficherRapport(const ushort idTest,const ushort idAnalyseur, const ushort typeTest);
     void fermetureTestWidget();
     void afficherDlgEquipement();
+    void afficherDlgSystemeEtalon();
     void afficherDlgLieu();
     void afficherDlgOperateur();
     void afficherDlgPortSerie();

@@ -43,6 +43,7 @@
      <string>&amp;Base de données</string>
     </property>
     <addaction name="actionDlgEquipement"/>
+    <addaction name="actionDlgSystemeEtalon"/>
     <addaction name="actionDlgLieu"/>
     <addaction name="actionDlgOperateur"/>
     <addaction name="actionDlgPortSerie"/>
@@ -104,6 +105,11 @@
   <action name="action_aPropos">
    <property name="text">
     <string>A Propos de TAM</string>
+   </property>
+  </action>
+  <action name="actionDlgSystemeEtalon">
+   <property name="text">
+    <string>Système Etalon</string>
    </property>
   </action>
  </widget>
