@@ -79,14 +79,15 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     this->ui->tableWidget->resizeRowsToContents();
     this->ui->label->hide();
     this->ui->lineEditDroiteReg->hide();
-    this->ui->label_Valeur1->setText("Ecart-Type Zero =");
+    this->ui->label_Valeur1->setText("Ecart-Type Z (ppb) =");
     this->ui->lineEdit_Valeur1->setText(QString::number(tabEcartType.value(0),'f',2));
-    this->ui->label_Critere1->setText("Critère (ppb) <");
+    this->ui->label_Critere1->setText("Critère Z (ppb) <");
     this->ui->lineEdit_Critere1->setText(QString::number(tabCritere.value(0),'f',2));
-    this->ui->label_Valeur2->setText("Ecart-Type Cons =");
-    this->ui->lineEdit_Valeur2->setText(QString::number(tabEcartType.value(1),'f',2));
-    this->ui->label_Critere2->setText("Critère (ppb) <");
+    this->ui->label_Valeur2->setText("Ecart-Type C (%) =");
+    this->ui->lineEdit_Valeur2->setText(QString::number((tabEcartType.value(1)/tabConcentration.value(1)*100),'f',2));
+    this->ui->label_Critere2->setText("Critère C (%) <");
     this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
+
 
 }
 
@@ -105,7 +106,7 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     affichageTableauCalcul(tabEcartType,"ECART TYPE (ppb)");
     affichageTableauCalcul(tabResidu,"RESIDU (ppb)");
     affichageTableauCalcul(tabResiduRel,"RESIDU RELATIF (%)");
-    affichageTableauCalcul(tabResiduInc,"RESIDU INCERTITUDE (%)");
+    affichageTableauCalcul(tabResiduInc,"ECART RELATIF / CONS (%)");
     this->ui->tableWidget->setVerticalHeaderLabels(m_listeEnteteLigne);
     this->ui->tableWidget->resizeColumnsToContents();
     this->ui->tableWidget->resizeRowsToContents();
@@ -119,7 +120,6 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
     this->ui->lineEditDroiteReg->setText("y = " + QString::number(tabValeurPourCritere.value(2),'f',3) +
                                          " x + " + QString::number(tabValeurPourCritere.value(3),'f',2));
-
 }
 
 

@@ -72,7 +72,6 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     ui->labelTemp->setText(m_Temperature);
     m_Pression = informationTest->value("pression").toString();
     ui->labelPression->setText(m_Pression);
-
     m_tabCritere.append (informationTest->value("critere1").toDouble());
     m_tabCritere.append(informationTest->value("critere2").toDouble());
 

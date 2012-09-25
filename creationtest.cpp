@@ -547,7 +547,7 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
     case 0:
         this->m_typeTest=REPETABILITE;
         this->ui->label_critere1->setText("Ecart-type de répétabilité au zéro en ppb");
-        this->ui->label_critere2->setText("Ecart-type de répétabilité à la concentration en ppb");
+        this->ui->label_critere2->setText("Ecart-type de répétabilité à la concentration en %");
         break;
     case 1:
         this->m_typeTest=LINEARITE;
