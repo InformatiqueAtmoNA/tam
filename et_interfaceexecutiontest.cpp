@@ -205,13 +205,18 @@ bool et_InterfaceExecutionTest::controleEtape1()
 bool et_InterfaceExecutionTest::controleEtape2()
 {
     QMapIterator<ushort,bool> iterator(m_listeEtatComAnalyseurs);
+    if (!iterator.hasNext())
+        return false;
+
     while (iterator.hasNext()) {
         iterator.next();
         if(iterator.value() == false)
             return false;
     }
+
     if(m_etatComCalibrateur == false)
         return false;
+
     return true;
 }
 
