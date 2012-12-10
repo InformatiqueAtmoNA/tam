@@ -177,7 +177,7 @@ void Dlg_Concentration::initialiserChamps()
     this->ui->button_Supprimer->setEnabled(false);
     this->ui->button_Ajouter->setEnabled(true);
     this->ui->button_Fermer->setEnabled(true);
-    if(!this->m_returnSelection || this->m_model->rowCount()==0)
+    if(!this->m_returnSelection)
       this->ui->button_Selectionner->setVisible(false);
     else
         this->ui->button_Selectionner->setVisible(true);
@@ -393,6 +393,10 @@ void Dlg_Concentration::cbSelectPolluantIndexChanged(const int index)
 {
     this->m_idPolluant = m_modelPolluants->record(index).value(POLLUANT_BY_SYS_ETALON_ID).toUInt();
     delete m_model;
+    this->ui->button_Selectionner->setEnabled(false);
+    this->ui->button_Modifier->setEnabled(false);
+    this->ui->button_Supprimer->setEnabled(false);
+    this->ui->gb_edit_champs->setVisible(false);
     this->peuplerTable();
     this->ui->tabWidget->removeTab(1);
 }

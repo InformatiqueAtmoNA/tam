@@ -39,8 +39,8 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
     this->m_bdHandler = bdHandler;
     this->m_returnSelection = returnSelection;
     this->m_filtreType = filtreType;
+    this->boutonFiltreClicked();
 
-    this->peuplerTable();
 
     connect(this->ui->cb_Modele, SIGNAL(currentIndexChanged(int)),
             this,SLOT(cb_ModeleChanged(int)));
@@ -58,7 +58,6 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
             this,SLOT(buttonSelectionnerClicked()));
     connect(this->ui->button_Modifier,SIGNAL(clicked()),
             this,SLOT(buttonModifierClicked()));
-
     connect(this->ui->button_Annuler,SIGNAL(clicked()),
             this,SLOT(initialiserChamps()));
     connect(this->ui->button_Valider,SIGNAL(clicked()),
@@ -72,6 +71,11 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
             this,SLOT(buttonAddPolluantClicked()));
     connect(this->ui->button_RemovePolluant,SIGNAL(clicked()),
             this,SLOT(buttonRemovePolluantClicked()));
+    connect(this->ui->tableView,SIGNAL(clicked(QModelIndex)),
+            this,SLOT(boutonSupprimerModifierDesactive()));
+    connect(this->ui->Bouton_Rechercher,SIGNAL(clicked()),
+            this,SLOT(boutonFiltreClicked()));
+
 
     this->initialiserChamps();
 
@@ -97,29 +101,7 @@ void Dlg_Equipement::peuplerTable() {
     m_model_Modele = m_bdHandler->getModelesModel();
     m_model_Modele->setParent(this);
 
-    if(!this->m_filtreType.isEmpty())
-    {
-        QString filtre;
-        if(this->m_filtreType=="ETALON")
-            filtre = "type LIKE 'DILUTEUR' OR type LIKE 'GO3'";
-        else
-            filtre = QString("type LIKE '%1'").arg(this->m_filtreType);
-        m_model_Modele->setFilter(filtre);
-
-        QPointer<QSqlQueryModel> modelEquipementFiltreParType = m_bdHandler->getEquipementFiltreParModele(filtre);
-
-        if(modelEquipementFiltreParType->rowCount()==0 && !this->ui->gb_edit_champs->isVisible()) {
-            QMessageBox::information(this, "Aucun équipement du type demandé", QString("Aucun équipement de type %1").arg(m_filtreType),
-                          QMessageBox::Ok);
-
-        }
-        filtre = QString("id_equipement=%1").arg(modelEquipementFiltreParType->record(0).value("id_equipement").toString());
-        for(int i=1;i<modelEquipementFiltreParType->rowCount();i++) {
-            uint id_equipement = modelEquipementFiltreParType->record(i).value("id_equipement").toUInt();
-            filtre.append(QString(" OR id_equipement=%1").arg(QString::number(id_equipement)));
-        }
-        m_model->setFilter(filtre);
-    }
+    m_model->setFilter(m_filtre);
 
     m_model_tx_transmission = m_bdHandler->getTxTransmissionModel();
     m_model_tx_transmission->setParent(this);
@@ -129,6 +111,7 @@ void Dlg_Equipement::peuplerTable() {
     this->ui->tableView->setModel(m_model);
     this->ui->tableView->setColumnHidden(EQUIPEMENT_ID, true);
     this->ui->tableView->resizeColumnsToContents();
+
     this->ui->tableView->setItemDelegate(new QSqlRelationalDelegate(this));
 
     this->ui->cb_Modele->setModel(m_model_Modele);
@@ -519,4 +502,53 @@ void Dlg_Equipement::buttonRemovePolluantClicked()
     }
     qDebug()<<m_model_polluant_associe->removeRow(m_indexSelectionPolluant.row());
     m_model_polluant_associe->submitAll();
+}
+
+void Dlg_Equipement::boutonSupprimerModifierDesactive ()
+{
+    if(!m_indexSelection.isValid())
+        return;
+    this->m_idModifie = m_indexSelection.row();
+
+    QSqlRecord selection = this->m_model->record(m_idModifie);
+
+    if (selection.value(EQUIPEMENT_ID).toInt() == 1 || selection.value(EQUIPEMENT_ID).toInt() == 2 ){
+        this->ui->button_Supprimer->setEnabled(false);
+        this->ui->button_Modifier->setEnabled(false);
+        }
+    else {
+        this->ui->button_Supprimer->setEnabled(true);
+        this->ui->button_Modifier->setEnabled(true);
+        }
+}
+
+void Dlg_Equipement::boutonFiltreClicked()
+{
+    m_filtre.clear();
+    QList<QString> listeFiltre;
+    if(!this->m_filtreType.isEmpty())
+     {
+        if(this->m_filtreType=="ETALON")
+            listeFiltre << "(type LIKE 'DILUTEUR' OR type LIKE 'GO3')";
+        else
+            listeFiltre << QString("(type LIKE '%1')").arg(this->m_filtreType);
+      }
+
+    int indexService = this->ui->comboBox_actif->currentIndex();
+    if(indexService < 2)
+      {
+        listeFiltre << QString ("(en_service LIKE '%1')").arg(indexService);
+      }
+    listeFiltre << "(me_designation LIKE '%" + this->ui->lineEdit_Filtre_Modele->text() + "%')";
+    listeFiltre << "(numero_serie LIKE '%" + this->ui->lineEdit_FiltreNserie->text() + "%')";
+
+    for(int i=0;i<listeFiltre.count();i++)
+    {
+        if (i==0)(m_filtre.append(listeFiltre.value(i)));
+        else {
+            m_filtre.append(" AND " + listeFiltre.value(i));
+            }
+    }
+
+    this->peuplerTable();
 }

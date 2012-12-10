@@ -172,6 +172,9 @@ enum homewidget_tableview_testrappport{HOMEW_TABVIEW_TEST_ID_TEST,HOMEW_TABVIEW_
 enum model_relationnel_equipement {REL_EQUIPEMENT_ID,REL_EQUIPEMENT_NUM_SERIE,REL_EQUIPEMENT_MODELE,REL_EQUIPEMENT_MARQUE,
                                    REL_EQUIPEMENT_MIN_GAMME,REL_EQUIPEMENT_MAX_GAMME,REL_EQUIPEMENT_OFFSET,REL_EQUIPEMENT_ADRESSE,REL_EQUIPEMENT_PORTSERIE};
 
+// \enum Colonnes de la requete getModeleAnalyseur
+enum requete_getModeleAnalyseur {REQ_MODELE_EQUIP_ID,REQ_MODELE_EQUIP_DESIGNATION};
+
 // \enum Colonnes du TableWidget Analyseurs de et_interfaceExecutionTest
 enum et_interfaceExecutionTest_tablewidget_Analyseurs
    {ET_TABLEW_ANALYSEURS_ID_EQUIPEMENT,ET_TABLEW_ANALYSEURS_NUM_SERIE,ET_TABLEW_ANALYSEURS_MODELE,

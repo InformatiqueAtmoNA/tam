@@ -65,12 +65,12 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel()
 {
     QPointer<QSqlRelationalTableModel> model = new QSqlRelationalTableModel(this);
     model->setTable("Equipement");
-    model->setRelation(EQUIPEMENT_ID_MODELE, QSqlRelation("Modele_Equipement", "id_modele", "designation"));
+    model->setRelation(EQUIPEMENT_ID_MODELE, QSqlRelation("Modele_Equipement", "id_modele", "me_designation"));
     model->setRelation(EQUIPEMENT_ID_TX_TRANSMISSION, QSqlRelation("Taux_Transmission","id_tx_transmission","taux_transmission"));
     model->setRelation(EQUIPEMENT_PORT,QSqlRelation("Port_Serie","no_port","designation"));
 
-    model->setHeaderData(EQUIPEMENT_ID_MODELE, Qt::Horizontal, "Modèle");
     model->setHeaderData(EQUIPEMENT_NO_SERIE, Qt::Horizontal, "N° Série");
+    model->setHeaderData(EQUIPEMENT_ID_MODELE, Qt::Horizontal, "Modèle");
     model->setHeaderData(EQUIPEMENT_ID_TX_TRANSMISSION, Qt::Horizontal, "Taux transmission");
     model->setHeaderData(EQUIPEMENT_EN_SERVICE, Qt::Horizontal, "En service ?");
     model->setHeaderData(EQUIPEMENT_MAX_GAMME, Qt::Horizontal, "Max. Gamme");
@@ -81,7 +81,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel()
     model->setHeaderData(EQUIPEMENT_NB_BITS_STOP, Qt::Horizontal, "Nb. bits de stop");
     model->setHeaderData(EQUIPEMENT_NB_BITS_TRANSMISSION, Qt::Horizontal, "Nb. bits de transmission");
     model->setHeaderData(EQUIPEMENT_PARITE, Qt::Horizontal, "Parité");
-    model->setHeaderData(EQUIPEMENT_OFFSET, Qt::Horizontal, "Offset");
+    //model->setHeaderData(EQUIPEMENT_OFFSET, Qt::Horizontal, "Offset");
     model->setHeaderData(EQUIPEMENT_PORT, Qt::Horizontal, "Port Série");
     model->setSort(EQUIPEMENT_ID, Qt::AscendingOrder);
     if(!model->select())
@@ -257,7 +257,7 @@ QPointer<QSqlQueryModel> BdHandler::getEquipementFiltreParModele(const QString &
 }
 
 QPointer<QSqlQueryModel> BdHandler::getModeleAnalyseur() {
-    QString requete(QString("SELECT M.id_Modele,M.designation FROM Modele_Equipement M WHERE M.type = 'ANALYSEUR' ORDER BY M.designation ASC"));
+    QString requete(QString("SELECT ME.id_Modele,ME.me_designation FROM Modele_Equipement ME WHERE ME.type = 'ANALYSEUR' ORDER BY ME.me_designation ASC"));
 
     QPointer<QSqlQueryModel> model = new QSqlQueryModel;
     model->setQuery(requete,m_baseMySql);
@@ -542,10 +542,10 @@ QSqlRecord* BdHandler::getSystemeEtalonRow(const ushort idSystemeEtalon)
 
 QSqlRecord* BdHandler::getEquipementModeledRow(const ushort idEquipement)
 {
-    QString requete = "SELECT E.id_equipement,E.numero_serie,MO.designation,MA.designation,E.min_gamme,";
+    QString requete = "SELECT E.id_equipement,E.numero_serie,ME.me_designation,MA.designation,E.min_gamme,";
     requete.append("E.max_gamme,E.offset,E.adresse,PS.designation ");
-    requete.append("FROM Equipement E,Modele_Equipement MO, Marque_Equipement MA, Port_Serie PS ");
-    requete.append("WHERE E.id_modele = MO.id_modele AND MO.id_marque = MA.id_marque AND E.no_port = PS.no_port ");
+    requete.append("FROM Equipement E,Modele_Equipement ME, Marque_Equipement MA, Port_Serie PS ");
+    requete.append("WHERE E.id_modele = ME.id_modele AND ME.id_marque = MA.id_marque AND E.no_port = PS.no_port ");
     requete.append(QString("AND id_equipement=%1").arg(idEquipement));
 
     emit(afficherTrace("call getEquipementRow("+QString::number(idEquipement)+")"));
@@ -755,7 +755,7 @@ QPointer<QStandardItemModel> BdHandler::getItemModelListeRapport(){
 
     for (int i=0;i<modeleAnalyseur->rowCount();i++) {
         QSqlRecord recModeleAnalyseur = modeleAnalyseur->record(i);
-        QString designModelAna = recModeleAnalyseur.value("designation").toString();
+        QString designModelAna = recModeleAnalyseur.value(REQ_MODELE_EQUIP_DESIGNATION).toString();
         QStandardItem * itemTypeAnalyseur = new QStandardItem(designModelAna);
         model->appendRow(itemTypeAnalyseur);
         itemTypeAnalyseur->setEditable(false);

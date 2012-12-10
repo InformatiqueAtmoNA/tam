@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `Modele_Equipement` (
   `id_modele` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `id_marque` smallint(5) unsigned NOT NULL,
   `id_protocole` smallint(5) unsigned NOT NULL,
-  `designation` varchar(45) COLLATE latin1_general_ci DEFAULT NULL,
+  `me_designation` varchar(45) COLLATE latin1_general_ci DEFAULT NULL,
   `type` enum('ANALYSEUR','DILUTEUR','BOUTEILLE','GO3','GZERO') COLLATE latin1_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_modele`),
   KEY `fk_Modele_Equipement_Marque` (`id_marque`),
@@ -248,7 +248,7 @@ CREATE TABLE IF NOT EXISTS `Modele_Equipement` (
 -- Contenu de la table `Modele_Equipement`
 --
 
-INSERT INTO `Modele_Equipement` (`id_modele`, `id_marque`, `id_protocole`, `designation`, `type`) VALUES
+INSERT INTO `Modele_Equipement` (`id_modele`, `id_marque`, `id_protocole`, `me_designation`, `type`) VALUES
 (1, 1, 1, 'INCONNU', 'BOUTEILLE'),
 (2, 1, 1, 'INCONNU', 'GZERO');
 

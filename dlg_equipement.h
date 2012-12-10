@@ -36,6 +36,7 @@ private:
     QModelIndex m_indexSelectionPolluant;
     QPointer<BdHandler> m_bdHandler;
     QString m_filtreType;
+    QString m_filtre;
     bool m_returnSelection;
     bool m_modifEnCours;
     bool m_nouvelEnregistrement;
@@ -65,6 +66,8 @@ private Q_SLOTS:
     void buttonRemovePolluantClicked();
     void tableViewMoleculeIndexChanged(const QModelIndex & idxSelection);
     void tableViewPolluantIndexChanged(const QModelIndex & idxSelection);
+    void boutonSupprimerModifierDesactive ();
+    void boutonFiltreClicked();
 };
 
 

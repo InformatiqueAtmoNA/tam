@@ -68,6 +68,10 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     connect(this->ui->doubleSpinBox_critere1,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere1(double)));
     connect(this->ui->doubleSpinBox_critere2,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere2(double)));
 
+    this->ui->button_InsererPhase->setEnabled(false);
+    this->ui->button_SupprimerPhase->setEnabled(false);
+    this->ui->button_ModifierPhase->setEnabled(false);
+
     if(!nomFichier.isEmpty()) {
         if(test.isNull())
             this->m_test = Test::importFromXml(nomFichier);
@@ -98,9 +102,6 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
         this->ui->tab_Deroulement->setEnabled(false);
         this->ui->tab_NomTest->setEnabled(false);
         this->ui->button_Suivant->setEnabled(false);
-        this->ui->button_InsererPhase->setEnabled(false);
-        this->ui->button_SupprimerPhase->setEnabled(false);
-        this->ui->button_ModifierPhase->setEnabled(false);
         this->m_indexTypeTest = this->ui->cb_ChoixTypeTest->currentIndex();
 
         this->ui->spinBox_TempsAcquisition->setValue(5);
@@ -170,9 +171,16 @@ void CreationTest::initialiserChamps()
     this->m_nbPhases = this->m_test->getNbPhases();
 
     for(ushort i=1;i<=this->m_nbPhases;i++) {
-        QListWidgetItem* item = new QListWidgetItem(QString::number(i));
+        QListWidgetItem* item;
+        if (i<10){
+            item = new QListWidgetItem("0"+QString::number(i));
+        }
+        else {
+            item = new QListWidgetItem(QString::number(i));
+        }
         this->ui->listWidget_Phases->addItem(item);
         this->ui->listWidget_Phases->sortItems();
+
     }
 
     this->ui->button_Suivant->setEnabled(true);
@@ -272,9 +280,15 @@ void CreationTest::button_SupprimerPhaseClicked()
     QListWidgetItem* item = this->ui->listWidget_Phases->takeItem(row);
     this->ui->listWidget_Phases->removeItemWidget(item);
     delete item;
+
     for(int i =row;i<this->ui->listWidget_Phases->count();i++) {
-        ushort noPhase = this->ui->listWidget_Phases->item(i)->text().toUShort();
-        this->ui->listWidget_Phases->item(i)->setText(QString::number(noPhase-1));
+         ushort noPhase = this->ui->listWidget_Phases->item(i)->text().toUShort();
+        if (i<9){
+            this->ui->listWidget_Phases->item(i)->setText("0"+QString::number(noPhase-1));
+        }
+        else {
+            this->ui->listWidget_Phases->item(i)->setText(QString::number(noPhase-1));
+        }
     }
     this->decrementerNbPhases();
 }
@@ -501,7 +515,12 @@ void CreationTest::editionPhaseValidee(const Phase & phase)
 
         for(int i = rowToInsert;i<this->ui->listWidget_Phases->count();i++) {
             ushort noPhase = this->ui->listWidget_Phases->item(i)->text().toUShort();
-            this->ui->listWidget_Phases->item(i)->setText(QString::number(++noPhase));
+            if (noPhase<9){
+                this->ui->listWidget_Phases->item(i)->setText("0"+QString::number(++noPhase));
+            }
+            else {
+                this->ui->listWidget_Phases->item(i)->setText(QString::number(++noPhase));
+            }
         }
 
         this->m_test->phaseInseree(noPhaseToInsert);
@@ -510,7 +529,14 @@ void CreationTest::editionPhaseValidee(const Phase & phase)
 
     if(!this->m_test->phaseExiste(phase.getNoPhase())) {
         this->incrementerNbPhases();
-        QListWidgetItem* item = new QListWidgetItem(QString::number(phase.getNoPhase()));
+        int NoPhase = phase.getNoPhase();
+        QListWidgetItem* item;
+        if (NoPhase<10){
+            item = new QListWidgetItem("0"+QString::number(NoPhase));
+        }
+        else {
+            item = new QListWidgetItem(QString::number(NoPhase));
+        }
         this->ui->listWidget_Phases->addItem(item);
         this->ui->listWidget_Phases->sortItems();
         this->ui->v_Layout_ButtonPhase->setEnabled(true);
