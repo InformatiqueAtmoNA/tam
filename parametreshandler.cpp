@@ -11,9 +11,24 @@ ParametresHandler::ParametresHandler(QWidget *parent) :
     ui->lineEdit_DbName->setText(getParam("DB_Name").toString());
     ui->lineEdit_DbUser->setText(getParam("UserName").toString());
     ui->lineEdit_DbPassword->setText(getParam("Password").toString());
-    ui->lineEdit_RepXML->setText(getParam("Path_XML").toString());
-    ui->lineEdit_RepCSV->setText(getParam("Path_CSV").toString());
-    ui->lineEdit_RepRapports->setText(getParam("Path_Rapports").toString());
+    if (getParam("Path_XML").toBool()){
+        ui->lineEdit_RepXML->setText(getParam("Path_XML").toString());
+    }
+    else {
+        ui->lineEdit_RepXML->setText(".");
+    }
+    if (getParam("Path_CSV").toBool()){
+        ui->lineEdit_RepCSV->setText(getParam("Path_XML").toString());
+    }
+    else {
+        ui->lineEdit_RepCSV->setText(".");
+    }
+    if (getParam("Path_Rapports").toBool()){
+        ui->lineEdit_RepRapports->setText(getParam("Path_XML").toString());
+    }
+    else {
+        ui->lineEdit_RepRapports->setText(".");
+    }
 
     //ui->pushButton_Ok->setEnabled(false);
 

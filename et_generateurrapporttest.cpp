@@ -225,8 +225,8 @@ void et_GenerateurRapportTest::affichageTableauResidu ()
             m_tabResiduInc.append((m_tabMoyenne[i]-m_tabConcentration[i])/m_tabConcentration[i]*100);
         }
         else {
-            m_tabResidu.append(m_tabMoyenne[i]);
-            m_ResiduZero =  m_tabMoyenne[i];
+            m_ResiduZero = m_tabMoyenne[i]-(m_ordonnee + m_pente * m_tabConcentration[i]);
+            m_tabResidu.append(m_ResiduZero);
             m_tabResiduRel.append(-99);
             m_tabResiduInc.append(-99);
         }
