@@ -26,8 +26,17 @@
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QPushButton" name="button_Ajouter">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>&amp;Nouveau</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -35,6 +44,9 @@
         <widget class="QPushButton" name="button_Supprimer">
          <property name="text">
           <string>&amp;Supprimer</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -123,7 +135,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget">
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="tab_general">
              <attribute name="title">

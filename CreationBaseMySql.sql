@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `Concentration` (
   `id_Concentration` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id_systeme_etalon` int(10) unsigned NOT NULL,
   `id_molecule` smallint(5) unsigned NOT NULL,
-  `point_consigne` smallint(6) NOT NULL,
+  `point_consigne` int(10) NOT NULL,
   `conc_reelle` decimal(10,2) NOT NULL,
   `conc_ozone` smallint(5) unsigned NOT NULL DEFAULT '0',
   `archivee` tinyint(1) DEFAULT NULL,

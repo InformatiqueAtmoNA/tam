@@ -75,7 +75,9 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
             this,SLOT(boutonSupprimerModifierDesactive()));
     connect(this->ui->Bouton_Rechercher,SIGNAL(clicked()),
             this,SLOT(boutonFiltreClicked()));
-
+    connect(this->ui->lineEdit_FiltreNserie,SIGNAL(returnPressed()),this,SLOT(boutonFiltreClicked()));
+    connect(this->ui->lineEdit_Filtre_Modele,SIGNAL(returnPressed()),this,SLOT(boutonFiltreClicked()));
+    connect(this->ui->comboBox_actif,SIGNAL(currentIndexChanged(QString)),this,SLOT(boutonFiltreClicked()));
 
     this->initialiserChamps();
 
