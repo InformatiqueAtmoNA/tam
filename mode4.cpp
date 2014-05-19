@@ -59,8 +59,13 @@ QString* Mode4::creerTrameCommande(const QString & noCommande, const QString & d
 // sur tous les octets dà partir de STX exclu jusqu'au BCC exclu
 QString* Mode4::calculerBCC(const QString & trame) {
     char bcc = 0x00;
-    for(int i=1;i<trame.length();i++)
-        bcc ^= trame[i].toAscii();
+    for(int i=1;i<trame.length();i++) {
+             bcc ^= trame[i].toAscii();
+// Ajout de la condition suivante pour gérer les trames avec un nombre impair de caractère car sinon le BCC ne se calcul pas bien
+// Correction pour SX6000 ancien
+             if (i == trame.length()-1 && i%2 == 1)
+                 bcc ^= '0';
+    }
     QString* strBcc = new QString();
     int ibcc = static_cast<int>(bcc);
     strBcc->append((QString::number(ibcc,16)).toUpper());
