@@ -208,7 +208,7 @@ INSERT INTO `Marque_Equipement` (`id_marque`, `designation`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `Mesure` (
-  `id_mesure` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `id_mesure` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id_test` smallint(5) unsigned NOT NULL,
   `id_equipement` smallint(5) unsigned NOT NULL,
   `no_cyclePhase` smallint(6) DEFAULT NULL,

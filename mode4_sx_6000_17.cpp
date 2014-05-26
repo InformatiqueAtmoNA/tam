@@ -67,26 +67,38 @@ void Mode4_SX_6000_17::commandeSpanZero(const QString & canal) {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-void Mode4_SX_6000_17::commandeSpanTpg(const SpanHandler & spanTpgData) {
+void Mode4_SX_6000_17::commandeSpanTpg(SpanHandler const & spanTpgData) {
+    QString cmd;
+
     QString strPoint = *this->getStrForNumber(spanTpgData.getPoint(),2);
     QString strO3 = *this->getStrForNumber(spanTpgData.getConcO3(),3);
 
-    QString data = strPoint+strO3;
+    QString data = spanTpgData.getCanal();
+    if(spanTpgData.getCanal().toUShort()<10)
+        data.prepend('0');
 
-    QString cmd = *(this->creerTrameCommande("04",data));
+   data.append(strPoint+strO3);
+
+    cmd = *(this->creerTrameCommande("03",data));
     this->transaction(cmd);
 }
 
-void Mode4_SX_6000_17::commandeSpanO3(const SpanHandler & spanO3Data) {
+void Mode4_SX_6000_17::commandeSpanO3(SpanHandler const & spanO3Data) {
     QString cmd;
 
     ushort concO3 = spanO3Data.getConcO3();
+    QString strO3 = *this->getStrForNumber(concO3,3);
+
+    QString data = spanO3Data.getCanal();
+    if(spanO3Data.getCanal().toUShort()<10)
+        data.prepend('0');
+
+   data.append(strO3);
 
     if(concO3==0)
         cmd = *(this->creerTrameCommande("06"));
     else {
-        QString strPoint = *this->getStrForNumber(concO3,3);
-        cmd = *(this->creerTrameCommande("07",strPoint));
+        cmd = *(this->creerTrameCommande("03",data));
     }
     this->transaction(cmd);
 }
