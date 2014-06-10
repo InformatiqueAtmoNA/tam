@@ -47,7 +47,8 @@ SOURCES += main.cpp \
     dlg_port_serie.cpp \
     et_generateurrapporttest.cpp \
     et_resultatpolluant.cpp \
-    parametreshandler.cpp
+    parametreshandler.cpp \
+    mode4_sx_6000_1808.cpp
 HEADERS += mainwindow.h \
     threadcomhandler.h \
     tei_146i.h \
@@ -97,7 +98,8 @@ HEADERS += mainwindow.h \
     dlg_port_serie.h \
     et_generateurrapporttest.h \
     et_resultatpolluant.h \
-    parametreshandler.h
+    parametreshandler.h \
+    mode4_sx_6000_1808.h
 FORMS += mainwindow.ui \
     creationtest.ui \
     dlg_molecule.ui \
@@ -127,6 +129,8 @@ LIBS += -L./ \
 OTHER_FILES += licence.txt \
     StructureTest.dtd \
     CreationBaseMySql.sql
+
+
 
 
 

@@ -84,7 +84,7 @@
 
 // \enum DesignationProtocole DesignationProtocole de communication supportés
 // A MODIFIER LORS DE L'AJOUT DE NOUVEAUX DesignationProtocole
-enum DesignationProtocole {MODE4_ANA_CMD04,MODE4_ANA_CMD16,MODE4_SX6000_17,MODE4_LNI,TEI_ANA,TEI_146i,TEI_146i_OZONISEUR,
+enum DesignationProtocole {MODE4_ANA_CMD04,MODE4_ANA_CMD16,MODE4_SX6000_17,MODE4_SX6000_1808,MODE4_LNI,TEI_ANA,TEI_146i,TEI_146i_OZONISEUR,
                  TEI_146i_PHOTOMETRE,TEI_146c,TEI_146c_V2,TEI_49ps,API_ANA,API_DIL,PROTOCOLE_INCONNU};
 
 // \enum TypePeripherique Type d'appareil

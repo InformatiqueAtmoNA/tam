@@ -256,10 +256,10 @@ void MainWindow::afficherParametres()
 
 void MainWindow::aPropos()
 {
-    QMessageBox::about(this,"A propos de TAM","TAM 3.0.64 \n"
-                       "Version du 26/05/2014 \n\n"
+    QMessageBox::about(this,"A propos de TAM","TAM 3.0.65 \n"
+                       "Version du 10/06/2014 \n\n"
                        "Basé sur Qt " QT_VERSION_STR "\n\n"
-                       "Copyright (C) 2011-2012-2013 TAM Team \n"
+                       "Copyright (C) 2011-2014 TAM Team \n"
                        "TAM est distribué sous les termes de la \n"
                        "Licence Publique Générale (GPL) V2 \n\n");
 }

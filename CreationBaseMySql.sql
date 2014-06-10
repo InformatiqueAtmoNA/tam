@@ -369,7 +369,8 @@ INSERT INTO `Protocole` (`id_Protocole`, `designation`) VALUES
 (11, 'API_ANA'),
 (12, 'API_DIL'),
 (13, 'TEI_146i_PHOTOMETRE'),
-(14, 'TEI_146i_OZONISEUR');
+(14, 'TEI_146i_OZONISEUR'),
+(15, 'MODE4_SX6000_1808');
 
 -- --------------------------------------------------------
 
