@@ -8,6 +8,7 @@
 
 #include "protocole.h"
 #include "mode4_sx_6000_17.h"
+#include "mode4_sx_6000_1808.h"
 #include "tei_146c.h"
 #include "tei_146c_v2.h"
 #include "tei_146i.h"
@@ -137,6 +138,9 @@ QPointer<Protocole> Protocole::getProtocoleObject(const DesignationProtocole & d
         break;
     case MODE4_SX6000_17:
         protocole = new Mode4_SX_6000_17(adresse,ETALON,true);
+        break;
+    case MODE4_SX6000_1808:
+        protocole = new Mode4_SX_6000_1808(adresse,ETALON,true);
         break;
     case TEI_ANA:
         protocole = new Tei(adresse,ANALYSEUR,AUCUNE);

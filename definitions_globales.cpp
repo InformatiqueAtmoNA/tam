@@ -26,6 +26,8 @@ DesignationProtocole stringToProtocole(QString protocole) {
         return MODE4_ANA_CMD16;
     if(protocole=="MODE4_SX6000_17")
         return MODE4_SX6000_17;
+    if(protocole=="MODE4_SX6000_1808")
+        return MODE4_SX6000_1808;
     if(protocole=="MODE4_LNI")
         return MODE4_LNI;
     if(protocole=="TEI_ANA")
