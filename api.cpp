@@ -160,10 +160,12 @@ void Api::commandeSpan(const SpanHandler & spanData) {
 
 // Commande au diluteur de se mettre au point de gaz zero
 void Api::commandeSpanZero(const QString & canal) {
-    SpanHandler* spanData = new SpanHandler();
-    spanData->setSpanArguments(canal,0,0);
-    this->commandeSpan(*spanData);
-    delete spanData;
+    //SpanHandler* spanData = new SpanHandler();
+    //spanData->setSpanArguments(canal,0,0);
+    //this->commandeSpan(*spanData);
+    //delete spanData;
+    QString cmd = *(this->creerTrameCommande("C","GENERATE ZERO"));
+    this->transaction(cmd);
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
