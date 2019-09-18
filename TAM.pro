@@ -134,24 +134,15 @@ OTHER_FILES += licence.txt \
 
 
 
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/release/ -lqserialdevice
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/debug/ -lqserialdevice
+else:unix: LIBS += -L$$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/ -lqserialdevice
 
+INCLUDEPATH += $$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release
+DEPENDPATH += $$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../qserialdevice/src/release/release/release/ -lqserialdevice
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../qserialdevice/src/release/release/debug/ -lqserialdevice
-else:symbian: LIBS += -lqserialdevice
-else:unix: LIBS += -L$$PWD/../qserialdevice/src/release/release/ -lqserialdevice
-
-INCLUDEPATH += $$PWD/../qserialdevice/src/release/release
-DEPENDPATH += $$PWD/../qserialdevice/src/release/release
-
-win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../qserialdevice/src/release/release/release/qserialdevice.lib
-else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../qserialdevice/src/release/release/debug/qserialdevice.lib
-else:unix:!symbian: PRE_TARGETDEPS += $$PWD/../qserialdevice/src/release/release/libqserialdevice.a
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/local/Trolltech/QtEmbedded-4.7.4/plugins/sqldrivers/release/ -lqsqlmysql
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/local/Trolltech/QtEmbedded-4.7.4/plugins/sqldrivers/debug/ -lqsqlmysql
-else:symbian: LIBS += -lqsqlmysql
-else:unix: LIBS += -L$$PWD/../../../../../usr/local/Trolltech/QtEmbedded-4.7.4/plugins/sqldrivers/ -lqsqlmysql
-
-INCLUDEPATH += $$PWD/../../../../../usr/local/Trolltech/QtEmbedded-4.7.4/plugins/sqldrivers
-DEPENDPATH += $$PWD/../../../../../usr/local/Trolltech/QtEmbedded-4.7.4/plugins/sqldrivers
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/release/libqserialdevice.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/debug/libqserialdevice.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/release/qserialdevice.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/debug/qserialdevice.lib
+else:unix: PRE_TARGETDEPS += $$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/libqserialdevice.a
