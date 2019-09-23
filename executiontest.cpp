@@ -29,7 +29,7 @@
 ExecutionTest::ExecutionTest(const QPointer<et_ParamsTest> paramsTest,const QPointer<BdHandler> bdHandler,const short idListeTestEnCours)
 {
     m_idListeTestEnCours = idListeTestEnCours;
-    m_paramsTest = QWeakPointer<et_ParamsTest>(paramsTest.data());
+    m_paramsTest = QSharedPointer<et_ParamsTest>(paramsTest.data());
     m_nbPhasesRestantes = m_paramsTest.data()->m_test->getNbPhases();
     m_nbCyclesPhasesRestants = m_paramsTest.data()->m_test->getNbCyclesDePhases();
     m_moyennerMesures = false;
@@ -151,10 +151,10 @@ void ExecutionTest::getInfosEquipements()
         m_analyseursProtocole.insert(idAnalyseur,protocoleAnalyseur);
         delete equipementRecord;
 
-        QVector<QWeakPointer<MesureIndividuelle> > tabMesuresParCycle;
+        QVector<QSharedPointer<MesureIndividuelle> > tabMesuresParCycle;
         m_tabMesuresParCycle.insert(idAnalyseur,tabMesuresParCycle);
 
-        QVector<QWeakPointer<MesureIndividuelle> > tableauMoyennesParPhase;
+        QVector<QSharedPointer<MesureIndividuelle> > tableauMoyennesParPhase;
         m_tabMoyennesMesuresParPhase.insert(idAnalyseur,tableauMoyennesParPhase);
     }
 
@@ -432,7 +432,7 @@ void ExecutionTest::lancerTimerTempsAcquisition()
             it_anaDesignProto.next();
             QPointer<Protocole> analyseur = it_anaDesignProto.value();
 
-            QWeakPointer< MesureIndividuelle > mesures(analyseur->demandeMesure());
+            QSharedPointer< MesureIndividuelle > mesures(analyseur->demandeMesure());
             m_tabMesuresIndividuelles.insert(it_anaDesignProto.key(),mesures.data());
         }
     }
@@ -495,12 +495,12 @@ void ExecutionTest::enregistrerMesures()
 
     strMesure.append(QString::number(m_cyclePhaseEnCours)+";"+QString::number(m_noPhaseSuivante)+";"+m_etatAutomate+";");
 
-    QMapIterator<ushort,QWeakPointer<MesureIndividuelle> > it_tableauMesures(m_tabMesuresIndividuelles);
+    QMapIterator<ushort,QSharedointer<MesureIndividuelle> > it_tableauMesures(m_tabMesuresIndividuelles);
 
     while (it_tableauMesures.hasNext()) {
         it_tableauMesures.next();
 
-        QWeakPointer<MesureIndividuelle> mesures = it_tableauMesures.value();
+        QSharedPointer<MesureIndividuelle> mesures = it_tableauMesures.value();
         if(mesures.data()->isEmpty())
             strMesure.append(";NULL;NULL;NULL");
         else {
@@ -606,18 +606,18 @@ void ExecutionTest::enregistrerMoyenneMesures()
 {
     m_moyennerMesures = false;
 
-    QMapIterator<ushort,QVector<QWeakPointer<MesureIndividuelle> > > it_tabMesuresParCycle(m_tabMesuresParCycle);
+    QMapIterator<ushort,QVector<QSharedPointer<MesureIndividuelle> > > it_tabMesuresParCycle(m_tabMesuresParCycle);
     while(it_tabMesuresParCycle.hasNext()) {
         it_tabMesuresParCycle.next();
 
-        QVector<QWeakPointer<MesureIndividuelle> > tableaumesureParCycle = it_tabMesuresParCycle.value();
+        QVector<QSharedPointer<MesureIndividuelle> > tableaumesureParCycle = it_tabMesuresParCycle.value();
 
-        QWeakPointer<MesureIndividuelle> moyenneMesure= new MesureIndividuelle();
+        QSharedPointer<MesureIndividuelle> moyenneMesure= new MesureIndividuelle();
         for(ushort j=0;j<3;j++) {
             ushort nbMesuresMoyennees=0;
             float sommeMesuresIndividuelles=0;
             for(ushort i=0;i<tableaumesureParCycle.count();i++) {
-                QWeakPointer<MesureIndividuelle> mesure = tableaumesureParCycle.at(i);
+                QSharedPointer<MesureIndividuelle> mesure = tableaumesureParCycle.at(i);
                 if(j<mesure.data()->count()) {
                     float mesureIndividuelle = mesure.data()->at(j)-m_analyseursoffset.value(it_tabMesuresParCycle.key());
                     sommeMesuresIndividuelles += mesureIndividuelle;
@@ -697,11 +697,11 @@ void ExecutionTest::verifierCritereArret()
 {
     emit(traceTest("Vérification du critère d'arrêt",0));
 
-    QMapIterator<ushort,QVector<QWeakPointer<MesureIndividuelle> > > it_tabMoyennesMesuresParPhase(m_tabMoyennesMesuresParPhase);
+    QMapIterator<ushort,QVector<QSharedPointer<MesureIndividuelle> > > it_tabMoyennesMesuresParPhase(m_tabMoyennesMesuresParPhase);
     while(it_tabMoyennesMesuresParPhase.hasNext()) {
         it_tabMoyennesMesuresParPhase.next();
 
-        QVector<QWeakPointer<MesureIndividuelle> > tableauMoyennesMesuresParPhase = it_tabMoyennesMesuresParPhase.value();
+        QVector<QSharedPointer<MesureIndividuelle> > tableauMoyennesMesuresParPhase = it_tabMoyennesMesuresParPhase.value();
         ushort nbCyclesMesuresCritereArret = m_paramsTest.data()->m_test->getPhase(m_noPhaseSuivante).getCritereArret_NbCyclesMesures();
         ushort nbMoyenneEnregistrees = tableauMoyennesMesuresParPhase.count();
         ushort uniteCritereArret = m_paramsTest.data()->m_test->getPhase(m_noPhaseSuivante).getCritereArret_Unite();
@@ -745,10 +745,10 @@ void ExecutionTest::testerCyclesPhases()
 
 void ExecutionTest::testerPhasesRestantes()
 {
-    QMapIterator<ushort,QVector<QWeakPointer<MesureIndividuelle> > > it_tabMoyennesMesuresParPhase(m_tabMoyennesMesuresParPhase);
+    QMapIterator<ushort,QVector<QSharedPointer<MesureIndividuelle> > > it_tabMoyennesMesuresParPhase(m_tabMoyennesMesuresParPhase);
     while(it_tabMoyennesMesuresParPhase.hasNext()) {
         it_tabMoyennesMesuresParPhase.next();
-        QVector<QWeakPointer<MesureIndividuelle> > vecteurVide;
+        QVector<QSharedPointer<MesureIndividuelle> > vecteurVide;
         m_tabMoyennesMesuresParPhase[it_tabMoyennesMesuresParPhase.key()] = vecteurVide;
     }
     m_flagPhaseInitialisee = false;
@@ -759,17 +759,17 @@ void ExecutionTest::testerPhasesRestantes()
 void ExecutionTest::testerCyclesMesures()
 {
     m_cycleMesureEnCours++;
-    QMapIterator<ushort, QVector<QWeakPointer<MesureIndividuelle> > > it_tabMesuresParCycle(m_tabMesuresParCycle);
+    QMapIterator<ushort, QVector<QSharedPointer<MesureIndividuelle> > > it_tabMesuresParCycle(m_tabMesuresParCycle);
     while(it_tabMesuresParCycle.hasNext()) {
         it_tabMesuresParCycle.next();
 
-        QVector<QWeakPointer<MesureIndividuelle> > tabMesuresParCycle = it_tabMesuresParCycle.value();
+        QVector<QSharedPointer<MesureIndividuelle> > tabMesuresParCycle = it_tabMesuresParCycle.value();
         for(int i=0;i<tabMesuresParCycle.count();i++) {
-            QWeakPointer<MesureIndividuelle> mesureIndividuelle = tabMesuresParCycle.at(i);
+            QSharedPointer<MesureIndividuelle> mesureIndividuelle = tabMesuresParCycle.at(i);
             delete mesureIndividuelle.data();
             mesureIndividuelle.clear();
         }
-        QVector<QWeakPointer<MesureIndividuelle> > vecteurVide;
+        QVector<QSharedPointer<MesureIndividuelle> > vecteurVide;
         m_tabMesuresParCycle[it_tabMesuresParCycle.key()] = vecteurVide;
     }
     emit(traceTest("Nombres de cycles de mesures restants = "+QString::number(m_NbCyclesMesuresRestants),1));

@@ -49,7 +49,7 @@ void ThreadComHandler::run() {
 void ThreadComHandler::configureRS232(const QString deviceName) {
     this->comRS232 = new CommunicationSerie(deviceName);
 
-    if(!this->comRS232->open(AbstractSerial::ReadWrite)) {
+    if(!this->comRS232->open(QSerialPort::ReadWrite)) {
         qDebug() << "Problème lors de l'ouverture du périphérique " << deviceName;
         emit(this->ouverturePort(false));
         return;
@@ -58,27 +58,27 @@ void ThreadComHandler::configureRS232(const QString deviceName) {
         qDebug() << "Ouverture du périphérique " << deviceName << " réussie";
         emit(this->ouverturePort(true));
     }
-    if(!comRS232->setBaudRate(AbstractSerial::BaudRate9600)) {
+    if(!comRS232->setBaudRate(QSerialPort::Baud9600)) {
         this->comRS232->close();
         emit(this->ouverturePort(false));
         return;
     }
-    if(!comRS232->setDataBits(AbstractSerial::DataBits8)) {
+    if(!comRS232->setDataBits(QSerialPort::Data8)) {
         this->comRS232->close();
         emit(this->ouverturePort(false));
         return;
     }
-    if(!comRS232->setParity(AbstractSerial::ParityNone)) {
+    if(!comRS232->setParity(QSerialPort::NoParity)) {
         this->comRS232->close();
         emit(this->ouverturePort(false));
         return;
     }
-    if(!comRS232->setStopBits(AbstractSerial::StopBits1)) {
+    if(!comRS232->setStopBits(QSerialPort::OneStop)) {
         this->comRS232->close();
         emit(this->ouverturePort(false));
         return;
     }
-    if(!comRS232->setFlowControl(AbstractSerial::FlowControlOff)) {
+    if(!comRS232->setFlowControl(QSerialPort::NoFlowControl)) {
         this->comRS232->close();
         emit(this->ouverturePort(false));
         return;

@@ -66,7 +66,7 @@ void Tei_146c::commandeSpan(const SpanHandler & spanData) {
         return;
     trame = "set flow mode ";
 
-    switch(canal.at(0).toAscii()) {
+    switch(canal.at(0).toLatin1()) {
     case 'a':
         trame.append("2");
         break;

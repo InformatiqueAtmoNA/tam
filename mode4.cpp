@@ -60,7 +60,7 @@ QString* Mode4::creerTrameCommande(const QString & noCommande, const QString & d
 QString* Mode4::calculerBCC(const QString & trame) {
     char bcc = 0x00;
     for(int i=1;i<trame.length();i++) {
-             bcc ^= trame[i].toAscii();
+             bcc ^= trame[i].toLatin1();
 // Ajout de la condition suivante pour gérer les trames avec un nombre impair de caractère car sinon le BCC ne se calcul pas bien
 // Correction pour SX6000 ancien
              if (i == trame.length()-1 && i%2 == 1)
@@ -154,7 +154,7 @@ void* Mode4::parseConfig(const QString & trameConfig) {
         confDiluteur->infoConfig->append("Temperature interne : "+QString::number(confDiluteur->tempInterne));
         confDiluteur->tempFour = trameConfig.mid(positionData+28,3).toFloat();
         confDiluteur->infoConfig->append("Temperature du four : "+QString::number(confDiluteur->tempFour));
-        confDiluteur->urdm1 = trameConfig.at(positionData+28).toAscii();
+        confDiluteur->urdm1 = trameConfig.at(positionData+28).toLatin1();
         confDiluteur->infoConfig->append("U RDM1 : "+confDiluteur->urdm1);
         confDiluteur->urdm2 = trameConfig.mid(positionData+29,4);
         confDiluteur->infoConfig->append("U RDM2 : "+confDiluteur->urdm2);

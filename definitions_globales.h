@@ -28,7 +28,7 @@
 #define DEFINITIONS_GLOBALES_H
 
 #include <QObject>
-#include <QGridLayout>
+#include <QtWidgets/QGridLayout>
 #include <QDebug>
 #include <QStringList>
 #include <QtXml>
@@ -38,7 +38,7 @@
 #include <QtCore>
 #include <QVector>
 #include <QList>
-#include <QListWidgetItem>
+#include <QtWidgets/QListWidgetItem>
 #include <QFile>
 #include <QMapIterator>
 #include <QSqlDatabase>
@@ -47,7 +47,7 @@
 #include <QSqlQueryModel>
 #include <QSqlTableModel>
 #include <QSqlRelationalTableModel>
-#include <QMessageBox>
+#include <QtWidgets/QMessageBox>
 #include <QSqlRecord>
 #include <QSqlRelationalDelegate>
 #include <QStateMachine>
@@ -216,7 +216,7 @@ struct MesureInfo {
     ushort noCyclePhase;
     ushort noPhase;
     ushort noCycleMesure;
-    QWeakPointer<MesureIndividuelle> mesure;
+    QSharedPointer<MesureIndividuelle> mesure;
 };
 
 /*///////////////////////////////////////////////////////////////////////////

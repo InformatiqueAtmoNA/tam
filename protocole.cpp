@@ -72,10 +72,10 @@ QString Protocole::transaction(const QString & commande) {
 
     QFile logTrames("logTrames.txt");
     logTrames.open(QFile::WriteOnly | QFile::Append);
-    logTrames.write(commande.toAscii());
+    logTrames.write(commande.toLatin1());
     logTrames.write("\n");
 
-    qDebug()<< "Trame envoyee : " << commande.toAscii();
+    qDebug()<< "Trame envoyee : " << commande.toLatin1();
 
     emit(this->envoiTrame(commande));
     this->flagEtatCom = ETAT_ATTENTE;
@@ -103,7 +103,7 @@ QString Protocole::transaction(const QString & commande) {
         qDebug()<<"Erreur commande";
         return NULL;
     }
-    logTrames.write(trame.toAscii());
+    logTrames.write(trame.toLatin1());
     logTrames.close();
 
     emit(this->afficheTrame(this->trame));
@@ -112,7 +112,7 @@ QString Protocole::transaction(const QString & commande) {
 
 // Slot de lecture d'une trame
 void Protocole::lectureTrame(const QString & data) {
-    qDebug()<<"Trame reçue : " << data.toAscii();
+    qDebug()<<"Trame reçue : " << data.toLatin1();
     this->trame = data;
     this->flagEtatCom = ETAT_LECTURE;
 }

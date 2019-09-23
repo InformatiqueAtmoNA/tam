@@ -31,7 +31,7 @@
 #include <iostream>
 #include <string>
 #include <QtCore/qstring.h>
-#include "abstractserial.h"
+#include <QtSerialPort/QSerialPort>
 
 /*/////////////////////////////////////////////////////
 // \class CommunicationSerie
@@ -43,7 +43,7 @@ class CommunicationSerie : public QObject
 private:
 
     // Périphérique relié par rs232
-    AbstractSerial *device;
+    QSerialPort *device;
 
 ///////////////////////////////////////////////
 // Paramètres de configuration du périphérique
@@ -193,31 +193,31 @@ public:
     bool setDeviceName(const QString newDeviceName);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn bool setBaudRate(AbstractSerial::BaudRate newBaudRate)
+    // \fn bool setBaudRate(QSerialPort::BaudRate newBaudRate)
     // \brief Change le taux de transmission
     //
     // \param newBaudRate Nouveau taux de transmission
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setBaudRate(const AbstractSerial::BaudRate newBaudRate);
+    bool setBaudRate(const QSerialPort::BaudRate newBaudRate);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn bool setDataBits(AbstractSerial::DataBits newDataBits)
+    // \fn bool setDataBits(QSerialPort::DataBits newDataBits)
     // \brief Change le nombre de bits de transmission
     //
     // \param newDataBits Nouveau nombre de bits de transmission
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setDataBits(const AbstractSerial::DataBits newDataBits);
+    bool setDataBits(const QSerialPort::DataBits newDataBits);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn bool setParity(AbstractSerial::Parity newParity)
+    // \fn bool setParity(QSerialPort::Parity newParity)
     // \brief Change le type de parité
     //
     // \param newParity Nouveau type de parité
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setParity(const AbstractSerial::Parity newParity);
+    bool setParity(const QSerialPort::Parity newParity);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn CommunicationSerie();
@@ -226,16 +226,16 @@ public:
     // \param newStopBits Nouveau nombre de bits de stop
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setStopBits(const AbstractSerial::StopBits newStopBits);
+    bool setStopBits(const QSerialPort::StopBits newStopBits);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn bool setFlowControl(AbstractSerial::Flow newFlowControl)
+    // \fn bool setFlowControl(QSerialPort::Flow newFlowControl)
     // \brief Change le type de controle de flux
     //
     // \param newFlowControl Nouveau type de controle de flux
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool setFlowControl(const AbstractSerial::Flow newFlowControl);
+    bool setFlowControl(const QSerialPort::FlowControl newFlowControl);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool setCharTimeOut(int newCharTimeOut)
@@ -248,33 +248,33 @@ public:
     bool setCharTimeOut(const int newCharTimeOut);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn bool open(AbstractSerial::OpenMode openMode)
+    // \fn bool open(QSerialPort::OpenMode openMode)
     // \brief Ouvrir le Périphérique préconfiguré
     //
     // \param openMode Mode d'ouverture du périphérique
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool open(const AbstractSerial::OpenMode openMode);
+    bool open(const QSerialPort::OpenMode openMode);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn bool open(int numCom,AbstractSerial::OpenMode openMode)
+    // \fn bool open(int numCom,QSerialPort::OpenMode openMode)
     // \brief Ouvrir le Périphérique en spécifiant le numéro de port com
     //
     // \param numCom Numéro de port COM
     // \param openMode Mode d'ouverture du périphérique
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool open(const int numCom,const AbstractSerial::OpenMode openMode);
+    bool open(const int numCom,const QSerialPort::OpenMode openMode);
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn bool open(QString deviceName,AbstractSerial::OpenMode openMode)
+    // \fn bool open(QString deviceName,QSerialPort::OpenMode openMode)
     // \brief Ouvrir le Périphérique en spécifiant l'identifiant
     //
     // \param deviceName identifiant du périphérique
     // \param openMode Mode d'ouverture du périphérique
     // \return bool Vrai si changement effectué. Faux si erreur
     ///////////////////////////////////////////////////////////////////////////*/
-    bool open(const QString deviceName,const AbstractSerial::OpenMode openMode);
+    bool open(const QString deviceName,const QSerialPort::OpenMode openMode);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn bool isOpen()
