@@ -216,7 +216,7 @@ struct MesureInfo {
     ushort noCyclePhase;
     ushort noPhase;
     ushort noCycleMesure;
-    QSharedPointer<MesureIndividuelle> mesure;
+    QWeakPointer<MesureIndividuelle> mesure;
 };
 
 /*///////////////////////////////////////////////////////////////////////////

@@ -355,7 +355,7 @@ void Dlg_Concentration::buttonSupprimerClicked()
     m_model->submitAll();
 
     if(m_modifEnCours) {
-        QSharedPointer<QSqlRelationalTableModel> modelConcAssociee = m_bdHandler->getConcentrationAssocieeModel(idConcentration).data();
+        QWeakPointer<QSqlRelationalTableModel> modelConcAssociee = m_bdHandler->getConcentrationAssocieeModel(idConcentration).data();
     }
 
     this->initialiserChamps();
