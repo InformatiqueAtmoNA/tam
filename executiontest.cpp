@@ -29,7 +29,9 @@
 ExecutionTest::ExecutionTest(const QPointer<et_ParamsTest> paramsTest,const QPointer<BdHandler> bdHandler,const short idListeTestEnCours)
 {
     m_idListeTestEnCours = idListeTestEnCours;
-    m_paramsTest = QWeakPointer<et_ParamsTest>(paramsTest.data());
+    QSharedPointer<et_ParamsTest> mpt(paramsTest.data());
+    m_paramsTest = QWeakPointer<et_ParamsTest>(mpt);
+    mpt.clear();
     m_nbPhasesRestantes = m_paramsTest.data()->m_test->getNbPhases();
     m_nbCyclesPhasesRestants = m_paramsTest.data()->m_test->getNbCyclesDePhases();
     m_moyennerMesures = false;
@@ -433,7 +435,7 @@ void ExecutionTest::lancerTimerTempsAcquisition()
             QPointer<Protocole> analyseur = it_anaDesignProto.value();
 
             QWeakPointer< MesureIndividuelle > mesures(analyseur->demandeMesure());
-            m_tabMesuresIndividuelles.insert(it_anaDesignProto.key(),mesures.data());
+            m_tabMesuresIndividuelles.insert(it_anaDesignProto.key(), mesures);
         }
     }
     emit(this->mesuresEffectuees());
@@ -514,7 +516,7 @@ void ExecutionTest::enregistrerMesures()
         strMesure.append(";");
 
         if(m_remplirFichierCSV){
-            m_paramsTest.data()->m_fichierCSV->write(strMesure.toAscii());
+            m_paramsTest.data()->m_fichierCSV->write(strMesure.toLatin1());
             m_paramsTest.data()->m_fichierCSV->flush();
         }
 
@@ -612,12 +614,16 @@ void ExecutionTest::enregistrerMoyenneMesures()
 
         QVector<QWeakPointer<MesureIndividuelle> > tableaumesureParCycle = it_tabMesuresParCycle.value();
 
-        QWeakPointer<MesureIndividuelle> moyenneMesure= new MesureIndividuelle();
+        QSharedPointer<MesureIndividuelle> mM(new MesureIndividuelle());
+        QWeakPointer<MesureIndividuelle> moyenneMesure = mM;
+        mM.clear();
         for(ushort j=0;j<3;j++) {
             ushort nbMesuresMoyennees=0;
             float sommeMesuresIndividuelles=0;
             for(ushort i=0;i<tableaumesureParCycle.count();i++) {
-                QWeakPointer<MesureIndividuelle> mesure = tableaumesureParCycle.at(i);
+                QSharedPointer<MesureIndividuelle> m(tableaumesureParCycle.at(i));
+                QWeakPointer<MesureIndividuelle> mesure = m;
+                m.clear();
                 if(j<mesure.data()->count()) {
                     float mesureIndividuelle = mesure.data()->at(j)-m_analyseursoffset.value(it_tabMesuresParCycle.key());
                     sommeMesuresIndividuelles += mesureIndividuelle;

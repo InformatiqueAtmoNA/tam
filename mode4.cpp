@@ -213,7 +213,9 @@ float Mode4::getMesureFromString(const QString & mesure) {
 // Demande de mesure immediate
 QWeakPointer<MesureIndividuelle> Mode4::demandeMesure() {
     QString cmd;
-    QWeakPointer<MesureIndividuelle> mesures = new MesureIndividuelle();
+    QSharedPointer<MesureIndividuelle> ms(new MesureIndividuelle());
+    QWeakPointer<MesureIndividuelle> mesures = ms;
+    ms.clear();
 
     if(this->accepteMesureFloat)
         cmd = *(this->creerTrameCommande("16","\0"));

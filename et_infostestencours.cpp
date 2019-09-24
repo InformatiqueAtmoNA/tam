@@ -117,38 +117,38 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
     trace = QString::number(paramsTest->m_test->getIdTest());
     ui->textEdit_ParametresTest->append("N° de test : "+trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("N° de test :;"+trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString("N° de test :;"+trace+"\n").toLatin1());
 
     trace = paramsTest->m_nomTest;
     ui->textEdit_ParametresTest->append("Nom du test : "+trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Nom du test :;"+trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString("Nom du test :;"+trace+"\n").toLatin1());
 
     trace = typeTestToString(paramsTest->m_test->getTypeTest());
     ui->textEdit_ParametresTest->append("Type de test : "+trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Type de test :;"+trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString("Type de test :;"+trace+"\n").toLatin1());
 
     trace = paramsTest->m_nomOperateur;
     ui->textEdit_ParametresTest->append("Opérateur : "+trace);
     trace.append("\n");
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Opérateur :;"+trace).toAscii());
+        paramsTest->m_fichierCSV->write(QString("Opérateur :;"+trace).toLatin1());
 
     trace = paramsTest->m_designationLieu;
     ui->textEdit_ParametresTest->append("Lieu : "+trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Lieu :;"+trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString("Lieu :;"+trace+"\n").toLatin1());
 
     trace = "\n----Equipement----";
     ui->textEdit_ParametresTest->append(trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString(trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString(trace+"\n").toLatin1());
 
     trace = "Système d'étalonnage :";
     ui->textEdit_ParametresTest->append(trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString(trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString(trace+"\n").toLatin1());
 
     qDebug()<<paramsTest->m_test->getIdSystemeEtalon();
     QSqlRecord* systemeEtalonRow = m_bdHandler->getSystemeEtalonRow(paramsTest->m_test->getIdSystemeEtalon());
@@ -161,22 +161,22 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
     trace = m_bdHandler->getEquipementNumSerie(idCalibrateur);
     ui->textEdit_ParametresTest->append("Calibrateur : "+trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Calibrateur :;"+trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString("Calibrateur :;"+trace+"\n").toLatin1());
 
     trace = m_bdHandler->getEquipementNumSerie(idBouteille);
     ui->textEdit_ParametresTest->append("Bouteille : "+trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Bouteille :;"+trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString("Bouteille :;"+trace+"\n").toLatin1());
 
     trace = m_bdHandler->getEquipementNumSerie(idGZero);
     ui->textEdit_ParametresTest->append("Générateur d'air zéro : "+trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Générateur d'air zéro :;"+trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString("Générateur d'air zéro :;"+trace+"\n").toLatin1());
 
     trace = "\nAnalyseurs :";
     ui->textEdit_ParametresTest->append(trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString(trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString(trace+"\n").toLatin1());
 
     QMapIterator<ushort,QString> it_listeNumSerieAna(paramsTest->m_listeNumSerieAnalyseurs);
 
@@ -186,33 +186,33 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
         ui->textEdit_ParametresTest->append("ANA "+QString::number(cptAna)+":"+it_listeNumSerieAna.value());
         if(remplirFichierCSV)
-            paramsTest->m_fichierCSV->write(QString("ANA "+QString::number(cptAna)+": ;"+it_listeNumSerieAna.value()+"\n").toAscii());
+            paramsTest->m_fichierCSV->write(QString("ANA "+QString::number(cptAna)+": ;"+it_listeNumSerieAna.value()+"\n").toLatin1());
         cptAna++;
     }
 
     trace.append("\n");
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
     trace = "----Paramètres----";
     ui->textEdit_ParametresTest->append(trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString(trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString(trace+"\n").toLatin1());
 
     trace = QString::number(paramsTest->m_test->getTempsAcquisition());
     ui->textEdit_ParametresTest->append("Temps d'acquisition : "+trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Temps d'acquisition :;"+trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString("Temps d'acquisition :;"+trace+"\n").toLatin1());
 
     trace = QString::number(paramsTest->m_test->getNbCyclesDePhases());
     ui->textEdit_ParametresTest->append("Nombre de cycles de phases : "+trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Nombre de cycles de phases :;"+trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString("Nombre de cycles de phases :;"+trace+"\n").toLatin1());
 
     trace = "--Déroulement--";
     ui->textEdit_ParametresTest->append(trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString(trace+"\n").toAscii());
+        paramsTest->m_fichierCSV->write(QString(trace+"\n").toLatin1());
 
     for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
         trace = "Numéro de phase : ";
@@ -332,28 +332,28 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             trace.append(QString::number(i)+";");
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Nombre de cycles de mesures :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
             trace.append(QString::number(paramsTest->m_test->getPhase(i).getNbCyclesMesures())+";");
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Temps de stabilisation :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
             trace.append(paramsTest->m_test->getPhase(i).getTpsStabilisation().toString("hh:mm:ss")+";");
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Temps de moyennage des mesures :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
             trace.append(paramsTest->m_test->getPhase(i).getTpsMoyennageMesure().toString("hh:mm:ss")+";");
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Temps d'attente entre chaque cycle de mesures :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
@@ -364,7 +364,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
                 trace.append(tpsAttenteEntreCycleMesures+";");
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Commande de début de phase :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
@@ -375,7 +375,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
                 trace.append(cmdDebutPhase+";");
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Critère d'arrêt :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
@@ -385,7 +385,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
                 trace.append("NON;");
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Variation :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
@@ -395,7 +395,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
                 trace.append("-;");
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Pendant N cycles de mesure :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
@@ -405,7 +405,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
                 trace.append("-;");
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Temps maximum de phase :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
@@ -417,7 +417,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
         }
 
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Polluant :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
@@ -426,7 +426,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             delete record;
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Point de consigne :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
@@ -435,7 +435,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             delete record;
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Consigne Ozone :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
@@ -444,7 +444,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             delete record;
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         trace = "Concentration réelle :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
@@ -453,7 +453,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             delete record;
         }
         trace.append("\n");
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
 
         QMap<ushort, QPointer<QSqlRelationalTableModel> > mapConcentrationsAssociee;
         ushort nbMaxConcentrationAssociees=0;
@@ -484,11 +484,11 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             }
             trace.append("\n");
             trace2.append("\n");
-            paramsTest->m_fichierCSV->write(trace.toAscii());
-            paramsTest->m_fichierCSV->write(trace2.toAscii());
+            paramsTest->m_fichierCSV->write(trace.toLatin1());
+            paramsTest->m_fichierCSV->write(trace2.toLatin1());
         }
         trace = "Date et heure;Cycle de phase N°;Phase N°;Position durant phase;";
-        paramsTest->m_fichierCSV->write(trace.toAscii());
+        paramsTest->m_fichierCSV->write(trace.toLatin1());
         paramsTest->m_fichierCSV->flush();
     }
 }

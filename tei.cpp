@@ -100,7 +100,9 @@ float Tei::getFloatFromMesureString(QString reponse) {
 // Demande de mesure immédiate pour le NOX
 QWeakPointer<MesureIndividuelle> Tei::demandeMesureNox() {
     QString cmd;
-    QWeakPointer<MesureIndividuelle> tabMesures = new MesureIndividuelle();
+    QSharedPointer<MesureIndividuelle> tms(new MesureIndividuelle());
+    QWeakPointer<MesureIndividuelle> tabMesures = tms;
+    tms.clear();
 
     for(int i=0;i<3;i++) {
         switch(i) {
@@ -148,7 +150,9 @@ QWeakPointer<MesureIndividuelle> Tei::demandeMesure() {
     }
 
     QString reponse = this->transaction(cmd);
-    QWeakPointer<MesureIndividuelle> tabMesures = new MesureIndividuelle();
+    QSharedPointer<MesureIndividuelle> tms(new MesureIndividuelle());
+    QWeakPointer<MesureIndividuelle> tabMesures = tms;
+    tms.clear();
 
     if(reponse.isEmpty())
         return tabMesures;

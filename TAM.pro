@@ -3,11 +3,11 @@
 # -------------------------------------------------
 QT += sql \
     xml \
-    widgets
+    widgets\
+    serialport
 TARGET = TAM
 TEMPLATE = app
-CONFIG += static \
-    += \
+CONFIG  += \
     console
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -123,10 +123,9 @@ FORMS += mainwindow.ui \
     et_generateurrapporttest.ui \
     et_resultatpolluant.ui \
     parametreshandler.ui
-INCLUDEPATH += ./qserialdevice \
-    ./
+INCLUDEPATH +=  ./ 
 LIBS += -L./ \
-    -lqserialdevice
+    -lstdc++
 OTHER_FILES += licence.txt \
     StructureTest.dtd \
     CreationBaseMySql.sql
