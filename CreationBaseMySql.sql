@@ -278,7 +278,8 @@ INSERT INTO `Molecule` (`id_molecule`, `code`, `nom`, `formule`) VALUES
 (3, '3', 'Dioxyde d''azote', 'NO2'),
 (4, '4', 'Monoxyde de carbone', 'CO'),
 (5, '8', 'Ozone', 'O3'),
-(6, '12', 'Oxydes d''azote', 'NOX');
+(6, '12', 'Oxydes d''azote', 'NOX'),
+(7, '05', 'Sulfure d''hydrogene', 'H2S');
 
 -- --------------------------------------------------------
 

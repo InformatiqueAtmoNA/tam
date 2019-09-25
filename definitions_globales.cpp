@@ -64,6 +64,8 @@ TypePolluant stringToTypePolluant(QString type) {
         return NO2;
     if(type=="NOX")
         return NOX;
+    if(type=="H2S")
+        return H2S;
     return DIL;
 }
 
@@ -80,6 +82,8 @@ QString typePolluantToString(TypePolluant type) {
         return "NO2";
     if(type==NOX)
         return "NOX";
+    if(type==H2S)
+        return "H2S";
     if(type==DIL)
         return "DIL";
     return "";

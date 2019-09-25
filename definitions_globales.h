@@ -90,7 +90,7 @@ enum DesignationProtocole {MODE4_ANA_CMD04,MODE4_ANA_CMD16,MODE4_SX6000_17,MODE4
 // \enum TypePeripherique Type d'appareil
 enum TypePeripherique {ANALYSEUR,ETALON,DILUTEUR,BOUTEILLE,GO3,GZERO};
 // \enum TypePolluant Polluant associé à  l'appareil
-enum TypePolluant {CO,O3,SO2,NO,NO2,NOX,DIL};
+enum TypePolluant {CO,O3,SO2,NO,NO2,NOX,H2S,DIL};
 // \enum TypeTest Type de test
 enum TypeTest {REPETABILITE,LINEARITE,TEMPS_REPONSE,RENDEMENT_FOUR,PERSO};
 // \enum OptionTpg Option d'étalonnage permettant la TPG

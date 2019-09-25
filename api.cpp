@@ -99,6 +99,9 @@ QWeakPointer<MesureIndividuelle> Api::demandeMesure() {
     case NOX:
         return this->demandeMesureNox();
         break;
+    case H2S:
+        cmd = *(this->creerTrameCommande("T","H2S"));
+        break;
     default:
        emit(this->erreurCommande());
     }
