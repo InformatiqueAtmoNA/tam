@@ -62,7 +62,7 @@ private :
     short m_idListeTestEnCours;
     ushort m_id_TestMetro;
     QPointer<QStateMachine> m_machine; // Pointeur vers instance de QStateMachine. Sert à exéctuer le test
-    QWeakPointer<et_ParamsTest> m_paramsTest;
+    QSharedPointer<et_ParamsTest> m_paramsTest;
     QPointer<BdHandler> m_bdHandler; // Pointeur vers une instance de la classe BdHandler
     QMap<ushort,QSqlRecord*> m_analyseursInfos; // Liste des analyseurs et de leur enregistrement dans la base de données
     QMap<ushort,int> m_analyseursoffset; // // Liste des analyseurs et de leur offset

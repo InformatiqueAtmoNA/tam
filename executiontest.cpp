@@ -29,9 +29,10 @@
 ExecutionTest::ExecutionTest(const QPointer<et_ParamsTest> paramsTest,const QPointer<BdHandler> bdHandler,const short idListeTestEnCours)
 {
     m_idListeTestEnCours = idListeTestEnCours;
-    QSharedPointer<et_ParamsTest> mpt(paramsTest.data());
-    m_paramsTest = QWeakPointer<et_ParamsTest>(mpt);
-    mpt.clear();
+    //QSharedPointer<et_ParamsTest> mpt(paramsTest.data());
+    //m_paramsTest = mpt;
+    //mpt.clear();
+    m_paramsTest =QSharedPointer<et_ParamsTest>(paramsTest.data());
     m_nbPhasesRestantes = m_paramsTest.data()->m_test->getNbPhases();
     m_nbCyclesPhasesRestants = m_paramsTest.data()->m_test->getNbCyclesDePhases();
     m_moyennerMesures = false;
