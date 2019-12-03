@@ -55,9 +55,9 @@ protected:
     // \fn void demandeMesureNox()
     // \brief Demande de mesure immédiate pour le NOX
     //
-    // \return QWeakPointer<MesureIndividuelle> Tableau des mesures
+    // \return QPointer<MesureIndividuelle> Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    QWeakPointer<MesureIndividuelle> demandeMesureNox();
+    QPointer<MesureIndividuelle> demandeMesureNox();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn float getFloatFromMesureString(QString mesure)
@@ -83,9 +83,9 @@ public:
     // \fn virtual void demandeMesure()
     // \brief Demande de mesure immédiate
     //
-    // \return QWeakPointer<MesureIndividuelle> Tableau des mesures
+    // \return QPointer<MesureIndividuelle> Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual QWeakPointer<MesureIndividuelle> demandeMesure();
+    virtual QPointer<MesureIndividuelle> demandeMesure();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeAlarme()

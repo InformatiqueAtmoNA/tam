@@ -164,12 +164,12 @@ public:
     inline virtual bool commandeEvent() {return false;}
 
     /*///////////////////////////////////////////////////////////////////////////
-    // \fn virtual QWeakPointer<MesureIndividuelle> demandeMesure()
+    // \fn virtual QPointer<MesureIndividuelle> demandeMesure()
     // \brief Demande de mesure immédiate
     //
-    // \return QWeakPointer<MesureIndividuelle> Tableau des mesures
+    // \return QPointer<MesureIndividuelle> Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual QWeakPointer<MesureIndividuelle> demandeMesure()=0;
+    virtual QPointer<MesureIndividuelle> demandeMesure()=0;
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeAlarme()

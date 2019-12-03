@@ -81,9 +81,9 @@ private :
     ushort m_cycleMesureEnCours; // Cycle de mesures en cours
     ushort m_cyclePhaseEnCours; // Cycle de phase en cours
 
-    QMap<ushort,QWeakPointer<MesureIndividuelle> > m_tabMesuresIndividuelles;
-    QMap<ushort,QVector<QWeakPointer<MesureIndividuelle> > > m_tabMesuresParCycle;
-    QMap<ushort,QVector<QWeakPointer<MesureIndividuelle> > > m_tabMoyennesMesuresParPhase;
+    QMap<ushort,QPointer<MesureIndividuelle> > m_tabMesuresIndividuelles;
+    QMap<ushort,QVector<QPointer<MesureIndividuelle> > > m_tabMesuresParCycle;
+    QMap<ushort,QVector<QPointer<MesureIndividuelle> > > m_tabMoyennesMesuresParPhase;
 
     QPointer<QTimer> m_timerDemmarageMachine;
     QPointer<QTimer> m_timerTempsMaxPhase;

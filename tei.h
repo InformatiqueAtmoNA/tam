@@ -89,7 +89,7 @@ protected:
     //
     // \return QVector<float> Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    QWeakPointer<MesureIndividuelle> demandeMesureNox();
+    QPointer<MesureIndividuelle> demandeMesureNox();
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
@@ -135,7 +135,7 @@ public:
     //
     // \return MesureIndividuelle Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual QWeakPointer<MesureIndividuelle> demandeMesure();
+    virtual QPointer<MesureIndividuelle> demandeMesure();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeAlarme()

@@ -142,7 +142,7 @@ public:
     //
     // \return QVector<float> Tableau des mesures
     ///////////////////////////////////////////////////////////////////////////*/
-    virtual QWeakPointer<MesureIndividuelle> demandeMesure();
+    virtual QPointer<MesureIndividuelle> demandeMesure();
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeAlarme()

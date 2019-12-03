@@ -52,11 +52,9 @@ float Api::getFloatFromMesureString(const QString & mesure) {
     return mesure.mid(indexDebutMesure,indexFinMesure-indexDebutMesure).toFloat();
 }
 
-QWeakPointer<MesureIndividuelle> Api::demandeMesureNox() {
+QPointer<MesureIndividuelle> Api::demandeMesureNox() {
     QString cmd;
-    QSharedPointer<MesureIndividuelle> ms(new MesureIndividuelle());
-    QWeakPointer<MesureIndividuelle> mesures = ms;
-    ms.clear();
+    QPointer<MesureIndividuelle> mesures(new MesureIndividuelle());
 
     for(int i=0;i<3;i++) {
         switch(i) {
@@ -81,7 +79,7 @@ QWeakPointer<MesureIndividuelle> Api::demandeMesureNox() {
 }
 
 // Demande de mesure immédiate
-QWeakPointer<MesureIndividuelle> Api::demandeMesure() {
+QPointer<MesureIndividuelle> Api::demandeMesure() {
     QString cmd;
 
     switch(this->polluantAssocie) {
@@ -107,9 +105,7 @@ QWeakPointer<MesureIndividuelle> Api::demandeMesure() {
     }
     QString reponse = this->transaction(cmd);
 
-    QSharedPointer<MesureIndividuelle> ms(new MesureIndividuelle());
-    QWeakPointer<MesureIndividuelle> mesures = ms;
-    ms.clear();
+    QPointer<MesureIndividuelle> mesures(new MesureIndividuelle());
 
     if(reponse.isEmpty())
         return mesures;
