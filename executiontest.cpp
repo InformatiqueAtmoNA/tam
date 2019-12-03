@@ -435,7 +435,7 @@ void ExecutionTest::lancerTimerTempsAcquisition()
             it_anaDesignProto.next();
             QPointer<Protocole> analyseur = it_anaDesignProto.value();
 
-            QWeakPointer< MesureIndividuelle > mesures(analyseur->demandeMesure());
+            QWeakPointer< MesureIndividuelle > mesures = analyseur->demandeMesure();
             m_tabMesuresIndividuelles.insert(it_anaDesignProto.key(), mesures);
         }
     }

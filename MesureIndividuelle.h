@@ -1,10 +1,13 @@
 #ifndef MESUREINDIVIDUELLE_H
 #define MESUREINDIVIDUELLE_H
 #include "float.h"
-
+#include <QVector>
+#include <QObject>
 
 // \class MesureIndividuelle Informations de mesure
+
 class MesureIndividuelle : public QObject {
+
     QVector<float> m_mesures;
 
 public:
