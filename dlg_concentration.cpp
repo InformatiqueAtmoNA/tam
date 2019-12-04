@@ -324,14 +324,19 @@ void Dlg_Concentration::buttonSupprimerClicked()
 {
     if(!m_indexSelection.isValid())
        return;
-    int reponse = QMessageBox::question(this, "Supprimer un élément", "êtes-vous sûr de vouloir effacer cet enregistrement?",
-                QMessageBox::Yes | QMessageBox::No);
+    int reponse = QMessageBox::question(this,
+		    QLatin1String("Supprimer un élément"),
+		    QLatin1String("êtes-vous sûr de vouloir effacer cet enregistrement ?"),
+		    QMessageBox::Yes | QMessageBox::No);
 
     if (reponse == QMessageBox::No)
        return;
 
     if(!m_model->removeRow(m_indexSelection.row()))
-       QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé.",QMessageBox::Ok);
+       QMessageBox::critical(this,
+		       QLatin1String("Impossible de supprimer"),
+		       QLatin1String("Erreur de la suppression de l'enregistrement demandé."),
+		       QMessageBox::Ok);
     else {
        m_model->submitAll();
        this->initialiserChamps();
@@ -438,14 +443,19 @@ void Dlg_Concentration::buttonSupprimerConcAssocieeClicked()
 {
     if(!m_indexConcAssocieSelection.isValid())
        return;
-    int reponse = QMessageBox::question(this, "Supprimer un élément", "êtes-vous sûr de vouloir effacer cet enregistrement?",
-                QMessageBox::Yes | QMessageBox::No);
+    int reponse = QMessageBox::question(this,
+		    QLatin1String("Supprimer un élément"),
+		    QLatin1String("êtes-vous sûr de vouloir effacer cet enregistrement ?"),
+		    QMessageBox::Yes | QMessageBox::No);
 
     if (reponse == QMessageBox::No)
        return;
 
     if(!m_modelConcentrationAssociee->removeRow(m_indexConcAssocieSelection.row()))
-       QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé",QMessageBox::Ok);
+       QMessageBox::critical(this, 
+		       QLatin1String("Impossible de supprimer"),
+		       QLatin1String("Erreur de la suppression de l'enregistrement demandé"),
+		       QMessageBox::Ok);
     else {
        m_modelConcentrationAssociee->submitAll();
        this->initialiserChampsConcAssociee();

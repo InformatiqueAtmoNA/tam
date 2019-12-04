@@ -132,8 +132,8 @@ void et_listeAttenteTests::verifierTestsExecutables()
 void et_listeAttenteTests::buttonAnnulerClicked()
 {
     QMessageBox msgBox;
-    msgBox.setText("Annuler?");
-    msgBox.setInformativeText("Voulez-vous annuler et revenir à l'acceuil?");
+    msgBox.setText(QLatin1String("Annuler ?"));
+    msgBox.setInformativeText(QLatin1String("Voulez-vous annuler et revenir à l'accueil ?"));
     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
 

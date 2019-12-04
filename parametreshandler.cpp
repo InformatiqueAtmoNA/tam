@@ -48,8 +48,8 @@ ParametresHandler::~ParametresHandler()
 void ParametresHandler::buttonAnnulerClicked()
 {
     QMessageBox msgBox;
-    msgBox.setText("Fermer?");
-    msgBox.setInformativeText("Voulez-vous fermer et revenir à l'acceuil?");
+    msgBox.setText(QLatin1String("Fermer ?"));
+    msgBox.setInformativeText(QLatin1String("Voulez-vous fermer et revenir à l'accueil?"));
     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
 
@@ -61,8 +61,8 @@ void ParametresHandler::buttonOkClicked()
 {
 
     QMessageBox msgBox;
-    msgBox.setText("Fermer?");
-    msgBox.setInformativeText("Voulez-vous enregistrer les nouveaux paramètres et revenir à l'acceuil?");
+    msgBox.setText(QLatin1String("Fermer?"));
+    msgBox.setInformativeText(QLatin1String("Voulez-vous enregistrer les nouveaux paramètres et revenir à l'acceuil?"));
     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
 

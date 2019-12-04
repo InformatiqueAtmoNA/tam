@@ -106,8 +106,8 @@ et_GenerateurRapportTest::~et_GenerateurRapportTest()
 void et_GenerateurRapportTest::buttonFermerClicked()
 {
     QMessageBox msgBox;
-    msgBox.setText("Fermer?");
-    msgBox.setInformativeText("Voulez-vous fermer et revenir à l'acceuil?");
+    msgBox.setText(QLatin1String("Fermer ?"));
+    msgBox.setInformativeText(QLatin1String("Voulez-vous fermer et revenir à l'accueil ?"));
     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
 

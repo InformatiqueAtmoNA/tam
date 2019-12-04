@@ -102,8 +102,8 @@ void ct_PhaseWidget::afficherPhase()
         QSqlRecord* concentrationRecord = this->m_bdHandler->getConcentrationRow(idConcentration);
         if(concentrationRecord == NULL) {
             QMessageBox msgBox;
-            msgBox.setText("Problème lors du chargement de la concentration");
-            msgBox.setInformativeText("La concentration de polluant enregistrée n'est pas pas valide. Veuillez en sélectionner une autre.");
+            msgBox.setText(QLatin1String("Problème lors du chargement de la concentration"));
+            msgBox.setInformativeText(QLatin1String("La concentration de polluant enregistrée n'est pas pas valide. Veuillez en sélectionner une autre."));
             msgBox.setStandardButtons(QMessageBox::Ok);
             msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.exec();
@@ -131,8 +131,8 @@ void ct_PhaseWidget::afficherPhase()
     default:
         QMessageBox msgBox;
         msgBox.setIcon(QMessageBox::Critical);
-        msgBox.setWindowTitle("Erreur!");
-        msgBox.setText("La commande de début de phase n'est pas programmée");
+        msgBox.setWindowTitle(QLatin1String("Erreur !"));
+        msgBox.setText(QLatin1String("La commande de début de phase n'est pas programmée"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();
         break;
@@ -163,8 +163,8 @@ void ct_PhaseWidget::cb_CmdDebutPhaseIndexChanged(const int index) {
     default:
         QMessageBox msgBox;
         msgBox.setIcon(QMessageBox::Critical);
-        msgBox.setWindowTitle("Erreur!");
-        msgBox.setText("La commande sélectionnée n'est pas programmée");
+        msgBox.setWindowTitle(QLatin1String("Erreur !"));
+        msgBox.setText(QLatin1String("La commande sélectionnée n'est pas programmée"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();
         break;

@@ -43,7 +43,7 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
 
     if(m_test.isNull()) {
         QMessageBox msgBox;
-        msgBox.setText("Un problème est survenu lors du chargement du fichier de configuration du test");
+        msgBox.setText(QLatin1String("Un problème est survenu lors du chargement du fichier de configuration du test"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.setIcon(QMessageBox::Critical);
@@ -182,7 +182,7 @@ bool et_InterfaceExecutionTest::controleEtape1()
     else {
         if(QFile::exists(this->ui->lineEdit_FichierCSV->text())) {
             QMessageBox msgBox;
-            msgBox.setText("Le fichier d'export des résultats existe déjà.\nVoulez-vous l'écraser?");
+            msgBox.setText(QLatin1String("Le fichier d'export des résultats existe déjà.\nVoulez-vous l'écraser ?"));
             msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Discard);
             msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.setIcon(QMessageBox::Critical);
@@ -346,8 +346,8 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
 
     if(analyseur.isNull()) {
         QMessageBox msgBox;
-        msgBox.setText("Configuration de l'appareil impossible");
-        msgBox.setInformativeText("Une erreur s'est produite lors de la configuration de l'appareil.\n\nVeuillez véfifier les paramètres de l'équipement avant de recommencer le test");
+        msgBox.setText(QLatin1String("Configuration de l'appareil impossible"));
+        msgBox.setInformativeText(QLatin1String("Une erreur s'est produite lors de la configuration de l'appareil.\n\nVeuillez véfifier les paramètres de l'équipement avant de recommencer le test"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
@@ -373,14 +373,14 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
 
     if(analyseur->demandeAlarme() > 0) {
         QMessageBox msgBox;
-        msgBox.setText("Alarme présente");
-        msgBox.setInformativeText("Une alarme a été détectée sur l'appareil.\nVeuillez la corriger ou ignorer");
+        msgBox.setText(QLatin1String("Alarme présente"));
+        msgBox.setInformativeText(QLatin1String("Une alarme a été détectée sur l'appareil.\nVeuillez la corriger ou ignorer"));
         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Ignore);
         msgBox.setDefaultButton(QMessageBox::Ok);
         if(msgBox.exec()==QMessageBox::Ok) {
             m_listeEtatComAnalyseurs[idAnalyseur] = false;
 
-            QTableWidgetItem* itemCom_etat = new QTableWidgetItem("Appareil en alarme");
+            QTableWidgetItem* itemCom_etat = new QTableWidgetItem(QLatin1String("Appareil en alarme"));
             itemCom_etat->setTextColor(QColor(255,0,0));
             this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
         }
@@ -416,8 +416,8 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
 
     if(calibrateur.isNull()) {
         QMessageBox msgBox;
-        msgBox.setText("Configuration de l'appareil impossible");
-        msgBox.setInformativeText("Une erreur s'est produite lors de la configuration de l'appareil.\n\nVeuillez véfifier les paramètres de l'équipement avant de recommencer le test");
+        msgBox.setText(QLatin1String("Configuration de l'appareil impossible"));
+        msgBox.setInformativeText(QLatin1String("Une erreur s'est produite lors de la configuration de l'appareil.\n\nVeuillez véfifier les paramètres de l'équipement avant de recommencer le test"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
@@ -438,13 +438,13 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
 
     if(calibrateur->demandeAlarme() > 0) {
         QMessageBox msgBox;
-        msgBox.setText("Alarme présente");
-        msgBox.setInformativeText("Une alarme a été détectée sur l'appareil.\nVeuillez la corriger ou ignorer");
+        msgBox.setText(QLatin1String("Alarme présente"));
+        msgBox.setInformativeText(QLatin1String("Une alarme a été détectée sur l'appareil.\nVeuillez la corriger ou ignorer"));
         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Ignore);
         msgBox.setDefaultButton(QMessageBox::Ok);
 
         if(msgBox.exec()==QMessageBox::Ok){
-            ui->label_EtatCalibrateur->setText("<font color=\"#FF6464\">Alarme</font>");
+            ui->label_EtatCalibrateur->setText(QLatin1String("<font color=\"#FF6464\">Alarme</font>"));
             m_etatComCalibrateur = false;
         }
     }
@@ -516,7 +516,7 @@ void et_InterfaceExecutionTest::erreurCommunicationAnalyseur()
 void et_InterfaceExecutionTest::erreurCommunicationCalibrateur()
 {
     m_etatComCalibrateur = false;
-    this->ui->label_EtatCalibrateur->setText("<font color=\"#FF0000\">Erreur de communication!</font>");
+    this->ui->label_EtatCalibrateur->setText(QLatin1String("<font color=\"#FF0000\">Erreur de communication!</font>"));
 }
 
 void et_InterfaceExecutionTest::ouverturePortComAnalyseur(bool ouverturePort)
@@ -541,10 +541,10 @@ void et_InterfaceExecutionTest::ouverturePortComCalibrateur(const bool ouverture
 {
     if(!ouverturePort) {
         m_etatComCalibrateur = false;
-        this->ui->label_EtatCalibrateur->setText("<font color=\"#FF0000\">Erreur de l'ouverture du port</font>");
+        this->ui->label_EtatCalibrateur->setText(QLatin1String("<font color=\"#FF0000\">Erreur de l'ouverture du port</font>"));
     }
     else
-        ui->label_EtatCalibrateur->setText("<font color=\"#64FF64\">Communication Ok</font>");
+        ui->label_EtatCalibrateur->setText(QLatin1String("<font color=\"#64FF64\">Communication Ok</font>"));
 }
 
 void et_InterfaceExecutionTest::tabWidgetExecutionTestIndexChanged(const int index)

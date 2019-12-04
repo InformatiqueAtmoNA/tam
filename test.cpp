@@ -173,8 +173,8 @@ bool Test::exportToXml(QString const & nomFichier)
     // Si le fichier existe déjà
     if(QFile::exists(nomFichier)) {
         QMessageBox msgBox;
-        msgBox.setText("Le fichier existe déjà");
-        msgBox.setInformativeText("Voulez-vous le remplacer?");
+        msgBox.setText(QLatin1String("Le fichier existe déjà"));
+        msgBox.setInformativeText(QLatin1String("Voulez-vous le remplacer ?"));
         msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         int ret = msgBox.exec();

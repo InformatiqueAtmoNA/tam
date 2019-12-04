@@ -82,8 +82,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
  {
 
     QMessageBox msgBox;
-    msgBox.setText("Fermer?");
-    msgBox.setInformativeText("Voulez-vous quitter l'application ?");
+    msgBox.setText(QLatin1String("Fermer ?"));
+    msgBox.setInformativeText(QLatin1String("Voulez-vous quitter l'application ?"));
     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
 
@@ -139,8 +139,8 @@ void MainWindow::afficherCreationTest(const QString fichierDescription)
     else {
         if(!QFile::exists(fichierDescription)) {
             QMessageBox msgBox;
-            msgBox.setText("Un problème est survenu lors du chargement du fichier de configuration du test");
-            msgBox.setInformativeText("Le fichier "+fichierDescription+" n'a pas pu être chargé");
+            msgBox.setText(QLatin1String("Un problème est survenu lors du chargement du fichier de configuration du test"));
+            msgBox.setInformativeText(QLatin1String("Le fichier "+fichierDescription+" n'a pas pu être chargé"));
             msgBox.setStandardButtons(QMessageBox::Ok);
             msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.setIcon(QMessageBox::Critical);
@@ -175,8 +175,8 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
 {
     if(!QFile::exists(fichierDescription)) {
         QMessageBox msgBox;
-        msgBox.setText("Un problème est survenu lors du chargement du fichier de configuration du test");
-        msgBox.setInformativeText("Le fichier "+fichierDescription+" n'a pas pu être chargé");
+        msgBox.setText(QLatin1String("Un problème est survenu lors du chargement du fichier de configuration du test"));
+        msgBox.setInformativeText(QLatin1String("Le fichier "+fichierDescription+" n'a pas pu être chargé"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.setIcon(QMessageBox::Critical);
