@@ -140,7 +140,7 @@ void MainWindow::afficherCreationTest(const QString fichierDescription)
         if(!QFile::exists(fichierDescription)) {
             QMessageBox msgBox;
             msgBox.setText(QLatin1String("Un problème est survenu lors du chargement du fichier de configuration du test"));
-            msgBox.setInformativeText(QLatin1String("Le fichier "+fichierDescription+" n'a pas pu être chargé"));
+            msgBox.setInformativeText("Le fichier "+fichierDescription+" n'a pas pu être chargé");
             msgBox.setStandardButtons(QMessageBox::Ok);
             msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.setIcon(QMessageBox::Critical);
@@ -176,7 +176,7 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
     if(!QFile::exists(fichierDescription)) {
         QMessageBox msgBox;
         msgBox.setText(QLatin1String("Un problème est survenu lors du chargement du fichier de configuration du test"));
-        msgBox.setInformativeText(QLatin1String("Le fichier "+fichierDescription+" n'a pas pu être chargé"));
+        msgBox.setInformativeText("Le fichier "+fichierDescription+" n'a pas pu être chargé");
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.setIcon(QMessageBox::Critical);
