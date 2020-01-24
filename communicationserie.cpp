@@ -132,14 +132,14 @@ bool CommunicationSerie::setDeviceName(const QString newDeviceName) {
     if(!connect(device,SIGNAL(readyRead()),this,SLOT(slotRead()))) {
         qDebug() << "Problème lors de la connection du signal de lecture";
     }
-    // connection du signal de changement de statut
-    if(!connect(device,SIGNAL(signalStatus(QString,QDateTime)),this,SLOT(statusSignal(QString,QDateTime)))) {
-        qDebug() << "Problème lors de la connection du signal de changement de statut";
-    }
-    // connection du signal de changement de statut
-    if(!connect(device,SIGNAL(signalStatus(QString,QDateTime)),this,SLOT(statusSignal(QString,QDateTime)))) {
-        qDebug() << "Problème lors de la connection du signal de changement de statut";
-    }
+//    // connection du signal de changement de statut
+//    if(!connect(device,SIGNAL(signalStatus(QString,QDateTime)),this,SLOT(statusSignal(QString,QDateTime)))) {
+//        qDebug() << "Problème lors de la connection du signal de changement de statut";
+//    }
+//    // connection du signal de changement de statut
+//    if(!connect(device,SIGNAL(signalStatus(QString,QDateTime)),this,SLOT(statusSignal(QString,QDateTime)))) {
+//        qDebug() << "Problème lors de la connection du signal de changement de statut";
+//    }
     return true;
 }
 
