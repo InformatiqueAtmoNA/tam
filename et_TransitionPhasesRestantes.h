@@ -27,6 +27,8 @@
 #ifndef ET_TRANSITIONPHASESRESTANTES_H
 #define ET_TRANSITIONPHASESRESTANTES_H
 
+#include "QEvent"
+#include "QAbstractTransition"
 //#include "ev_PhasesRestantes.h"
 #define EVENT_PHASE_RESTANTES QEvent::User+1
 

@@ -27,6 +27,8 @@
 #ifndef ET_TRANSITIONTEMPSMAXTEST_H
 #define ET_TRANSITIONTEMPSMAXTEST_H
 
+#include "QEvent"
+#include "QAbstractTransition"
 //#include "ev_TempsMaxTest.h"
 #define EVENT_TEMPS_MAX_TEST QEvent::User+2
 

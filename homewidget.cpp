@@ -147,7 +147,7 @@ void HomeWidget::tableViewTestRapportIndexChanged(const QModelIndex & index)
 void HomeWidget::treeViewTestRapportIndexChanged(const QModelIndex & index)
 {
     this->m_idxSelectionItemRapport = index;
-    if (!m_itemModele->hasChildren(m_idxSelectionItemRapport.child(0,0))){
+    if (!m_itemModele->hasChildren(m_idxSelectionItemRapport.model()->index(0,0))){ // modifié
         this->ui->button_Afficher->setEnabled(m_idxSelectionItemRapport.isValid());
     }
     else {
@@ -208,8 +208,8 @@ void HomeWidget::buttonAfficherClicked()
     else if (ui->treeView->currentIndex().isValid()){
 
         ushort typeTest = stringToTypeTest(m_idxSelectionItemRapport.parent().data().toString());
-        ushort idTest = m_idxSelectionItemRapport.child(0,0).data().toInt();
-        ushort idAnalyseur = m_idxSelectionItemRapport.child(1,0).data().toInt();
+        ushort idTest = m_idxSelectionItemRapport.model()->index(0,0).data().toInt(); // modifié
+        ushort idAnalyseur = m_idxSelectionItemRapport.model()->index(1,0).data().toInt(); // modifié
 
         emit(this->afficherRapport(idTest,idAnalyseur,typeTest));
      }

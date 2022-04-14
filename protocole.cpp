@@ -26,7 +26,7 @@ Protocole::~Protocole() {
     threadCommunication->deleteLater();
     while(threadCommunication->isRunning()) {
         QCoreApplication::processEvents();
-        QCoreApplication::flush();
+        QCoreApplication::sendPostedEvents(); // modifié
     }
 }
 
@@ -98,7 +98,7 @@ QString Protocole::transaction(const QString & commande) {
 
     // Si erreur de commande
     // CONDITION A MODIFIER LORS DE L'AJOUT DE NOUVEAUX PROTOCOLES
-    if(this->trame.at(1)==NAK || this->trame.contains("bad command")) {
+    if(this->trame.at(1)==QString::number(NAK) || this->trame.contains("bad command")) { // modifié
         emit(this->erreurCommande());
         qDebug()<<"Erreur commande";
         return NULL;

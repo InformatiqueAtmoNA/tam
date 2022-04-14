@@ -41,7 +41,7 @@ QString* Api::creerTrameCommande(const QString & typeCommande,const QString & da
     trame->append(this->adresse);
     trame->append(" ");
     trame->append(data);
-    trame->append(CR);
+    trame->append(QString::number(CR,16)); // modifié
     return trame;
 }
 

@@ -27,6 +27,8 @@
 #ifndef ET_TRANSITIONTEMPSMAXPHASE_H
 #define ET_TRANSITIONTEMPSMAXPHASE_H
 
+#include "QEvent"
+#include "QAbstractTransition"
 //#include "ev_TempsMaxPhase.h"
 
 #define EVENT_TEMPS_MAX_PHASE QEvent::User+3

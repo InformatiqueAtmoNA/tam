@@ -35,7 +35,7 @@ ThreadComHandler::~ThreadComHandler() {
     if(this->comRS232->isOpen())
         this->comRS232->close();
     this->comRS232->deleteLater();
-    QCoreApplication::flush();
+    QCoreApplication::sendPostedEvents(); // modifié
     QCoreApplication::processEvents();
 }
 

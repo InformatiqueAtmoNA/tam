@@ -45,7 +45,7 @@ QString* Tei::creerTrameCommande(const QString & commande) {
     QString* trame = new QString();
     trame->append(this->adresse);
     trame->append(commande);
-    trame->append(CR);
+    trame->append(QString::number(CR,16));
     return trame;
 }
 

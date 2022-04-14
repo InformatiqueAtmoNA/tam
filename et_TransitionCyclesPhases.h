@@ -27,6 +27,10 @@
 #define ET_TRANSITIONCYCLESPHASES_H
 
 //#include "ev_PhasesRestantes.h"
+
+#include "QEvent"
+#include "QAbstractTransition"
+
 #define EVENT_CYCLES_PHASES_RESTANTS QEvent::User+7
 
 /*////////////////////////////////////////////////////////////////////////////////////

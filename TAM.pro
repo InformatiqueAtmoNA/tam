@@ -4,7 +4,9 @@
 QT += sql \
     xml \
     widgets\
-    serialport
+    serialport \
+    statemachine
+
 TARGET = TAM
 TEMPLATE = app
 CONFIG  += \

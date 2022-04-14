@@ -27,6 +27,8 @@
 #ifndef ET_TRANSITIONCRITEREARRETDEFINI_H
 #define ET_TRANSITIONCRITEREARRETDEFINI_H
 
+#include "QEvent"
+#include "QAbstractTransition"
 //#include "ev_TestCritereArret.h"
 
 #define EVENT_TEST_CRITERE_ARRET QEvent::User+6

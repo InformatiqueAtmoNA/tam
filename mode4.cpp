@@ -45,12 +45,13 @@ Mode4::~Mode4() {
 // Cree une trame en fonction du numero de commande MODE4
 QString* Mode4::creerTrameCommande(const QString & noCommande, const QString & data) {
     QString* trame = new QString();
-    trame->append(STX);
+
+    trame->append(QString::number(STX, 16));  // modifié
     trame->append(this->adresse);
     trame->append(noCommande);
     trame->append(data);
-    trame->append(calculerBCC(*trame));
-    trame->append(ETX);
+    trame->append(calculerBCC(*trame)->data()); // modifié
+    trame->append(QString::number(ETX, 16)); //modifié
     return trame;
 }
 
@@ -139,23 +140,23 @@ void* Mode4::parseConfig(const QString & trameConfig) {
     else {
         Mode4_DiluteurConfig* confDiluteur = new Mode4_DiluteurConfig;
         confDiluteur->pressionAir = trameConfig.mid(positionData,4).toUShort();
-        confDiluteur->infoConfig->append("Pression air : "+confDiluteur->pressionAir);
+        confDiluteur->infoConfig->append(&"Pression air : "[confDiluteur->pressionAir]);
         confDiluteur->pressionDil = trameConfig.mid(positionData+4,4).toUShort();
-        confDiluteur->infoConfig->append("Pression diluteur : "+confDiluteur->pressionDil);
+        confDiluteur->infoConfig->append(&"Pression diluteur : "[confDiluteur->pressionDil]);
         confDiluteur->tempOzoneur = trameConfig.mid(positionData+8,4).toFloat();
         confDiluteur->infoConfig->append("Temperature ozoneur : "+QString::number(confDiluteur->tempOzoneur));
         confDiluteur->uvMesuree = trameConfig.mid(positionData+12,4).toUShort();
-        confDiluteur->infoConfig->append("Lumiere UV mesuree : "+confDiluteur->uvMesuree);
+        confDiluteur->infoConfig->append(&"Lumiere UV mesuree : "[confDiluteur->uvMesuree]);
         confDiluteur->uvCalculee = trameConfig.mid(positionData+16,4).toUShort();
-        confDiluteur->infoConfig->append("Lumiere UV calculee : "+confDiluteur->uvCalculee);
+        confDiluteur->infoConfig->append(&"Lumiere UV calculee : "[confDiluteur->uvCalculee]);
         confDiluteur->pressionAtm = trameConfig.mid(positionData+20,4).toUShort();
-        confDiluteur->infoConfig->append("Pression atmosphérique : "+confDiluteur->pressionAtm);
+        confDiluteur->infoConfig->append(&"Pression atmosphérique : "[confDiluteur->pressionAtm]);
         confDiluteur->tempInterne = trameConfig.mid(positionData+24,4).toFloat();
         confDiluteur->infoConfig->append("Temperature interne : "+QString::number(confDiluteur->tempInterne));
         confDiluteur->tempFour = trameConfig.mid(positionData+28,3).toFloat();
         confDiluteur->infoConfig->append("Temperature du four : "+QString::number(confDiluteur->tempFour));
         confDiluteur->urdm1 = trameConfig.at(positionData+28).toLatin1();
-        confDiluteur->infoConfig->append("U RDM1 : "+confDiluteur->urdm1);
+        confDiluteur->infoConfig->append(&"U RDM1 : "[confDiluteur->urdm1]);
         confDiluteur->urdm2 = trameConfig.mid(positionData+29,4);
         confDiluteur->infoConfig->append("U RDM2 : "+confDiluteur->urdm2);
         confDiluteur->opt1 = trameConfig.mid(positionData+33,4);

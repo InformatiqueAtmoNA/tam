@@ -26,6 +26,7 @@
 #ifndef ET_PARAMSTEST_H
 #define ET_PARAMSTEST_H
 
+#include <QMultiMap>
 #include "test.h"
 #include "bdhandler.h"
 
@@ -36,7 +37,7 @@ public :
     ushort m_id_TestMetro;
     ushort m_id_TestXML;
     QPointer<Test> m_test;
-    QMap<ushort,QString> m_listeNumSerieAnalyseurs;
+    QMap<ushort,QString> m_listeNumSerieAnalyseurs; // modifié
     QMap<ushort,QString> m_listeInterfaceAnalyseurs;
     QString m_interfaceCalibrateur;
     QString m_canalCalibrateur;

@@ -28,6 +28,9 @@
 #ifndef ET_NBCYCLESMESURERESTANTS_H
 #define ET_NBCYCLESMESURERESTANTS_H
 
+#include "QEvent"
+#include "QAbstractTransition"
+
 //#include "ev_NbCyclesMesure.h"
 #define EVENT_NB_CYCLES_MESURES QEvent::User+5
 

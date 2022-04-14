@@ -109,7 +109,7 @@ int CommunicationSerie::getCharTimeOut() {
 
 // Changer numero du port Com
 bool CommunicationSerie::setNumeroCom(const int newNumCom) {
-    QString newDeviceName = "/dev/ttyS" + newNumCom;
+    QString newDeviceName = &"/dev/ttyS" [ newNumCom];
     if(!this->setDeviceName(newDeviceName)) {
         qDebug() << "Erreur lors de changement de numéro de port com" <<  newNumCom;
         return false;
@@ -150,7 +150,7 @@ bool CommunicationSerie::setBaudRate(const QSerialPort::BaudRate newBaudRate) {
         return false;
     }
 
-    this->baudRate = newBaudRate;
+    this->baudRate = QString::number(newBaudRate); // modifié
     return true;
 }
 
@@ -161,7 +161,7 @@ bool CommunicationSerie::setDataBits(const QSerialPort::DataBits newDataBits) {
         return false;
     }
 
-    this->dataBits = newDataBits;
+    this->dataBits = QString::number(newDataBits); // modifié
     return true;
 }
 
@@ -172,7 +172,7 @@ bool CommunicationSerie::setParity(const QSerialPort::Parity newParity) {
         return false;
     }
 
-    this->parity = newParity;
+    this->parity = QString::number(newParity); // modifié
     return true;
 }
 
@@ -183,7 +183,7 @@ bool CommunicationSerie::setStopBits(const QSerialPort::StopBits newStopBits) {
         return false;
     }
 
-    this->stopBits = newStopBits;
+    this->stopBits = QString::number(newStopBits); // modifié
     return true;
 }
 
@@ -194,7 +194,8 @@ bool CommunicationSerie::setFlowControl(const QSerialPort::FlowControl newFlowCo
         return false;
     }
 
-    this->flowControl = newFlowControl;
+
+    this->flowControl = QString::number(newFlowControl); // modifié
     return true;
 }
 

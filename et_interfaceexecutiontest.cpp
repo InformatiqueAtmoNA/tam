@@ -309,7 +309,7 @@ void et_InterfaceExecutionTest::buttonSuivantClicked()
         else return;
         break;
     case 2:
-        QCoreApplication::flush();
+        QCoreApplication::sendPostedEvents(); // modifié
         if(controleEtape2()) {
             m_etape = 3;
             this->ui->button_Precedent->setEnabled(true);
@@ -381,12 +381,12 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
             m_listeEtatComAnalyseurs[idAnalyseur] = false;
 
             QTableWidgetItem* itemCom_etat = new QTableWidgetItem(QLatin1String("Appareil en alarme"));
-            itemCom_etat->setTextColor(QColor(255,0,0));
+            itemCom_etat->setForeground(QColor(255,0,0));
             this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
         }
     }
     QTableWidgetItem* itemCom_interface = new QTableWidgetItem(interface);
-    itemCom_interface->setTextColor(QColor(255,0,0));
+    itemCom_interface->setForeground(QColor(255,0,0));
     this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_INTERFACE,itemCom_interface);
     analyseur->quitter();
     analyseur->deleteLater();
@@ -509,7 +509,8 @@ void et_InterfaceExecutionTest::erreurCommunicationAnalyseur()
     m_listeEtatComAnalyseurs[idAnalyseur] = false;
 
     QTableWidgetItem* itemCom_etat = new QTableWidgetItem("Erreur de communication");
-    itemCom_etat->setTextColor(QColor(255,0,0));
+
+    itemCom_etat->setForeground(QColor(255,0,0)); // modifié
     this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
 }
 
@@ -527,12 +528,12 @@ void et_InterfaceExecutionTest::ouverturePortComAnalyseur(bool ouverturePort)
         m_listeEtatComAnalyseurs[idAnalyseur] = false;
 
         QTableWidgetItem* itemCom_etat = new QTableWidgetItem("Erreur de l'ouverture du port");
-        itemCom_etat->setTextColor(QColor(255,0,0));
+        itemCom_etat->setForeground(QColor(255,0,0)); // modifié
         this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
     }
     else {
         QTableWidgetItem* itemCom_etat = new QTableWidgetItem("Communication Ok");
-        itemCom_etat->setTextColor(QColor(255,0,0));
+        itemCom_etat->setForeground(QColor(255,0,0)); // modifié
         this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
     }
 }
@@ -556,7 +557,7 @@ void et_InterfaceExecutionTest::buttonExecuterClicked()
 {
     if(!m_appareilEnTest.isNull()) {
         m_appareilEnTest->deleteLater();
-        QCoreApplication::flush();
+        QCoreApplication::sendPostedEvents();// modifié
     }
     ui->button_Precedent->setEnabled(false);
     ui->button_Executer->setEnabled(false);
@@ -649,7 +650,7 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
     for(int i =0;i<ui->tableWidget_Communication->rowCount();i++) {
         ushort idAnalyseur = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT)->text().toUInt();
         QString numSerieAna = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_NUM_SERIE)->text();
-        paramsTest->m_listeNumSerieAnalyseurs.insertMulti(idAnalyseur,numSerieAna);
+        paramsTest->m_listeNumSerieAnalyseurs.insert(idAnalyseur,numSerieAna); // modifié
     }
 
     return paramsTest;

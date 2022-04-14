@@ -25,7 +25,7 @@
 ////////////////////////////////////////////////////////////*/
 
 #include "executiontest.h"
-
+#include "QFinalState"
 ExecutionTest::ExecutionTest(const QPointer<et_ParamsTest> paramsTest,const QPointer<BdHandler> bdHandler,const short idListeTestEnCours)
 {
     m_idListeTestEnCours = idListeTestEnCours;
@@ -391,7 +391,7 @@ void ExecutionTest::testerPeripheriques()
 
         emit(traceTest(trace,1));
     }
-    emit(traceTest("code alarme calibrateur "+m_protocoleCalibrateur->demandeAlarme(),1));
+    emit(traceTest(&"code alarme calibrateur "[m_protocoleCalibrateur->demandeAlarme()],1));
 
     emit(this->peripheriquesOk());
 }
