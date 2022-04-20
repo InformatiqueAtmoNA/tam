@@ -133,9 +133,6 @@ OTHER_FILES += licence.txt \
     CreationBaseMySql.sql
 
 
-
-
-
 #win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/release/ -lqserialdevice
 #else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/debug/ -lqserialdevice
 #else:unix: LIBS += -L$$PWD/../qserialdevice/src/build-qserialdevice-Desktop-Release/release/ -lqserialdevice
