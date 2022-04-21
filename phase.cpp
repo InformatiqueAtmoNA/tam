@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file Phase.cpp
-// \brief Représente une phase lors du déroulement d'un test
+// \brief Represente une phase lors du deroulement d'un test
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 25/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -73,7 +73,7 @@ Phase& Phase::operator=(const Phase& newPhase) {
 }
 
 QDomElement Phase::exportToXml(QDomDocument & xmlTest) {
-    // Création de l'élément et ajout des attibuts s'ils existent
+    // Creation de l'element et ajout des attibuts s'ils existent
     QDomElement newPhase = xmlTest.createElement("phase");
     newPhase.setAttribute("no_phase",this->m_noPhase);
     if(!this->m_tempsMaxPhase.isNull())
@@ -87,13 +87,13 @@ QDomElement Phase::exportToXml(QDomDocument & xmlTest) {
     if(!this->m_tempsAttenteEntreMesure.isNull())
         newPhase.setAttribute("tps_attente_entre_mesure",this->m_tempsAttenteEntreMesure.toString("hh:mm:ss"));
 
-    // Création et ajout de l'élément XML polluant
+    // Creation et ajout de l'element XML polluant
     QDomElement polluant = xmlTest.createElement("polluant");
     polluant.setAttribute("type",m_idMolecule);
     polluant.setAttribute("id_concentration",m_idConcentration);
     newPhase.appendChild(polluant);
 
-    // Création et ajout de l'élément XML critere_arret s'il existe
+    // Creation et ajout de l'element XML critere_arret s'il existe
     if(this->m_critereArretPrevu) {
         QDomElement el_critereArret = xmlTest.createElement("critere_arret");
         el_critereArret.setAttribute("nb_cycle_mesure",this->m_criteresArret.at(CRITERE_ARRET_NB_CYCLES_MESURES));
@@ -105,7 +105,7 @@ QDomElement Phase::exportToXml(QDomDocument & xmlTest) {
         newPhase.appendChild(el_critereArret);
     }
 
-    // Création et ajout de l'élément XML commande_debut_phase s'il existe
+    // Creation et ajout de l'element XML commande_debut_phase s'il existe
     if(this->m_commandeDebutPhase != NO_CMD) {
         QDomElement el_commandeDebutPhase = xmlTest.createElement("commande_debut_phase");
         QDomText str_cmdFinTs = xmlTest.createTextNode(commandesToString(this->m_commandeDebutPhase));

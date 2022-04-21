@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file et_resultatpolluant.cpp
-// \brief Classe d'interface gérant l'affihage des rapports des tests
-// \author PIET Régis
+// \brief Classe d'interface gerant l'affihage des rapports des tests
+// \author PIET Regis
 // \version 1.0
 // \date 10/08/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -53,11 +53,11 @@ et_Resultatpolluant::et_Resultatpolluant(QList<QString> listNomColTpsRep,QVector
     this->ui->tableWidget->setVerticalHeaderLabels(m_listeEnteteLigne);
     this->ui->label->hide();
     this->ui->lineEditDroiteReg->hide();
-    this->ui->label_Valeur1->setText("Max Tps de Réponse =");
+    this->ui->label_Valeur1->setText("Max Tps de Reponse =");
     this->ui->lineEdit_Valeur1->setText(QString::number(tabValeurPourCritere.value(0),'f',2));
     this->ui->label_Critere1->setText("Critère (s) <");
     this->ui->lineEdit_Critere1->setText(QString::number(tabCritere.value(0),'f',2));
-    this->ui->label_Valeur2->setText("Difference Tps Réponse (s) =");
+    this->ui->label_Valeur2->setText("Difference Tps Reponse (s) =");
     this->ui->lineEdit_Valeur2->setText(QString::number(tabValeurPourCritere.value(1),'f',2));
     this->ui->label_Critere2->setText("Critère Max (s) <");
     this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
@@ -110,11 +110,11 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     this->ui->tableWidget->setVerticalHeaderLabels(m_listeEnteteLigne);
     this->ui->tableWidget->resizeColumnsToContents();
     this->ui->tableWidget->resizeRowsToContents();
-    this->ui->label_Valeur1->setText("Résidu Zéro (ppb) =");
+    this->ui->label_Valeur1->setText("Residu Zero (ppb) =");
     this->ui->lineEdit_Valeur1->setText(QString::number(tabValeurPourCritere.value(0),'f',2));
-    this->ui->label_Critere1->setText("Critère Zéro (ppb) <");
+    this->ui->label_Critere1->setText("Critère Zero (ppb) <");
     this->ui->lineEdit_Critere1->setText(QString::number(tabCritere.value(0),'f',2));
-    this->ui->label_Valeur2->setText("Résidu Max (%) =");
+    this->ui->label_Valeur2->setText("Residu Max (%) =");
     this->ui->lineEdit_Valeur2->setText(QString::number(tabValeurPourCritere.value(1),'f',2));
     this->ui->label_Critere2->setText("Critère Max (%) <");
     this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));

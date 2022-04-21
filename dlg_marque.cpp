@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file dlg_marque.cpp
-// \brief Classe d'interface graphique gérant la table Marque
+// \brief Classe d'interface graphique gerant la table Marque
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 25/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -95,14 +95,14 @@ void Dlg_Marque::changementSelection(const QModelIndex & idxSelection) {
 void Dlg_Marque::buttonSupprimerClicked() {
     if(!m_indexSelection.isValid())
         return;
-    int reponse = QMessageBox::question(this, "Supprimer un élément", "êtes-vous sûr de vouloir effacer cet enregistrement?",
+    int reponse = QMessageBox::question(this, "Supprimer un element", "êtes-vous sûr de vouloir effacer cet enregistrement?",
                   QMessageBox::Yes | QMessageBox::No);
 
     if (reponse == QMessageBox::No)
         return;
 
     if(!m_model->removeRow(m_indexSelection.row()))
-        QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé",QMessageBox::Ok);
+        QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demande",QMessageBox::Ok);
     else {
         m_model->submitAll();
         this->initialiserChamps();

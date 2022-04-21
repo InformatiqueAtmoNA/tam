@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file dlg_testxml.h
-// \brief Classe d'interface graphique gérant la table testXML
+// \brief Classe d'interface graphique gerant la table testXML
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 25/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or

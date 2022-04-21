@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////
 // \file mode4.cpp
-// \brief Gère l'envoi et la réception de commande MODE4
+// \brief Gère l'envoi et la reception de commande MODE4
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 31/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -46,12 +46,14 @@ Mode4::~Mode4() {
 QString* Mode4::creerTrameCommande(const QString & noCommande, const QString & data) {
     QString* trame = new QString();
 
-    trame->append(QString::number(STX, 16));  // modifié
+    char StartOfText = STX;
+    char EndOfText = ETX;
+    trame->append(QChar(StartOfText));  // modifie
     trame->append(this->adresse);
     trame->append(noCommande);
     trame->append(data);
-    trame->append(calculerBCC(*trame)->data()); // modifié
-    trame->append(QString::number(ETX, 16)); //modifié
+    trame->append(calculerBCC(*trame)->data()); // modifie
+    trame->append(QChar(EndOfText)); //modifie
     return trame;
 }
 
@@ -62,7 +64,7 @@ QString* Mode4::calculerBCC(const QString & trame) {
     char bcc = 0x00;
     for(int i=1;i<trame.length();i++) {
              bcc ^= trame[i].toLatin1();
-// Ajout de la condition suivante pour gérer les trames avec un nombre impair de caractère car sinon le BCC ne se calcul pas bien
+// Ajout de la condition suivante pour gerer les trames avec un nombre impair de caractère car sinon le BCC ne se calcul pas bien
 // Correction pour SX6000 ancien
              if (i == trame.length()-1 && i%2 == 1)
                  bcc ^= '0';
@@ -111,7 +113,7 @@ void* Mode4::parseConfig(const QString & trameConfig) {
         QString alarmes = trameConfig.mid(positionData+20,2);
         confAnalyseur->alarme = alarmes.toUShort();
         confAnalyseur->infoConfig->append("alarmes : "+QString::number(confAnalyseur->alarme));
-        // Teste si le chiffre représentant l'alarme est impair
+        // Teste si le chiffre representant l'alarme est impair
         if(confAnalyseur->alarme % 2 > 0)
             emit(this->alarmeGenerale()); // On declenche le signal d'alarme
 
@@ -150,7 +152,7 @@ void* Mode4::parseConfig(const QString & trameConfig) {
         confDiluteur->uvCalculee = trameConfig.mid(positionData+16,4).toUShort();
         confDiluteur->infoConfig->append(&"Lumiere UV calculee : "[confDiluteur->uvCalculee]);
         confDiluteur->pressionAtm = trameConfig.mid(positionData+20,4).toUShort();
-        confDiluteur->infoConfig->append(&"Pression atmosphérique : "[confDiluteur->pressionAtm]);
+        confDiluteur->infoConfig->append(&"Pression atmospherique : "[confDiluteur->pressionAtm]);
         confDiluteur->tempInterne = trameConfig.mid(positionData+24,4).toFloat();
         confDiluteur->infoConfig->append("Temperature interne : "+QString::number(confDiluteur->tempInterne));
         confDiluteur->tempFour = trameConfig.mid(positionData+28,3).toFloat();
@@ -182,19 +184,19 @@ QString* Mode4::getStrForNumber(const ushort & nombre,const ushort & nbDigit) {
     return strNombre;
 }
 
-// Initialisation des parametres du périphérique
+// Initialisation des parametres du peripherique
 bool Mode4::init() {
     this->passageMesure();
     return true;
 }
 
-// Regle l'appareil sur son mode de fonctionnement par défaut
+// Regle l'appareil sur son mode de fonctionnement par defaut
 bool Mode4::parDefault() {
     this->passageMesure();
     return true;
 }
 
-// Renvoie l'offsetdu periphérique
+// Renvoie l'offsetdu peripherique
 short Mode4::offset() {
     Mode4_AnalyseurConfig* config = (Mode4_AnalyseurConfig*)commandeConfig();
     if(config==NULL)
@@ -202,7 +204,7 @@ short Mode4::offset() {
     return config->offset;
 }
 
-// Renvoie le flottant représenté dans la chaine passé en paramètre
+// Renvoie le flottant represente dans la chaine passe en paramètre
 float Mode4::getMesureFromString(const QString & mesure) {
     for(ushort i=0;i<mesure.length();i++)
         if(mesure.at(i)!='0') {
@@ -227,7 +229,7 @@ QPointer<MesureIndividuelle> Mode4::demandeMesure() {
     if(this->accepteMesureFloat) {
         // On enleve la partie de la trame jusqu'au separateur inclu
         reponse.remove(0,reponse.indexOf(" ")+1);
-        // Le nouveau début de trame est la voie 1
+        // Le nouveau debut de trame est la voie 1
         mesures.data()->append(reponse.left(reponse.indexOf(" ")).toFloat());
         // On enleve la partie de la trame correspondant à la voie 1
         reponse.remove(0,reponse.indexOf(" ")+1);
@@ -297,7 +299,7 @@ void Mode4::passageZero() {
     this->transaction(cmd);
 }
 
-// Demande de passage en mode étalon
+// Demande de passage en mode etalon
 void Mode4::passageEtalon() {
     QString cmd = *(this->creerTrameCommande("08","9999\0"));
     this->transaction(cmd);
@@ -345,7 +347,7 @@ void Mode4::commandeSpanTpg(const SpanHandler & spanTpgData) {
     this->commandeSpan(spanTpgData);
 }
 
-// Reset du périphérique
+// Reset du peripherique
 bool Mode4::reset() {
     QString cmd;
     if(this->typePeripherique==ANALYSEUR)
@@ -354,11 +356,11 @@ bool Mode4::reset() {
         cmd = *(this->creerTrameCommande("00","\0"));
 
     emit(this->envoiTrame(cmd));
-    qDebug()<<"Trame reset envoyée : "<<cmd;
+    qDebug()<<"Trame reset envoyee : "<<cmd;
     return true;
 }
 
-// mise en stand-by du périphérique
+// mise en stand-by du peripherique
 bool Mode4::standBy() {
     QString cmd;
     if(this->typePeripherique==ANALYSEUR)
@@ -395,7 +397,7 @@ void* Mode4::commandeConfig() {
     return conf;
 }
 
-// Renvoie la liste des commandes autorisées par le protocole
+// Renvoie la liste des commandes autorisees par le protocole
 QVector<Commandes> const* Mode4::getListeCommandes() {
     QVector<Commandes>* commandesAutorisees;
 

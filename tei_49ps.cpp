@@ -1,11 +1,11 @@
 /*//////////////////////////////////////////////////////////////////////
 // \file tei_49ps.h
-// \brief Classe dérivée de Tei pour les générateurs d'ozone SONIMIX 49ps
+// \brief Classe derivee de Tei pour les generateurs d'ozone SONIMIX 49ps
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 31/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -39,7 +39,7 @@ bool Tei_49ps::standBy() {
 
 // Commande au diluteur de se mettre à un certain point de gaz
 void Tei_49ps::commandeSpan(const SpanHandler & spanData) {
-    qDebug()<<"TEI-49ps : commande non supportée :";
+    qDebug()<<"TEI-49ps : commande non supportee :";
     qDebug()<<"CommandeSpan("<<spanData.getCanal()<<","<<spanData.getPoint()<<","<<spanData.getConcO3()<<")";
 }
 
@@ -52,9 +52,9 @@ void Tei_49ps::commandeSpanZero(const QString & canal) {
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
-// Commande non supportée par l'appareil
+// Commande non supportee par l'appareil
 void Tei_49ps::commandeSpanTpg(const SpanHandler & spanTpgData) {
-    qDebug()<<"TEI-49ps : commande non supportée :";
+    qDebug()<<"TEI-49ps : commande non supportee :";
     qDebug()<<"CommandeSpan("<<spanTpgData.getCanal()<<","<<spanTpgData.getPoint()<<","<<spanTpgData.getConcO3()<<")";
 }
 
@@ -63,7 +63,7 @@ void Tei_49ps::commandeSpanO3(const SpanHandler & spanO3Data) {
     QString trame = "set O3 conc " + QString::number(spanO3Data.getConcO3());
     QString cmd = *(this->creerTrameCommande(trame));
     QString reponse = this->transaction(cmd);
-    // Si la réponse n'est pas vide alors la commande a réussie
+    // Si la reponse n'est pas vide alors la commande a reussie
     if(!reponse.isEmpty())
         return;
     // Sinon on essaie la deuxième manière
@@ -72,7 +72,7 @@ void Tei_49ps::commandeSpanO3(const SpanHandler & spanO3Data) {
     this->transaction(cmd);
 }
 
-// Renvoie la liste des commandes autorisées par le protocole
+// Renvoie la liste des commandes autorisees par le protocole
 QVector<Commandes> const* Tei_49ps::getListeCommandes() {
     QVector<Commandes>* commandesAutorisees = new QVector<Commandes>(3);
 

@@ -45,7 +45,7 @@ void Mode4_SX_6000_1808::commandeSpanTpg(SpanHandler const & spanTpgData) {
     this->commandeSpan(spanTpgData);
 }
 
-// Renvoie la liste des commandes autorisées par le protocole
+// Renvoie la liste des commandes autorisees par le protocole
 QVector<Commandes> const* Mode4_SX_6000_1808::getListeCommandes() {
     QVector<Commandes>* commandesAutorisees = new QVector<Commandes>(7);
 

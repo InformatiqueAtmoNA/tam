@@ -5,7 +5,8 @@ QT += sql \
     xml \
     widgets\
     serialport \
-    statemachine
+    statemachine \
+    core
 
 TARGET = TAM
 TEMPLATE = app

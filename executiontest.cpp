@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file executiontest.cpp
-// \brief Classe implémentant l'exécution des tests métrologiques
+// \brief Classe implementant l'execution des tests metrologiques
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 20/06/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -199,7 +199,7 @@ void ExecutionTest::constructionMachineEtat()
     connect(this,SIGNAL(erreurPeripherique()),this,SLOT(erreurPeripheriqueRecue()));
 
 ////////////////////////////////////////////////////////////////
-/*////////////////// Déroulement du test//////////////////////*/
+/*////////////////// Deroulement du test//////////////////////*/
 ////////////////////////////////////////////////////////////////
     QState* st_deroulementTest = new QState(st_testMetro);
     QState* st_debutDeroulementTest = new QState(st_deroulementTest);
@@ -304,7 +304,7 @@ void ExecutionTest::constructionMachineEtat()
     connect(st_enregistrementMesures,SIGNAL(entered()),this,SLOT(enregistrerMesures()));
 
 /////////////////////////////////////////////////////////////////////
-/*////////////////// Déroulement de la phase //////////////////////*/
+/*////////////////// Deroulement de la phase //////////////////////*/
 /////////////////////////////////////////////////////////////////////
     QState* st_initialisationPhase = new QState(st_deroulementPhase);
     QState* st_envoiConcentration = new QState(st_deroulementPhase);
@@ -379,7 +379,7 @@ void ExecutionTest::constructionMachineEtat()
 
 void ExecutionTest::testerPeripheriques()
 {
-    emit(traceTest("test des périphériques",0));
+    emit(traceTest("test des peripheriques",0));
     QMapIterator<ushort,QPointer<Protocole> > it_anaDesignProto(m_analyseursProtocole);
     while (it_anaDesignProto.hasNext()) {
         it_anaDesignProto.next();
@@ -399,7 +399,7 @@ void ExecutionTest::testerPeripheriques()
 void ExecutionTest::run()
 {
     emit(traceTest("------------------------------------------------------",0));
-    emit(traceTest("           Début du test "+ QString::number(m_paramsTest.data()->m_test->getIdTest()),0));
+    emit(traceTest("           Debut du test "+ QString::number(m_paramsTest.data()->m_test->getIdTest()),0));
     emit(traceTest("------------------------------------------------------\n",0));
 
     m_timerDemmarageMachine->start();
@@ -423,7 +423,7 @@ void ExecutionTest::lancerTimerTempsMaxPhase()
 void ExecutionTest::lancerTimerTempsAcquisition()
 {
     ushort tempsAcquisition = m_paramsTest.data()->m_test->getTempsAcquisition()*1000;
-    emit(traceTest("Timer temps acquisition lancé : "+QString::number(tempsAcquisition),2));
+    emit(traceTest("Timer temps acquisition lance : "+QString::number(tempsAcquisition),2));
     m_timerTempsAcquisition->start(tempsAcquisition);
 
     if(m_flagPhaseInitialisee) {
@@ -555,7 +555,7 @@ void ExecutionTest::initialiserPhase()
 
     m_flagPhaseInitialisee = true;
 
-    emit(traceTest("Début du la phase n° "+QString::number(m_noPhaseSuivante),0));
+    emit(traceTest("Debut du la phase n° "+QString::number(m_noPhaseSuivante),0));
 
     emit(this->initialisationPhaseTerminee());
 }
@@ -653,7 +653,7 @@ void ExecutionTest::enregistrerMoyenneMesures()
 
 void ExecutionTest::testTermine()
 {
-    emit(traceTest("test terminé",0));
+    emit(traceTest("test termine",0));
 
     m_bdHandler->miseAjourDateHeureFinTest(m_paramsTest.data()->m_id_TestMetro);
 
@@ -695,7 +695,7 @@ void ExecutionTest::tempsStabilisationFini()
 
 void ExecutionTest::verifierCritereArret()
 {
-    emit(traceTest("Vérification du critère d'arrêt",0));
+    emit(traceTest("Verification du critère d'arrêt",0));
 
     QMapIterator<ushort,QVector<QPointer<MesureIndividuelle> > > it_tabMoyennesMesuresParPhase(m_tabMoyennesMesuresParPhase);
     while(it_tabMoyennesMesuresParPhase.hasNext()) {

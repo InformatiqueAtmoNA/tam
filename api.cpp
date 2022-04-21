@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////
 // \file Api.cpp
-// \brief Gère l'envoi et la réception de commande API
+// \brief Gère l'envoi et la reception de commande API
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 31/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -33,7 +33,7 @@ Api::Api(const QString & adressePeriph, const TypePeripherique & typePeriph, con
     this->versionProtocole = protocoleUtilise;
 }
 
-// \brief Crée une trame en fonction du numéro de commande API
+// \brief Cree une trame en fonction du numero de commande API
 QString* Api::creerTrameCommande(const QString & typeCommande,const QString & data) {
     QString* trame = new QString();
     trame->append(typeCommande);
@@ -41,7 +41,7 @@ QString* Api::creerTrameCommande(const QString & typeCommande,const QString & da
     trame->append(this->adresse);
     trame->append(" ");
     trame->append(data);
-    trame->append(QString::number(CR,16)); // modifié
+    trame->append(QString::number(CR,16)); // modifie
     return trame;
 }
 
@@ -78,7 +78,7 @@ QPointer<MesureIndividuelle> Api::demandeMesureNox() {
     return mesures;
 }
 
-// Demande de mesure immédiate
+// Demande de mesure immediate
 QPointer<MesureIndividuelle> Api::demandeMesure() {
     QString cmd;
 
@@ -142,7 +142,7 @@ void Api::passageZero() {
     this->transaction(cmd);
 }
 
-// Demande de passage en mode étalon
+// Demande de passage en mode etalon
 void Api::passageEtalon() {
     QString cmd = *(this->creerTrameCommande("C","SPAN"));
     this->transaction(cmd);
@@ -185,14 +185,14 @@ void Api::commandeSpanO3(const SpanHandler & spanData) {
     this->transaction(cmd);
 }
 
-// Mise en stand-by du périphérique
+// Mise en stand-by du peripherique
 bool Api::standBy() {
     QString cmd = *(this->creerTrameCommande("C","STANDBY"));
     this->transaction(cmd);
     return true;
 }
 
-// Renvoie la liste des commandes autorisées par le protocole
+// Renvoie la liste des commandes autorisees par le protocole
 QVector<Commandes> const* Api::getListeCommandes() {
     QVector<Commandes>* commandesAutorisees;
 

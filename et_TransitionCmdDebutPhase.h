@@ -28,6 +28,8 @@
 #ifndef ET_TRANSITIONCOMMANDEDEBUTPHASE_H
 #define ET_TRANSITIONCOMMANDEDEBUTPHASE_H
 
+#include <QEvent>
+#include <QAbstractTransition>
 //#include "ev_TestCommandeDebutPhase.h"
 #define EVENT_TEST_CMD_DEBUT_PHASE QEvent::User+4
 

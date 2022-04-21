@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////
 // \file spanhandler.cpp
-// \brief Classe gérant les paramètres de span
+// \brief Classe gerant les paramètres de span
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 31/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or

@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////
 // \file tei_146i.cpp
-// \brief Classe dérivée de Tei pour les diluteur 146i
+// \brief Classe derivee de Tei pour les diluteur 146i
 // \author FOUQUART Christophe
 // \version 0.1
 // \date 31/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -86,7 +86,7 @@ void Tei_146i::commandeSpanO3(const SpanHandler & spanO3Data) {
     this->transaction(cmd);
 }
 
-// Renvoie la liste des commandes autorisées par le protocole
+// Renvoie la liste des commandes autorisees par le protocole
 QVector<Commandes> const* Tei_146i::getListeCommandes() {
     QVector<Commandes>* commandesAutorisees = new QVector<Commandes>(6);
 

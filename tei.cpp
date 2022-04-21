@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////
 // \file Tei.cpp
-// \brief Gère l'envoi et la réception de commande Tei
+// \brief Gère l'envoi et la reception de commande Tei
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 31/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -40,7 +40,7 @@ Tei::Tei(const QString & adressePeriph,const TypePeripherique & typePeriph,const
     this->optionTpg = optionTpg;
 }
 
-// Crée une trame au format TEI
+// Cree une trame au format TEI
 QString* Tei::creerTrameCommande(const QString & commande) {
     QString* trame = new QString();
     trame->append(this->adresse);
@@ -60,7 +60,7 @@ bool Tei::setModeRemote() {
     return false;
 }
 
-// Paramétrage du format de trame
+// Parametrage du format de trame
 bool Tei::setFormat() {
     QString cmd = *(this->creerTrameCommande("set format 00"));
     QString reponse = this->transaction(cmd);
@@ -72,20 +72,20 @@ bool Tei::setFormat() {
 }
 
 
-// Initialisation des parametres du périphérique
+// Initialisation des parametres du peripherique
 bool Tei::init() {
     this->setModeRemote();
     this->setFormat();
     return true;
 }
 
-// Regle l'appareil sur son mode de fonctionnement par défaut
+// Regle l'appareil sur son mode de fonctionnement par defaut
 bool Tei::parDefault() {
     this->setModeRemote();
     return true;
 }
 
-// Renvoie l'offsetdu periphérique
+// Renvoie l'offsetdu peripherique
 short Tei::offset() {
     return 0;
 }
@@ -97,7 +97,7 @@ float Tei::getFloatFromMesureString(QString reponse) {
     return reponse.toFloat();
 }
 
-// Demande de mesure immédiate pour le NOX
+// Demande de mesure immediate pour le NOX
 QPointer<MesureIndividuelle> Tei::demandeMesureNox() {
     QString cmd;
     QPointer<MesureIndividuelle> tabMesures(new MesureIndividuelle());
@@ -172,7 +172,7 @@ ushort Tei::demandeAlarme() {
 
     for(int i=0;i<4;i++) {
         if(flagsAlarme.at(i)!='0') {
-            qDebug()<<"Alarme générale : "<<flagsAlarme;
+            qDebug()<<"Alarme generale : "<<flagsAlarme;
             emit(this->alarmeGenerale());
             return 1;
         }
@@ -214,7 +214,7 @@ void Tei::passageZero() {
     this->transaction(cmd);
 }
 
-// Demande de passage en mode étalon
+// Demande de passage en mode etalon
 void Tei::passageEtalon() {
     QString cmd = *(this->creerTrameCommande("set span"));
     this->transaction(cmd);
@@ -226,7 +226,7 @@ void Tei::passageMesure() {
     this->transaction(cmd);
 }
 
-// mise en stand-by du périphérique
+// mise en stand-by du peripherique
 bool Tei::standBy() {
     QString cmd = *(this->creerTrameCommande("set gas off"));
     QString reponse = this->transaction(cmd);
@@ -237,7 +237,7 @@ bool Tei::standBy() {
     return true;
 }
 
-// Renvoie la liste des commandes autorisées par le protocole
+// Renvoie la liste des commandes autorisees par le protocole
 QVector<Commandes> const* Tei::getListeCommandes() {
     QVector<Commandes>* commandesAutorisees = new QVector<Commandes>(6);
     (*commandesAutorisees)[0] = DATE_HEURE;

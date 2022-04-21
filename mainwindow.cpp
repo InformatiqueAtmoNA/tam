@@ -5,7 +5,7 @@
 // \version 1.0
 // \date 25/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -140,7 +140,7 @@ void MainWindow::afficherCreationTest(const QString fichierDescription)
         if(!QFile::exists(fichierDescription)) {
             QMessageBox msgBox;
             msgBox.setText(QLatin1String("Un problème est survenu lors du chargement du fichier de configuration du test"));
-            msgBox.setInformativeText("Le fichier "+fichierDescription+" n'a pas pu être chargé");
+            msgBox.setInformativeText("Le fichier "+fichierDescription+" n'a pas pu être charge");
             msgBox.setStandardButtons(QMessageBox::Ok);
             msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.setIcon(QMessageBox::Critical);
@@ -176,7 +176,7 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
     if(!QFile::exists(fichierDescription)) {
         QMessageBox msgBox;
         msgBox.setText(QLatin1String("Un problème est survenu lors du chargement du fichier de configuration du test"));
-        msgBox.setInformativeText("Le fichier "+fichierDescription+" n'a pas pu être chargé");
+        msgBox.setInformativeText("Le fichier "+fichierDescription+" n'a pas pu être charge");
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.setIcon(QMessageBox::Critical);
@@ -258,10 +258,10 @@ void MainWindow::aPropos()
 {
     QMessageBox::about(this,"A propos de TAM","TAM 3.0.67 \n"
                        "Version du 11/06/2014 \n\n"
-                       "Basé sur Qt " QT_VERSION_STR "\n\n"
+                       "Base sur Qt " QT_VERSION_STR "\n\n"
                        "Copyright (C) 2011-2014 TAM Team \n"
-                       "TAM est distribué sous les termes de la \n"
-                       "Licence Publique Générale (GPL) V2 \n\n");
+                       "TAM est distribue sous les termes de la \n"
+                       "Licence Publique Generale (GPL) V2 \n\n");
 }
 
 void MainWindow::programmerSerieTests()

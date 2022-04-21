@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file et_infostestencours.cpp
-// \brief Classe regroupant les infos d'exécution d'un test
+// \brief Classe regroupant les infos d'execution d'un test
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 11/08/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -86,8 +86,8 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
     if(fichierCSV.isNull()) {
         QMessageBox msgBox;
-        msgBox.setText("Un problème a été rencontré lors de la création du fichier CSV");
-        msgBox.setInformativeText("Impossible de créer le fichier CSV");
+        msgBox.setText("Un problème a ete rencontre lors de la creation du fichier CSV");
+        msgBox.setInformativeText("Impossible de creer le fichier CSV");
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
@@ -98,8 +98,8 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
     if(!ouvertureFichierCSV) {
         QMessageBox msgBox;
-        msgBox.setText("Un problème a été rencontré lors de la création du fichier CSV");
-        msgBox.setInformativeText("Impossible de créer le fichier CSV");
+        msgBox.setText("Un problème a ete rencontre lors de la creation du fichier CSV");
+        msgBox.setInformativeText("Impossible de creer le fichier CSV");
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
@@ -131,10 +131,10 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
         paramsTest->m_fichierCSV->write(QString("Type de test :;"+trace+"\n").toLatin1());
 
     trace = paramsTest->m_nomOperateur;
-    ui->textEdit_ParametresTest->append("Opérateur : "+trace);
+    ui->textEdit_ParametresTest->append("Operateur : "+trace);
     trace.append("\n");
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Opérateur :;"+trace).toLatin1());
+        paramsTest->m_fichierCSV->write(QString("Operateur :;"+trace).toLatin1());
 
     trace = paramsTest->m_designationLieu;
     ui->textEdit_ParametresTest->append("Lieu : "+trace);
@@ -146,7 +146,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
     if(remplirFichierCSV)
         paramsTest->m_fichierCSV->write(QString(trace+"\n").toLatin1());
 
-    trace = "Système d'étalonnage :";
+    trace = "Système d'etalonnage :";
     ui->textEdit_ParametresTest->append(trace);
     if(remplirFichierCSV)
         paramsTest->m_fichierCSV->write(QString(trace+"\n").toLatin1());
@@ -170,9 +170,9 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
         paramsTest->m_fichierCSV->write(QString("Bouteille :;"+trace+"\n").toLatin1());
 
     trace = m_bdHandler->getEquipementNumSerie(idGZero);
-    ui->textEdit_ParametresTest->append("Générateur d'air zéro : "+trace);
+    ui->textEdit_ParametresTest->append("Generateur d'air zero : "+trace);
     if(remplirFichierCSV)
-        paramsTest->m_fichierCSV->write(QString("Générateur d'air zéro :;"+trace+"\n").toLatin1());
+        paramsTest->m_fichierCSV->write(QString("Generateur d'air zero :;"+trace+"\n").toLatin1());
 
     trace = "\nAnalyseurs :";
     ui->textEdit_ParametresTest->append(trace);
@@ -210,13 +210,13 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
     if(remplirFichierCSV)
         paramsTest->m_fichierCSV->write(QString("Nombre de cycles de phases :;"+trace+"\n").toLatin1());
 
-    trace = "--Déroulement--";
+    trace = "--Deroulement--";
     ui->textEdit_ParametresTest->append(trace);
     if(remplirFichierCSV)
         paramsTest->m_fichierCSV->write(QString(trace+"\n").toLatin1());
 
     for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
-        trace = "Numéro de phase : ";
+        trace = "Numero de phase : ";
         trace.append(QString::number(i));
         ui->textEdit_ParametresTest->append(trace);
 
@@ -240,7 +240,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             trace.append(tpsAttenteEntreCycleMesures);
         ui->textEdit_ParametresTest->append(trace);
 
-        trace = "Commande de début de phase : ";
+        trace = "Commande de debut de phase : ";
         QString cmdDebutPhase = commandesToString(paramsTest->m_test->getPhase(i).getCmdDebutPhase());
         if(cmdDebutPhase == "NO_CMD")
             trace.append("--");
@@ -296,7 +296,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
         delete record;
         ui->textEdit_ParametresTest->append(trace);
 
-        trace = "Concentration réelle : ";
+        trace = "Concentration reelle : ";
         record = m_bdHandler->getConcentrationRow(paramsTest->m_test->getPhase(i).getIdConcentration());
         trace.append(record->value(CONCENTRATION_REELLE).toString());
         delete record;
@@ -312,7 +312,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
         for(int j=0;j<nbMaxConcentrationAssociees;j++) {
             trace = "Polluant associe " + QString::number(j+1)+" : ";
-            QString trace2 = "Concentration associée " + QString::number(j+1)+" : ";
+            QString trace2 = "Concentration associee " + QString::number(j+1)+" : ";
 
             QPointer<QSqlRelationalTableModel> model = mapConcentrationsAssociee.value(i);
 
@@ -328,7 +328,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
     }
 
     if(remplirFichierCSV) {
-        trace = "Numéro de phase :;";
+        trace = "Numero de phase :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
             trace.append(QString::number(i)+";");
         }
@@ -367,7 +367,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
         trace.append("\n");
         paramsTest->m_fichierCSV->write(trace.toLatin1());
 
-        trace = "Commande de début de phase :;";
+        trace = "Commande de debut de phase :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
             QString cmdDebutPhase = commandesToString(paramsTest->m_test->getPhase(i).getCmdDebutPhase());
             if(cmdDebutPhase == "NO_CMD")
@@ -447,7 +447,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
         trace.append("\n");
         paramsTest->m_fichierCSV->write(trace.toLatin1());
 
-        trace = "Concentration réelle :;";
+        trace = "Concentration reelle :;";
         for(int i=1;i<=paramsTest->m_test->getNbPhases();i++) {
             QSqlRecord* record = m_bdHandler->getConcentrationRow(paramsTest->m_test->getPhase(i).getIdConcentration());
             trace.append(record->value(CONCENTRATION_REELLE).toString()+";");
@@ -468,7 +468,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
         for(int i=0;i<nbMaxConcentrationAssociees;i++) {
             trace = "Polluant associe "+QString::number(i+1)+" :;";
-            QString trace2 = "Concentration associée "+QString::number(i+1)+" :;";
+            QString trace2 = "Concentration associee "+QString::number(i+1)+" :;";
 
             for(int j=1;j<=paramsTest->m_test->getNbPhases();j++) {
                 QPointer<QSqlRelationalTableModel> model = mapConcentrationsAssociee.value(j);
@@ -504,7 +504,7 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     afficherTraceTest("ID Test_XML "+QString::number(paramsTest->m_id_TestXML),2);
     afficherTraceTest("Type de Test "+typeTestToString( paramsTest->m_test->getTypeTest()),2);
     enregistrement.setValue(TEST_METRO__TYPE_TEST,QVariant::fromValue(typeTestToString( paramsTest->m_test->getTypeTest())));
-    afficherTraceTest("ID Opérateur "+QString::number(paramsTest->m_idOperateur),2);
+    afficherTraceTest("ID Operateur "+QString::number(paramsTest->m_idOperateur),2);
     enregistrement.setValue(TEST_METRO_ID_OPERATEUR,QVariant::fromValue(paramsTest->m_idOperateur));
     afficherTraceTest("ID Système Etalon "+QString::number(paramsTest->m_test->getIdSystemeEtalon()),2);
     enregistrement.setValue(TEST_METRO_ID_SYSTEME_ETALON,QVariant::fromValue(paramsTest->m_test->getIdSystemeEtalon()));
@@ -512,12 +512,12 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_ID_LIEU,QVariant::fromValue(paramsTest->m_idLieu));
     afficherTraceTest("Pression "+QString::number(paramsTest->m_pression),2);
     enregistrement.setValue(TEST_METRO_PRESSION,QVariant::fromValue(paramsTest->m_pression));
-    afficherTraceTest("Température "+QString::number(paramsTest->m_temperature),2);
+    afficherTraceTest("Temperature "+QString::number(paramsTest->m_temperature),2);
     enregistrement.setValue(TEST_METRO_TEMPERATURE,QVariant::fromValue(paramsTest->m_temperature));
     m_dateHeureDebut = QDateTime::currentDateTime();
-    //afficherTraceTest("Date début "+paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"),2);
+    //afficherTraceTest("Date debut "+paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"),2);
     //enregistrement.setValue(TEST_METRO_DATE_DEBUT,QVariant::fromValue(paramsTest->m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
-    afficherTraceTest("Date début "+m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"),0);
+    afficherTraceTest("Date debut "+m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss"),0);
     enregistrement.setValue(TEST_METRO_DATE_DEBUT,QVariant::fromValue(m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
     enregistrement.setValue(TEST_METRO_DATE_FIN,QVariant::fromValue(m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
     afficherTraceTest(&"Temps d'acquisistion "[paramsTest->m_test->getTempsAcquisition()],2);

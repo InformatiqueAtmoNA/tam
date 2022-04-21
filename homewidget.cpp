@@ -5,7 +5,7 @@
 // \version 1.0
 // \date 26/06/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -147,7 +147,7 @@ void HomeWidget::tableViewTestRapportIndexChanged(const QModelIndex & index)
 void HomeWidget::treeViewTestRapportIndexChanged(const QModelIndex & index)
 {
     this->m_idxSelectionItemRapport = index;
-    if (!m_itemModele->hasChildren(m_idxSelectionItemRapport.model()->index(0,0))){ // modifié
+    if (!m_itemModele->hasChildren(m_idxSelectionItemRapport.model()->index(0,0))){ // modifie
         this->ui->button_Afficher->setEnabled(m_idxSelectionItemRapport.isValid());
     }
     else {
@@ -181,7 +181,7 @@ void HomeWidget::buttonExecuterClicked()
 void HomeWidget::buttonSupprimerClicked() {
     if(!this->m_idxSelectionTest.isValid())
         return;
-    int reponse = QMessageBox::question(this,"Supprimer un élément?","Voulez vous vraiment supprimer le test sélectionné?", QMessageBox::Yes | QMessageBox::No);
+    int reponse = QMessageBox::question(this,"Supprimer un element?","Voulez vous vraiment supprimer le test selectionne?", QMessageBox::Yes | QMessageBox::No);
 
     if (reponse == QMessageBox::No)
         return;
@@ -208,8 +208,8 @@ void HomeWidget::buttonAfficherClicked()
     else if (ui->treeView->currentIndex().isValid()){
 
         ushort typeTest = stringToTypeTest(m_idxSelectionItemRapport.parent().data().toString());
-        ushort idTest = m_idxSelectionItemRapport.model()->index(0,0).data().toInt(); // modifié
-        ushort idAnalyseur = m_idxSelectionItemRapport.model()->index(1,0).data().toInt(); // modifié
+        ushort idTest = m_idxSelectionItemRapport.model()->index(0,0).data().toInt(); // modifie
+        ushort idAnalyseur = m_idxSelectionItemRapport.model()->index(1,0).data().toInt(); // modifie
 
         emit(this->afficherRapport(idTest,idAnalyseur,typeTest));
      }
@@ -218,14 +218,14 @@ void HomeWidget::buttonAfficherClicked()
 void HomeWidget::buttonSupprimerTestResultatClicked() {
     if(!m_idxSelectionRapport.isValid())
         return;
-    int reponse = QMessageBox::question(this, "Supprimer un élément", "êtes-vous sûr de vouloir effacer cet enregistrement?",
+    int reponse = QMessageBox::question(this, "Supprimer un element", "êtes-vous sûr de vouloir effacer cet enregistrement?",
                   QMessageBox::Yes | QMessageBox::No);
 
     if (reponse == QMessageBox::No)
         return;
 
     if(!m_modelRapport->removeRow(m_idxSelectionRapport.row()))
-        QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé",QMessageBox::Ok);
+        QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demande",QMessageBox::Ok);
     else {
         //m_modelRapport->();
         this->getListeRapports();

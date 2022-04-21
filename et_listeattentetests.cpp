@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file et_listeattentetests.cpp
-// \brief Classe d'interface gérant la liste d'attente des tests en cours
+// \brief Classe d'interface gerant la liste d'attente des tests en cours
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 10/08/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -206,7 +206,7 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
 void et_listeAttenteTests::killExecutionTestEtThread(const short id)
 {
 
-    this->ui->tabWidget->setCurrentIndex(0); //astuce trouvée pour que les ports séries se ferment bien entre deux tests
+    this->ui->tabWidget->setCurrentIndex(0); //astuce trouvee pour que les ports series se ferment bien entre deux tests
 
 
     QPointer<ExecutionTest> testEnCours = m_listeTestsEnExecution.value(id);

@@ -26,7 +26,7 @@ Protocole::~Protocole() {
     threadCommunication->deleteLater();
     while(threadCommunication->isRunning()) {
         QCoreApplication::processEvents();
-        QCoreApplication::sendPostedEvents(); // modifié
+        QCoreApplication::sendPostedEvents(); // modifie
     }
 }
 
@@ -56,17 +56,17 @@ ushort Protocole::getTimeOut() {
     return this->timeout;
 }
 
-// Affecte un nouvel état de la communication RS232
+// Affecte un nouvel etat de la communication RS232
 void Protocole::changementEtat(const ushort newEtatCom) {
     this->flagEtatCom = newEtatCom;
 }
 
-// Retourne l'état de la communication RS232
+// Retourne l'etat de la communication RS232
 ushort Protocole::getEtatCom() {
     return this->flagEtatCom;
 }
 
-// Execute une transaction avec le périphérique (ecriture/attente réponse)
+// Execute une transaction avec le peripherique (ecriture/attente reponse)
 QString Protocole::transaction(const QString & commande) {
     this->timerFini = false;
 
@@ -83,13 +83,13 @@ QString Protocole::transaction(const QString & commande) {
 
     timerCommunication.start(this->timeout);
     connect(&timerCommunication,SIGNAL(timeout()),this,SLOT(timeoutCom()));
-    // On attend timeout ms de recevoir la réponse
+    // On attend timeout ms de recevoir la reponse
     while(!this->timerFini) {
         if(m_avorterTransaction)
             return NULL;
         QCoreApplication::processEvents();
     }
-    // Si pas de réponse
+    // Si pas de reponse
     if(this->flagEtatCom == ETAT_ATTENTE) {
         emit(this->erreurTransmission());
         return NULL;
@@ -98,7 +98,7 @@ QString Protocole::transaction(const QString & commande) {
 
     // Si erreur de commande
     // CONDITION A MODIFIER LORS DE L'AJOUT DE NOUVEAUX PROTOCOLES
-    if(this->trame.at(1)==QString::number(NAK) || this->trame.contains("bad command")) { // modifié
+    if(this->trame.at(1)==QString::number(NAK,16) || this->trame.contains("bad command")) { // modifie
         emit(this->erreurCommande());
         qDebug()<<"Erreur commande";
         return NULL;
@@ -117,7 +117,7 @@ void Protocole::lectureTrame(const QString & data) {
     this->flagEtatCom = ETAT_LECTURE;
 }
 
-// Slot appelé lorsque le timer de communication est fini
+// Slot appele lorsque le timer de communication est fini
 void Protocole::timeoutCom() {
     this->timerFini = true;
 }
@@ -179,23 +179,23 @@ QPointer<Protocole> Protocole::getProtocoleObject(const DesignationProtocole & d
 // Commande au diluteur de se mettre à un certain point de gaz
 void Protocole::commandeSpan(const SpanHandler & spanData) {
     qDebug()<<"commandeSpan("<<spanData.getCanal()<<","<<spanData.getPoint()<<")";
-    qDebug()<<"Cette commande doit être réimplémentée dans une classe dérivée";
+    qDebug()<<"Cette commande doit être reimplementee dans une classe derivee";
 }
 
 // Commande au diluteur de se mettre au point de gaz zero
 void Protocole::commandeSpanZero(const QString & canal) {
     qDebug()<<"commandeSpanZero("<<canal<<")";
-    qDebug()<<"Cette commande doit être réimplémentée dans une classe dérivée";
+    qDebug()<<"Cette commande doit être reimplementee dans une classe derivee";
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz
 void Protocole::commandeSpanTpg(const SpanHandler & spanTpgData) {
     qDebug()<<"commandeSpan("<<spanTpgData.getCanal()<<","<<spanTpgData.getPoint()<<","<<spanTpgData.getConcO3()<<")";
-    qDebug()<<"Cette commande doit être réimplémentée dans une classe dérivée";
+    qDebug()<<"Cette commande doit être reimplementee dans une classe derivee";
 }
 
 // Commande au diluteur de se mettre à un certain point de gaz O3
 void Protocole::commandeSpanO3(const SpanHandler & spanO3Data) {
     qDebug()<<"commandeSpan("<<spanO3Data.getCanal()<<","<<spanO3Data.getPoint()<<")";
-    qDebug()<<"Cette commande doit être réimplémentée dans une classe dérivée";
+    qDebug()<<"Cette commande doit être reimplementee dans une classe derivee";
 }

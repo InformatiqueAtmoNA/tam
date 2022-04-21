@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////
 // \file tei_146c.cpp
-// \brief Classe dérivée de Tei pour les diluteur 146c
+// \brief Classe derivee de Tei pour les diluteur 146c
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 31/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -29,7 +29,7 @@
 Tei_146c::Tei_146c(const QString & adressePeriph, const TypePeripherique & typePeriph, const OptionTpg & optionTpg)
     :Tei(adressePeriph,typePeriph,optionTpg) {}
 
-// Mise en stand-by du périphérique
+// Mise en stand-by du peripherique
 bool Tei_146c::standBy() {
     QString cmd = *(this->creerTrameCommande("set flow mode 0"));
     this->transaction(cmd);
@@ -50,7 +50,7 @@ ushort Tei_146c::demandeAlarme() {
 
     for(int i=0;i<2;i++) {
         if(flagsAlarme.at(i)!='0') {
-            qDebug()<<"Alarme générale : "<<flagsAlarme;
+            qDebug()<<"Alarme generale : "<<flagsAlarme;
             emit(this->alarmeGenerale());
             return 1;
         }
@@ -122,7 +122,7 @@ void Tei_146c::commandeSpanO3(const SpanHandler & spanO3Data) {
     this->transaction(cmd);
 }
 
-// Renvoie la liste des commandes autorisées par le protocole
+// Renvoie la liste des commandes autorisees par le protocole
 QVector<Commandes> const* Tei_146c::getListeCommandes() {
     QVector<Commandes>* commandesAutorisees = new QVector<Commandes>(6);
 

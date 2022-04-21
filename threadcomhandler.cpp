@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////
 // \file threadcomhandler.cpp
-// \brief Classe implémentant un thread gérant la communication RS232
+// \brief Classe implementant un thread gerant la communication RS232
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 31/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -35,7 +35,7 @@ ThreadComHandler::~ThreadComHandler() {
     if(this->comRS232->isOpen())
         this->comRS232->close();
     this->comRS232->deleteLater();
-    QCoreApplication::sendPostedEvents(); // modifié
+    QCoreApplication::sendPostedEvents(); // modifie
     QCoreApplication::processEvents();
 }
 
@@ -50,12 +50,12 @@ void ThreadComHandler::configureRS232(const QString deviceName) {
     this->comRS232 = new CommunicationSerie(deviceName);
 
     if(!this->comRS232->open(QSerialPort::ReadWrite)) {
-        qDebug() << "Problème lors de l'ouverture du périphérique " << deviceName;
+        qDebug() << "Problème lors de l'ouverture du peripherique " << deviceName;
         emit(this->ouverturePort(false));
         return;
     }
     else {
-        qDebug() << "Ouverture du périphérique " << deviceName << " réussie";
+        qDebug() << "Ouverture du peripherique " << deviceName << " reussie";
         emit(this->ouverturePort(true));
     }
     if(!comRS232->setBaudRate(QSerialPort::Baud9600)) {
@@ -89,7 +89,7 @@ void ThreadComHandler::configureRS232(const QString deviceName) {
         return;
     }
 
-    // Connection signaux/slots de lecture/écriture
+    // Connection signaux/slots de lecture/ecriture
     connect(this,SIGNAL(envoiTrame(QString)),this->comRS232,SLOT(sendData(QString)));
     connect(this->comRS232,SIGNAL(dataReaded(QString)),this,SIGNAL(receptionTrame(QString)));
 }

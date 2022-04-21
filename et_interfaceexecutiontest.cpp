@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file et_interfaceexecutiontest.cpp
-// \brief Classe d'interface gérant l'exécution des tests
+// \brief Classe d'interface gerant l'execution des tests
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 10/08/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -182,7 +182,7 @@ bool et_InterfaceExecutionTest::controleEtape1()
     else {
         if(QFile::exists(this->ui->lineEdit_FichierCSV->text())) {
             QMessageBox msgBox;
-            msgBox.setText(QLatin1String("Le fichier d'export des résultats existe déjà.\nVoulez-vous l'écraser ?"));
+            msgBox.setText(QLatin1String("Le fichier d'export des resultats existe dejà.\nVoulez-vous l'ecraser ?"));
             msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Discard);
             msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.setIcon(QMessageBox::Critical);
@@ -309,7 +309,7 @@ void et_InterfaceExecutionTest::buttonSuivantClicked()
         else return;
         break;
     case 2:
-        QCoreApplication::sendPostedEvents(); // modifié
+        QCoreApplication::sendPostedEvents(); // modifie
         if(controleEtape2()) {
             m_etape = 3;
             this->ui->button_Precedent->setEnabled(true);
@@ -347,7 +347,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     if(analyseur.isNull()) {
         QMessageBox msgBox;
         msgBox.setText(QLatin1String("Configuration de l'appareil impossible"));
-        msgBox.setInformativeText(QLatin1String("Une erreur s'est produite lors de la configuration de l'appareil.\n\nVeuillez véfifier les paramètres de l'équipement avant de recommencer le test"));
+        msgBox.setInformativeText(QLatin1String("Une erreur s'est produite lors de la configuration de l'appareil.\n\nVeuillez vefifier les paramètres de l'equipement avant de recommencer le test"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
@@ -373,8 +373,8 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
 
     if(analyseur->demandeAlarme() > 0) {
         QMessageBox msgBox;
-        msgBox.setText(QLatin1String("Alarme présente"));
-        msgBox.setInformativeText(QLatin1String("Une alarme a été détectée sur l'appareil.\nVeuillez la corriger ou ignorer"));
+        msgBox.setText(QLatin1String("Alarme presente"));
+        msgBox.setInformativeText(QLatin1String("Une alarme a ete detectee sur l'appareil.\nVeuillez la corriger ou ignorer"));
         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Ignore);
         msgBox.setDefaultButton(QMessageBox::Ok);
         if(msgBox.exec()==QMessageBox::Ok) {
@@ -417,7 +417,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     if(calibrateur.isNull()) {
         QMessageBox msgBox;
         msgBox.setText(QLatin1String("Configuration de l'appareil impossible"));
-        msgBox.setInformativeText(QLatin1String("Une erreur s'est produite lors de la configuration de l'appareil.\n\nVeuillez véfifier les paramètres de l'équipement avant de recommencer le test"));
+        msgBox.setInformativeText(QLatin1String("Une erreur s'est produite lors de la configuration de l'appareil.\n\nVeuillez vefifier les paramètres de l'equipement avant de recommencer le test"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
@@ -438,8 +438,8 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
 
     if(calibrateur->demandeAlarme() > 0) {
         QMessageBox msgBox;
-        msgBox.setText(QLatin1String("Alarme présente"));
-        msgBox.setInformativeText(QLatin1String("Une alarme a été détectée sur l'appareil.\nVeuillez la corriger ou ignorer"));
+        msgBox.setText(QLatin1String("Alarme presente"));
+        msgBox.setInformativeText(QLatin1String("Une alarme a ete detectee sur l'appareil.\nVeuillez la corriger ou ignorer"));
         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Ignore);
         msgBox.setDefaultButton(QMessageBox::Ok);
 
@@ -510,7 +510,7 @@ void et_InterfaceExecutionTest::erreurCommunicationAnalyseur()
 
     QTableWidgetItem* itemCom_etat = new QTableWidgetItem("Erreur de communication");
 
-    itemCom_etat->setForeground(QColor(255,0,0)); // modifié
+    itemCom_etat->setForeground(QColor(255,0,0)); // modifie
     this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
 }
 
@@ -528,12 +528,12 @@ void et_InterfaceExecutionTest::ouverturePortComAnalyseur(bool ouverturePort)
         m_listeEtatComAnalyseurs[idAnalyseur] = false;
 
         QTableWidgetItem* itemCom_etat = new QTableWidgetItem("Erreur de l'ouverture du port");
-        itemCom_etat->setForeground(QColor(255,0,0)); // modifié
+        itemCom_etat->setForeground(QColor(255,0,0)); // modifie
         this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
     }
     else {
         QTableWidgetItem* itemCom_etat = new QTableWidgetItem("Communication Ok");
-        itemCom_etat->setForeground(QColor(255,0,0)); // modifié
+        itemCom_etat->setForeground(QColor(255,0,0)); // modifie
         this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
     }
 }
@@ -557,7 +557,7 @@ void et_InterfaceExecutionTest::buttonExecuterClicked()
 {
     if(!m_appareilEnTest.isNull()) {
         m_appareilEnTest->deleteLater();
-        QCoreApplication::sendPostedEvents();// modifié
+        QCoreApplication::sendPostedEvents();// modifie
     }
     ui->button_Precedent->setEnabled(false);
     ui->button_Executer->setEnabled(false);
@@ -605,8 +605,8 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
 
     if(fichierCSV.isNull()) {
         QMessageBox msgBox;
-        msgBox.setText("Un problème a été rencontré lors de la création du fichier CSV");
-        msgBox.setInformativeText("Impossible de créer le fichier CSV");
+        msgBox.setText("Un problème a ete rencontre lors de la creation du fichier CSV");
+        msgBox.setInformativeText("Impossible de creer le fichier CSV");
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
@@ -617,8 +617,8 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
 
     if(!ouvertureFichierCSV) {
         QMessageBox msgBox;
-        msgBox.setText("Un problème a été rencontré lors de la création du fichier CSV");
-        msgBox.setInformativeText("Impossible de créer le fichier CSV");
+        msgBox.setText("Un problème a ete rencontre lors de la creation du fichier CSV");
+        msgBox.setInformativeText("Impossible de creer le fichier CSV");
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
@@ -650,7 +650,7 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
     for(int i =0;i<ui->tableWidget_Communication->rowCount();i++) {
         ushort idAnalyseur = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT)->text().toUInt();
         QString numSerieAna = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_NUM_SERIE)->text();
-        paramsTest->m_listeNumSerieAnalyseurs.insert(idAnalyseur,numSerieAna); // modifié
+        paramsTest->m_listeNumSerieAnalyseurs.insert(idAnalyseur,numSerieAna); // modifie
     }
 
     return paramsTest;

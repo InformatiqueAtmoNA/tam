@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file test.cpp
-// \brief Représente un un test
+// \brief Represente un un test
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 25/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -170,10 +170,10 @@ bool Test::exportToXml(QString const & nomFichier)
     QTextStream out;
     QDomImplementation impl;
 
-    // Si le fichier existe déjà
+    // Si le fichier existe dejà
     if(QFile::exists(nomFichier)) {
         QMessageBox msgBox;
-        msgBox.setText(QLatin1String("Le fichier existe déjà"));
+        msgBox.setText(QLatin1String("Le fichier existe dejà"));
         msgBox.setInformativeText(QLatin1String("Voulez-vous le remplacer ?"));
         msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
@@ -189,19 +189,19 @@ bool Test::exportToXml(QString const & nomFichier)
         return false;
     out.setDevice(&file);
 
-    // On crée l'élément XML test, et on lui ajoute son id en attribut
+    // On cree l'element XML test, et on lui ajoute son id en attribut
     QDomElement el_test = testXml.createElement("test");
     el_test.setAttribute("id",QString::number(this->m_idTest));
     el_test.setAttribute("type",typeTestToString(this->m_typeTest));
 
-    // insertion en début de document de <?xml version="1.0" ?>
+    // insertion en debut de document de <?xml version="1.0" ?>
     QDomNode noeud = testXml.createProcessingInstruction("xml","version=\"1.0\" encoding=\"ISO-8859-1\"");
     testXml.insertBefore(noeud,testXml.firstChild());
     QDomDocumentType type = impl.createDocumentType("test",0, "StructureTest.dtd");
     testXml.appendChild(type);
 
-    // Pour chaque élément d'équipement, on crée un élement XML
-    // que l'on rajoute à l'élément <equipement>
+    // Pour chaque element d'equipement, on cree un element XML
+    // que l'on rajoute à l'element <equipement>
     QDomElement el_listeEquipement = testXml.createElement("equipement");
 
     QDomElement el_etalon = testXml.createElement("etalon");
@@ -211,7 +211,7 @@ bool Test::exportToXml(QString const & nomFichier)
 
     el_test.appendChild(el_listeEquipement);
 
-    // Création de l'élément XML deroulement et ajout des paramètres s'ils existent
+    // Creation de l'element XML deroulement et ajout des paramètres s'ils existent
     QDomElement el_deroulement = testXml.createElement("deroulement");
     if(this->m_tempsAcquisition>0)
         el_deroulement.setAttribute("tps_acquisition",QString::number(this->m_tempsAcquisition));
@@ -230,8 +230,8 @@ bool Test::exportToXml(QString const & nomFichier)
     if(this->m_critere2>0)
         el_deroulement.setAttribute("critere_2",QString::number(this->m_critere2));
 
-    // Pour chaque phase, on crée un élement XML
-    // que l'on rajoute à l'élément <deroulement>
+    // Pour chaque phase, on cree un element XML
+    // que l'on rajoute à l'element <deroulement>
     QMapIterator<ushort, Phase> iterator(this->m_listePhases);
     while (iterator.hasNext()) {
         iterator.next();
@@ -260,14 +260,14 @@ QPointer<Test> Test::importFromXml(QString const & nomFichier)
     if (!file.open(QIODevice::ReadOnly))
         return 0;
     // Etablit le document XML à
-    // partir des données du fichier (hiérarchie, etc)
+    // partir des donnees du fichier (hierarchie, etc)
     if (!testXml.setContent(&file)) {
         file.close();
         return 0;
     }
     file.close();
 
-    // On récupère l'élément racine du fichier xml
+    // On recupère l'element racine du fichier xml
     QDomElement el_test = testXml.documentElement();
     // On affecte l'id de test
     p_test->setIdTest(el_test.attribute("id").toInt());
@@ -275,16 +275,16 @@ QPointer<Test> Test::importFromXml(QString const & nomFichier)
     QString typeTest = el_test.attribute("type");
     p_test->setTypeTest(typeTest);
 
-    // Récupère la liste des élément enfants de l'élément XML equipement
+    // Recupère la liste des element enfants de l'element XML equipement
     QDomNodeList nl_listeEquipement = el_test.firstChildElement("equipement").childNodes();
 
-    // Pour chaque élément enfant, on l'ajoute à la liste des équipements
+    // Pour chaque element enfant, on l'ajoute à la liste des equipements
     for(int i=0;i<nl_listeEquipement.size();i++) {
         QDomElement el_etalon = nl_listeEquipement.at(i).toElement();
         p_test->setSystemeEtalon(el_etalon.attribute("id").toUInt());
     }
 
-//    // Pour chaque élément enfant, on l'ajoute à la liste des équipements
+//    // Pour chaque element enfant, on l'ajoute à la liste des equipements
 //    for(int i=0;i<nl_listeEquipement.size();i++) {
 //        if(nl_listeEquipement.at(i).nodeName()=="etalon")
 //        {
@@ -297,7 +297,7 @@ QPointer<Test> Test::importFromXml(QString const & nomFichier)
 //        }
 //    }
 
-    // Récupération de l'élément XML déroulement et de ses attributs
+    // Recuperation de l'element XML deroulement et de ses attributs
     QDomElement el_deroulement = el_test.firstChildElement("deroulement").toElement();
 
     QString tpsAcquisition = el_deroulement.attribute("tps_acquisition");
@@ -318,9 +318,9 @@ QPointer<Test> Test::importFromXml(QString const & nomFichier)
     p_test->setCritere1(critere1.toDouble());
     p_test->setCritere2(critere2.toDouble());
 
-    // Récupère la liste des élément enfants de l'élément XML déroulement
+    // Recupère la liste des element enfants de l'element XML deroulement
     QDomNodeList nl_listePhases = el_deroulement.childNodes();
-    // Pour chaque élément enfant, on l'ajoute à la liste des phases
+    // Pour chaque element enfant, on l'ajoute à la liste des phases
     for(int i=0;i<nl_listePhases.size();i++) {
         QDomElement phase = nl_listePhases.at(i).toElement();
         Phase newPhase = *(Phase::importFromXml(phase).data());

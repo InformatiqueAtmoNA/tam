@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////
 // \file creationtest.cpp
-// \brief Classe d'interface graphique gérant la création des tests
+// \brief Classe d'interface graphique gerant la creation des tests
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 01/04/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -191,7 +191,7 @@ void CreationTest::afficherPhaseWidget(const ushort noPhase, bool readOnly)
     qDebug()<<"----------------------------------------";
     qDebug()<<"call : CreationTest::afficherPhaseWidget("<<QString::number(noPhase)<<","<<readOnly<<")";
     if(!m_phaseWidget.isNull()) {
-        qDebug()<<"Phase déjà affichée :";
+        qDebug()<<"Phase dejà affichee :";
         qDebug()<<m_phaseWidget->getPhase();
         if(m_phaseWidget->getPhase().getNoPhase() != noPhase) {
             m_phaseWidget->close();
@@ -305,8 +305,8 @@ void CreationTest::button_ChoixSystemeEtalonClicked()
 {
     if(this->m_test->getIdSystemeEtalon()>0 && !this->m_test->isListePhasesEmpty()) {
         QMessageBox msgBox;
-        msgBox.setText(QLatin1String("Changement de système étalon"));
-        msgBox.setInformativeText(QLatin1String("Changer de système d'étalonnage va réinitialiser le déroulement du test. Voulez-vous continuer?"));
+        msgBox.setText(QLatin1String("Changement de système etalon"));
+        msgBox.setInformativeText(QLatin1String("Changer de système d'etalonnage va reinitialiser le deroulement du test. Voulez-vous continuer?"));
         msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         int ret = msgBox.exec();
@@ -335,7 +335,7 @@ void CreationTest::button_AnnulerClicked()
 {
     QMessageBox msgBox;
     msgBox.setText(QLatin1String("Annuler ?"));
-    msgBox.setInformativeText(QLatin1String("Les changements effectués ne seront pas sauvegardés.\n Voulez-vous annuler et revenir à l'acceuil ?"));
+    msgBox.setInformativeText(QLatin1String("Les changements effectues ne seront pas sauvegardes.\n Voulez-vous annuler et revenir à l'acceuil ?"));
     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
 
@@ -430,7 +430,7 @@ void CreationTest::button_SauvegarderClicked ()
     qDebug()<<"call : CreationTest::button_SauvegarderClicked()";
     qDebug()<<"nom de fichier = "<<this->m_nomFichier;
     qDebug()<<"type de test = "<<typeTestToString(this->m_test->getTypeTest());
-    qDebug()<<"identifiant de système étalon = "<<this->m_test->getIdSystemeEtalon();
+    qDebug()<<"identifiant de système etalon = "<<this->m_test->getIdSystemeEtalon();
 
     model->setData(model->index(row,TEST_XML_NOM_FICHIER),QVariant::fromValue(this->m_nomFichier));
     model->setData(model->index(row,TEST_XML_TYPE_TEST),QVariant::fromValue(typeTestToString(this->m_typeTest)));
@@ -555,7 +555,7 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
     if(!this->m_test->isListePhasesEmpty() && m_indexTypeTest != index) {
         QMessageBox msgBox;
         msgBox.setText(QLatin1String("Changement de type de test"));
-        msgBox.setInformativeText(QLatin1String("Changer de type de test va réinitialiser le déroulement du test. Voulez-vous continuer?"));
+        msgBox.setInformativeText(QLatin1String("Changer de type de test va reinitialiser le deroulement du test. Voulez-vous continuer?"));
         msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         int ret = msgBox.exec();
@@ -575,25 +575,25 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
     switch(index) {
     case 0:
         this->m_typeTest=REPETABILITE;
-        this->ui->label_critere1->setText(QLatin1String("Ecart-type de répétabilité au zéro en ppb"));
-        this->ui->label_critere2->setText(QLatin1String("Ecart-type de répétabilité à la concentration en %"));
+        this->ui->label_critere1->setText(QLatin1String("Ecart-type de repetabilite au zero en ppb"));
+        this->ui->label_critere2->setText(QLatin1String("Ecart-type de repetabilite à la concentration en %"));
         break;
     case 1:
         this->m_typeTest=LINEARITE;
-        this->ui->label_critere1->setText(QLatin1String("Résidu au zéro en ppb"));
-        this->ui->label_critere2->setText(QLatin1String("Résidu Maximal concentration > à 0 en %"));
+        this->ui->label_critere1->setText(QLatin1String("Residu au zero en ppb"));
+        this->ui->label_critere2->setText(QLatin1String("Residu Maximal concentration > à 0 en %"));
         break;
     case 2:
         this->m_typeTest=TEMPS_REPONSE;
-        this->ui->label_critere1->setText(QLatin1String("Temps de réponse montée et descente en seconde"));
-        this->ui->label_critere2->setText(QLatin1String("Différence entre Temps de réponse montée et descente en seconde"));
+        this->ui->label_critere1->setText(QLatin1String("Temps de reponse montee et descente en seconde"));
+        this->ui->label_critere2->setText(QLatin1String("Difference entre Temps de reponse montee et descente en seconde"));
         break;
     case 3:
         this->m_typeTest=RENDEMENT_FOUR;
         this->ui->spinBox_nbCyclesMesures->setMinimum(1);
         this->ui->spinBox_nbCyclesMesures->setValue(4);
         this->ui->label_critere1->setText(QLatin1String("Rendement de conversion en %"));
-        this->ui->label_critere2->setText(QLatin1String("Différence NO/NOX entre 1ere et derniere phase en %"));
+        this->ui->label_critere2->setText(QLatin1String("Difference NO/NOX entre 1ere et derniere phase en %"));
         break;
     case 4:
         this->m_typeTest=PERSO;

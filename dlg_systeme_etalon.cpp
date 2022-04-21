@@ -7,7 +7,7 @@ Dlg_Systeme_Etalon::Dlg_Systeme_Etalon(QWidget *parent,const QPointer<BdHandler>
     ui(new Ui::Dlg_Systeme_Etalon)
 {
     ui->setupUi(this);
-    this->setWindowTitle("Système étalon");
+    this->setWindowTitle("Système etalon");
 
     this->m_bdHandler = bdHandler;
     this->m_returnSelection = returnSelection;
@@ -116,14 +116,14 @@ void Dlg_Systeme_Etalon::changementSelection(const QModelIndex & idxSelection) {
 void Dlg_Systeme_Etalon::buttonSupprimerClicked() {
     if(!m_indexSelection.isValid())
         return;
-    int reponse = QMessageBox::question(this, "Supprimer un élément", "êtes-vous sûr de vouloir effacer cet enregistrement?",
+    int reponse = QMessageBox::question(this, "Supprimer un element", "êtes-vous sûr de vouloir effacer cet enregistrement?",
                   QMessageBox::Yes | QMessageBox::No);
 
     if (reponse == QMessageBox::No)
         return;
 
     if(!m_model.data()->removeRow(m_indexSelection.row()))
-        QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé",QMessageBox::Ok);
+        QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demande",QMessageBox::Ok);
     else {
         m_model->submitAll();
         m_model_sansRelation->select();

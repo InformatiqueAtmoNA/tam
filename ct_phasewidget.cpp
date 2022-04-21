@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////
 // \file ct_phasewidget.cpp
-// \brief Classe de widget gérant la création des phases de test
+// \brief Classe de widget gerant la creation des phases de test
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 22/04/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -103,7 +103,7 @@ void ct_PhaseWidget::afficherPhase()
         if(concentrationRecord == NULL) {
             QMessageBox msgBox;
             msgBox.setText(QLatin1String("Problème lors du chargement de la concentration"));
-            msgBox.setInformativeText(QLatin1String("La concentration de polluant enregistrée n'est pas pas valide. Veuillez en sélectionner une autre."));
+            msgBox.setInformativeText(QLatin1String("La concentration de polluant enregistree n'est pas pas valide. Veuillez en selectionner une autre."));
             msgBox.setStandardButtons(QMessageBox::Ok);
             msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.exec();
@@ -132,7 +132,7 @@ void ct_PhaseWidget::afficherPhase()
         QMessageBox msgBox;
         msgBox.setIcon(QMessageBox::Critical);
         msgBox.setWindowTitle(QLatin1String("Erreur !"));
-        msgBox.setText(QLatin1String("La commande de début de phase n'est pas programmée"));
+        msgBox.setText(QLatin1String("La commande de debut de phase n'est pas programmee"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();
         break;
@@ -164,7 +164,7 @@ void ct_PhaseWidget::cb_CmdDebutPhaseIndexChanged(const int index) {
         QMessageBox msgBox;
         msgBox.setIcon(QMessageBox::Critical);
         msgBox.setWindowTitle(QLatin1String("Erreur !"));
-        msgBox.setText(QLatin1String("La commande sélectionnée n'est pas programmée"));
+        msgBox.setText(QLatin1String("La commande selectionnee n'est pas programmee"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();
         break;

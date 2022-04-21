@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file et_generateurrapporttest.cpp
-// \brief Classe d'interface gérant la génération des rapports des tests
-// \author PIET Régis
+// \brief Classe d'interface gerant la generation des rapports des tests
+// \author PIET Regis
 // \version 1.0
 // \date 10/08/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -115,7 +115,7 @@ void et_GenerateurRapportTest::buttonFermerClicked()
         emit(this->fermeture());
 }
 
-//Mise en forme du tableau de mesure séparé par phase identique par polluant
+//Mise en forme du tableau de mesure separe par phase identique par polluant
 void et_GenerateurRapportTest::tableauMesure2(int idMolecule, int codeMolecule)
 {
 
@@ -150,7 +150,7 @@ void et_GenerateurRapportTest::tableauMesure2(int idMolecule, int codeMolecule)
     }
 }
 
-//Mise en forme du tableau de mesure groupé par phase identique par polluant
+//Mise en forme du tableau de mesure groupe par phase identique par polluant
 void et_GenerateurRapportTest::tableauMesure(int idMolecule, int codeMolecule)
 {
 
@@ -209,7 +209,7 @@ void et_GenerateurRapportTest::tableauMesure(int no_Phase)
 
 }
 
-//Mise en forme des Tableaux de résidus pour la linéarité
+//Mise en forme des Tableaux de residus pour la linearite
 void et_GenerateurRapportTest::affichageTableauResidu ()
 {
     m_tabResidu.clear();
@@ -237,7 +237,7 @@ void et_GenerateurRapportTest::affichageTableauResidu ()
     m_tabValeurPourCritere.append(m_ordonnee);
 }
 
-//Mise en forme du Tableau des temps de réponse
+//Mise en forme du Tableau des temps de reponse
 void et_GenerateurRapportTest::affichageTableauTpsReponse ()
 {
     //int tpsAcquisition = 5;
@@ -392,10 +392,10 @@ bool et_GenerateurRapportTest::genererRapportRendementFour()
     if ((m_tabMoyenneCalculTPG.count()>1) && (m_tabMoyenneCalculTPG.count()%2 == 1)){
         float diffNO = ((m_tabMoyenneCalculTPG[m_tabMoyenneCalculTPG.count()-1].value(0)-m_tabMoyenneCalculTPG[0].value(0))/m_tabMoyenneCalculTPG[0].value(0))*100;
         m_tabResultatTPG.append(diffNO);
-        m_listeEnteteLigneTPG.append("Différence NO (%) :");
+        m_listeEnteteLigneTPG.append("Difference NO (%) :");
         float diffNOX = ((m_tabMoyenneCalculTPG[m_tabMoyenneCalculTPG.count()-1].value(1)-m_tabMoyenneCalculTPG[0].value(1))/m_tabMoyenneCalculTPG[0].value(1))*100;
         m_tabResultatTPG.append(diffNOX);
-        m_listeEnteteLigneTPG.append("Différence NOX (%) :");
+        m_listeEnteteLigneTPG.append("Difference NOX (%) :");
 
         m_tabResultatTPG.append(m_tabCritere.value(1));
         m_listeEnteteLigneTPG.append("Critere Diff NO/NOX (%) <");

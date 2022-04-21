@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////
 // \file dlg_concentration.cpp
-// \brief Classe d'interface graphique  gérant la table Cocentration
+// \brief Classe d'interface graphique  gerant la table Cocentration
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 20/04/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -94,10 +94,10 @@ void Dlg_Concentration::peuplerCbPolluant() {
         QMessageBox msgBox;
         msgBox.setIcon(QMessageBox::Warning);
         if(m_filtrerRdf)
-            msgBox.setText(tr("Aucun polluant de type NO/NO2/NOX n'est associé aux équipement du système d'étalonnage"));
+            msgBox.setText(tr("Aucun polluant de type NO/NO2/NOX n'est associe aux equipement du système d'etalonnage"));
         else
-            msgBox.setText(tr("Aucun polluant n'est associé aux équipement du système d'étalonnage"));
-        msgBox.setInformativeText(tr("Vérifiez la configuration des équipements"));
+            msgBox.setText(tr("Aucun polluant n'est associe aux equipement du système d'etalonnage"));
+        msgBox.setInformativeText(tr("Verifiez la configuration des equipements"));
         msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes);
         int ret = msgBox.exec();
         switch (ret) {
@@ -261,7 +261,7 @@ void Dlg_Concentration::tableViewSelectedItemChanged(const QModelIndex & idxSele
     if(this->m_indexSelection.isValid()) {
         if(this->m_returnSelection)
             this->ui->button_Selectionner->setEnabled(true);
-        this->ui->tabWidget->addTab(m_pageConcentrationAssociee,"Concentrations associées");
+        this->ui->tabWidget->addTab(m_pageConcentrationAssociee,"Concentrations associees");
         this->ui->gb_edit_champs->setVisible(true);
         this->setGbEditChampsReadOnly(true);
         this->ui->button_Modifier->setEnabled(true);
@@ -325,7 +325,7 @@ void Dlg_Concentration::buttonSupprimerClicked()
     if(!m_indexSelection.isValid())
        return;
     int reponse = QMessageBox::question(this,
-		    QLatin1String("Supprimer un élément"),
+            QLatin1String("Supprimer un element"),
 		    QLatin1String("êtes-vous sûr de vouloir effacer cet enregistrement ?"),
 		    QMessageBox::Yes | QMessageBox::No);
 
@@ -335,7 +335,7 @@ void Dlg_Concentration::buttonSupprimerClicked()
     if(!m_model->removeRow(m_indexSelection.row()))
        QMessageBox::critical(this,
 		       QLatin1String("Impossible de supprimer"),
-		       QLatin1String("Erreur de la suppression de l'enregistrement demandé."),
+               QLatin1String("Erreur de la suppression de l'enregistrement demande."),
 		       QMessageBox::Ok);
     else {
        m_model->submitAll();
@@ -444,7 +444,7 @@ void Dlg_Concentration::buttonSupprimerConcAssocieeClicked()
     if(!m_indexConcAssocieSelection.isValid())
        return;
     int reponse = QMessageBox::question(this,
-		    QLatin1String("Supprimer un élément"),
+            QLatin1String("Supprimer un element"),
 		    QLatin1String("êtes-vous sûr de vouloir effacer cet enregistrement ?"),
 		    QMessageBox::Yes | QMessageBox::No);
 
@@ -454,7 +454,7 @@ void Dlg_Concentration::buttonSupprimerConcAssocieeClicked()
     if(!m_modelConcentrationAssociee->removeRow(m_indexConcAssocieSelection.row()))
        QMessageBox::critical(this, 
 		       QLatin1String("Impossible de supprimer"),
-		       QLatin1String("Erreur de la suppression de l'enregistrement demandé"),
+               QLatin1String("Erreur de la suppression de l'enregistrement demande"),
 		       QMessageBox::Ok);
     else {
        m_modelConcentrationAssociee->submitAll();

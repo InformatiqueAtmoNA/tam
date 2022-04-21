@@ -1,11 +1,11 @@
 /*///////////////////////////////////////////////////////////////////////////////////
 // \file dlg_molecule.cpp
-// \brief Classe d'interface gérant la table Molecule
+// \brief Classe d'interface gerant la table Molecule
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 07/04/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -32,7 +32,7 @@ Dlg_Molecule::Dlg_Molecule(QWidget *parent,const QPointer<BdHandler> bdHandler) 
     ui(new Ui::Dlg_Molecule)
 {
     ui->setupUi(this);
-    this->setWindowTitle("Molécules");
+    this->setWindowTitle("Molecules");
     this->bdHandler = bdHandler;
     this->afficherTable();
     this->initialiserChamps();
@@ -81,14 +81,14 @@ void Dlg_Molecule::changementSelection(const QModelIndex & idxSelection) {
 void Dlg_Molecule::buttonSupprimerClicked() {
     if(!indexSelection.isValid())
         return;
-    int reponse = QMessageBox::question(this, "Supprimer un élément", "êtes-vous sûr de vouloir effacer cet enregistrement?",
+    int reponse = QMessageBox::question(this, "Supprimer un element", "êtes-vous sûr de vouloir effacer cet enregistrement?",
                   QMessageBox::Yes | QMessageBox::No);
 
     if (reponse == QMessageBox::No)
         return;
 
     if(!model->removeRow(indexSelection.row()))
-        QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demandé",QMessageBox::Ok);
+        QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demande",QMessageBox::Ok);
 }
 
 void Dlg_Molecule::buttonAjouterClicked() {

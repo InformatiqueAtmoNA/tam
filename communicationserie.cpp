@@ -5,7 +5,7 @@
 // \version 1.0
 // \date 31/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -46,7 +46,7 @@ CommunicationSerie::CommunicationSerie(const int numCom)
 CommunicationSerie::CommunicationSerie(const QString deviceName)
 {
     this->device= new QSerialPort(this);
-    qDebug()<<"Changement du nom de périphérique"<< deviceName;
+    qDebug()<<"Changement du nom de peripherique"<< deviceName;
     this->setDeviceName(deviceName);
     if(this->device->isOpen())
         this->device->close();
@@ -83,7 +83,7 @@ QString CommunicationSerie::getDataBits() {
     return this->dataBits;
 }
 
-// Obtenir Parité
+// Obtenir Parite
 QString CommunicationSerie::getParity() {
     return this->parity;
 }
@@ -111,7 +111,7 @@ int CommunicationSerie::getCharTimeOut() {
 bool CommunicationSerie::setNumeroCom(const int newNumCom) {
     QString newDeviceName = &"/dev/ttyS" [ newNumCom];
     if(!this->setDeviceName(newDeviceName)) {
-        qDebug() << "Erreur lors de changement de numéro de port com" <<  newNumCom;
+        qDebug() << "Erreur lors de changement de numero de port com" <<  newNumCom;
         return false;
     }
     this->numeroCom = newNumCom;
@@ -122,7 +122,7 @@ bool CommunicationSerie::setNumeroCom(const int newNumCom) {
 bool CommunicationSerie::setDeviceName(const QString newDeviceName) {
     if (this->device->isOpen()) {
         qDebug() << "Erreur lors de changement de nom :" <<  newDeviceName;
-        qDebug() << "Le périphérique est ouvert";
+        qDebug() << "Le peripherique est ouvert";
         return false;
     }
     this->device->setPortName(newDeviceName);
@@ -150,7 +150,7 @@ bool CommunicationSerie::setBaudRate(const QSerialPort::BaudRate newBaudRate) {
         return false;
     }
 
-    this->baudRate = QString::number(newBaudRate); // modifié
+    this->baudRate = QString::number(newBaudRate); // modifie
     return true;
 }
 
@@ -161,18 +161,18 @@ bool CommunicationSerie::setDataBits(const QSerialPort::DataBits newDataBits) {
         return false;
     }
 
-    this->dataBits = QString::number(newDataBits); // modifié
+    this->dataBits = QString::number(newDataBits); // modifie
     return true;
 }
 
-// Changer la parité
+// Changer la parite
 bool CommunicationSerie::setParity(const QSerialPort::Parity newParity) {
     if (!this->device->setParity(newParity)) {
-        qDebug() << "Erreur lors de changement de la parité" << newParity;
+        qDebug() << "Erreur lors de changement de la parite" << newParity;
         return false;
     }
 
-    this->parity = QString::number(newParity); // modifié
+    this->parity = QString::number(newParity); // modifie
     return true;
 }
 
@@ -183,7 +183,7 @@ bool CommunicationSerie::setStopBits(const QSerialPort::StopBits newStopBits) {
         return false;
     }
 
-    this->stopBits = QString::number(newStopBits); // modifié
+    this->stopBits = QString::number(newStopBits); // modifie
     return true;
 }
 
@@ -195,7 +195,7 @@ bool CommunicationSerie::setFlowControl(const QSerialPort::FlowControl newFlowCo
     }
 
 
-    this->flowControl = QString::number(newFlowControl); // modifié
+    this->flowControl = QString::number(newFlowControl); // modifie
     return true;
 }
 
@@ -210,30 +210,30 @@ bool CommunicationSerie::setCharTimeOut(const int newCharTimeOut) {
 // Fonctions de communication
 /////////////////////////////
 
-// Ouvrir le Périphérique déja configuré
+// Ouvrir le Peripherique deja configure
 bool CommunicationSerie::open(QSerialPort::OpenMode openMode){
     if(!this->device->open(openMode)) {
-        qDebug() << "Erreur lors de l'ouverture du périphérique " << this->deviceName;
+        qDebug() << "Erreur lors de l'ouverture du peripherique " << this->deviceName;
         return false;
     }
     return true;
 }
 
-// Ouvrir le Périphérique en spécifiant le numéro de port com
+// Ouvrir le Peripherique en specifiant le numero de port com
 bool CommunicationSerie::open(const int numCom,const QSerialPort::OpenMode openMode) {
     if(!this->setNumeroCom(numCom))
         return false;
     return this->open(openMode);
 }
 
-// Ouvrir le Périphérique en spécifiant le nom
+// Ouvrir le Peripherique en specifiant le nom
 bool CommunicationSerie::open(const QString deviceName,const QSerialPort::OpenMode openMode) {
     if(!this->setDeviceName(deviceName))
         return false;
     return this->open(openMode);
 }
 
-// Retourne un booléen indiquant si la communication avec le périphérique est ouverte
+// Retourne un booleen indiquant si la communication avec le peripherique est ouverte
 bool CommunicationSerie::isOpen() {
     return this->device->isOpen();
 }
@@ -252,10 +252,10 @@ void CommunicationSerie::write(const QString data) {
 }
 
 /////////////////
-// Slots privés
+// Slots prives
 /////////////////
 
-// Lecture sur le port COM configuré
+// Lecture sur le port COM configure
 void CommunicationSerie::slotRead() {
      QByteArray data = this->device->readAll();
      qDebug() << "Readed is : " << data.size() << " bytes";
@@ -263,7 +263,7 @@ void CommunicationSerie::slotRead() {
      emit(dataReaded(stringData));
 }
 
-// En cas de changement de statut du périphérique
+// En cas de changement de statut du peripherique
 void CommunicationSerie::statusSignal(const QString status,const QDateTime dateTime) {
     qDebug() << dateTime.time().toString() << " : " << status << "\n";
 }

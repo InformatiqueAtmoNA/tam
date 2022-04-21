@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////
 // \file mode4_sx_6000_17.h
-// \brief Classe dérivée de Mode4 pour les diluteurs SX6000 V1.7
+// \brief Classe derivee de Mode4 pour les diluteurs SX6000 V1.7
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 31/03/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -94,7 +94,7 @@ void Mode4_SX_6000_17::commandeSpanO3(SpanHandler const & spanO3Data) {
     this->transaction(cmd);
 }
 
-// Renvoie la liste des commandes autorisées par le protocole
+// Renvoie la liste des commandes autorisees par le protocole
 QVector<Commandes> const* Mode4_SX_6000_17::getListeCommandes() {
     QVector<Commandes>* commandesAutorisees = new QVector<Commandes>(7);
 

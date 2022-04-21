@@ -3,7 +3,7 @@
 Tei_146c_v2::Tei_146c_v2(const QString & adressePeriph, const TypePeripherique & typePeriph, const OptionTpg & optionTpg)
         :Tei(adressePeriph, typePeriph,optionTpg) {}
 
-// Mise en stand-by du périphérique
+// Mise en stand-by du peripherique
 bool Tei_146c_v2::standBy() {
     QString cmd = *(this->creerTrameCommande("sel gas off"));
     this->transaction(cmd);
@@ -64,7 +64,7 @@ void Tei_146c_v2::commandeSpanO3(const SpanHandler & spanO3Data) {
     this->transaction(cmd);
 }
 
-// Renvoie la liste des commandes autorisées par le protocole
+// Renvoie la liste des commandes autorisees par le protocole
 QVector<Commandes> const* Tei_146c_v2::getListeCommandes() {
     QVector<Commandes>* commandesAutorisees = new QVector<Commandes>(6);
 

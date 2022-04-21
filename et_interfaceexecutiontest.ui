@@ -19,7 +19,7 @@
      <item>
       <widget class="QTabWidget" name="tabWidget_ExecutionTest">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="Page_Parametres">
         <attribute name="title">
@@ -156,7 +156,7 @@
                        <bool>true</bool>
                       </property>
                       <attribute name="buttonGroup">
-                       <string>bg_ChoixDebutTest</string>
+                       <string notr="true">bg_ChoixDebutTest</string>
                       </attribute>
                      </widget>
                     </item>
@@ -172,7 +172,7 @@
                        <string>Le</string>
                       </property>
                       <attribute name="buttonGroup">
-                       <string>bg_ChoixDebutTest</string>
+                       <string notr="true">bg_ChoixDebutTest</string>
                       </attribute>
                      </widget>
                     </item>

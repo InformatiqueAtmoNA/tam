@@ -1,11 +1,11 @@
 /*///////////////////////////////////////////////////////////////////////////////////
 // \file bdhandler.cpp
-// \brief Classe gérant l'acces a la base de donnees
+// \brief Classe gerant l'acces a la base de donnees
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 07/04/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Metrologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -69,7 +69,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel()
     model->setRelation(EQUIPEMENT_ID_TX_TRANSMISSION, QSqlRelation("Taux_Transmission","id_tx_transmission","taux_transmission"));
     model->setRelation(EQUIPEMENT_PORT,QSqlRelation("Port_Serie","no_port","designation"));
 
-    model->setHeaderData(EQUIPEMENT_NO_SERIE, Qt::Horizontal, "N° Série");
+    model->setHeaderData(EQUIPEMENT_NO_SERIE, Qt::Horizontal, "N° Serie");
     model->setHeaderData(EQUIPEMENT_ID_MODELE, Qt::Horizontal, "Modèle");
     model->setHeaderData(EQUIPEMENT_ID_TX_TRANSMISSION, Qt::Horizontal, "Taux transmission");
     model->setHeaderData(EQUIPEMENT_EN_SERVICE, Qt::Horizontal, "En service ?");
@@ -80,9 +80,9 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel()
     model->setHeaderData(EQUIPEMENT_CONTROLE_FLUX, Qt::Horizontal, "Contrôle de flux");
     model->setHeaderData(EQUIPEMENT_NB_BITS_STOP, Qt::Horizontal, "Nb. bits de stop");
     model->setHeaderData(EQUIPEMENT_NB_BITS_TRANSMISSION, Qt::Horizontal, "Nb. bits de transmission");
-    model->setHeaderData(EQUIPEMENT_PARITE, Qt::Horizontal, "Parité");
+    model->setHeaderData(EQUIPEMENT_PARITE, Qt::Horizontal, "Parite");
     //model->setHeaderData(EQUIPEMENT_OFFSET, Qt::Horizontal, "Offset");
-    model->setHeaderData(EQUIPEMENT_PORT, Qt::Horizontal, "Port Série");
+    model->setHeaderData(EQUIPEMENT_PORT, Qt::Horizontal, "Port Serie");
     model->setSort(EQUIPEMENT_ID, Qt::AscendingOrder);
     if(!model->select())
         emit(afficherTrace(model->lastError().text()));
@@ -96,7 +96,7 @@ QPointer<QSqlRelationalTableModel> BdHandler::getConcentrationAssocieeModel(cons
     model->setTable("Concentration_Associee");
     model->setRelation(CONC_ASSOCIEE_FORMULE, QSqlRelation("Molecule", "id_molecule", "formule"));
 
-    model->setHeaderData(CONC_ASSOCIEE_FORMULE, Qt::Horizontal, "Molécule");
+    model->setHeaderData(CONC_ASSOCIEE_FORMULE, Qt::Horizontal, "Molecule");
     model->setHeaderData(CONC_ASSOCIEE_CONCENTRATION, Qt::Horizontal, "Concentration");
     model->setSort(EQUIPEMENT_ID, Qt::AscendingOrder);
     if(idConcentration>0)
@@ -214,9 +214,9 @@ QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel(const uint i
     model->setRelation(SYS_ETALON_DILUTEUR,QSqlRelation("Equipement","id_equipement","numero_serie"));
     model->setRelation(SYS_ETALON_BOUTEILLE,QSqlRelation("Equipement","id_equipement","numero_serie"));
     model->setRelation(SYS_ETALON_GZERO,QSqlRelation("Equipement","id_equipement","numero_serie"));
-    model->setHeaderData(SYS_ETALON_DILUTEUR, Qt::Horizontal, "Diluteur ou Générateur O3");
+    model->setHeaderData(SYS_ETALON_DILUTEUR, Qt::Horizontal, "Diluteur ou Generateur O3");
     model->setHeaderData(SYS_ETALON_BOUTEILLE, Qt::Horizontal, "Bouteille");
-    model->setHeaderData(SYS_ETALON_GZERO, Qt::Horizontal, "Générateur air zéro");
+    model->setHeaderData(SYS_ETALON_GZERO, Qt::Horizontal, "Generateur air zero");
     model->setHeaderData(SYS_CANAL_DEFAUT, Qt::Horizontal, "Canal par defaut");
     model->setSort(SYS_ETALON_ID, Qt::AscendingOrder);
 
@@ -241,7 +241,7 @@ QPointer<QSqlQueryModel> BdHandler::getTestRapportModel()
     model->setHeaderData(HOMEW_TABVIEW_TEST_ID_EQUIP, Qt::Horizontal, tr("id_equipement"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_NO_EQUIP, Qt::Horizontal, tr("Numero Equipement"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_TYPE_TEST, Qt::Horizontal, tr("Type de Test"));
-    model->setHeaderData(HOMEW_TABVIEW_TEST_DATE, Qt::Horizontal, tr("Date de Début"));
+    model->setHeaderData(HOMEW_TABVIEW_TEST_DATE, Qt::Horizontal, tr("Date de Debut"));
     return model;
 }
 
@@ -324,7 +324,7 @@ QPointer<QSqlTableModel> BdHandler::getConcentrationModel(const uint idSystemeEt
     model->setFilter(filtre);
     model->setSort(CONCENTRATION_POINT, Qt::AscendingOrder);
     model->setHeaderData(CONCENTRATION_POINT, Qt::Horizontal, "Point consigne");
-    model->setHeaderData(CONCENTRATION_REELLE, Qt::Horizontal, "Concentration réelle");
+    model->setHeaderData(CONCENTRATION_REELLE, Qt::Horizontal, "Concentration reelle");
     model->setHeaderData(CONCENTRATION_OZONE, Qt::Horizontal, "Concentration O3");
     if(!model->select())
         emit(afficherTrace(model->lastError().text()));
@@ -608,7 +608,7 @@ ushort BdHandler::getIdCalibrateur(const uint idSystemeEtalon)
     return idCalibrateur;
 }
 
-//Récupération des informations du test
+//Recuperation des informations du test
 
 QSqlRecord* BdHandler::getInformationsTest(const ushort idTest)
 {
@@ -619,7 +619,7 @@ QSqlRecord* BdHandler::getInformationsTest(const ushort idTest)
     return getTableRow(strequete);
 }
 
-//Récupération des concentrations de chaque phase du test par polluant
+//Recuperation des concentrations de chaque phase du test par polluant
 
 QPointer<QSqlQueryModel> BdHandler::getTestPhaseConcentration (const ushort idTest,const ushort idmolecule)
 {
@@ -631,7 +631,7 @@ QPointer<QSqlQueryModel> BdHandler::getTestPhaseConcentration (const ushort idTe
 
 }
 
-//Récupération des polluants définis dans la totalité des phases du tests
+//Recuperation des polluants definis dans la totalite des phases du tests
 
 QPointer<QSqlQueryModel> BdHandler::getPolluantTestConcentration (const ushort idTest)
 {
@@ -642,7 +642,7 @@ QPointer<QSqlQueryModel> BdHandler::getPolluantTestConcentration (const ushort i
 
 }
 
-//Récupération des cycles de phases pour le test en argument
+//Recuperation des cycles de phases pour le test en argument
 
 QPointer<QSqlQueryModel> BdHandler::getCyclePhaseTest (const ushort idTest)
 {
@@ -654,7 +654,7 @@ QPointer<QSqlQueryModel> BdHandler::getCyclePhaseTest (const ushort idTest)
 }
 
 
-//Récupération des mesures d'un test d'un analyseur
+//Recuperation des mesures d'un test d'un analyseur
 
 QPointer<QSqlQueryModel> BdHandler::getMesureTestAnalyseur (const ushort idTest , const ushort idEquipement , const ushort codeMolecule, const ushort noPhase,const ushort noCycle)
 {
@@ -679,7 +679,7 @@ QPointer<QSqlQueryModel> BdHandler::getMesureTestAnalyseur (const ushort idTest 
     return model;
 }
 
-//Récupération des phases d'un test à partir table mesure
+//Recuperation des phases d'un test à partir table mesure
 
 QPointer<QSqlQueryModel> BdHandler::getTestPhase (const ushort idTest)
 {
