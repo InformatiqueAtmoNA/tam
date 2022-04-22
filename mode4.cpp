@@ -46,14 +46,12 @@ Mode4::~Mode4() {
 QString* Mode4::creerTrameCommande(const QString & noCommande, const QString & data) {
     QString* trame = new QString();
 
-    char StartOfText = STX;
-    char EndOfText = ETX;
-    trame->append(QChar(StartOfText));  // modifie
+    trame->append(QChar(char(STX)));  // modifie
     trame->append(this->adresse);
     trame->append(noCommande);
     trame->append(data);
     trame->append(calculerBCC(*trame)->data()); // modifie
-    trame->append(QChar(EndOfText)); //modifie
+    trame->append(QChar(char(ETX))); //modifie
     return trame;
 }
 
