@@ -504,6 +504,9 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     afficherTraceTest("ID Test_XML "+QString::number(paramsTest->m_id_TestXML),2);
     afficherTraceTest("Type de Test "+typeTestToString( paramsTest->m_test->getTypeTest()),2);
     enregistrement.setValue(TEST_METRO__TYPE_TEST,QVariant::fromValue(typeTestToString( paramsTest->m_test->getTypeTest())));
+
+    enregistrement.setValue(TEST_METRO_ID,QVariant::fromValue( paramsTest->m_test->getIdTest()));
+
     afficherTraceTest("ID Operateur "+QString::number(paramsTest->m_idOperateur),2);
     enregistrement.setValue(TEST_METRO_ID_OPERATEUR,QVariant::fromValue(paramsTest->m_idOperateur));
     afficherTraceTest("ID Système Etalon "+QString::number(paramsTest->m_test->getIdSystemeEtalon()),2);

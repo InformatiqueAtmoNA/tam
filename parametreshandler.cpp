@@ -18,7 +18,7 @@ ParametresHandler::ParametresHandler(QWidget *parent) :
         ui->lineEdit_RepXML->setText(".");
     }
     if (getParam("Path_CSV").toBool()){
-        ui->lineEdit_RepCSV->setText(getParam("Path_XML").toString());
+        ui->lineEdit_RepCSV->setText(getParam("Path_CSV").toString());
     }
     else {
         ui->lineEdit_RepCSV->setText(".");
