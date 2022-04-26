@@ -505,7 +505,7 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     afficherTraceTest("Type de Test "+typeTestToString( paramsTest->m_test->getTypeTest()),2);
     enregistrement.setValue(TEST_METRO__TYPE_TEST,QVariant::fromValue(typeTestToString( paramsTest->m_test->getTypeTest())));
 
-    enregistrement.setValue(TEST_METRO_ID,QVariant::fromValue( paramsTest->m_test->getIdTest()));
+    //enregistrement.setValue(TEST_METRO_ID,QVariant::fromValue( paramsTest->m_test->getIdTest()));
 
     afficherTraceTest("ID Operateur "+QString::number(paramsTest->m_idOperateur),2);
     enregistrement.setValue(TEST_METRO_ID_OPERATEUR,QVariant::fromValue(paramsTest->m_idOperateur));
@@ -531,11 +531,12 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
 
     model->submitAll();
 
+    paramsTest->m_id_TestMetro = model->rowCount();
     enregistrement = model->record(model->rowCount()-1);
 
     delete model;
 
-    paramsTest->m_id_TestMetro = enregistrement.value(TEST_METRO_ID).toUInt();
+    //paramsTest->m_id_TestMetro = enregistrement.value(TEST_METRO_ID).toUInt();
 
     enregistrerAnalyseurTest(paramsTest);
 
