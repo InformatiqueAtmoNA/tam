@@ -79,6 +79,8 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
     connect(this->ui->lineEdit_FiltreNserie,SIGNAL(returnPressed()),this,SLOT(boutonFiltreClicked()));
     connect(this->ui->lineEdit_Filtre_Modele,SIGNAL(returnPressed()),this,SLOT(boutonFiltreClicked()));
     connect(this->ui->comboBox_actif,SIGNAL(currentIndexChanged(QString)),this,SLOT(boutonFiltreClicked()));
+    connect(this->ui->checkBoxIP,SIGNAL(stateChanged(int)),this,SLOT(changeStateOfRS232(int)));
+    connect(this->ui->checkBoxRS232,SIGNAL(stateChanged(int)),this,SLOT(changeStateOfIP(int)));
 
     this->initialiserChamps();
 
@@ -268,6 +270,7 @@ void Dlg_Equipement::buttonValiderClicked()
         row = m_model->rowCount();
         m_model->insertRow(row);
     }
+
     m_model->setData(m_model->index(row,EQUIPEMENT_ID_MODELE),QVariant::fromValue(this->m_idModele));
     m_model->setData(m_model->index(row,EQUIPEMENT_ID_TX_TRANSMISSION),QVariant::fromValue(this->m_idTxTransmission));
     m_model->setData(m_model->index(row,EQUIPEMENT_NO_SERIE),QVariant::fromValue(this->ui->lineEdit_NoSerie->text()));
@@ -281,6 +284,10 @@ void Dlg_Equipement::buttonValiderClicked()
     m_model->setData(m_model->index(row,EQUIPEMENT_CONTROLE_FLUX),QVariant::fromValue(this->ui->cb_Type_Controle_Flux->currentText()));
     m_model->setData(m_model->index(row,EQUIPEMENT_PARITE),QVariant::fromValue(this->ui->cb_Type_Parite->currentText()));
     m_model->setData(m_model->index(row,EQUIPEMENT_PORT),QVariant::fromValue(this->m_noport));
+
+    m_model->setData(m_model->index(row,EQUIPEMENT_ADRESSE_IP),QVariant::fromValue(this->ui->addrIP->text()));
+    m_model->setData(m_model->index(row,EQUIPMENT_PORT_IP),QVariant::fromValue(this->ui->numPort->text()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_TYPE_CONNEXION),QVariant::fromValue(this->m_type_connexion));
 
     m_model->submitAll();
 
@@ -431,8 +438,20 @@ void Dlg_Equipement::buttonModifierClicked()
     this->ui->lineEdit_MaxGamme->setText(selection.value(EQUIPEMENT_MAX_GAMME).toString());
     this->ui->lineEdit_Offset->setText(selection.value(EQUIPEMENT_OFFSET).toString());
     this->ui->lineEdit_Adresse->setText(selection.value(EQUIPEMENT_ADRESSE).toString());
+    this->ui->addrIP->setText(selection.value(EQUIPEMENT_ADRESSE_IP).toString());
+    this->ui->numPort->setText(selection.value(EQUIPMENT_PORT_IP).toString());
+    //this->ui->protocoleIP->setText(selection.value(EQUIPEMENT_TYPE_CONNEXION).toString());
 
-
+    if(selection.value(EQUIPEMENT_TYPE_CONNEXION).toString()=="RS232"){
+        this->ui->checkBoxIP->setCheckState(Qt::Unchecked);
+        this->ui->checkBoxRS232->setCheckState(Qt::Checked);
+        this->ui->checkBoxRS232->setEnabled(false);
+    }
+    else if(selection.value(EQUIPEMENT_TYPE_CONNEXION).toString()=="IP"){
+        this->ui->checkBoxRS232->setCheckState(Qt::Unchecked);
+        this->ui->checkBoxIP->setCheckState(Qt::Checked);
+        this->ui->checkBoxIP->setEnabled(false);
+    }
 
     this->ui->cb_Nb_Bits_Transmission->setCurrentIndex(this->ui->cb_Nb_Bits_Transmission->findText(selection.value(EQUIPEMENT_NB_BITS_TRANSMISSION).toString(),Qt::MatchExactly));
     this->ui->cb_Nb_Bits_Stop->setCurrentIndex(this->ui->cb_Nb_Bits_Stop->findText(selection.value(EQUIPEMENT_NB_BITS_STOP).toString(),Qt::MatchExactly));
@@ -555,3 +574,25 @@ void Dlg_Equipement::boutonFiltreClicked()
 
     this->peuplerTable();
 }
+
+void Dlg_Equipement::changeStateOfRS232(int state){
+    if (state == 2){
+        this->ui->checkBoxRS232->setCheckState(Qt::Unchecked);
+        this->ui->checkBoxIP->setEnabled(false);
+        this->ui->checkBoxRS232->setEnabled(true);
+        m_type_connexion="IP";
+    }
+
+}
+
+void Dlg_Equipement::changeStateOfIP(int state){
+    if (state == 2){
+        this->ui->checkBoxIP->setCheckState(Qt::Unchecked);
+        this->ui->checkBoxRS232->setEnabled(false);
+        this->ui->checkBoxIP->setEnabled(true);
+        m_type_connexion="RS232";
+    }
+
+
+}
+

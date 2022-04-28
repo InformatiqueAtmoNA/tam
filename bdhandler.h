@@ -92,6 +92,9 @@ public:
     QPointer<QSqlQueryModel> getListeDateTestParEquipParTypeTest(const uint id_Equipement,const QString & id_TypeTest);
     ushort getIdCalibrateur(const uint idSystemeEtalon);
 
+    QString getEquipementTypeConnexion(const ushort idEquipement);
+    QString getEquipementTypeSocket(const ushort idEquipement);
+
     QPointer<QStandardItemModel> getItemModelListeRapport();
 
     bool miseAjourDateHeureFinTest(const ushort idTestMetro);

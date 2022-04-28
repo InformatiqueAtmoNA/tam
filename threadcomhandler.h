@@ -30,6 +30,7 @@
 #include <QtCore>
 #include <QThread>
 #include "communicationserie.h"
+#include "communicationip.h"
 
 /*////////////////////////////////////////////////////////////////////////////////////
 // \class ThreadComHandler
@@ -41,6 +42,7 @@ class ThreadComHandler : public QThread
     Q_OBJECT
 private:
     CommunicationSerie* comRS232; // Gère la communication RS232
+    CommunicationIP* comIP; // Gère la communication IP
     bool flagStop; // Indique que le thread doit s'arrêter
 
 public:
@@ -72,6 +74,7 @@ public Q_SLOTS:
     ///////////////////////////////////////////////////////////////////////////*/
     void configureRS232(const QString deviceName);
 
+    void configureIP(QString IP, quint16 port, QString socketType);
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void stop()
     // \brief Stop le thread

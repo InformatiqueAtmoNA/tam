@@ -93,6 +93,17 @@ void ThreadComHandler::configureRS232(const QString deviceName) {
     connect(this,SIGNAL(envoiTrame(QString)),this->comRS232,SLOT(sendData(QString)));
     connect(this->comRS232,SIGNAL(dataReaded(QString)),this,SIGNAL(receptionTrame(QString)));
 }
+void ThreadComHandler::configureIP(QString IP, quint16 port, QString typeSocket){
+    this->comIP = new CommunicationIP;
+    this->comIP->setPort(port);
+    this->comIP->setAddr(IP);
+    this->comIP->setSocketType(typeSocket);
+    this->comIP->bindToHost();
+    //connect(this,SIGNAL(envoiTrame(QString)),this->comIP,SLOT(send_Trame(QString)));
+    //connect(this->comIP,SIGNAL(dataReceived(QString)),this,SIGNAL(receptionTrame(QString)));
+}
+
+
 
 void ThreadComHandler::stop() {
     this->flagStop = true;

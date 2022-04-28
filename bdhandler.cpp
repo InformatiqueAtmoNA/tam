@@ -561,6 +561,22 @@ QString BdHandler::getEquipementNumSerie(const ushort idEquipement) {
     return numSerie;
 }
 
+QString BdHandler::getEquipementTypeSocket(const ushort idEquipement){
+    QSqlRecord* record = getTableRow(QString("SELECT * FROM Equipement WHERE id_equipement=%1").arg(idEquipement));
+    QString typeSocket;
+    if(record != NULL)
+        typeSocket = record->value(EQUIPEMENT_TYPE_SOCKET).toString();
+    return typeSocket;
+}
+
+QString BdHandler::getEquipementTypeConnexion(const ushort idEquipement){
+    QSqlRecord* record = getTableRow(QString("SELECT * FROM Equipement WHERE id_equipement=%1").arg(idEquipement));
+    QString typeSocket;
+    if(record != NULL)
+        typeSocket = record->value(EQUIPEMENT_TYPE_CONNEXION).toString();
+    return typeSocket;
+}
+
 ushort BdHandler::getTxTransmission(const ushort idTxTransmission)
 {
     emit(afficherTrace("call getTxTransmissionRow("+QString::number(idTxTransmission)+")"));

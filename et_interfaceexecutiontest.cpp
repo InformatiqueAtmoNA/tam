@@ -359,7 +359,14 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     connect(threadCommunication,SIGNAL(ouverturePort(bool)),this,SLOT(ouverturePortComAnalyseur(bool)));
     connect(analyseur,SIGNAL(erreurTransmission()),this,SLOT(erreurCommunicationAnalyseur()));
 
-    threadCommunication->configureRS232(interface);
+    //if(m_bdHandler->getEquipementTypeConnexion(idAnalyseur)=="IP"){
+        threadCommunication->configureIP("172.16.19.207", 8000, "UDP");
+    //}
+    //else if(m_bdHandler->getEquipementTypeConnexion(idAnalyseur)=="IP"){
+        threadCommunication->configureRS232(interface);
+    //}
+
+
 
     m_appareilEnTest = analyseur;
 

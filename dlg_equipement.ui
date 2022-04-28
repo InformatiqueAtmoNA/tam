@@ -418,20 +418,6 @@
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_16">
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_17">
-                 <property name="text">
-                  <string>Adresse IP :</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLabel" name="protocoleIP">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
                <item row="2" column="1">
                 <widget class="QLineEdit" name="numPort"/>
                </item>
@@ -445,10 +431,10 @@
                <item row="1" column="1">
                 <widget class="QLineEdit" name="addrIP"/>
                </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_19">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_17">
                  <property name="text">
-                  <string>Protocole :</string>
+                  <string>Adresse IP :</string>
                  </property>
                 </widget>
                </item>

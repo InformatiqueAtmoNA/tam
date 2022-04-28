@@ -72,31 +72,23 @@ QString Protocole::transaction(const QString & commande) {
 
     QFile logTrames("logTrames.txt");
     logTrames.open(QFile::WriteOnly | QFile::Append);
+    logTrames.write(commande.toLatin1());
+    logTrames.write("\n");
 
-    int compteur=1;
-    do{
-        qDebug()<< "Essai " << compteur << " : ";
+    qDebug()<< "Trame envoyee : " << commande.toLatin1();
 
-        logTrames.write(commande.toLatin1());
-        logTrames.write("\n");
+    emit(this->envoiTrame(commande));
+    this->flagEtatCom = ETAT_ATTENTE;
+    QTimer timerCommunication;
 
-        qDebug()<< "Trame envoyee : " << commande.toLatin1();
-
-        emit(this->envoiTrame(commande));
-        this->flagEtatCom = ETAT_ATTENTE;
-        QTimer timerCommunication;
-
-        timerCommunication.start(this->timeout);
-        connect(&timerCommunication,SIGNAL(timeout()),this,SLOT(timeoutCom()));
-        // On attend timeout ms de recevoir la reponse
-        while(!this->timerFini) {
-            if(m_avorterTransaction)
-                return NULL;
-            QCoreApplication::processEvents();
-        }
-        compteur++;
-    }while(this->flagEtatCom == ETAT_ATTENTE && compteur<=3);
-
+    timerCommunication.start(this->timeout);
+    connect(&timerCommunication,SIGNAL(timeout()),this,SLOT(timeoutCom()));
+    // On attend timeout ms de recevoir la reponse
+    while(!this->timerFini) {
+        if(m_avorterTransaction)
+            return NULL;
+        QCoreApplication::processEvents();
+    }
     // Si pas de reponse
     if(this->flagEtatCom == ETAT_ATTENTE) {
         emit(this->erreurTransmission());
