@@ -26,15 +26,26 @@
 
 #include "threadcomhandler.h"
 
-ThreadComHandler::ThreadComHandler()
+ThreadComHandler::ThreadComHandler(QString typeConnexion)
 {
     flagStop = false;
+    this->m_typeConnexion=typeConnexion;
 }
 
 ThreadComHandler::~ThreadComHandler() {
-    if(this->comRS232->isOpen())
-        this->comRS232->close();
-    this->comRS232->deleteLater();
+
+    if(m_typeConnexion=="RS232"){
+        if(this->comRS232->isOpen())
+            this->comRS232->close();
+        this->comRS232->deleteLater();
+    }
+    else if(m_typeConnexion=="IP"){
+        if(this->comIP->isOpen())
+            this->comIP->close();
+        this->comIP->deleteLater();
+    }
+
+
     QCoreApplication::sendPostedEvents(); // modifie
     QCoreApplication::processEvents();
 }
@@ -42,11 +53,17 @@ ThreadComHandler::~ThreadComHandler() {
 void ThreadComHandler::run() {
     exec();
     qDebug()<<"Fin du thread de communication";
-    this->comRS232->close();
+    if(m_typeConnexion=="RS232"){
+         this->comRS232->close();
+    }
+    else if(m_typeConnexion=="IP"){
+            this->comIP->close();
+    }
 }
 
 // Configure la liaison RS232
 void ThreadComHandler::configureRS232(const QString deviceName) {
+    qDebug() << "connecté en IP";
     this->comRS232 = new CommunicationSerie(deviceName);
 
     if(!this->comRS232->open(QSerialPort::ReadWrite)) {
@@ -94,19 +111,28 @@ void ThreadComHandler::configureRS232(const QString deviceName) {
     connect(this->comRS232,SIGNAL(dataReaded(QString)),this,SIGNAL(receptionTrame(QString)));
 }
 void ThreadComHandler::configureIP(QString IP, quint16 port, QString typeSocket){
-    this->comIP = new CommunicationIP;
+    qDebug() << "connecté en IP";
+    this->comIP = new CommunicationIP(typeSocket);
     this->comIP->setPort(port);
     this->comIP->setAddr(IP);
-    this->comIP->setSocketType(typeSocket);
     this->comIP->bindToHost();
-    //connect(this,SIGNAL(envoiTrame(QString)),this->comIP,SLOT(send_Trame(QString)));
-    //connect(this->comIP,SIGNAL(dataReceived(QString)),this,SIGNAL(receptionTrame(QString)));
+    connect(this,SIGNAL(envoiTrame(QString)),this->comIP,SLOT(send_Trame(QString)));
+    connect(this->comIP,SIGNAL(dataReceived(QString)),this,SIGNAL(receptionTrame(QString)));
 }
 
 
 
 void ThreadComHandler::stop() {
     this->flagStop = true;
-    if(this->comRS232->isOpen())
-        this->comRS232->close();
+    if(m_typeConnexion=="RS232"){
+        if(this->comRS232->isOpen())
+            this->comRS232->close();
+    }
+    else if(m_typeConnexion=="IP"){
+        if(this->comIP->isOpen())
+            this->comIP->close();
+    }
+
+
+
 }

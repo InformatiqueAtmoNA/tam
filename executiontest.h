@@ -94,6 +94,10 @@ private :
     QPointer<QTimer> m_timerTempsAttenteFinAcquisition;
 
     QString m_etatAutomate;
+    QString m_typeConnexion;
+    QString m_IP;
+    quint16 m_numPort;
+    QString m_typeSocket;
 
     bool m_moyennerMesures;
     bool m_flagPhaseInitialisee;

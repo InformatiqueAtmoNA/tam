@@ -353,18 +353,24 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
         msgBox.exec();
         return;
     }
-
-    QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler();
+    QSqlRecord* equipementRecord= m_bdHandler->getEquipementRow(idAnalyseur);
+    QString typeConnexion = equipementRecord->value(EQUIPEMENT_TYPE_CONNEXION).toString();
+    QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler(typeConnexion);
 
     connect(threadCommunication,SIGNAL(ouverturePort(bool)),this,SLOT(ouverturePortComAnalyseur(bool)));
     connect(analyseur,SIGNAL(erreurTransmission()),this,SLOT(erreurCommunicationAnalyseur()));
 
-    //if(m_bdHandler->getEquipementTypeConnexion(idAnalyseur)=="IP"){
-        threadCommunication->configureIP("172.16.19.207", 8000, "UDP");
-    //}
-    //else if(m_bdHandler->getEquipementTypeConnexion(idAnalyseur)=="IP"){
+    m_typeConnexion = equipementRecord->value(EQUIPEMENT_TYPE_CONNEXION).toString();
+    m_IP =  equipementRecord->value(EQUIPEMENT_ADRESSE_IP).toString();
+    m_numPort =  equipementRecord->value(EQUIPMENT_PORT_IP).toInt();
+    m_typeSocket =  equipementRecord->value(EQUIPEMENT_TYPE_SOCKET).toString();
+
+    if(m_typeConnexion=="IP"){
+        threadCommunication->configureIP(m_IP, m_numPort, m_typeSocket);
+    }
+    else if(m_typeConnexion=="IP"){
         threadCommunication->configureRS232(interface);
-    //}
+    }
 
 
 
@@ -432,8 +438,8 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     }
 
     m_appareilEnTest = calibrateur;
-
-    QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler();
+    QString typeConnexion = record->value(EQUIPEMENT_TYPE_CONNEXION).toString();
+    QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler(typeConnexion);
 
     connect(threadCommunication,SIGNAL(ouverturePort(bool)),this,SLOT(ouverturePortComCalibrateur(bool)));
     connect(calibrateur,SIGNAL(erreurTransmission()),this,SLOT(erreurCommunicationCalibrateur()));

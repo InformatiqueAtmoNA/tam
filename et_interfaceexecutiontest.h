@@ -56,6 +56,7 @@ private:
     QPointer<QSqlTableModel> m_modelLieu;
     QModelIndex m_idxSelectionAnalyseurs;
     QModelIndex m_idxCommunicationAnalyseurs;
+    QString m_type_Socket;
     QString m_fichierDescription;
     ushort m_etape;
     ushort m_idTestXML;
@@ -75,6 +76,10 @@ private:
     bool controleEtape2();
     void afficherMsgBoxErreurCom();
     QPointer<et_ParamsTest> preparerInfosTest();
+    QString m_typeConnexion;
+    QString m_IP;
+    quint16 m_numPort;
+    QString m_typeSocket;
 
 public:
     explicit et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,const ushort idTestXml,const QString fichierDescription,bool miseEnAttente=false,ushort idOperateur=0,QWidget *parent = 0);

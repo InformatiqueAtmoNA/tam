@@ -17,7 +17,7 @@ class CommunicationIP: public QObject
         QString socketType;
 
     public :
-        CommunicationIP();
+        CommunicationIP(QString socketType);
 
         void setPort(quint16 newPort);
 
@@ -43,17 +43,17 @@ class CommunicationIP: public QObject
 
         const QString &getSocketType() const;
 
+        bool isOpen();
+
+        void close();    
+
     public Q_SLOTS :
-
-        void send_Trame(QString &trame);
-
-    private Q_SLOTS :
-
+        void send_Trame(QString trame);
         void connexion_OK();
         void socketRead();
 
     signals :
-        void dataReceived(QString);
+        void dataReceived(QString trame);
 
 
 };

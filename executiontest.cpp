@@ -123,6 +123,7 @@ ExecutionTest::~ExecutionTest()
 void ExecutionTest::getInfosEquipements()
 {
     QMapIterator<ushort,QString> iterator(m_paramsTest.data()->m_listeInterfaceAnalyseurs);
+
     while (iterator.hasNext()) {
         iterator.next();
         ushort idAnalyseur = iterator.key();
@@ -139,8 +140,19 @@ void ExecutionTest::getInfosEquipements()
         DesignationProtocole designationProtocoleAnalyseur = m_bdHandler->getDesignationProtocole(idAnalyseur);
         QString adresse = equipementRecord->value(EQUIPEMENT_ADRESSE).toString();
 
-        QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler();
-        threadCommunication->configureRS232(m_paramsTest.data()->m_listeInterfaceAnalyseurs.value(idAnalyseur));
+        m_typeConnexion = equipementRecord->value(EQUIPEMENT_TYPE_CONNEXION).toString();
+        m_IP =  equipementRecord->value(EQUIPEMENT_ADRESSE_IP).toString();
+        m_numPort =  equipementRecord->value(EQUIPMENT_PORT_IP).toInt();
+        m_typeSocket =  equipementRecord->value(EQUIPEMENT_TYPE_SOCKET).toString();
+
+        QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler(m_typeConnexion);
+        if(m_typeConnexion=="IP"){
+            threadCommunication->configureIP(m_IP,m_numPort,m_typeSocket);
+        }
+        else if(m_typeConnexion=="RS232"){
+            threadCommunication->configureRS232(m_paramsTest.data()->m_listeInterfaceAnalyseurs.value(idAnalyseur));
+        }
+
 
         QPointer<Protocole> protocoleAnalyseur = Protocole::getProtocoleObject(designationProtocoleAnalyseur,adresse);
         protocoleAnalyseur->setThreadComHandler(threadCommunication);
@@ -168,8 +180,15 @@ void ExecutionTest::getInfosEquipements()
     QString adresse = m_infosCalibrateur->value(EQUIPEMENT_ADRESSE).toString();
     m_protocoleCalibrateur = Protocole::getProtocoleObject(designationProtocoleCalibrateur,adresse);
 
-    QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler();
-    threadCommunication->configureRS232(m_paramsTest.data()->m_interfaceCalibrateur);
+    QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler(m_typeConnexion);
+
+    if(m_typeConnexion=="IP"){
+        threadCommunication->configureIP(m_IP,m_numPort,m_typeSocket);
+    }
+    else if(m_typeConnexion=="RS232"){
+        threadCommunication->configureRS232(m_paramsTest.data()->m_interfaceCalibrateur);
+    }
+
 
     m_protocoleCalibrateur->setThreadComHandler(threadCommunication);
     m_protocoleCalibrateur->setTimeOut(500);
@@ -625,7 +644,7 @@ void ExecutionTest::enregistrerMoyenneMesures()
                 }
             }
             //if(!QString::number(sommeMesuresIndividuelles/nbMesuresMoyennees).contains("inf")) {
-            if(!nbMesuresMoyennees==0) {
+            if(nbMesuresMoyennees!=0) {
                 emit(traceTest("Moyenne polluant "+QString::number(j)+" = "+QString::number(sommeMesuresIndividuelles/nbMesuresMoyennees),0));
                 moyenneMesure.data()->append(sommeMesuresIndividuelles/nbMesuresMoyennees);
             }

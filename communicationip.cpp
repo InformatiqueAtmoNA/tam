@@ -5,12 +5,16 @@
 
 
 
-CommunicationIP::CommunicationIP()
+CommunicationIP::CommunicationIP(QString aSocketType)
 {
     tcp_socket = new QTcpSocket;
     udp_socket = new QUdpSocket;
     connect(this->tcp_socket,SIGNAL(connected()),this,SLOT(connexion_OK()));
     connect(this->udp_socket,SIGNAL(connected()),this,SLOT(connexion_OK()));
+    connect(this->tcp_socket, SIGNAL(readyRead()), this, SLOT(socketRead()));
+    connect(this->udp_socket, SIGNAL(readyRead()), this, SLOT(socketRead()));
+    socketType=aSocketType;
+
 }
 
 void CommunicationIP::setSocketType(const QString &newSocketType)
@@ -39,10 +43,33 @@ void CommunicationIP::bindToHost()
     }
 }
 
+bool CommunicationIP::isOpen() {
+    bool isOPen = false;
+
+    if(socketType=="UDP"){
+        isOPen= this->udp_socket->isOpen();
+    }
+    else if(socketType=="TCP"){
+        isOPen= this->tcp_socket->isOpen();
+    }
+    return isOPen;
+}
+
+// Fermer la communication
+void CommunicationIP::close() {
+    if(socketType=="UDP"){
+        return this->udp_socket->close();
+    }
+    else if(socketType=="TCP"){
+        return this->tcp_socket->close();
+    }
+}
+
 //slot
-void CommunicationIP::send_Trame(QString &trame)
+void CommunicationIP::send_Trame(QString trame)
 {
     if(socketType=="UDP"){
+        QString a = trame.toLatin1();
         udp_socket->writeDatagram(trame.toLatin1(),*addr,port);
     }
     else if(socketType=="TCP"){

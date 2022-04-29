@@ -44,13 +44,14 @@ private:
     CommunicationSerie* comRS232; // Gère la communication RS232
     CommunicationIP* comIP; // Gère la communication IP
     bool flagStop; // Indique que le thread doit s'arrêter
+    QString m_typeConnexion;
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ThreadComHandler()
     // \brief Constructeur par défaut
     ///////////////////////////////////////////////////////////////////////////*/
-    ThreadComHandler();
+    ThreadComHandler(QString typeConnexion);
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ~ThreadComHandler()
