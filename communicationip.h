@@ -15,6 +15,7 @@ class CommunicationIP: public QObject
         QUdpSocket * udp_socket;
         QTcpSocket * tcp_socket;
         QString socketType;
+        bool EtatConnexion;
 
     public :
         CommunicationIP(QString socketType);
@@ -47,7 +48,9 @@ class CommunicationIP: public QObject
 
         void close();    
 
-    public Q_SLOTS :
+        bool getEtatConnexion() const;
+
+public Q_SLOTS :
         void send_Trame(QString trame);
         void connexion_OK();
         void socketRead();

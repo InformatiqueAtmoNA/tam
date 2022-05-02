@@ -5,6 +5,11 @@
 
 
 
+bool CommunicationIP::getEtatConnexion() const
+{
+    return EtatConnexion;
+}
+
 CommunicationIP::CommunicationIP(QString aSocketType)
 {
     tcp_socket = new QTcpSocket;
@@ -14,6 +19,7 @@ CommunicationIP::CommunicationIP(QString aSocketType)
     connect(this->tcp_socket, SIGNAL(readyRead()), this, SLOT(socketRead()));
     connect(this->udp_socket, SIGNAL(readyRead()), this, SLOT(socketRead()));
     socketType=aSocketType;
+    EtatConnexion=false;
 
 }
 
@@ -80,6 +86,7 @@ void CommunicationIP::send_Trame(QString trame)
 
 void CommunicationIP::connexion_OK()
 {
+    EtatConnexion = true;
     qDebug() << "Connecté" << "\n";
 }
 

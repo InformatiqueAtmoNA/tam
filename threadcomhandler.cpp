@@ -63,7 +63,7 @@ void ThreadComHandler::run() {
 
 // Configure la liaison RS232
 void ThreadComHandler::configureRS232(const QString deviceName) {
-    qDebug() << "connecté en IP";
+    qDebug() << "connecté en RS232";
     this->comRS232 = new CommunicationSerie(deviceName);
 
     if(!this->comRS232->open(QSerialPort::ReadWrite)) {
@@ -118,6 +118,16 @@ void ThreadComHandler::configureIP(QString IP, quint16 port, QString typeSocket)
     this->comIP->bindToHost();
     connect(this,SIGNAL(envoiTrame(QString)),this->comIP,SLOT(send_Trame(QString)));
     connect(this->comIP,SIGNAL(dataReceived(QString)),this,SIGNAL(receptionTrame(QString)));
+
+    if(!comIP->getEtatConnexion()) {
+        qDebug() << "Problème lors de l'ouverture du peripherique " << IP;
+        emit(this->ouverturePort(false));
+        return;
+    }
+    else {
+        qDebug() << "Ouverture du peripherique " << IP << " reussie";
+        emit(this->ouverturePort(true));
+    }
 }
 
 
