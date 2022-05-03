@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>818</width>
+    <width>858</width>
     <height>590</height>
    </rect>
   </property>
@@ -14,22 +14,6 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_5">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_TypeTest">
-     <property name="font">
-      <font>
-       <family>Andale Mono</family>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
@@ -39,7 +23,7 @@
          <property name="minimumSize">
           <size>
            <width>261</width>
-           <height>169</height>
+           <height>180</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -69,6 +53,24 @@
             </item>
             <item>
              <widget class="QLabel" name="labelOperateur">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_16">
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Identifiant :</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="idTest">
               <property name="text">
                <string/>
               </property>
@@ -246,7 +248,7 @@
          <property name="minimumSize">
           <size>
            <width>282</width>
-           <height>169</height>
+           <height>180</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -298,6 +300,13 @@
         <string/>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
+        <item row="1" column="1">
+         <widget class="QPushButton" name="Button_Valider">
+          <property name="text">
+           <string>&amp;Valider</string>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="1">
          <widget class="QPushButton" name="button_Fermer">
           <property name="text">
@@ -312,17 +321,26 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="Button_Valider">
-          <property name="text">
-           <string>&amp;Valider</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_TypeTest">
+     <property name="font">
+      <font>
+       <family>Andale Mono</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox_3">
