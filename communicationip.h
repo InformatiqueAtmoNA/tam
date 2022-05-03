@@ -9,7 +9,9 @@
 class CommunicationIP: public QObject
 {
     Q_OBJECT
+
     private :
+
         quint16 port;
         QHostAddress * addr;
         QUdpSocket * udp_socket;
@@ -18,46 +20,26 @@ class CommunicationIP: public QObject
         bool EtatConnexion;
 
     public :
-        CommunicationIP(QString socketType);
 
+        CommunicationIP();
         void setPort(quint16 newPort);
-
-        quint16 getPort() const;
-
         void setAddr(QString newAddr);
-
-        QHostAddress *getAddr() const;
-
-        void setUdp_socket(QUdpSocket *newUdp_socket);
-
-        QUdpSocket *getUdp_socket() const;
-
-        void setTcp_socket(QTcpSocket *newTcp_socket);
-
-        QTcpSocket *getTcp_socket() const;
-
-        void readSocketType();
-
+        void setTypeSocket(QString newTypeSocket);
         void bindToHost();
-
-        void setSocketType(const QString &newSocketType);
-
-        const QString &getSocketType() const;
-
         bool isOpen();
-
         void close();    
-
         bool getEtatConnexion() const;
 
 public Q_SLOTS :
+
         void send_Trame(QString trame);
         void connexion_OK();
+        void connexion_perdue();
         void socketRead();
 
     signals :
-        void dataReceived(QString trame);
 
+        void dataReceived(QString trame);
 
 };
 

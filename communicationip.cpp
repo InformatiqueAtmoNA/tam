@@ -2,43 +2,52 @@
 #include <QDebug>
 
 
+CommunicationIP::CommunicationIP()
+{
+    EtatConnexion=false;
+}
 
-
-
+// retourne vrai si le logiciel est connecté à une machine distante
 bool CommunicationIP::getEtatConnexion() const
 {
     return EtatConnexion;
 }
 
-CommunicationIP::CommunicationIP(QString aSocketType)
-{
-    tcp_socket = new QTcpSocket;
-    udp_socket = new QUdpSocket;
-    connect(this->tcp_socket,SIGNAL(connected()),this,SLOT(connexion_OK()));
-    connect(this->udp_socket,SIGNAL(connected()),this,SLOT(connexion_OK()));
-    connect(this->tcp_socket, SIGNAL(readyRead()), this, SLOT(socketRead()));
-    connect(this->udp_socket, SIGNAL(readyRead()), this, SLOT(socketRead()));
-    socketType=aSocketType;
-    EtatConnexion=false;
-
-}
-
-void CommunicationIP::setSocketType(const QString &newSocketType)
-{
-    socketType = newSocketType;
-}
-
+// définition du numero de port de la machine distante
 void CommunicationIP::setPort(quint16 newPort)
 {
     port = newPort;
 }
 
+// définition de l'adresse IP de la machine distante
 void CommunicationIP::setAddr(QString newAddr)
 {
     addr = new QHostAddress(newAddr) ;
 }
 
+// définition du type de socket utilisé pour la communication IP
+void CommunicationIP::setTypeSocket(QString newTypeSocket){
 
+    socketType=newTypeSocket;
+
+    if(socketType=="UDP"){
+        udp_socket = new QUdpSocket;
+        connect(this->udp_socket,SIGNAL(connected()),this,SLOT(connexion_OK()));
+        connect(this->udp_socket, SIGNAL(readyRead()), this, SLOT(socketRead()));
+
+    }
+    else if(socketType=="TCP"){
+        tcp_socket = new QTcpSocket;
+        connect(this->tcp_socket, SIGNAL(readyRead()), this, SLOT(socketRead()));
+        connect(this->tcp_socket,SIGNAL(connected()),this,SLOT(connexion_OK()));
+    }
+
+}
+
+/*
+ * liaison de l'application avec une machine distant en utilisant son adresse IP
+ * et son numéro de port
+*/
 void CommunicationIP::bindToHost()
 {
     if(socketType=="UDP"){
@@ -49,6 +58,8 @@ void CommunicationIP::bindToHost()
     }
 }
 
+
+// retourne vrai si on peut lire et écrire sur la machine
 bool CommunicationIP::isOpen() {
     bool isOPen = false;
 
@@ -61,7 +72,7 @@ bool CommunicationIP::isOpen() {
     return isOPen;
 }
 
-// Fermer la communication
+// arrete la connexion
 void CommunicationIP::close() {
     if(socketType=="UDP"){
         return this->udp_socket->close();
@@ -71,11 +82,15 @@ void CommunicationIP::close() {
     }
 }
 
-//slot
+
+
+
+////////////////
+///slots
+////////////////
 void CommunicationIP::send_Trame(QString trame)
 {
     if(socketType=="UDP"){
-        QString a = trame.toLatin1();
         udp_socket->writeDatagram(trame.toLatin1(),*addr,port);
     }
     else if(socketType=="TCP"){
@@ -87,7 +102,12 @@ void CommunicationIP::send_Trame(QString trame)
 void CommunicationIP::connexion_OK()
 {
     EtatConnexion = true;
-    qDebug() << "Connecté" << "\n";
+    qDebug() << "Connecté en IP" << "\n";
+}
+
+void CommunicationIP::connexion_perdue(){
+    EtatConnexion = true;
+    qDebug() << "Connexion IP perdue" << "\n";
 }
 
 void CommunicationIP::socketRead()
