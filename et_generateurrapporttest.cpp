@@ -227,14 +227,15 @@ void et_GenerateurRapportTest::affichageTableauResidu ()
         else {
             m_ResiduZero = m_tabMoyenne[i]-(m_ordonnee + m_pente * m_tabConcentration[i]);
             m_tabResidu.append(m_ResiduZero);
-            m_tabResiduRel.append(-99);
-            m_tabResiduInc.append(-99);
+            m_tabResiduRel.append(0);
+            m_tabResiduInc.append(0);
         }
     }
     m_tabValeurPourCritere.append(m_ResiduZero);
     m_tabValeurPourCritere.append(rmax(m_tabConcentration,m_tabResiduRel));
     m_tabValeurPourCritere.append(m_pente);
     m_tabValeurPourCritere.append(m_ordonnee);
+    m_tabValeurPourCritere.append(rmax(m_tabResiduRel,m_tabResiduInc));
 }
 
 //Mise en forme du Tableau des temps de reponse
@@ -333,6 +334,7 @@ bool et_GenerateurRapportTest::genererRapportLinearite()
         tableauMesure(m_PolluantTest->data(m_PolluantTest->index(i,0)).toInt(),
                       m_PolluantTest->data(m_PolluantTest->index(i,1)).toInt());
         affichageTableauResidu();
+
         QWidget* resultatPolluant = new et_Resultatpolluant(m_tabConcentration,m_tabMesures,m_tabMoyenne,
                                                             m_tabEcartType,m_tabValeurPourCritere,
                                                             m_tabResidu,m_tabResiduRel,m_tabResiduInc,m_tabCritere,this);
@@ -402,10 +404,32 @@ bool et_GenerateurRapportTest::genererRapportRendementFour()
     }
 
     //Remplissage tableWidgetTPG
-
     for (int j=0;j<m_tabResultatTPG.count();j++){
+
         this->ui->tableWidget_Rdf->insertRow(j);
         QTableWidgetItem* item = new QTableWidgetItem(QString::number(m_tabResultatTPG.value(j),'f',2));
+
+        if(j < 2){
+            if(m_tabResultatTPG.value(j)>m_tabCritere.value(0))
+            {
+                item->setForeground(QBrush(QColor("green")));
+            }
+            else
+            {
+                item->setForeground(QBrush(QColor("red")));
+            }
+        }
+        else if(j>2 and j<5)
+        {
+            if(m_tabResultatTPG.value(j)<m_tabCritere.value(1))
+            {
+                item->setForeground(QBrush(QColor("green")));
+            }
+            else
+            {
+                item->setForeground(QBrush(QColor("red")));
+            }
+        }
         this->ui->tableWidget_Rdf->setItem(j,0,item);
     }
     this->ui->tableWidget_Rdf->setVerticalHeaderLabels(m_listeEnteteLigneTPG);

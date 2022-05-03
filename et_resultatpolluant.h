@@ -29,6 +29,8 @@
 
 #include <QWidget>
 #include <QDebug>
+#include <QLineEdit>
+
 
 namespace Ui {
     class et_Resultatpolluant;
@@ -55,6 +57,7 @@ public:
             QVector<float> tabResidu,QVector<float> tabResiduRel,QVector<float> tabResiduInc,QVector<double> tabCritere,
             QWidget *parent = 0);
 
+    void verifierCriteres(QString typeCritere,QLineEdit* critere, QLineEdit* valeur);
     ~et_Resultatpolluant();
 
 private:
