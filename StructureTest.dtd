@@ -19,6 +19,7 @@
                         nb_cycles_mesures_par_phase CDATA #IMPLIED
                         critere_max1 CDATA #IMPLIED
                         critere_max2 CDATA #IMPLIED
+                        critere_max3 CDATA #IMPLIED
 		>
 		<!ELEMENT polluant EMPTY>
 			<!ATTLIST polluant

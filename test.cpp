@@ -51,6 +51,7 @@ Test::Test(const Test& test) : QObject()
     this->m_listePhases = test.m_listePhases;
     this->m_critere1 = test.m_critere1;
     this->m_critere2 = test.m_critere2;
+    this->m_critere3 = test.m_critere3;
 }
 
 Test& Test::operator =(const Test& test)
@@ -68,6 +69,7 @@ Test& Test::operator =(const Test& test)
     this->m_listePhases = test.m_listePhases;
     this->m_critere1 = test.m_critere1;
     this->m_critere2 = test.m_critere2;
+    this->m_critere3 = test.m_critere3;
 
     return *this;
 }
@@ -229,6 +231,8 @@ bool Test::exportToXml(QString const & nomFichier)
         el_deroulement.setAttribute("critere_1",QString::number(this->m_critere1));
     if(this->m_critere2>0)
         el_deroulement.setAttribute("critere_2",QString::number(this->m_critere2));
+    if(this->m_critere3>0)
+        el_deroulement.setAttribute("critere_3",QString::number(this->m_critere3));
 
     // Pour chaque phase, on cree un element XML
     // que l'on rajoute à l'element <deroulement>
@@ -308,6 +312,7 @@ QPointer<Test> Test::importFromXml(QString const & nomFichier)
     QString tpsAttenteEntreMesure = el_deroulement.attribute("tps_attente_entre_mesure_par_phase");
     QString critere1 = el_deroulement.attribute("critere_1");
     QString critere2 = el_deroulement.attribute("critere_2");
+    QString critere3 = el_deroulement.attribute("critere_3");
 
     p_test->setTempsAcquisition(tpsAcquisition.toUShort());
     p_test->setTempsStabilisation(QTime::fromString(tpsStabilisation,"hh:mm:ss"));
@@ -317,6 +322,7 @@ QPointer<Test> Test::importFromXml(QString const & nomFichier)
     p_test->setNbCyclesDePhase(nbCyclesDePhases.toUShort());
     p_test->setCritere1(critere1.toDouble());
     p_test->setCritere2(critere2.toDouble());
+    p_test->setCritere3(critere3.toDouble());
 
     // Recupère la liste des element enfants de l'element XML deroulement
     QDomNodeList nl_listePhases = el_deroulement.childNodes();

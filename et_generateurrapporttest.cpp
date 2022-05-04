@@ -74,6 +74,7 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     ui->labelPression->setText(m_Pression);
     m_tabCritere.append (informationTest->value("critere1").toDouble());
     m_tabCritere.append(informationTest->value("critere2").toDouble());
+    m_tabCritere.append(informationTest->value("critere3").toDouble());
 
     affichageEquipement(m_idAnalyseur,"ANALYSEUR");
 

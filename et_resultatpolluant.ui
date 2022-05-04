@@ -107,8 +107,11 @@
           </item>
           <item>
            <widget class="QLineEdit" name="lineEdit_Critere1">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="readOnly">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
            </widget>
           </item>

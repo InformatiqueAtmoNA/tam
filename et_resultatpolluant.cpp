@@ -38,6 +38,11 @@ et_Resultatpolluant::et_Resultatpolluant(QList<QString> listNomMolecule,QVector<
     affichageTableauCalcul(tabMoyenne,"MOYENNE (ppb)");
     this->ui->tableWidget->setVerticalHeaderLabels(m_listeEnteteLigne);
     this->ui->groupBox->hide();
+    this->ui->lineEdit_Valeur3->hide();
+    this->ui->lineEdit_Critere3->hide();
+    this->ui->label_Critere3->hide();
+    this->ui->label_Valeur3->hide();
+    this->ui->line_3->hide();
 
 }
 
@@ -68,6 +73,12 @@ et_Resultatpolluant::et_Resultatpolluant(QList<QString> listNomColTpsRep,QVector
     this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
 
     verifierCriteres("<",this->ui->lineEdit_Critere2,this->ui->lineEdit_Valeur2);
+
+    this->ui->lineEdit_Valeur3->hide();
+    this->ui->lineEdit_Critere3->hide();
+    this->ui->label_Critere3->hide();
+    this->ui->label_Valeur3->hide();
+    this->ui->line_3->hide();
 }
 
 et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<QVector<float> > tabMesPolluant,
@@ -100,6 +111,11 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
 
     verifierCriteres("<",this->ui->lineEdit_Critere2,this->ui->lineEdit_Valeur2);
+    this->ui->lineEdit_Valeur3->hide();
+    this->ui->lineEdit_Critere3->hide();
+    this->ui->label_Critere3->hide();
+    this->ui->label_Valeur3->hide();
+    this->ui->line_3->hide();
 }
 
 et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<QVector<float> > tabMesPolluant,
@@ -139,7 +155,7 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     this->ui->label_Valeur3->setText("Ecart relatif Max (%) =");
     this->ui->lineEdit_Valeur3->setText(QString::number(tabValeurPourCritere.value(4),'f',2));
     this->ui->label_Critere3->setText("Critère Max (%) <");
-    this->ui->lineEdit_Critere3->setText(QString::number(tabCritere.value(1),'f',2));
+    this->ui->lineEdit_Critere3->setText(QString::number(tabCritere.value(2),'f',2));
 
     verifierCriteres("<",this->ui->lineEdit_Critere3,this->ui->lineEdit_Valeur3);
 
