@@ -543,7 +543,7 @@ QSqlRecord* BdHandler::getSystemeEtalonRow(const ushort idSystemeEtalon)
 QSqlRecord* BdHandler::getEquipementModeledRow(const ushort idEquipement)
 {
     QString requete = "SELECT E.id_equipement,E.numero_serie,ME.me_designation,MA.designation,E.min_gamme,";
-    requete.append("E.max_gamme,E.offset,E.adresse,PS.designation ");
+    requete.append("E.max_gamme,E.offset,E.adresse,PS.designation,E.ip_adress ");
     requete.append("FROM Equipement E,Modele_Equipement ME, Marque_Equipement MA, Port_Serie PS ");
     requete.append("WHERE E.id_modele = ME.id_modele AND ME.id_marque = MA.id_marque AND E.no_port = PS.no_port ");
     requete.append(QString("AND id_equipement=%1").arg(idEquipement));

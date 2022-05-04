@@ -229,6 +229,7 @@ void et_InterfaceExecutionTest::buttonAjouterClicked()
     int idEquipement = dlgEquipement.getIdSelection();
 
     QSqlRecord recordEquipement = *(m_bdHandler->getEquipementModeledRow(idEquipement));
+    QSqlRecord* record = m_bdHandler->getEquipementRow(idEquipement);
 
     QTableWidgetItem* item_idEquipement = new QTableWidgetItem(QString::number(idEquipement));
     QTableWidgetItem* item_noSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_NUM_SERIE).toString());
@@ -239,6 +240,7 @@ void et_InterfaceExecutionTest::buttonAjouterClicked()
     QTableWidgetItem* item_offset = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_OFFSET).toString());
     QTableWidgetItem* item_adresse = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_ADRESSE).toString());
     QTableWidgetItem* item_portSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_PORTSERIE).toString());
+    QTableWidgetItem* item_ip = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_IP).toString());
 
     uint idxNewRecord = this->ui->tableWidget_Analyseurs->rowCount();
     this->ui->tableWidget_Analyseurs->insertRow(idxNewRecord);
@@ -251,16 +253,25 @@ void et_InterfaceExecutionTest::buttonAjouterClicked()
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_OFFSET,item_offset);
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_ADRESSE,item_adresse);
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_PORTSERIE,item_portSerie);
+    this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_IP,item_ip);
 
     this->ui->tableWidget_Communication->insertRow(idxNewRecord);
     QTableWidgetItem* itemCom_idEquipement = new QTableWidgetItem(QString::number(idEquipement));
     QTableWidgetItem* itemCom_noSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_NUM_SERIE).toString());
     QTableWidgetItem* itemCom_portSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_PORTSERIE).toString());
     QTableWidgetItem* itemCom_etat = new QTableWidgetItem("En attente de test...");
+    QTableWidgetItem* itemCom_ip = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_IP).toString());
 
     this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT,itemCom_idEquipement);
     this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_NUM_SERIE,itemCom_noSerie);
-    this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_INTERFACE,itemCom_portSerie);
+
+    if(record->value(EQUIPEMENT_TYPE_CONNEXION).toString()=="IP"){
+        this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_INTERFACE,itemCom_ip);
+    }
+    else if(record->value(EQUIPEMENT_TYPE_CONNEXION).toString()=="RS232"){
+        this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_INTERFACE,itemCom_portSerie);
+    }
+
     this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
 }
 
