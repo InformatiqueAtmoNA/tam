@@ -418,18 +418,18 @@
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_16">
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="addrIP"/>
+               </item>
                <item row="2" column="1">
                 <widget class="QLineEdit" name="numPort"/>
                </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_18">
+               <item row="0" column="0">
+                <widget class="QCheckBox" name="checkBoxIP">
                  <property name="text">
-                  <string>Numéro de port :</string>
+                  <string>Connexion IP</string>
                  </property>
                 </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLineEdit" name="addrIP"/>
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_17">
@@ -438,12 +438,22 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="0">
-                <widget class="QCheckBox" name="checkBoxIP">
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_18">
                  <property name="text">
-                  <string>Connexion IP</string>
+                  <string>Numéro de port :</string>
                  </property>
                 </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_19">
+                 <property name="text">
+                  <string>Type de socket</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="typeSocket"/>
                </item>
               </layout>
              </widget>

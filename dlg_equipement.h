@@ -44,9 +44,8 @@ private:
     ushort m_idTxTransmission;
     ushort m_noport;
     int m_idModifie;
-    QString m_ip_address;
-    int m_num_port_IP;
     QString m_type_connexion;
+
 
     void peuplerTable();
     void afficherFormulaire();
