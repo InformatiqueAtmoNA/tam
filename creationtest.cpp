@@ -67,6 +67,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     connect(this->ui->button_fichierXML,SIGNAL(clicked()),this,SLOT(button_choixEnregistrementXML()));
     connect(this->ui->doubleSpinBox_critere1,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere1(double)));
     connect(this->ui->doubleSpinBox_critere2,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere2(double)));
+    connect(this->ui->checkBoxFavori,SIGNAL(stateChanged(int)),this,SLOT(favoriBoxChecked(int)));
 
     this->ui->button_InsererPhase->setEnabled(false);
     this->ui->button_SupprimerPhase->setEnabled(false);
@@ -125,6 +126,7 @@ CreationTest::~CreationTest()
 
 void CreationTest::initialiserChamps()
 {
+
     this->ui->timeEdit_TempsStabilisation->setTime(this->m_test->getTempsStabilisation());
     this->ui->timeEdit_TempsAttenteEntreMesure->setTime(this->m_test->getTempsAttenteEntreMesure());
     this->ui->timeEdit_TempsMoyennageMesures->setTime(this->m_test->getTempsMoyennageMesure());
@@ -136,6 +138,15 @@ void CreationTest::initialiserChamps()
     this->ui->doubleSpinBox_critere2->setValue(this->m_test->getCritere2());
 
     QPointer<QSqlRelationalTableModel> model = this->m_bdHandler->getSystemeEtalonModel();
+
+    this->m_favoriteState = this->m_bdHandler->getTestFavoriteState(this->m_test->getIdTest());
+    if(m_favoriteState=="OUI"){
+        this->ui->checkBoxFavori->setCheckState(Qt::Checked);
+    }
+    else if(m_favoriteState=="NON"){
+        this->ui->checkBoxFavori->setCheckState(Qt::Unchecked);
+    }
+
     model->setFilter(QString("id_systeme_etalon=%1").arg(this->m_test->getIdSystemeEtalon()));
     model->select();
     qDebug()<<QString("id_systeme_etalon=%1").arg(this->m_test->getIdSystemeEtalon());
@@ -436,6 +447,7 @@ void CreationTest::button_SauvegarderClicked ()
     model->setData(model->index(row,TEST_XML_TYPE_TEST),QVariant::fromValue(typeTestToString(this->m_typeTest)));
     model->setData(model->index(row,TEST_XML_ID_SYSTEME_ETALON),QVariant::fromValue(this->m_test->getIdSystemeEtalon()));
     qDebug()<<model->index(row,TEST_XML_ID).data();
+    model->setData(model->index(row,TEST_XML_EST_FAVORI),QVariant::fromValue((this->m_favoriteState)));
     model->submitAll();
 
     this->m_test->setIdTest(model->record(row).value(TEST_XML_ID).toInt());
@@ -667,4 +679,13 @@ void CreationTest::button_choixEnregistrementXML()
         return;
     }
 
+}
+
+void CreationTest::favoriBoxChecked(int boxState){
+    if(boxState==2){
+        this->m_favoriteState="OUI";
+    }
+    else if(boxState == 0){
+        this->m_favoriteState="NON";
+    }
 }

@@ -77,6 +77,7 @@ public:
     QSqlRecord* getSystemeEtalonRow(const ushort idSystemeEtalon);
     QSqlRecord* getEquipementModeledRow(const ushort idEquipement);
     QString getEquipementNumSerie(const ushort idEquipement);
+    QString getTestFavoriteState(const ushort idTest);
     ushort getTxTransmission(const ushort idTxTransmission);
     QSqlRecord* getDesignationPortSerie(const ushort idEquipement);
     QSqlRecord* getInformationsTest(const ushort idTest);

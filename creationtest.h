@@ -51,6 +51,7 @@ private:
     QPointer<Test> m_test;
     QString m_nomCheminXml;
     QString m_nomFichier;
+    QString m_favoriteState;
     QString m_nomFichierAEffacer;
     QPointer<BdHandler> m_bdHandler;
     TypeTest m_typeTest;
@@ -92,6 +93,7 @@ private Q_SLOTS:
     void listWidgetCurrentRowChanged(const int row);
     void lineEditNomTestTextChanged(const QString nomTest);
     void button_choixEnregistrementXML();
+    void favoriBoxChecked(int boxState);
 
 public Q_SLOTS:
     void editionPhaseAnnulee();

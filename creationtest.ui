@@ -34,7 +34,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab_Parametres">
         <attribute name="title">
@@ -293,6 +293,13 @@
                    <layout class="QGridLayout" name="gridLayout_5">
                     <item row="0" column="0">
                      <layout class="QVBoxLayout" name="verticalLayout_2">
+                      <item>
+                       <widget class="QCheckBox" name="checkBoxFavori">
+                        <property name="text">
+                         <string>Mettre en favori</string>
+                        </property>
+                       </widget>
+                      </item>
                       <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_6">
                         <item>
