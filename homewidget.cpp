@@ -126,8 +126,8 @@ void HomeWidget::getListeRapports()
             this->ui->treeView->setModel(m_itemModele);
 
 
-            //this->ui->treeView->hideColumn(HOMEW_TABVIEW_TEST_ID_TEST);
-           // this->ui->treeView->hideColumn(HOMEW_TABVIEW_TEST_ID_EQUIP);
+           //this->ui->treeView->setColumnHidden(HOMEW_TABVIEW_TEST_ID_TEST,true);
+           //this->ui->treeView->setColumnHidden(HOMEW_TABVIEW_TEST_ID_EQUIP,true);
 
 }
 
@@ -152,12 +152,13 @@ void HomeWidget::tableViewTestRapportIndexChanged(const QModelIndex & index)
 void HomeWidget::treeViewTestRapportIndexChanged(const QModelIndex & index)
 {
     this->m_idxSelectionItemRapport = index;
-    if (!m_itemModele->hasChildren(m_idxSelectionItemRapport.model()->index(0,0))){ // modifie
-        this->ui->button_Afficher->setEnabled(m_idxSelectionItemRapport.isValid());
-    }
-    else {
-        this->ui->button_Afficher->setDisabled(m_idxSelectionItemRapport.isValid());
-    }
+
+        if (!m_itemModele->hasChildren(m_idxSelectionItemRapport.model()->index(0,0,m_idxSelectionItemRapport))){
+            this->ui->button_Afficher->setEnabled(m_idxSelectionItemRapport.isValid());
+        }
+        else {
+            this->ui->button_Afficher->setDisabled(m_idxSelectionItemRapport.isValid());
+        }
 
 }
 
@@ -237,8 +238,8 @@ void HomeWidget::buttonAfficherClicked()
     else if (ui->treeView->currentIndex().isValid()){
 
         ushort typeTest = stringToTypeTest(m_idxSelectionItemRapport.parent().data().toString());
-        ushort idTest = m_idxSelectionItemRapport.model()->index(0,0).data().toInt(); // modifie
-        ushort idAnalyseur = m_idxSelectionItemRapport.model()->index(1,0).data().toInt(); // modifie
+        ushort idTest = m_idxSelectionItemRapport.model()->index(0,0,m_idxSelectionItemRapport).data().toInt(); // modifie
+        ushort idAnalyseur = m_idxSelectionItemRapport.model()->index(1,0,m_idxSelectionItemRapport).data().toInt(); // modifie
 
         emit(this->afficherRapport(idTest,idAnalyseur,typeTest));
      }

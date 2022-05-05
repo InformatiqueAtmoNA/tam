@@ -782,6 +782,27 @@
          <string>Nom du test</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_7">
+         <item row="2" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_19">
+           <item>
+            <widget class="QLabel" name="label_15">
+             <property name="text">
+              <string>Donner un nom au test :</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_NomTest"/>
+           </item>
+           <item>
+            <widget class="QToolButton" name="button_fichierXML">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
          <item row="0" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
@@ -790,6 +811,33 @@
               <string>Critères de Performance</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_6">
+              <item row="1" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <widget class="QLabel" name="label_critere2">
+                  <property name="text">
+                   <string>Critere 2 :</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_critere2">
+                  <property name="maximumSize">
+                   <size>
+                    <width>63</width>
+                    <height>27</height>
+                   </size>
+                  </property>
+                  <property name="decimals">
+                   <number>2</number>
+                  </property>
+                  <property name="maximum">
+                   <double>1000.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
               <item row="0" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
@@ -817,30 +865,17 @@
                 </item>
                </layout>
               </item>
-              <item row="1" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item row="2" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_20">
                 <item>
-                 <widget class="QLabel" name="label_critere2">
+                 <widget class="QLabel" name="label_critere3">
                   <property name="text">
-                   <string>Critere 2 :</string>
+                   <string>Critère 3 :</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_critere2">
-                  <property name="maximumSize">
-                   <size>
-                    <width>63</width>
-                    <height>27</height>
-                   </size>
-                  </property>
-                  <property name="decimals">
-                   <number>2</number>
-                  </property>
-                  <property name="maximum">
-                   <double>1000.000000000000000</double>
-                  </property>
-                 </widget>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_critere3"/>
                 </item>
                </layout>
               </item>
@@ -874,27 +909,6 @@
             </size>
            </property>
           </spacer>
-         </item>
-         <item row="2" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_19">
-           <item>
-            <widget class="QLabel" name="label_15">
-             <property name="text">
-              <string>Donner un nom au test :</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit_NomTest"/>
-           </item>
-           <item>
-            <widget class="QToolButton" name="button_fichierXML">
-             <property name="text">
-              <string>...</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
          </item>
         </layout>
        </widget>

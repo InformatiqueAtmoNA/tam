@@ -68,6 +68,7 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     connect(this->ui->doubleSpinBox_critere1,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere1(double)));
     connect(this->ui->doubleSpinBox_critere2,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere2(double)));
     connect(this->ui->checkBoxFavori,SIGNAL(stateChanged(int)),this,SLOT(favoriBoxChecked(int)));
+    connect(this->ui->doubleSpinBox_critere3,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere3(double)));
 
     this->ui->button_InsererPhase->setEnabled(false);
     this->ui->button_SupprimerPhase->setEnabled(false);
@@ -136,6 +137,7 @@ void CreationTest::initialiserChamps()
     this->ui->spinBox_NbCyclesPhases->setValue(this->m_test->getNbCyclesDePhases());
     this->ui->doubleSpinBox_critere1->setValue(this->m_test->getCritere1());
     this->ui->doubleSpinBox_critere2->setValue(this->m_test->getCritere2());
+    this->ui->doubleSpinBox_critere3->setValue(this->m_test->getCritere3());
 
     QPointer<QSqlRelationalTableModel> model = this->m_bdHandler->getSystemeEtalonModel();
 
@@ -156,6 +158,10 @@ void CreationTest::initialiserChamps()
     this->ui->lineEdit_GZero->setText(model->record(0).value(SYS_ETALON_GZERO).toString());
 
     this->m_typeTest = this->m_test->getTypeTest();
+    if(m_typeTest!= LINEARITE){
+        this->ui->doubleSpinBox_critere3->hide();
+        this->ui->label_critere3->hide();
+    }
     switch(this->m_typeTest) {
     case REPETABILITE:
         this->m_indexTypeTest = 0;
@@ -594,6 +600,7 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
         this->m_typeTest=LINEARITE;
         this->ui->label_critere1->setText(QLatin1String("Residu au zero en ppb"));
         this->ui->label_critere2->setText(QLatin1String("Residu Maximal concentration > à 0 en %"));
+        this->ui->label_critere3->setText(QLatin1String("Ecart a la consigne > à 0 en %"));
         break;
     case 2:
         this->m_typeTest=TEMPS_REPONSE;
