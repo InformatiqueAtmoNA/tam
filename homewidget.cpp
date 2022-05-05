@@ -49,8 +49,11 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
     connect(this->ui->tableWidget_TestXml,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetTestXmlIndexChanged(QModelIndex)));
     connect(this->ui->tableView_TestRapport,SIGNAL(clicked(QModelIndex)),this,SLOT(tableViewTestRapportIndexChanged(QModelIndex)));
     connect(this->ui->treeView,SIGNAL(clicked(QModelIndex)),this,SLOT(treeViewTestRapportIndexChanged(QModelIndex)));
+    connect(this->ui->checkBoxFavoris,SIGNAL(stateChanged(int)),this,SLOT(filter(int)));
+
     //connect(this->ui->button_supprimer_test_resultat,SIGNAL(clicked()),this,SLOT(buttonSupprimerTestResultatClicked()));
 
+    this->ui->checkBoxFavoris->setCheckState(Qt::Unchecked);
     this->ui->button_Executer->setEnabled(false);
     this->ui->button_Modifier->setEnabled(false);
     this->ui->button_Supprimer->setEnabled(false);
@@ -84,6 +87,7 @@ void HomeWidget::getListeTests()
             QTableWidgetItem* item_numSerieDiluteur = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_DILUTEUR).toString());
             QTableWidgetItem* item_numSerieBouteille = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_BOUTEILLE).toString());
             QTableWidgetItem* item_numSerieGoz = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_GZERO).toString());
+            QTableWidgetItem* item_est_favoris = new QTableWidgetItem(recordTestXml.value(TEST_XML_EST_FAVORI).toString());
 
             uint idxNewRecord = this->ui->tableWidget_TestXml->rowCount();
             this->ui->tableWidget_TestXml->insertRow(idxNewRecord);
@@ -93,6 +97,7 @@ void HomeWidget::getListeTests()
             this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_DILUTEUR,item_numSerieDiluteur);
             this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_BOUTEILLE,item_numSerieBouteille);
             this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_GZERO,item_numSerieGoz);
+            this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_EST_FAVORI,item_est_favoris);
             this->ui->tableWidget_TestXml->setColumnHidden(HOMEW_TABLEW_TEST_ID_TEST,true);
 
             this->ui->tableWidget_TestXml->resizeColumnsToContents();
@@ -156,6 +161,30 @@ void HomeWidget::treeViewTestRapportIndexChanged(const QModelIndex & index)
 
 }
 
+void HomeWidget::filter(int etatCheckBox){
+
+
+    if(etatCheckBox == 2)
+    {
+        for(int i=0 ; i<=this->ui->tableWidget_TestXml->rowCount(); i++)
+        {
+            QSqlRecord recordTestXml = this->m_modelTestXml->record(i);
+            QString estFavori = recordTestXml.value(TEST_XML_EST_FAVORI).toString();
+
+            if(estFavori=="NON")
+            {
+                this->ui->tableWidget_TestXml->setRowHidden(i,true);
+            }
+        }
+    }
+    else
+    {
+        for(int i=0 ; i<=this->ui->tableWidget_TestXml->rowCount(); i++)
+        {
+            this->ui->tableWidget_TestXml->showRow(i);
+        }
+    }
+}
 void HomeWidget::buttonNouveauClicked()
 {
     emit(this->creerTest());

@@ -62,6 +62,7 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     ui->label_TypeTest->setText(m_NomTest);
     m_Operateur = informationTest->value("Nom").toString() + " " + informationTest->value("Prenom").toString();
     ui->labelOperateur->setText(m_Operateur);
+    ui->idTest->setText(QString::number(m_idTest));
     m_DateDeb = informationTest->value("date_debut").toDateTime();
     ui->dateTimeEdit_datedebut->setDateTime(m_DateDeb);
     m_DateFin = informationTest->value("date_fin").toDateTime();
