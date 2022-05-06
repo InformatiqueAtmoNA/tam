@@ -81,36 +81,54 @@ QPointer<MesureIndividuelle> Api::demandeMesureNox() {
 // Demande de mesure immediate
 QPointer<MesureIndividuelle> Api::demandeMesure() {
     QString cmd;
-
-    switch(this->polluantAssocie) {
-    case CO :
-        cmd = *(this->creerTrameCommande("T","CO"));
-        break;
-    case O3 :
-        cmd = *(this->creerTrameCommande("T","O3"));
-        break;
-    case SO2 :
-        cmd = *(this->creerTrameCommande("T","SO2"));
-        break;
-    case NO:
-    case NO2:
-    case NOX:
-        return this->demandeMesureNox();
-        break;
-    case H2S:
-        cmd = *(this->creerTrameCommande("T","H2S"));
-        break;
-    default:
-       emit(this->erreurCommande());
-    }
-    QString reponse = this->transaction(cmd);
-
     QPointer<MesureIndividuelle> mesures(new MesureIndividuelle());
 
-    if(reponse.isEmpty())
-        return mesures;
+    int iterationNo =0;
+    for(TypePolluant polluant : polluantAssocie)   {
+        switch(polluant) {
+        case CO :
+            cmd = *(this->creerTrameCommande("T","CO"));
+            break;
+        case O3 :
+            cmd = *(this->creerTrameCommande("T","O3"));
+            break;
+        case SO2 :
+            cmd = *(this->creerTrameCommande("T","SO2"));
+            break;
 
-    mesures.data()->append(this->getFloatFromMesureString(reponse));
+        // on s'assure que les polluants NO sont mesurés dans le bon ordre peu importe l'ordre dans le quel il sont définis dans la liste
+        if(polluant == NO || polluant == NO2 || polluant == NOX ){
+            iterationNo++;
+            switch(iterationNo){
+            case 1 :
+                cmd = *(this->creerTrameCommande("T","NO"));
+                break;
+            case 2 :
+                cmd = *(this->creerTrameCommande("T","NOX"));
+                break;
+            case 3 :
+                cmd = *(this->creerTrameCommande("T","NO2"));
+                break;
+            }
+        }
+        case H2S:
+            cmd = *(this->creerTrameCommande("T","H2S"));
+            break;
+        default:
+           emit(this->erreurCommande());
+        }
+        QString reponse = this->transaction(cmd);
+        if(reponse.isEmpty())
+            return mesures;
+        if(polluant == NO || polluant == NO2 || polluant == NOX){
+            if(!reponse.contains("inf"))
+                mesures.data()->append(this->getFloatFromMesureString(reponse));
+        }
+        else{
+            mesures.data()->append(this->getFloatFromMesureString(reponse));
+        }
+    }
+
 
     return mesures;
 }

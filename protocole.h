@@ -51,7 +51,7 @@ protected:
     bool timerFini; // Signifie la fin du timeout de communication
     QString trame;  // trame de réponse
     TypePeripherique typePeripherique; // Analyseur ou diluteur
-    TypePolluant polluantAssocie; // Polluant associé
+    QList<TypePolluant> polluantAssocie; // Polluant associé
     OptionTpg optionTpg; // Option pour le tirtrage en phase gazeuse
     DesignationProtocole versionProtocole; // Version de protocole
     bool m_avorterTransaction;
@@ -91,7 +91,7 @@ public:
     //
     // \param typePolluant Type de polluant associé à l'appareil
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setTypePolluant(const TypePolluant & typePolluant) {this->polluantAssocie = typePolluant;}
+    inline void setTypePolluant(const TypePolluant & typePolluant) {this->polluantAssocie.append(typePolluant);}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getTimeOut()
