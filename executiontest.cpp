@@ -180,6 +180,11 @@ void ExecutionTest::getInfosEquipements()
     QString adresse = m_infosCalibrateur->value(EQUIPEMENT_ADRESSE).toString();
     m_protocoleCalibrateur = Protocole::getProtocoleObject(designationProtocoleCalibrateur,adresse);
 
+    m_typeConnexion = m_infosCalibrateur->value(EQUIPEMENT_TYPE_CONNEXION).toString();
+    m_IP =  m_infosCalibrateur->value(EQUIPEMENT_ADRESSE_IP).toString();
+    m_numPort =  m_infosCalibrateur->value(EQUIPMENT_PORT_IP).toInt();
+    m_typeSocket =  m_infosCalibrateur->value(EQUIPEMENT_TYPE_SOCKET).toString();
+
     QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler(m_typeConnexion);
 
     if(m_typeConnexion=="IP"){
