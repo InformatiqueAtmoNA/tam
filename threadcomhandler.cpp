@@ -119,7 +119,7 @@ void ThreadComHandler::configureIP(QString IP, quint16 port, QString typeSocket)
     if(!this->comIP->getEtatConnexion()) {
         qDebug() << "Problème lors de l'ouverture du périphérique " << IP;
         emit(this->ouverturePort(false));
-        return;
+        //return;
     }
     else {
         qDebug() << "Ouverture du peripherique " << IP << " réussie";

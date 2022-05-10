@@ -595,17 +595,23 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
         this->m_typeTest=REPETABILITE;
         this->ui->label_critere1->setText(QLatin1String("Ecart-type de repetabilite au zero en ppb"));
         this->ui->label_critere2->setText(QLatin1String("Ecart-type de repetabilite à la concentration en %"));
+        this->ui->label_critere3->hide();
+        this->ui->doubleSpinBox_critere3->hide();
         break;
     case 1:
         this->m_typeTest=LINEARITE;
         this->ui->label_critere1->setText(QLatin1String("Residu au zero en ppb"));
         this->ui->label_critere2->setText(QLatin1String("Residu Maximal concentration > à 0 en %"));
         this->ui->label_critere3->setText(QLatin1String("Ecart a la consigne > à 0 en %"));
+        this->ui->label_critere3->show();
+        this->ui->doubleSpinBox_critere3->show();
         break;
     case 2:
         this->m_typeTest=TEMPS_REPONSE;
         this->ui->label_critere1->setText(QLatin1String("Temps de reponse montee et descente en seconde"));
         this->ui->label_critere2->setText(QLatin1String("Difference entre Temps de reponse montee et descente en seconde"));
+        this->ui->label_critere3->hide();
+        this->ui->doubleSpinBox_critere3->hide();
         break;
     case 3:
         this->m_typeTest=RENDEMENT_FOUR;
@@ -613,6 +619,8 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
         this->ui->spinBox_nbCyclesMesures->setValue(4);
         this->ui->label_critere1->setText(QLatin1String("Rendement de conversion en %"));
         this->ui->label_critere2->setText(QLatin1String("Difference NO/NOX entre 1ere et derniere phase en %"));
+        this->ui->label_critere3->hide();
+        this->ui->doubleSpinBox_critere3->hide();
         break;
     case 4:
         this->m_typeTest=PERSO;

@@ -95,9 +95,9 @@ QPointer<MesureIndividuelle> Api::demandeMesure() {
         case SO2 :
             cmd = *(this->creerTrameCommande("T","SO2"));
             break;
-
-        // on s'assure que les polluants NO sont mesurés dans le bon ordre peu importe l'ordre dans le quel il sont définis dans la liste
-        if(polluant == NO || polluant == NO2 || polluant == NOX ){
+        case NO :
+        case NO2:
+        case NOX:
             iterationNo++;
             switch(iterationNo){
             case 1 :
@@ -110,26 +110,29 @@ QPointer<MesureIndividuelle> Api::demandeMesure() {
                 cmd = *(this->creerTrameCommande("T","NO2"));
                 break;
             }
-        }
+            break;
         case H2S:
             cmd = *(this->creerTrameCommande("T","H2S"));
             break;
         default:
            emit(this->erreurCommande());
         }
+
         QString reponse = this->transaction(cmd);
         if(reponse.isEmpty())
-            return mesures;
-        if(polluant == NO || polluant == NO2 || polluant == NOX){
+            //return mesures;
+
+        switch(polluant){
+        case NO :
+        case NO2:
+        case NOX:
             if(!reponse.contains("inf"))
                 mesures.data()->append(this->getFloatFromMesureString(reponse));
-        }
-        else{
+            break;
+        default:
             mesures.data()->append(this->getFloatFromMesureString(reponse));
         }
     }
-
-
     return mesures;
 }
 

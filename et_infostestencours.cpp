@@ -527,15 +527,16 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_TPS_ACQUISITION,QVariant::fromValue(paramsTest->m_test->getTempsAcquisition()));
     enregistrement.setValue(TEST_METRO_CRITERE_1,QVariant::fromValue(paramsTest->m_test->getCritere1()));
     enregistrement.setValue(TEST_METRO_CRITERE_2,QVariant::fromValue(paramsTest->m_test->getCritere2()));
+    enregistrement.setValue(TEST_METRO_CRITERE_3,QVariant::fromValue(paramsTest->m_test->getCritere3()));
     model->insertRecord(-1,enregistrement);
 
     model->submitAll();
 
     paramsTest->m_id_TestMetro = model->rowCount();
-    enregistrement = model->record(model->rowCount()-1);
+    //enregistrement = model->record(model->rowCount());
 
     delete model;
-
+     //paramsTest->m_id_TestMetro = enregistrement.value("id_test").toUInt();
     //paramsTest->m_id_TestMetro = enregistrement.value(TEST_METRO_ID).toUInt();
 
     enregistrerAnalyseurTest(paramsTest);

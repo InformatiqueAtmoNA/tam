@@ -51,10 +51,12 @@ void CommunicationIP::setTypeSocket(QString newTypeSocket){
 void CommunicationIP::bindToHost()
 {
     if(socketType=="UDP"){
-        udp_socket->connectToHost(*addr,port);
+        udp_socket->connectToHost(*addr,port, QIODevice::ReadWrite);
+        udp_socket->waitForConnected(10000);
     }
     else if(socketType=="TCP"){
-        tcp_socket->connectToHost(*addr,port);
+        tcp_socket->connectToHost(*addr,port, QIODevice::ReadWrite);
+        tcp_socket->waitForConnected(10000);
     }
 }
 
@@ -90,12 +92,13 @@ void CommunicationIP::close() {
 ////////////////
 void CommunicationIP::send_Trame(QString trame)
 {
+    QByteArray dataSent = trame.toLatin1();
     if(socketType=="UDP"){
-        udp_socket->writeDatagram(trame.toLatin1(),*addr,port);
+        udp_socket->writeDatagram(dataSent,*addr,port);
     }
     else if(socketType=="TCP"){
+        QDataStream l_vStream(&dataSent, QIODevice::WriteOnly);
         tcp_socket->write(trame.toLatin1());
-        tcp_socket->flush();
     }
 }
 
@@ -120,8 +123,7 @@ void CommunicationIP::socketRead()
         emit(dataReceived(trameRecue));
     }
     else if(socketType=="TCP"){
-        QByteArray buffer;
-        buffer=tcp_socket->readAll();
+        QByteArray buffer = tcp_socket->readAll();
         QString trameRecue = buffer.data();
         emit(dataReceived(trameRecue));
     }

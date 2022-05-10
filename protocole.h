@@ -91,7 +91,7 @@ public:
     //
     // \param typePolluant Type de polluant associé à l'appareil
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setTypePolluant(const TypePolluant & typePolluant) {this->polluantAssocie.append(typePolluant);}
+    inline void setTypePolluant(QList<TypePolluant> typePolluant) {this->polluantAssocie=typePolluant;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getTimeOut()

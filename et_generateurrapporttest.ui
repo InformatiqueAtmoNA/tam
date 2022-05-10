@@ -15,6 +15,37 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_5">
    <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_16">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>n°de test :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="idTest">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -53,24 +84,6 @@
             </item>
             <item>
              <widget class="QLabel" name="labelOperateur">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_16">
-            <item>
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Identifiant :</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="idTest">
               <property name="text">
                <string/>
               </property>
@@ -326,23 +339,7 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_TypeTest">
-     <property name="font">
-      <font>
-       <family>Andale Mono</family>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="minimumSize">
       <size>
@@ -493,6 +490,22 @@ p, li { white-space: pre-wrap; }
        </layout>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_TypeTest">
+     <property name="font">
+      <font>
+       <family>Andale Mono</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
     </widget>
    </item>
   </layout>

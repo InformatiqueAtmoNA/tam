@@ -98,7 +98,7 @@ private :
     QString m_IP;
     quint16 m_numPort;
     QString m_typeSocket;
-
+    ushort m_idAnaliseur;
     bool m_moyennerMesures;
     bool m_flagPhaseInitialisee;
     bool m_remplirFichierCSV;

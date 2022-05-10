@@ -144,7 +144,7 @@ void ExecutionTest::getInfosEquipements()
         m_IP =  equipementRecord->value(EQUIPEMENT_ADRESSE_IP).toString();
         m_numPort =  equipementRecord->value(EQUIPMENT_PORT_IP).toInt();
         m_typeSocket =  equipementRecord->value(EQUIPEMENT_TYPE_SOCKET).toString();
-
+        m_idAnaliseur = idAnalyseur;
         QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler(m_typeConnexion);
         if(m_typeConnexion=="IP"){
             threadCommunication->configureIP(m_IP,m_numPort,m_typeSocket);
@@ -552,6 +552,53 @@ void ExecutionTest::initialiserPhase()
     Commandes cmdDebutPhase = phase.getCmdDebutPhase();
     ushort idMolecule = phase.getIdMolecule();
     QSqlRecord* moleculeRow = m_bdHandler->getMoleculeRow(idMolecule);
+
+    QSqlQuery requete(QString("SELECT id_pa_molecule FROM polluant_associe WHERE id_pa_equipement=%1").arg(m_idAnaliseur));
+
+    idMolecule =0;
+    ushort codePolluant = 0;
+    QList<TypePolluant> listePolluants;
+    while(requete.next()) {
+        QSqlRecord record = requete.record();
+        idMolecule = record.value("id_pa_molecule").toUInt();
+
+        QSqlQuery requete2(QString("SELECT code FROM molecule WHERE id_molecule=%1").arg(idMolecule));
+        if(requete2.next()){
+            QSqlRecord record2 = requete2.record();
+            codePolluant = record2.value("code").toUInt();
+        }
+
+        TypePolluant polluant;
+        switch(codePolluant){
+        case 1 :
+            polluant = SO2;
+            break;
+        case 2 :
+            polluant = NO;
+            break;
+        case 3 :
+            polluant = NO2;
+            break;
+        case 4 :
+            polluant = CO;
+            break;
+
+        case 5 :
+            polluant = H2S;
+            break;
+
+        case 8 :
+            polluant = O3;
+            break;
+
+        case 12 :
+            polluant = NOX;
+            break;
+
+        }
+
+        listePolluants.append(polluant);
+    }
     m_cycleMesureEnCours = 0;
 
     QMapIterator<ushort,QPointer<Protocole> > it_anaDesignProto(m_analyseursProtocole);
@@ -565,10 +612,10 @@ void ExecutionTest::initialiserPhase()
             if(cmdDebutPhase == MODE_MESURE)
                 analyseur->passageMesure();
         }
-        analyseur->setTypePolluant(stringToTypePolluant(moleculeRow->value(MOLECULE_FORMULE).toString()));
+        analyseur->setTypePolluant(listePolluants);
     }
 
-    m_protocoleCalibrateur->setTypePolluant(stringToTypePolluant(moleculeRow->value(MOLECULE_FORMULE).toString()));
+    m_protocoleCalibrateur->setTypePolluant(listePolluants);
 
     delete moleculeRow;
 
@@ -653,7 +700,7 @@ void ExecutionTest::enregistrerMoyenneMesures()
         m_tabMoyennesMesuresParPhase[it_tabMesuresParCycle.key()].append(moyenneMesure);
 
         MesureInfo mesureInfos;
-        mesureInfos.idTest = m_paramsTest.data()->m_id_TestMetro;
+        mesureInfos.idTest = m_paramsTest->m_id_TestMetro;
         mesureInfos.idEquipement = it_tabMesuresParCycle.key();
         mesureInfos.noCyclePhase = m_cyclePhaseEnCours;
         mesureInfos.noPhase = m_noPhaseSuivante;

@@ -141,7 +141,9 @@ QPointer<MesureIndividuelle> Tei::demandeMesure() {
         case SO2 :
             cmd = *(this->creerTrameCommande("so2"));
             break;
-        if(polluant == NO || polluant == NO2 || polluant == NOX){
+        case NO :
+        case NO2:
+        case NOX:
             iterationNo++;
             switch(iterationNo){
             case 1 :
@@ -154,19 +156,22 @@ QPointer<MesureIndividuelle> Tei::demandeMesure() {
                 cmd = *(this->creerTrameCommande("no2"));
                 break;
             }
-        }
+            break;
         default:
            emit(this->erreurCommande());
         }
 
         QString reponse = this->transaction(cmd);
         if(reponse.isEmpty())
-            return tabMesures;
-        if(polluant == NO || polluant == NO2 || polluant == NOX){
+            //return mesures;
+        switch(polluant){
+        case NO :
+        case NO2:
+        case NOX:
             if(!reponse.contains("inf"))
                 tabMesures.data()->append(this->getFloatFromMesureString(reponse));
-        }
-        else{
+            break;
+        default:
             tabMesures.data()->append(this->getFloatFromMesureString(reponse));
         }
     }

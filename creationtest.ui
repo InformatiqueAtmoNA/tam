@@ -34,7 +34,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab_Parametres">
         <attribute name="title">
@@ -875,7 +875,14 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_critere3"/>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_critere3">
+                  <property name="maximumSize">
+                   <size>
+                    <width>63</width>
+                    <height>27</height>
+                   </size>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
