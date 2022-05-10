@@ -583,7 +583,7 @@ void ExecutionTest::initialiserPhase()
             polluant = CO;
             break;
 
-        case 5 :
+        case 05 :
             polluant = H2S;
             break;
 

@@ -120,7 +120,7 @@ QPointer<MesureIndividuelle> Api::demandeMesure() {
 
         QString reponse = this->transaction(cmd);
         if(reponse.isEmpty())
-            //return mesures;
+            return mesures;
 
         switch(polluant){
         case NO :
