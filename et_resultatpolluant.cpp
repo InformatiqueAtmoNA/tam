@@ -167,7 +167,7 @@ void et_Resultatpolluant::verifierCriteres(QString typeCritere,QLineEdit* criter
 
     if(typeCritere == "<")
     {
-        if(valeur->text().toFloat() < critere->text().toFloat())
+        if(qAbs(valeur->text().toFloat()) < critere->text().toFloat())
         {
             valeur->setStyleSheet("color: green;");
         }
@@ -178,7 +178,7 @@ void et_Resultatpolluant::verifierCriteres(QString typeCritere,QLineEdit* criter
     }
     else if(typeCritere == ">")
     {
-        if(valeur->text().toFloat() > critere->text().toFloat())
+        if(qAbs(valeur->text().toFloat()) > critere->text().toFloat())
         {
             valeur->setStyleSheet("color: green;");
         }
