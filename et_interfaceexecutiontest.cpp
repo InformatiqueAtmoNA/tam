@@ -294,10 +294,12 @@ void et_InterfaceExecutionTest::buttonAjouterSondeClicked()
     if(this->ui->label_Sonde->text()==""){
         this->ui->ajouterSonde->setEnabled(true);
         this->ui->doubleSpinBox_Temperature->show();
+        m_sondePresente = false;
     }
     else{
         this->ui->ajouterSonde->setEnabled(false);
         this->ui->doubleSpinBox_Temperature->hide();
+        m_sondePresente = true;
     }
 }
 
@@ -314,6 +316,7 @@ void et_InterfaceExecutionTest::buttonSupprimerSondeClicked()
     this->ui->doubleSpinBox_Temperature->show();
     ui->lineEdit_InterfaceSonde->setText("");
     this->ui->groupBox_5->hide();
+    m_sondePresente = false;
 }
 
 void et_InterfaceExecutionTest::buttonSupprimerClicked()
@@ -778,9 +781,15 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
     paramsTest->m_designationLieu = m_modelLieu->record(ui->comboBox_Lieu->currentIndex()).value(LIEU_DESIGNATION).toString();
     paramsTest->m_nomTest = this->ui->lineEdit_FichierDescription->text();
     paramsTest->m_pression = ui->doubleSpinBox_Pression->value();
-    paramsTest->m_temperature = ui->doubleSpinBox_Temperature->value();
+    if(m_sondePresente == false){
+        paramsTest->m_temperature = ui->doubleSpinBox_Temperature->value();
+    }
+    else{
+        paramsTest->m_temperature = NULL;
+    }
     paramsTest->m_debutImmediat = m_debutImmediat;
     paramsTest->m_dateHeureDebutPrevu = QDateTime::currentDateTime(); 
+    paramsTest->sondePresente = m_sondePresente;
 
     QString operateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_NOM).toString();
     operateur.append(" ");

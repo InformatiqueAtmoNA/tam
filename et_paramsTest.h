@@ -53,6 +53,7 @@ public :
     float m_pression;
     float m_temperature;
     bool m_debutImmediat;
+    bool sondePresente;
     QDateTime m_dateHeureDebutPrevu;
     int m_tpsAcquisition;
 

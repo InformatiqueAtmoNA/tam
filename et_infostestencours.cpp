@@ -280,9 +280,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
         trace = "Polluant : ";
         QSqlRecord* record = m_bdHandler->getMoleculeRow(paramsTest->m_test->getPhase(i).getIdMolecule());
-        trace.append(record->value(MOLECULE_FORMULE).toString());
-        delete record;
-        ui->textEdit_ParametresTest->append(trace);
+        trace.append(record->value(MOLECULE_FORMULE).toString());   
 
         trace = "Point de consigne : ";
         record = m_bdHandler->getConcentrationRow(paramsTest->m_test->getPhase(i).getIdConcentration());
@@ -426,6 +424,22 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             trace.append(record->value(MOLECULE_FORMULE).toString()+";");
             delete record;
         }
+        if(paramsTest.data()->sondePresente==true){
+            QSqlQuery requete(QString("SELECT M.id_molecule FROM molecule M, polluant_associe P WHERE M.id_molecule=P.id_pa_molecule AND P.id_pa_equipement=%1").arg(paramsTest.data()->m_idSonde));
+            int  idMolecule =0;
+              QList<TypePolluant> listePolluants;
+              while(requete.next()) {
+                  QSqlRecord record = requete.record();
+                  idMolecule = record.value("id_molecule").toUInt();
+                  QSqlRecord *record2 = m_bdHandler->getMoleculeRow(idMolecule);
+                  trace.append(record2->value(MOLECULE_FORMULE).toString()+";");
+                  delete record2;
+              }
+        }
+
+
+
+        ui->textEdit_ParametresTest->append(trace);
         trace.append("\n");
         paramsTest->m_fichierCSV->write(trace.toLatin1());
 
@@ -496,6 +510,13 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
 void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTest)
 {
+    QString presenceSonde;
+    if(paramsTest->sondePresente){
+        presenceSonde="OUI";
+    }
+    else{
+        presenceSonde="NON";
+    }
     QPointer<QSqlTableModel> model = m_bdHandler->getTestMetroModel();
 
     QSqlRecord enregistrement = model->record();
@@ -531,6 +552,9 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_TEMP_MIN,QVariant::fromValue(paramsTest->m_test->getTempMin()));
     enregistrement.setValue(TEST_METRO_TEMP_MAX,QVariant::fromValue(paramsTest->m_test->getTempMax()));
     enregistrement.setValue(TEST_METRO_TEMP_MOYENNE,QVariant::fromValue(paramsTest->m_test->getTempMoyenne()));
+    enregistrement.setValue(TEST_METRO_ID_SONDE,QVariant::fromValue(paramsTest->m_idSonde));
+
+    enregistrement.setValue(TEST_METRO_PRESENCE_SONDE,QVariant::fromValue(presenceSonde));
     model->insertRecord(-1,enregistrement);
 
     model->submitAll();

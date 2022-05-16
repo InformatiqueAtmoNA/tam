@@ -70,6 +70,7 @@ private:
     ushort m_niveauInfos;
     bool m_miseEnAttente;
     bool m_debutImmediat;
+    bool m_sondePresente;
     QDateTime m_dateHeureDebutTest;
     QString m_nomCheminCSV;
 
