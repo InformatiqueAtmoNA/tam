@@ -48,6 +48,9 @@ DesignationProtocole stringToProtocole(QString protocole) {
         return API_ANA;
     if(protocole=="API_DIL")
         return API_DIL;
+    if(protocole=="MODBUS_RTU_TXXXX")
+        return MODBUS_RTU_TXXXX;
+
     return PROTOCOLE_INCONNU;
 }
 
@@ -66,6 +69,8 @@ TypePolluant stringToTypePolluant(QString type) {
         return NOX;
     if(type=="H2S")
         return H2S;
+    if(type=="TEMP")
+        return TEMP;
     return DIL;
 }
 

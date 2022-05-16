@@ -36,9 +36,11 @@ class et_ParamsTest : public QObject {
 public :
     ushort m_id_TestMetro;
     ushort m_id_TestXML;
+    ushort m_idSonde;
     QPointer<Test> m_test;
     QMap<ushort,QString> m_listeNumSerieAnalyseurs; // modifié
     QMap<ushort,QString> m_listeInterfaceAnalyseurs;
+    QString m_interfaceSonde;
     QString m_interfaceCalibrateur;
     QString m_canalCalibrateur;
     ushort m_idOperateur;

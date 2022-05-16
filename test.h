@@ -52,6 +52,9 @@ class Test : public QObject
     QMap<ushort,Phase> m_listePhases; // Liste des différentes phases du test
     double m_critere1; // critere de performance utilisé pour la génération des rapports
     double m_critere2; // critere de performance utilisé pour la génération des rapports
+    float m_temp_min;
+    float m_temp_max;
+    float m_temp_moyenne;
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
@@ -101,6 +104,14 @@ public:
     // \return double critere de performance 2
     ///////////////////////////////////////////////////////////////////////////*/
     inline double getCritere2() {return this->m_critere2;}
+
+    inline float getTempMin() {return this->m_temp_min;}
+
+    inline float getTempMax() {return this->m_temp_max;}
+
+    inline float getTempMoyenne() {return this->m_temp_moyenne;}
+
+
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getTempsAcquisition()
@@ -281,7 +292,13 @@ public:
     //
     // \param Critere de performance 2
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setCritere2(const double & critere2) {this->m_critere2 = critere2;}
+    inline void setCritere2(const float & critere2) {this->m_critere2 = critere2;}
+
+    inline void setTempMin(const float & TempMin) {this->m_temp_min =TempMin ;}
+
+    inline void setTempMax(const float & TempMax) {this->m_temp_max =TempMax ;}
+
+    inline void setTempMoyenne(const float & TempMoyenne) {this->m_temp_moyenne =TempMoyenne ;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setTempsAcquisition(ushort const & tpsAcquisition)

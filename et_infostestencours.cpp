@@ -527,6 +527,10 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_TPS_ACQUISITION,QVariant::fromValue(paramsTest->m_test->getTempsAcquisition()));
     enregistrement.setValue(TEST_METRO_CRITERE_1,QVariant::fromValue(paramsTest->m_test->getCritere1()));
     enregistrement.setValue(TEST_METRO_CRITERE_2,QVariant::fromValue(paramsTest->m_test->getCritere2()));
+
+    enregistrement.setValue(TEST_METRO_TEMP_MIN,QVariant::fromValue(paramsTest->m_test->getTempMin()));
+    enregistrement.setValue(TEST_METRO_TEMP_MAX,QVariant::fromValue(paramsTest->m_test->getTempMax()));
+    enregistrement.setValue(TEST_METRO_TEMP_MOYENNE,QVariant::fromValue(paramsTest->m_test->getTempMoyenne()));
     model->insertRecord(-1,enregistrement);
 
     model->submitAll();

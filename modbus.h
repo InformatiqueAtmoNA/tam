@@ -5,10 +5,33 @@
 
 #include "protocole.h"
 
-class Modbus
+class Modbus : public Protocole
 {
+protected :
+    QString* creerTrameCommande(QByteArray addr_registres, QByteArray nbrRegistres);
+    float getDataFromTrame(const QString & mesure);
+    QByteArray calcul_CRC(QByteArray trame, int taille);
+    int calculNbrRegistres();
+
 public:
-    Modbus();
+    Modbus(const QString & adressePeriph,const TypePeripherique & typePeriph, const DesignationProtocole & protocoleUtilise);
+
+    virtual QPointer<MesureIndividuelle> demandeMesure();
+
+    virtual ushort demandeAlarme();
+
+    virtual void passageZero();
+
+    virtual void passageEtalon();
+
+    virtual void passageMesure();
+
+    virtual QVector<Commandes> const* getListeCommandes();
+
+    virtual SpanHandler* getSpanHandler(Commandes commandeSpan);
+
+    QByteArray getRegistre(TypePolluant polluantAssocie);
+
 };
 
 #endif // MODBUS_H

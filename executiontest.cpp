@@ -158,6 +158,7 @@ void ExecutionTest::getInfosEquipements()
         m_tabMoyennesMesuresParPhase.insert(idAnalyseur,tableauMoyennesParPhase);
     }
 
+
     uint idSystemeEtalon = m_paramsTest.data()->m_test->getIdSystemeEtalon();
     ushort idCalibrateur = m_bdHandler->getIdCalibrateur(idSystemeEtalon);
     m_infosCalibrateur = m_bdHandler->getEquipementRow(idCalibrateur);
@@ -175,6 +176,21 @@ void ExecutionTest::getInfosEquipements()
     m_protocoleCalibrateur->setTimeOut(500);
 
     m_protocoleCalibrateur->init();
+
+
+    QSqlRecord *record = m_bdHandler->getEquipementRow(m_paramsTest.data()->m_idSonde);
+    DesignationProtocole designationProtocoleSonde = m_bdHandler->getDesignationProtocole(m_paramsTest.data()->m_idSonde);
+    QString adresseSonde = record->value(EQUIPEMENT_ADRESSE).toString();
+    m_SondeProtocole = Protocole::getProtocoleObject(designationProtocoleSonde,adresseSonde);
+
+    QPointer<ThreadComHandler> threadCommunicationSonde = new ThreadComHandler();
+    threadCommunicationSonde->configureRS232(m_paramsTest.data()->m_interfaceSonde);
+    m_SondeProtocole->setThreadComHandler(threadCommunicationSonde);
+    m_SondeProtocole->setTimeOut(1000);
+    m_SondeProtocole->init();
+
+
+
 }
 
 void ExecutionTest::constructionMachineEtat()
@@ -392,7 +408,7 @@ void ExecutionTest::testerPeripheriques()
         emit(traceTest(trace,1));
     }
     emit(traceTest(&"code alarme calibrateur "[m_protocoleCalibrateur->demandeAlarme()],1));
-
+    emit(traceTest(&"code alarme sonde "[m_SondeProtocole->demandeAlarme()],1));
     emit(this->peripheriquesOk());
 }
 
@@ -433,8 +449,11 @@ void ExecutionTest::lancerTimerTempsAcquisition()
             QPointer<Protocole> analyseur = it_anaDesignProto.value();
 
             QPointer< MesureIndividuelle > mesures = analyseur->demandeMesure();
-            m_tabMesuresIndividuelles.insert(it_anaDesignProto.key(), mesures);
+            m_tabMesuresIndividuelles.insert(it_anaDesignProto.key(), mesures); 
         }
+
+        QPointer< MesureIndividuelle > mesuresSonde = m_SondeProtocole->demandeMesure();
+        m_tabMesuresSonde.append(mesuresSonde.data()->at(0));
     }
     emit(this->mesuresEffectuees());
 }
@@ -551,6 +570,16 @@ void ExecutionTest::initialiserPhase()
 
     m_protocoleCalibrateur->setTypePolluant(stringToTypePolluant(moleculeRow->value(MOLECULE_FORMULE).toString()));
 
+
+    QSqlQuery requete(QString("SELECT M.id_molecule FROM molecule M, polluant_associe P WHERE M.id_molecule=P.id_pa_molecule AND P.id_pa_equipement=%1").arg(m_paramsTest.data()->m_idSonde));
+      idMolecule =0;
+      QList<TypePolluant> listePolluants;
+      while(requete.next()) {
+          QSqlRecord record = requete.record();
+          idMolecule = record.value("id_molecule").toUInt();
+      }
+    moleculeRow = m_bdHandler->getMoleculeRow(idMolecule);
+    m_SondeProtocole->setTypePolluant(stringToTypePolluant(moleculeRow->value(MOLECULE_FORMULE).toString()));
     delete moleculeRow;
 
     m_flagPhaseInitialisee = true;
@@ -656,6 +685,28 @@ void ExecutionTest::testTermine()
     emit(traceTest("test termine",0));
 
     m_bdHandler->miseAjourDateHeureFinTest(m_paramsTest.data()->m_id_TestMetro);
+
+    this->m_paramsTest.data()->m_test->setTempMin(m_tabMesuresSonde[0]);
+    this->m_paramsTest.data()->m_test->setTempMax(m_tabMesuresSonde[0]);
+    float moyenne=0;
+    for(int i=0 ; i<this->m_tabMesuresSonde.count() ; i++){
+        if(m_tabMesuresSonde[i]<this->m_paramsTest.data()->m_test->getTempMin()){
+            this->m_paramsTest.data()->m_test->setTempMin(m_tabMesuresSonde[i]);
+        }
+        if(m_tabMesuresSonde[i]>this->m_paramsTest.data()->m_test->getTempMax()){
+            this->m_paramsTest.data()->m_test->setTempMax(m_tabMesuresSonde[i]);
+        }
+        moyenne+=m_tabMesuresSonde[i];
+    }
+    moyenne = moyenne/this->m_tabMesuresSonde.count();
+    this->m_paramsTest.data()->m_test->setTempMoyenne(moyenne);
+    QString strRequete = QString("UPDATE `Test_Metrologique` SET `temperature_min` = %1,").arg(m_paramsTest.data()->m_test->getTempMin());
+    strRequete.append(QString("' `temperature_max` = %1,").arg(m_paramsTest.data()->m_test->getTempMax()));
+    strRequete.append(QString("' `temperature_moyenne` = %1 ").arg(m_paramsTest.data()->m_test->getTempMoyenne()));
+    strRequete.append(QString("' WHERE `id_test` = %1 ").arg(m_paramsTest.data()->m_id_TestMetro));
+    QSqlQuery requete;
+    bool succes = requete.exec(strRequete);
+
 
     m_timerTempsAttenteFinAcquisition = new QTimer;
 

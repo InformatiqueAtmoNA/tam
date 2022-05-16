@@ -69,8 +69,10 @@ private :
     QMap<ushort,int> m_analyseursTxTransmission; // // Liste des analyseurs et de leur taux de transmission de données
     QMap<ushort, QPointer<Protocole> > m_analyseursProtocole; // // Liste des analyseurs et des pointeurs vers leur instance de l'objet Protocole associé
     QPointer<QFile> m_fichierMesures;
+    QPointer<Protocole> m_SondeProtocole;
 
     QSqlRecord* m_infosCalibrateur; // Enregistrement dans la base de données du calibrateur utilisé pout le test
+
     int m_txTransmissionCalibrateur; // // Taux de transmission de données du calibrateur utilisé pout le test
     QPointer<Protocole> m_protocoleCalibrateur; // Pointeur vers une instance d'un objet Protocole
 
@@ -82,6 +84,7 @@ private :
     ushort m_cyclePhaseEnCours; // Cycle de phase en cours
 
     QMap<ushort,QPointer<MesureIndividuelle> > m_tabMesuresIndividuelles;
+    QList<float> m_tabMesuresSonde;
     QMap<ushort,QVector<QPointer<MesureIndividuelle> > > m_tabMesuresParCycle;
     QMap<ushort,QVector<QPointer<MesureIndividuelle> > > m_tabMoyennesMesuresParPhase;
 

@@ -134,6 +134,7 @@ ushort Api::demandeAlarme() {
     if(codeAlarme>0)
         emit(this->alarmeGenerale());
     return codeAlarme;
+
 }
 
 // Demande de passage en mode zero
