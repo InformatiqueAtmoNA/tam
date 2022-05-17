@@ -335,7 +335,7 @@ void et_InterfaceExecutionTest::buttonAnnulerClicked()
 {
     QMessageBox msgBox;
     msgBox.setText("Annuler?");
-    msgBox.setInformativeText("Voulez-vous annuler et revenir à l'acceuil?");
+    msgBox.setInformativeText("Voulez-vous annuler et revenir à l'accueil?");
     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
 
