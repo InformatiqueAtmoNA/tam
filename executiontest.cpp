@@ -729,6 +729,8 @@ void ExecutionTest::testTermine()
         if(!it_anaDesignProto.value().isNull()) {
             it_anaDesignProto.value()->passageMesure();
             it_anaDesignProto.value()->quitter();
+            ThreadComHandler* fermetureCom = it_anaDesignProto.value()->getThreadComHandler().data();
+            fermetureCom->stop();
         }
     }
     if(!m_protocoleCalibrateur.isNull()) {
@@ -737,8 +739,13 @@ void ExecutionTest::testTermine()
     if(!m_SondeProtocole.isNull()){
         m_SondeProtocole->quitter();
     }
-    ThreadComHandler* a = this->m_SondeProtocole->getThreadComHandler().data();
-    a->stop();
+
+
+    ThreadComHandler* fermetureCom = this->m_protocoleCalibrateur->getThreadComHandler().data();
+    fermetureCom->stop();
+
+    ThreadComHandler* fermetureCom2 = this->m_SondeProtocole->getThreadComHandler().data();
+    fermetureCom2->stop();
     m_timerTempsAttenteFinAcquisition->setInterval(1000);
     m_timerTempsAttenteFinAcquisition->setSingleShot(true);
 
