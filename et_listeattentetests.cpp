@@ -62,14 +62,15 @@ void et_listeAttenteTests::buttonAjouterTestClicked()
     Dlg_testXml dlgChoixFichierXml(this,m_bdHandler,true);
     int retour = dlgChoixFichierXml.exec();
     if(retour == QDialog::Rejected)
-        return;
-    ushort idTestXML = dlgChoixFichierXml.getIdSelection();
-    QString fichierDescriptionTest = dlgChoixFichierXml.getFichierDescriptionSelection();
+       return;
+
+    QList<ushort> idTestXML = dlgChoixFichierXml.getIdSelection();
+    QList<QString> fichierDescriptionTest = dlgChoixFichierXml.getFichierDescriptionSelection();
 
     m_interfaceparamsTest = new et_InterfaceExecutionTest(m_bdHandler,idTestXML,fichierDescriptionTest,true);
 
-    connect(m_interfaceparamsTest,SIGNAL(miseEnAttente(QPointer<et_ParamsTest>)),
-            this,SLOT(miseEnAttente(QPointer<et_ParamsTest>)));
+    connect(m_interfaceparamsTest,SIGNAL(miseEnAttente(QList<QPointer<et_ParamsTest>>)),
+            this,SLOT(miseEnAttente(QList<QPointer<et_ParamsTest>>)));
     connect(m_interfaceparamsTest,SIGNAL(fermeture()),this,SLOT(testAnnule()));
 
     ui->stackedWidget->setCurrentIndex(0);
@@ -91,6 +92,7 @@ void et_listeAttenteTests::buttonExecuterClicked()
     verifierTestsExecutables();
     connect(m_timer,SIGNAL(timeout()),this,SLOT(verifierTestsExecutables()));
     m_timer->start();
+    this->ui->button_ExecuterTests->setDisabled(true);
 }
 
 void et_listeAttenteTests::verifierTestsExecutables()
@@ -141,30 +143,34 @@ void et_listeAttenteTests::buttonAnnulerClicked()
         emit(this->fermeture());
 }
 
-void et_listeAttenteTests::miseEnAttente(QPointer<et_ParamsTest> paramsTest)
+void et_listeAttenteTests::miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTest)
 {
     ui->h_Layout_et_InterfaceExecutionTest->removeWidget(m_interfaceparamsTest);
 
-    QTableWidgetItem* item_idtest = new QTableWidgetItem(QString::number(paramsTest->m_test->getIdTest()));
-    QTableWidgetItem* item_nomTest = new QTableWidgetItem(paramsTest->m_nomTest);
-    QTableWidgetItem* item_DateHeureDebut = new QTableWidgetItem(paramsTest->m_dateHeureDebutPrevu.toString("dd/MM/yy hh:mm:ss"));
-    QTableWidgetItem* item_Etat = new QTableWidgetItem("En attente");
-    QTableWidgetItem* item_Interface = new QTableWidgetItem(paramsTest->m_interfaceCalibrateur);
-    QTableWidgetItem* item_Canal = new QTableWidgetItem(paramsTest->m_canalCalibrateur);
+    for(QPointer<et_ParamsTest> index : paramsTest){
 
-    ushort idxNewRecord = this->ui->tableWidget_TestsEnAttente->rowCount();
-    this->ui->tableWidget_TestsEnAttente->insertRow(idxNewRecord);
-    this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_ID_TEST,item_idtest);
-    this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_NOM_TEST,item_nomTest);
-    this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_DATE_HEURE_DEBUT,item_DateHeureDebut);
-    this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_CANAL_CALIBRATEUR,item_Etat);
-    this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_INTERFACE_CALIBRATEUR,item_Interface);
-    this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_ETAT,item_Canal);
+        QTableWidgetItem* item_idtest = new QTableWidgetItem(QString::number(index->m_test->getIdTest()));
+        QTableWidgetItem* item_nomTest = new QTableWidgetItem(index->m_nomTest);
+        QTableWidgetItem* item_DateHeureDebut = new QTableWidgetItem(index->m_dateHeureDebutPrevu.toString("dd/MM/yy hh:mm:ss"));
+        QTableWidgetItem* item_Etat = new QTableWidgetItem("En attente");
+        QTableWidgetItem* item_Interface = new QTableWidgetItem(index->m_interfaceCalibrateur);
+        QTableWidgetItem* item_Canal = new QTableWidgetItem(index->m_canalCalibrateur);
 
-    m_listeParamsTestsEnAttente.insert(idxNewRecord,paramsTest);
+        ushort idxNewRecord = this->ui->tableWidget_TestsEnAttente->rowCount();
+        this->ui->tableWidget_TestsEnAttente->insertRow(idxNewRecord);
+        this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_ID_TEST,item_idtest);
+        this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_NOM_TEST,item_nomTest);
+        this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_DATE_HEURE_DEBUT,item_DateHeureDebut);
+        this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_CANAL_CALIBRATEUR,item_Etat);
+        this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_INTERFACE_CALIBRATEUR,item_Interface);
+        this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_ETAT,item_Canal);
+
+        m_listeParamsTestsEnAttente.insert(idxNewRecord,index);
+    }
+
 
     delete m_interfaceparamsTest;
-    ui->stackedWidget->setCurrentIndex(1);
+    this->ui->stackedWidget->setCurrentIndex(1);
 }
 
 void et_listeAttenteTests::lancerTest(ushort idxTest)
@@ -199,6 +205,7 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
 //    connect(threadExecution,SIGNAL(started()),testAExecuter,SLOT(run()));
 //    connect(testAExecuter,SIGNAL(exitTest()),threadExecution,SLOT(quit()));
     connect(testAExecuter,SIGNAL(killMeAndMyThread(short)),this,SLOT(killExecutionTestEtThread(short)));
+    while(QDateTime::currentDateTime() < paramsTest->m_dateHeureDebutPrevu){}
     testAExecuter->run();
 //    threadExecution->start();
 }

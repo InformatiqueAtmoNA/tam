@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>820</width>
+    <width>822</width>
     <height>632</height>
    </rect>
   </property>
@@ -53,7 +53,6 @@
            <font>
             <family>Droid Serif</family>
             <pointsize>15</pointsize>
-            <weight>75</weight>
             <italic>true</italic>
             <bold>true</bold>
            </font>
@@ -84,7 +83,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget_TestRapport">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_ConfTest">
       <attribute name="title">
@@ -107,7 +106,6 @@
              <property name="font">
               <font>
                <pointsize>12</pointsize>
-               <weight>75</weight>
                <italic>false</italic>
                <bold>true</bold>
               </font>
@@ -153,7 +151,7 @@
                <string>Id_Test</string>
               </property>
               <property name="textAlignment">
-               <set>AlignLeft|AlignVCenter</set>
+               <set>AlignLeading|AlignVCenter</set>
               </property>
              </column>
              <column>
@@ -268,7 +266,6 @@
              <property name="font">
               <font>
                <pointsize>12</pointsize>
-               <weight>75</weight>
                <italic>false</italic>
                <bold>true</bold>
               </font>

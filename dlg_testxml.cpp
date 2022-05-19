@@ -26,6 +26,7 @@
 
 #include "dlg_testxml.h"
 #include "ui_dlg_testxml.h"
+#include <QCheckBox>
 
 Dlg_testXml::Dlg_testXml(QWidget *parent,const QPointer<BdHandler> bdHandler,
                          const bool returnSelection) :
@@ -39,14 +40,15 @@ Dlg_testXml::Dlg_testXml(QWidget *parent,const QPointer<BdHandler> bdHandler,
 
     this->afficherTable();
     this->initialiserChamps();
-
-    connect(this->ui->tableView->selectionModel(),
-            SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            this,SLOT(changementSelection(const QModelIndex &)));
-    connect(this->ui->button_Fermer,SIGNAL(clicked()),
-            this,SLOT(buttonFermerClicked()));
-    connect(this->ui->button_Selectionner,SIGNAL(clicked()),
-            this,SLOT(buttonSelectionnerClicked()));
+    this->ui->testsSelectionnes->insertColumn(0);
+    this->ui->testsSelectionnes->insertColumn(1);
+    this->ui->testsSelectionnes->setColumnWidth(0,50);
+    this->ui->testsSelectionnes->setColumnWidth(1,500);
+    connect(this->ui->tableView->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(changementSelection(QModelIndex)));
+    connect(this->ui->button_Fermer,SIGNAL(clicked()),this,SLOT(buttonFermerClicked()));
+    connect(this->ui->button_Selectionner,SIGNAL(clicked()),this,SLOT(buttonSelectionnerClicked()));
+    connect(this->ui->button_Confirmer,SIGNAL(clicked()),this,SLOT(buttonConfirmerClicked()));
+    connect(this->ui->button_Supprimer,SIGNAL(clicked()),this,SLOT(buttonSupprimerClicked()));
 }
 
 Dlg_testXml::~Dlg_testXml()
@@ -61,7 +63,7 @@ void Dlg_testXml::afficherTable()
     m_model = m_bdHandler->getTestXmlModel();
     this->ui->tableView->setModel(m_model);
     this->ui->tableView->setColumnHidden(TEST_XML_ID, true);
-    this->ui->tableView->resizeColumnsToContents();
+    this->ui->tableView->resizeColumnsToContents(); 
 }
 
 void Dlg_testXml::initialiserChamps()
@@ -74,7 +76,7 @@ void Dlg_testXml::initialiserChamps()
     }
 }
 
-void Dlg_testXml::changementSelection(const QModelIndex & idxSelection)
+void Dlg_testXml::changementSelection(QModelIndex idxSelection)
 {
     this->m_indexSelection = idxSelection;
 }
@@ -84,23 +86,77 @@ void Dlg_testXml::buttonFermerClicked()
     this->reject();
 }
 
-void Dlg_testXml::buttonSelectionnerClicked()
-{
+void Dlg_testXml::buttonConfirmerClicked(){
     this->accept();
 }
 
-short Dlg_testXml::getIdSelection()
+void Dlg_testXml::buttonSelectionnerClicked()
 {
-    if(m_indexSelection.isValid())
-        return this->m_model->record(m_indexSelection.row()).value(TEST_XML_ID).toInt();
-    else
-        return -1;
+    for(int i=0; i<indexTestsSelectionne.count(); i++){
+        if(this->m_model->record(m_indexSelection.row()).value(TEST_XML_ID_SYSTEME_ETALON).toInt()!=this->m_model->record(indexTestsSelectionne[i].row()).value(TEST_XML_ID_SYSTEME_ETALON).toInt()){
+            QMessageBox msgBox;
+            msgBox.setText(QLatin1String("Les tests choisis consécutivement doivent avoir le meme etalon"));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setIcon(QMessageBox::Critical);
+            msgBox.exec();
+            return;
+        }
+    }
+    this->indexTestsSelectionne.append(m_indexSelection);
+    this->ui->testsSelectionnes->insertRow(this->indexTestsSelectionne.count()-1);
+    this->ui->testsSelectionnes->setItem(this->indexTestsSelectionne.count()-1,0,new QTableWidgetItem(this->m_model->record(indexTestsSelectionne.last().row()).value(TEST_XML_ID).toString()));
+    this->ui->testsSelectionnes->setItem(this->indexTestsSelectionne.count()-1,1,new QTableWidgetItem(this->m_model->record(indexTestsSelectionne.last().row()).value(TEST_XML_NOM_FICHIER).toString()));
 }
 
-QString Dlg_testXml::getFichierDescriptionSelection()
+void Dlg_testXml::buttonSupprimerClicked(){
+    if(this->ui->testsSelectionnes->currentIndex().isValid()){
+        indexTestsSelectionne.removeAt(this->ui->testsSelectionnes->currentIndex().row());
+        this->ui->testsSelectionnes->removeRow(this->ui->testsSelectionnes->currentIndex().row());
+    }
+}
+
+
+QList<ushort> Dlg_testXml::getIdSelection()
 {
-    if(m_indexSelection.isValid())
-        return this->m_model->record(m_indexSelection.row()).value(TEST_XML_NOM_FICHIER).toString();
-    else
-        return "";
+    QList<ushort> idTestsSelectionne;
+    QList<ushort> Probleme;
+    Probleme.append(0);
+
+    if(indexTestsSelectionne.isEmpty()){
+        return  Probleme;
+    }
+
+    for(int i=0; i<indexTestsSelectionne.count() ; i++){
+        if(indexTestsSelectionne[i].isValid()){
+            idTestsSelectionne.append(this->m_model->record(indexTestsSelectionne[i].row()).value(TEST_XML_ID).toInt());          
+        }
+        else{
+            return  Probleme;
+        }
+    } 
+    return idTestsSelectionne;
+}
+
+QList<QString> Dlg_testXml::getFichierDescriptionSelection()
+{
+
+    QList<QString> nomTestsSelectionne;
+    QList<QString> Probleme;
+    Probleme.append(0);
+
+    if(indexTestsSelectionne.isEmpty()){
+        return  Probleme;
+    }
+
+    for(int i=0; i<indexTestsSelectionne.count() ; i++){
+        if(indexTestsSelectionne[i].isValid()){
+            nomTestsSelectionne.append(this->m_model->record(indexTestsSelectionne[i].row()).value(TEST_XML_NOM_FICHIER).toString());
+        }
+        else{
+            return Probleme;
+        }
+    }
+    return nomTestsSelectionne;
+
 }

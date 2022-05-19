@@ -27,77 +27,93 @@
 #include "et_interfaceexecutiontest.h"
 #include "ui_et_interfaceexecutiontest.h"
 
-et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,ushort idTestXML, QString fichierDescription,bool miseEnAttente,ushort idOperateur, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::et_InterfaceExecutionTest)
-{
-    ui->setupUi(this);
-
-    m_bdHandler = bdHandler;
-    m_fichierDescription = fichierDescription;
-    m_etape = 1;
-    m_idOperateur = idOperateur;
-    m_miseEnAttente = miseEnAttente;
-    m_idTestXML = idTestXML;
-    m_test = Test::importFromXml(fichierDescription);
-
-    if(m_test.isNull()) {
-        QMessageBox msgBox;
-        msgBox.setText(QLatin1String("Un problème est survenu lors du chargement du fichier de configuration du test"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setIcon(QMessageBox::Critical);
-        msgBox.exec();
-
-        emit(this->close());
-        return;
-    }
-
-    this->ui->button_Precedent->setEnabled(false);
-//    this->ui->tableWidget_Analyseurs->setColumnHidden(ET_TABLEW_ANALYSEURS_ID_EQUIPEMENT,true);
-//    this->ui->tableWidget_Communication->setColumnHidden(ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT,true);
-
-    QString nomFichier = m_fichierDescription.mid(m_fichierDescription.lastIndexOf('/')+1);;
+QString decoupeNomFichier(QString nomFichier){
     if(nomFichier.indexOf(".xml")>0)
         nomFichier.remove(".xml");
     if(nomFichier.indexOf(".\\")>0)
         nomFichier.remove(".\\");
     if(nomFichier.contains("./"))
         nomFichier.remove("./");
+    return nomFichier;
+}
+
+et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,QList<ushort> idTestXML, QList<QString> fichierDescription,bool miseEnAttente,ushort idOperateur, QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::et_InterfaceExecutionTest)
+{
+    ui->setupUi(this);
+
+    m_bdHandler = bdHandler;
+    m_etape = 1;
+    m_idOperateur = idOperateur;
+    m_miseEnAttente = miseEnAttente;
     m_nomCheminCSV = getParam("Path_CSV").toString();
+    QButtonGroup *buttonGroup = new QButtonGroup;
+    for(int i=0 ; i<idTestXML.count() ; i++ ){
+        m_idTestXML.append(idTestXML[i]);
+        m_test.append(Test::importFromXml(fichierDescription[i]));
+        m_fichierDescription.append(fichierDescription[i]);
 
-    this->ui->lineEdit_FichierCSV->setText(m_nomCheminCSV+"/DATE_HEURE_"+nomFichier+".csv");
-    this->ui->lineEdit_FichierDescription->setText(nomFichier);
-    this->ui->lineEdit_TypeTest->setText(typeTestToString(m_test->getTypeTest()));
+        if(idTestXML.count()>1){
 
-    if(!m_miseEnAttente) {
-        m_infosTestEnCours = new et_InfosTestEnCours(m_bdHandler,this);
-        this->ui->h_Layout_InfosTest->addWidget(m_infosTestEnCours.data());
+            QString nomFichier = decoupeNomFichier(m_fichierDescription[i].mid(m_fichierDescription[i].lastIndexOf('/')+1));
+
+            QVBoxLayout *descritpionTest = new QVBoxLayout;
+            QHBoxLayout *descritpionTestLine1 = new QHBoxLayout;
+            QHBoxLayout *descritpionTestLine2 = new QHBoxLayout;
+            QHBoxLayout *descritpionTestLine3 = new QHBoxLayout;
+
+            QLabel *numTest = new QLabel(QString("Test n°" + QString::number(i+1) + " :"));
+            QLabel *label1 = new QLabel("Fichier de description : ");
+            label1->setMaximumSize(150,20);
+            QLabel *label2 = new QLabel("Type de Test : ");
+            label2->setMaximumSize(150,20);
+            QLabel *label3 = new QLabel("Fichier CSV : ");
+            label3->setMaximumSize(150,20);
+
+            QLabel *FichierDescription =  new QLabel(fichierDescription[i]);
+            QLabel *TypeTest =  new QLabel(typeTestToString(m_test[i]->getTypeTest()));
+            QLineEdit *fichierCSV =  new QLineEdit((m_nomCheminCSV+"/DATE_HEURE_"+nomFichier+".csv"));
+            fichierCSV->setMaximumSize(550,20);
+            listeLineEditCSV.append(fichierCSV);
+
+            QToolButton *boutonCSV = new QToolButton;
+            boutonCSV->setText("...");
+            buttonGroup->addButton(boutonCSV,i);
+
+
+            descritpionTestLine1->addWidget(label1);
+            descritpionTestLine1->addWidget(FichierDescription);
+
+            descritpionTestLine2->addWidget(label2);
+            descritpionTestLine2->addWidget(TypeTest);
+
+            descritpionTestLine3->insertWidget(0,label3);
+            descritpionTestLine3->insertWidget(1,fichierCSV);
+            descritpionTestLine3->insertWidget(2,boutonCSV);
+
+            descritpionTest->addWidget(numTest);
+            descritpionTest->addLayout(descritpionTestLine1);
+            descritpionTest->addLayout(descritpionTestLine2);
+            descritpionTest->addLayout(descritpionTestLine3);
+
+            this->ui->affichageInfoTests->addLayout(descritpionTest);
+        }
     }
-    m_modelOperateur = m_bdHandler->getOperateurModel();
-    ui->comboBox_Operateur->setModel(m_modelOperateur);
-    ui->comboBox_Operateur->setModelColumn(OPERATEUR_NOM);
 
-    m_modelLieu = m_bdHandler->getLieuModel();
-    ui->comboBox_Lieu->setModel(m_modelLieu);
-    ui->comboBox_Lieu->setModelColumn(LIEU_DESIGNATION);
 
-    ui->tabWidget_ExecutionTest->setCurrentIndex(0);
-    ui->button_Executer->setVisible(false);
-    ui->button_MettreEnAttente->setVisible(false);
 
-    ui->bg_ChoixDebutTest->setId(ui->radioButton_DebutImmediat,0);
-    ui->bg_ChoixDebutTest->setId(ui->radioButton_DebutDateHeure,1);
+    if(this->m_idTestXML.count()>1){
+        this->ui->lineEdit_FichierDescription->hide();
+        this->ui->label->hide();
 
-    ui->dateTime_DebutTest->setDateTime(QDateTime::currentDateTime());
+        this->ui->lineEdit_TypeTest->hide();
+        this->ui->label_2->hide();
 
-    QSqlRecord canalDefCalibrateur = *(m_bdHandler->getSystemeEtalonRow(m_test->getIdSystemeEtalon()));
-    ui->lineEdit_CanalCalibrateur->setText(canalDefCalibrateur.value("canal_defaut").toString());
-
-    ushort idCalibrateur = m_bdHandler->getIdCalibrateur(m_test->getIdSystemeEtalon());
-    QSqlRecord record = *(m_bdHandler->getDesignationPortSerie(idCalibrateur));
-    ui->lineEdit_InterfaceCalibrateur->setText(record.value("designation").toString());
-
+        this->ui->lineEdit_FichierCSV->hide();
+        this->ui->label_CSV->hide();
+        this->ui->button_fichierCSV->hide();
+    }
 
 
     connect(this->ui->tableWidget_Analyseurs,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetAnalyseursClicked(QModelIndex)));
@@ -118,9 +134,65 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
     connect(this->ui->tabWidget_ExecutionTest,SIGNAL(currentChanged(int)),this,SLOT(tabWidgetExecutionTestIndexChanged(int)));
     connect(this->ui->button_Executer,SIGNAL(clicked()),this,SLOT(buttonExecuterClicked()));
     connect(this->ui->button_MettreEnAttente,SIGNAL(clicked()),this,SLOT(buttonMettreEnAttenteClicked()));
-    connect(this->ui->bg_ChoixDebutTest,SIGNAL(buttonClicked(int)),this,SLOT(bgChoixDebutTestValueChanged(int)));
+    connect(this->ui->bg_ChoixDebutTest,SIGNAL(idClicked(int)),this,SLOT(bgChoixDebutTestValueChanged(int)));
     connect(this->ui->button_fichierCSV,SIGNAL(clicked()),this,SLOT(button_choixEnregistrementCSV()));
+    connect(buttonGroup,SIGNAL(idClicked(int)),this,SLOT(button_choixMultipleEnregistrementCSV(int)));
+
+    for(const QPointer<Test> &test : m_test){
+        if(test.isNull()) {
+            QMessageBox msgBox;
+            msgBox.setText(QLatin1String("Un problème est survenu lors du chargement du fichier de configuration du test" ));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setIcon(QMessageBox::Critical);
+            msgBox.exec();
+            return;
+        }
+    }
+
+    this->ui->button_Precedent->setEnabled(false);
+
+
+
+
+    QString nomFichier = decoupeNomFichier(m_fichierDescription[0].mid(m_fichierDescription[0].lastIndexOf('/')+1));
+
+    this->ui->lineEdit_FichierCSV->setText(m_nomCheminCSV+"/DATE_HEURE_"+nomFichier+".csv");
+    this->ui->lineEdit_FichierDescription->setText(nomFichier);
+    this->ui->lineEdit_TypeTest->setText(typeTestToString(m_test[0]->getTypeTest()));
+
+    if(!m_miseEnAttente) {
+        m_infosTestEnCours = new et_InfosTestEnCours(m_bdHandler,this);
+        this->ui->h_Layout_InfosTest->addWidget(m_infosTestEnCours.data());
+    }
+    m_modelOperateur = m_bdHandler->getOperateurModel();
+    ui->comboBox_Operateur->setModel(m_modelOperateur);
+    ui->comboBox_Operateur->setModelColumn(OPERATEUR_NOM);
+
+    m_modelLieu = m_bdHandler->getLieuModel();
+    ui->comboBox_Lieu->setModel(m_modelLieu);
+    ui->comboBox_Lieu->setModelColumn(LIEU_DESIGNATION);
+
+
+
+    ui->tabWidget_ExecutionTest->setCurrentIndex(0);
+    ui->button_Executer->setVisible(false);
+    ui->button_MettreEnAttente->setVisible(false);
+
+    ui->bg_ChoixDebutTest->setId(ui->radioButton_DebutImmediat,0);
+    ui->bg_ChoixDebutTest->setId(ui->radioButton_DebutDateHeure,1);
+
+    ui->dateTime_DebutTest->setDateTime(QDateTime::currentDateTime());
+
+    QSqlRecord canalDefCalibrateur = *(m_bdHandler->getSystemeEtalonRow(m_test[0]->getIdSystemeEtalon()));
+    ui->lineEdit_CanalCalibrateur->setText(canalDefCalibrateur.value("canal_defaut").toString());
+
+    ushort idCalibrateur = m_bdHandler->getIdCalibrateur(m_test[0]->getIdSystemeEtalon());
+    QSqlRecord record = *(m_bdHandler->getDesignationPortSerie(idCalibrateur));
+    ui->lineEdit_InterfaceCalibrateur->setText(record.value("designation").toString());
 }
+
+
 
 et_InterfaceExecutionTest::~et_InterfaceExecutionTest()
 {
@@ -134,13 +206,14 @@ et_InterfaceExecutionTest::~et_InterfaceExecutionTest()
         delete m_modelOperateur;
     if(!m_modelLieu.isNull())
         delete m_modelLieu;
-    if(!m_test.isNull())
-        delete m_test;
+    if(!m_test.isEmpty())
+        m_test.clear();
     if(!m_testAExecuter.isNull()) {
         m_testAExecuter->standByCalibrateur(false);
         delete m_testAExecuter;
     }
 }
+
 
 bool et_InterfaceExecutionTest::controleEtape1()
 {
@@ -240,7 +313,10 @@ void et_InterfaceExecutionTest::buttonAjouterClicked()
     QTableWidgetItem* item_adresse = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_ADRESSE).toString());
     QTableWidgetItem* item_portSerie = new QTableWidgetItem(recordEquipement.value(REL_EQUIPEMENT_PORTSERIE).toString());
 
-    uint idxNewRecord = this->ui->tableWidget_Analyseurs->rowCount();
+    uint idxNewRecord=0;
+
+
+    idxNewRecord = this->ui->tableWidget_Analyseurs->rowCount();
     this->ui->tableWidget_Analyseurs->insertRow(idxNewRecord);
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_ID_EQUIPEMENT,item_idEquipement);
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_NUM_SERIE,item_noSerie);
@@ -251,6 +327,8 @@ void et_InterfaceExecutionTest::buttonAjouterClicked()
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_OFFSET,item_offset);
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_ADRESSE,item_adresse);
     this->ui->tableWidget_Analyseurs->setItem(idxNewRecord,ET_TABLEW_ANALYSEURS_PORTSERIE,item_portSerie);
+
+
 
     this->ui->tableWidget_Communication->insertRow(idxNewRecord);
     QTableWidgetItem* itemCom_idEquipement = new QTableWidgetItem(QString::number(idEquipement));
@@ -405,7 +483,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
         delete m_appareilEnTest;
 
     m_etatComCalibrateur = true;
-    ushort idCalibrateur = m_bdHandler->getIdCalibrateur(m_test->getIdSystemeEtalon());
+    ushort idCalibrateur = m_bdHandler->getIdCalibrateur(m_test[0]->getIdSystemeEtalon());
     QSqlRecord* record = m_bdHandler->getEquipementRow(idCalibrateur);
 
     DesignationProtocole protocole = m_bdHandler->getDesignationProtocole(idCalibrateur);
@@ -563,21 +641,18 @@ void et_InterfaceExecutionTest::buttonExecuterClicked()
     ui->button_Executer->setEnabled(false);
     ui->button_MettreEnAttente->setEnabled(false);
 
-    QPointer<et_ParamsTest> paramsTest = this->preparerInfosTest();
+    QPointer<et_ParamsTest> paramsTest = this->preparerInfosTest()[0];
 
+    while(QDateTime::currentDateTime() < paramsTest->m_dateHeureDebutPrevu){
+
+    }
     m_infosTestEnCours->enregistrerParamsTest(paramsTest);
     m_testAExecuter = new ExecutionTest(paramsTest,m_bdHandler);
 
     connect(m_testAExecuter,SIGNAL(traceTest(QString,ushort)),m_infosTestEnCours,SLOT(afficherTraceTest(QString,ushort)));
 
-// m_testAExecuter->moveToThread(&m_threadExecutionTest);
-
-//    connect(&m_threadExecutionTest,SIGNAL(started()),m_testAExecuter,SLOT(run()));
-//    connect(m_testAExecuter,SIGNAL(exitTest()),&m_threadExecutionTest,SLOT(quit()));
-//    connect(&m_threadExecutionTest,SIGNAL(finished()),this,SLOT(finTest()));
-
-//    m_threadExecutionTest.start();
     connect(m_testAExecuter,SIGNAL(exitTest()),this,SLOT(finTest()));
+
 
     m_testAExecuter->run();
 
@@ -587,73 +662,53 @@ void et_InterfaceExecutionTest::buttonExecuterClicked()
 }
 
 void et_InterfaceExecutionTest::buttonMettreEnAttenteClicked() {
-    QPointer<et_ParamsTest> paramsTest = this->preparerInfosTest();
+
+    QList<QPointer<et_ParamsTest>> paramsTest =this->preparerInfosTest();
     emit(miseEnAttente(paramsTest));
 }
 
-QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
+QList<QPointer<et_ParamsTest>> et_InterfaceExecutionTest::preparerInfosTest()
 {
-    /*QString nomFichierCSV = ui->lineEdit_FichierCSV->text();
+    QList<QPointer<et_ParamsTest>> ListeparamsTest;
+    for(int i=0 ; i<m_idTestXML.count() ; i++){
 
-    if(nomFichierCSV.contains("DATE_HEURE")) {
-        QDateTime currentDateTime = QDateTime::currentDateTime();
-        QString strCurrentDateTime = currentDateTime.toString("ddMMyyyy_hhmmss");
-        nomFichierCSV.replace("DATE_HEURE",strCurrentDateTime);
+        QPointer<et_ParamsTest> paramsTest = new et_ParamsTest();
+        QString nomFichier = decoupeNomFichier(m_fichierDescription[i].mid(m_fichierDescription[i].lastIndexOf('/')+1));
+
+        paramsTest->m_id_TestXML = m_idTestXML[i];
+        paramsTest->m_test = new Test(*(m_test[i].data()));
+        paramsTest->m_listeInterfaceAnalyseurs = m_listeInterfaceAnalyseurs;
+        paramsTest->m_interfaceCalibrateur = ui->lineEdit_InterfaceCalibrateur->text();
+        paramsTest->m_canalCalibrateur = ui->lineEdit_CanalCalibrateur->text();
+        paramsTest->m_idOperateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_ID).toUInt();
+        paramsTest->m_idLieu = m_modelLieu->record(ui->comboBox_Lieu->currentIndex()).value(LIEU_ID).toUInt();
+        paramsTest->m_nomTmpFichierCSV = m_nomCheminCSV+"/DATE_HEURE_"+nomFichier+".csv"; //
+        paramsTest->m_designationLieu = m_modelLieu->record(ui->comboBox_Lieu->currentIndex()).value(LIEU_DESIGNATION).toString();
+        paramsTest->m_nomTest = nomFichier;//
+        paramsTest->m_pression = ui->doubleSpinBox_Pression->value();
+        paramsTest->m_temperature = ui->doubleSpinBox_Temperature->value();
+        paramsTest->m_debutImmediat = m_debutImmediat;
+        if(!m_debutImmediat){
+            paramsTest->m_dateHeureDebutPrevu = this->ui->dateTime_DebutTest->dateTime();
+        }
+        else{
+            paramsTest->m_dateHeureDebutPrevu = QDateTime::currentDateTime();
+        }
+
+        QString operateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_NOM).toString();
+        operateur.append(" ");
+        operateur.append(m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_PRENOM).toString());
+        paramsTest->m_nomOperateur = operateur;
+
+        for(int i =0;i<ui->tableWidget_Communication->rowCount();i++) {
+            ushort idAnalyseur = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT)->text().toUInt();
+            QString numSerieAna = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_NUM_SERIE)->text();
+            paramsTest->m_listeNumSerieAnalyseurs.insert(idAnalyseur,numSerieAna);
+        }
+        ListeparamsTest.append(paramsTest);
     }
 
-    QPointer<QFile> fichierCSV = new QFile(nomFichierCSV);
-
-    if(fichierCSV.isNull()) {
-        QMessageBox msgBox;
-        msgBox.setText("Un problème a ete rencontre lors de la creation du fichier CSV");
-        msgBox.setInformativeText("Impossible de creer le fichier CSV");
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.exec();
-        return 0;
-    }
-
-    bool ouvertureFichierCSV = fichierCSV->open(QFile::WriteOnly | QFile::Append);
-
-    if(!ouvertureFichierCSV) {
-        QMessageBox msgBox;
-        msgBox.setText("Un problème a ete rencontre lors de la creation du fichier CSV");
-        msgBox.setInformativeText("Impossible de creer le fichier CSV");
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.exec();
-        return 0;
-    }*/
-
-    QPointer<et_ParamsTest> paramsTest = new et_ParamsTest();
-
-    paramsTest->m_id_TestXML = m_idTestXML;
-    paramsTest->m_test = new Test(*(m_test.data()));
-    paramsTest->m_listeInterfaceAnalyseurs = m_listeInterfaceAnalyseurs;
-    paramsTest->m_interfaceCalibrateur = ui->lineEdit_InterfaceCalibrateur->text();
-    paramsTest->m_canalCalibrateur = ui->lineEdit_CanalCalibrateur->text();
-    paramsTest->m_idOperateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_ID).toUInt();
-    paramsTest->m_idLieu = m_modelLieu->record(ui->comboBox_Lieu->currentIndex()).value(LIEU_ID).toUInt();
-    paramsTest->m_nomTmpFichierCSV = ui->lineEdit_FichierCSV->text();
-    paramsTest->m_designationLieu = m_modelLieu->record(ui->comboBox_Lieu->currentIndex()).value(LIEU_DESIGNATION).toString();
-    paramsTest->m_nomTest = this->ui->lineEdit_FichierDescription->text();
-    paramsTest->m_pression = ui->doubleSpinBox_Pression->value();
-    paramsTest->m_temperature = ui->doubleSpinBox_Temperature->value();
-    paramsTest->m_debutImmediat = m_debutImmediat;
-    paramsTest->m_dateHeureDebutPrevu = QDateTime::currentDateTime(); 
-
-    QString operateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_NOM).toString();
-    operateur.append(" ");
-    operateur.append(m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_PRENOM).toString());
-    paramsTest->m_nomOperateur = operateur;
-
-    for(int i =0;i<ui->tableWidget_Communication->rowCount();i++) {
-        ushort idAnalyseur = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT)->text().toUInt();
-        QString numSerieAna = ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_NUM_SERIE)->text();
-        paramsTest->m_listeNumSerieAnalyseurs.insert(idAnalyseur,numSerieAna); // modifie
-    }
-
-    return paramsTest;
+    return ListeparamsTest;
 }
 
 void et_InterfaceExecutionTest::bgChoixDebutTestValueChanged(int idButton)
@@ -671,6 +726,7 @@ void et_InterfaceExecutionTest::button_choixEnregistrementCSV()
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::AnyFile);
     dialog.setNameFilter("*.csv");
+    dialog.setDirectory(getParam("Path_CSV").toString());
     dialog.selectFile(this->ui->lineEdit_FichierCSV->text());
     if(dialog.exec()==QFileDialog::Accepted){
         QStringList chemin =  dialog.selectedFiles();
@@ -680,4 +736,20 @@ void et_InterfaceExecutionTest::button_choixEnregistrementCSV()
         return;
     }
 
+}
+
+void et_InterfaceExecutionTest::button_choixMultipleEnregistrementCSV(int idButon)
+{
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setNameFilter("*.csv");
+    dialog.setDirectory(getParam("Path_CSV").toString());
+    dialog.selectFile(listeLineEditCSV[idButon]->text());
+    if(dialog.exec()==QFileDialog::Accepted){
+        QStringList chemin =  dialog.selectedFiles();
+        listeLineEditCSV[idButon]->setText(chemin.value(0));
+    }
+    else {
+        return;
+    }
 }

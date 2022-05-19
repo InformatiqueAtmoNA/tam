@@ -66,7 +66,7 @@ private Q_SLOTS:
     void testAnnule();
     void lancerTest(ushort idxTest);
     void killExecutionTestEtThread(const short id);
-    void miseEnAttente(QPointer<et_ParamsTest> paramsTest);
+    void miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTest);
 
 Q_SIGNALS:
     void fermeture();
