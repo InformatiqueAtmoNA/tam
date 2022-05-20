@@ -30,6 +30,7 @@ private:
     QPointer<QSqlTableModel> m_model_tx_transmission;
     QPointer<QSqlTableModel> m_model_port_serie;
     QPointer<QSqlTableModel> m_model_molecule;
+    QPointer<QSqlTableModel> m_model_typeConnexion;
 
     QModelIndex m_indexSelection;
     QModelIndex m_indexSelectionMolecule;

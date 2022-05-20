@@ -60,15 +60,18 @@ private:
     QString m_fichierDescription;
     ushort m_etape;
     ushort m_idTestXML;
+    int m_idSonde;
     QPointer<Test> m_test;
     QMap<ushort,QString> m_listeInterfaceAnalyseurs;
     QMap<ushort,bool> m_listeEtatComAnalyseurs;
     QPointer<Protocole> m_appareilEnTest;
     bool m_etatComCalibrateur;
+    bool m_etatComSonde;
     QPointer<ExecutionTest> m_testAExecuter;
     ushort m_niveauInfos;
     bool m_miseEnAttente;
     bool m_debutImmediat;
+    bool m_sondePresente;
     QDateTime m_dateHeureDebutTest;
     QString m_nomCheminCSV;
 
@@ -87,22 +90,29 @@ public:
 
 private Q_SLOTS:
     void buttonAjouterClicked();
+    void buttonAjouterSondeClicked();
+    void buttonSupprimerSondeClicked();
     void buttonAnnulerClicked();
     void buttonPrecedentClicked();
     void buttonSuivantClicked();
     void buttonSupprimerClicked();
     void buttonTestAnalyseurClicked();
     void buttonTestCalibrateurClicked();
+    void buttonTestSondeClicked();
     void tableWidgetCommunicationClicked(const QModelIndex index);
     void lineEditCanalCalibrateurTextChanged(const QString text);
     void lineEditInterfaceCalibrateurTextChanged(const QString text);
     void lineEditInterfaceAnalyseurTextChanged(const QString text);
+    void lineEditInterfaceSondeTextChanged(const QString text);
     void lineEditParamsCalibrateurEnterPressed();
     void lineEditInterfaceAnalyseurEnterPressed();
+    void lineEditInterfaceSondeEnterPressed();
     void erreurCommunicationAnalyseur();
     void erreurCommunicationCalibrateur();
+    void erreurCommunicationSonde();
     void ouverturePortComAnalyseur(const bool ouverturePort);
     void ouverturePortComCalibrateur(const bool ouverturePort);
+    void ouverturePortComSonde(const bool ouverturePort);
     void tabWidgetExecutionTestIndexChanged(const int index);
     void buttonExecuterClicked();
     void buttonMettreEnAttenteClicked();

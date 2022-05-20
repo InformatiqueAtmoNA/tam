@@ -32,7 +32,7 @@
 et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler,
                                              const ushort idTest,
                                              const ushort idAnalyseur,
-                                             const ushort typeTest,
+                                             const ushort typeTest,   
                                              QWidget *parent):
     QWidget(parent),
     ui(new Ui::et_GenerateurRapportTest)
@@ -42,6 +42,7 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     m_idTest = idTest;
     m_idAnalyseur = idAnalyseur;
     m_typeTest = typeTest;
+
 
 
     /*if(bdHandler.isNull()) {
@@ -55,7 +56,6 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     }
     else*/
         m_bdHandler = bdHandler;
-
     QSqlRecord* informationTest =  m_bdHandler->getInformationsTest(m_idTest);
 
     m_NomTest = informationTest->value("test_metro_type_test").toString();
@@ -70,13 +70,35 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     m_Lieu = informationTest->value("designation").toString();
     ui->labelLieu->setText(m_Lieu);
     m_Temperature = informationTest->value("temperature").toString();
-    ui->labelTemp->setText(m_Temperature);
+    this->ui->labelTemp->setText(m_Temperature);
     m_Pression = informationTest->value("pression").toString();
     ui->labelPression->setText(m_Pression);
     m_tabCritere.append (informationTest->value("critere1").toDouble());
     m_tabCritere.append(informationTest->value("critere2").toDouble());
     m_tabCritere.append(informationTest->value("critere3").toDouble());
 
+    this->ui->labelTempMax->setText(informationTest->value("temperature_max").toString());
+    this->ui->labelTempMin->setText(informationTest->value("temperature_min").toString());
+
+    if(informationTest->value("sondePresente").toString() == "OUI"){
+        this->ui->label_Temp_max->show();
+        this->ui->labelTempMax->show();
+
+        this->ui->label_Temp_min->show();
+        this->ui->labelTempMin->show();
+
+        this->ui->label_Temp->setText("Temperature Moyenne : ");
+        this->ui->labelTemp->setText(informationTest->value("temperature_moyenne").toString());
+
+    }
+    else{
+
+        this->ui->label_Temp_max->hide();
+        this->ui->labelTempMax->hide();
+
+        this->ui->label_Temp_min->hide();
+        this->ui->labelTempMin->hide();
+    }
     affichageEquipement(m_idAnalyseur,"ANALYSEUR");
 
     QSqlRecord* systemEtalon = m_bdHandler->getSystemeEtalonRow(informationTest->value("id_systeme_etalon").toInt());

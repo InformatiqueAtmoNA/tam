@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>670</height>
+    <height>601</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -263,14 +263,74 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="doubleSpinBox_Temperature">
-                    <property name="maximum">
-                     <double>1000000000.000000000000000</double>
+                   <spacer name="horizontalSpacer_8">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
                     </property>
-                    <property name="value">
-                     <double>20.000000000000000</double>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
                     </property>
-                   </widget>
+                   </spacer>
+                  </item>
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_10">
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_2">
+                      <item>
+                       <widget class="QPushButton" name="ajouterSonde">
+                        <property name="maximumSize">
+                         <size>
+                          <width>125</width>
+                          <height>24</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>Ajouter une sonde</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="supprimerSonde">
+                        <property name="maximumSize">
+                         <size>
+                          <width>75</width>
+                          <height>24</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>Supprimer</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_Sonde">
+                      <property name="maximumSize">
+                       <size>
+                        <width>300</width>
+                        <height>24</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="doubleSpinBox_Temperature">
+                      <property name="maximum">
+                       <double>1000000000.000000000000000</double>
+                      </property>
+                      <property name="value">
+                       <double>20.000000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </item>
@@ -382,7 +442,7 @@ D'export des mesures brutes :</string>
                  <enum>Qt::ElideNone</enum>
                 </property>
                 <property name="columnCount">
-                 <number>10</number>
+                 <number>9</number>
                 </property>
                 <attribute name="horizontalHeaderDefaultSectionSize">
                  <number>100</number>
@@ -430,11 +490,6 @@ D'export des mesures brutes :</string>
                 <column>
                  <property name="text">
                   <string>Port Série</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Adresse IP</string>
                  </property>
                 </column>
                </widget>
@@ -609,6 +664,81 @@ D'export des mesures brutes :</string>
             </widget>
            </item>
            <item>
+            <widget class="QGroupBox" name="groupBox_5">
+             <property name="minimumSize">
+              <size>
+               <width>978</width>
+               <height>62</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Communication Sonde</string>
+             </property>
+             <widget class="QWidget" name="horizontalLayoutWidget">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>20</y>
+                <width>661</width>
+                <height>28</height>
+               </rect>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_20">
+               <item>
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>Interface de communication :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_InterfaceSonde"/>
+               </item>
+               <item>
+                <widget class="QPushButton" name="button_TestSonde">
+                 <property name="text">
+                  <string>Tester</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_9">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="minimumSize">
+                  <size>
+                   <width>142</width>
+                   <height>26</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>État de la communication :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_EtatSonde">
+                 <property name="text">
+                  <string>En Attente</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+           <item>
             <widget class="QGroupBox" name="groupBox_4">
              <property name="title">
               <string>Communication calibrateur</string>
@@ -732,6 +862,9 @@ D'export des mesures brutes :</string>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_11">
+       <item>
+        <layout class="QGridLayout" name="gridLayout_10"/>
+       </item>
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">

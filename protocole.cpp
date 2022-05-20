@@ -15,6 +15,8 @@
 #include "tei_49c.h"
 #include "tei_49ps.h"
 #include "api.h"
+#include "modbus.h"
+
 
 Protocole::Protocole() {
     m_avorterTransaction = false;
@@ -173,6 +175,8 @@ QPointer<Protocole> Protocole::getProtocoleObject(const DesignationProtocole & d
     case API_DIL:
         protocole = new Api(adresse,ETALON,API_DIL);
         break;
+    case MODBUS_RTU_TXXXX :
+        protocole = new Modbus(adresse,SONDE,MODBUS_RTU_TXXXX);
     default:
         break;
     }

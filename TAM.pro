@@ -16,6 +16,7 @@ CONFIG  += \
 SOURCES += main.cpp \
     communicationip.cpp \
     mainwindow.cpp \
+    modbus.cpp \
     threadcomhandler.cpp \
     tei_146i.cpp \
     tei_146c.cpp \
@@ -57,6 +58,7 @@ SOURCES += main.cpp \
     mode4_sx_6000_1808.cpp
 HEADERS += mainwindow.h \
     communicationip.h \
+    modbus.h \
     threadcomhandler.h \
     tei_146i.h \
     tei_146c.h \

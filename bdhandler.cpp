@@ -636,7 +636,8 @@ ushort BdHandler::getIdCalibrateur(const uint idSystemeEtalon)
 QSqlRecord* BdHandler::getInformationsTest(const ushort idTest)
 {
     QString strequete = QString("SELECT TM.id_test, TM.test_metro_type_test, O.Nom, O.Prenom, L.designation, TM.pression,");
-    strequete.append("TM.temperature, TM.date_debut, TM.date_fin, TM.id_systeme_etalon, TM.tps_acquisition ,TM.critere1 , TM.critere2, TM.critere3 FROM Test_Metrologique TM, Operateur O, Lieu L");
+    strequete.append("TM.temperature, TM.date_debut, TM.date_fin, TM.id_systeme_etalon, TM.tps_acquisition ,TM.critere1 , TM.critere2, TM.critere3, TM.temperature_min,");
+    strequete.append("TM.temperature_max, TM.temperature_moyenne, TM.id_sonde, TM.sondePresente FROM Test_Metrologique TM, Operateur O, Lieu L");
     strequete.append(QString (" WHERE TM.id_operateur = O.id_operateur AND TM.id_lieu = L.id_lieu AND TM.id_test =%1").arg(idTest));
 
     return getTableRow(strequete);

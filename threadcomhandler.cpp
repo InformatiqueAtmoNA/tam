@@ -59,8 +59,8 @@ void ThreadComHandler::run() {
 }
 
 void ThreadComHandler::configureRS232(const QString deviceName) {
-    qDebug() << "Connexion en RS232";
 
+    qDebug() << "Connexion en RS232";
     this->comRS232 = new CommunicationSerie(deviceName);
 
     if(!this->comRS232->open(QSerialPort::ReadWrite)) {

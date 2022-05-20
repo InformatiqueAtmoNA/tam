@@ -170,6 +170,7 @@ void ExecutionTest::getInfosEquipements()
         m_tabMoyennesMesuresParPhase.insert(idAnalyseur,tableauMoyennesParPhase);
     }
 
+
     uint idSystemeEtalon = m_paramsTest.data()->m_test->getIdSystemeEtalon();
     ushort idCalibrateur = m_bdHandler->getIdCalibrateur(idSystemeEtalon);
     m_infosCalibrateur = m_bdHandler->getEquipementRow(idCalibrateur);
@@ -199,6 +200,34 @@ void ExecutionTest::getInfosEquipements()
     m_protocoleCalibrateur->setTimeOut(500);
 
     m_protocoleCalibrateur->init();
+
+    if(this->m_paramsTest.data()->sondePresente == true){
+        QSqlRecord *record = m_bdHandler->getEquipementRow(m_paramsTest.data()->m_idSonde);
+        DesignationProtocole designationProtocoleSonde = m_bdHandler->getDesignationProtocole(m_paramsTest.data()->m_idSonde);
+        QString adresseSonde = record->value(EQUIPEMENT_ADRESSE).toString();
+        m_SondeProtocole = Protocole::getProtocoleObject(designationProtocoleSonde,adresseSonde);
+
+        m_typeConnexion = record->value(EQUIPEMENT_TYPE_CONNEXION).toString();
+        m_IP =  record->value(EQUIPEMENT_ADRESSE_IP).toString();
+        m_numPort =  record->value(EQUIPMENT_PORT_IP).toInt();
+        m_typeSocket =  record->value(EQUIPEMENT_TYPE_SOCKET).toString();
+
+        QPointer<ThreadComHandler> threadCommunicationSonde = new ThreadComHandler(m_typeConnexion);
+        if(m_typeConnexion=="IP"){
+            threadCommunicationSonde->configureIP(m_IP,m_numPort,m_typeSocket);
+        }
+        else if(m_typeConnexion=="RS232"){
+            threadCommunicationSonde->configureRS232(m_paramsTest.data()->m_interfaceSonde);
+        }
+
+        m_SondeProtocole->setThreadComHandler(threadCommunicationSonde);
+        m_SondeProtocole->setTimeOut(1000);
+        m_SondeProtocole->init();
+    }
+
+
+
+
 }
 
 void ExecutionTest::constructionMachineEtat()
@@ -416,6 +445,9 @@ void ExecutionTest::testerPeripheriques()
         emit(traceTest(trace,1));
     }
     emit(traceTest(&"code alarme calibrateur "[m_protocoleCalibrateur->demandeAlarme()],1));
+    if(this->m_paramsTest.data()->sondePresente == true){
+        emit(traceTest(&"code alarme sonde "[m_SondeProtocole->demandeAlarme()],1));
+    }
 
     emit(this->peripheriquesOk());
 }
@@ -457,7 +489,11 @@ void ExecutionTest::lancerTimerTempsAcquisition()
             QPointer<Protocole> analyseur = it_anaDesignProto.value();
 
             QPointer< MesureIndividuelle > mesures = analyseur->demandeMesure();
-            m_tabMesuresIndividuelles.insert(it_anaDesignProto.key(), mesures);
+            m_tabMesuresIndividuelles.insert(it_anaDesignProto.key(), mesures); 
+        }
+        if(this->m_paramsTest.data()->sondePresente == true){
+            QPointer< MesureIndividuelle > mesuresSonde = m_SondeProtocole->demandeMesure();
+            m_tabMesuresSonde.append(mesuresSonde.data()->at(0));
         }
     }
     emit(this->mesuresEffectuees());
@@ -536,6 +572,9 @@ void ExecutionTest::enregistrerMesures()
             }
         }
         strMesure.append(";");
+        if(this->m_paramsTest.data()->sondePresente==true){
+            strMesure.append(QString::number(this->m_tabMesuresSonde.last()));
+        }
 
         if(m_remplirFichierCSV){
             m_paramsTest.data()->m_fichierCSV->write(strMesure.toLatin1());
@@ -621,6 +660,20 @@ void ExecutionTest::initialiserPhase()
     }
 
     m_protocoleCalibrateur->setTypePolluant(listePolluants);
+    QList<TypePolluant> listePolluantsSonde;
+    if(this->m_paramsTest.data()->sondePresente == true){
+        QSqlQuery requete(QString("SELECT M.id_molecule FROM molecule M, polluant_associe P WHERE M.id_molecule=P.id_pa_molecule AND P.id_pa_equipement=%1").arg(m_paramsTest.data()->m_idSonde));
+          idMolecule =0;
+          QList<TypePolluant> listePolluants;
+          while(requete.next()) {
+              QSqlRecord record = requete.record();
+              idMolecule = record.value("id_molecule").toUInt();
+              moleculeRow = m_bdHandler->getMoleculeRow(idMolecule);
+              listePolluantsSonde.append(stringToTypePolluant(moleculeRow->value(MOLECULE_FORMULE).toString()));
+          }
+
+        m_SondeProtocole->setTypePolluant(listePolluantsSonde);
+    }
 
     delete moleculeRow;
 
@@ -727,6 +780,36 @@ void ExecutionTest::testTermine()
     emit(traceTest("test termine",0));
 
     m_bdHandler->miseAjourDateHeureFinTest(m_paramsTest.data()->m_id_TestMetro);
+    if(this->m_paramsTest.data()->sondePresente == true){
+        this->m_paramsTest.data()->m_test->setTempMin(m_tabMesuresSonde[0]);
+        this->m_paramsTest.data()->m_test->setTempMax(m_tabMesuresSonde[0]);
+        float moyenne=0;
+        for(int i=0 ; i<this->m_tabMesuresSonde.count() ; i++){
+            if(m_tabMesuresSonde[i]<this->m_paramsTest.data()->m_test->getTempMin()){
+                this->m_paramsTest.data()->m_test->setTempMin(m_tabMesuresSonde[i]);
+            }
+            if(m_tabMesuresSonde[i]>this->m_paramsTest.data()->m_test->getTempMax()){
+                this->m_paramsTest.data()->m_test->setTempMax(m_tabMesuresSonde[i]);
+            }
+            moyenne+=m_tabMesuresSonde[i];
+        }
+        moyenne = moyenne/this->m_tabMesuresSonde.count();
+        this->m_paramsTest.data()->m_test->setTempMoyenne(moyenne);
+        QString strRequete = QString("UPDATE `Test_Metrologique` SET `temperature_min` = %1").arg(m_paramsTest.data()->m_test->getTempMin());
+        strRequete.append(QString(" ,`temperature_max` = %1").arg(m_paramsTest.data()->m_test->getTempMax()));
+        strRequete.append(QString(" ,`temperature_moyenne` = %1 ").arg(m_paramsTest.data()->m_test->getTempMoyenne()));
+        strRequete.append(QString(" WHERE `id_test` = %1 ").arg(m_paramsTest.data()->m_id_TestMetro));
+        QSqlQuery requete;
+        bool succes = requete.exec(strRequete);
+
+        if(!m_SondeProtocole.isNull()){
+            m_SondeProtocole->quitter();
+        }
+        ThreadComHandler* fermetureCom2 = this->m_SondeProtocole->getThreadComHandler().data();
+        fermetureCom2->stop();
+    }
+
+
 
     m_timerTempsAttenteFinAcquisition = new QTimer;
 
@@ -736,11 +819,19 @@ void ExecutionTest::testTermine()
         if(!it_anaDesignProto.value().isNull()) {
             it_anaDesignProto.value()->passageMesure();
             it_anaDesignProto.value()->quitter();
+            ThreadComHandler* fermetureCom = it_anaDesignProto.value()->getThreadComHandler().data();
+            fermetureCom->stop();
         }
     }
     if(!m_protocoleCalibrateur.isNull()) {
         m_protocoleCalibrateur->quitter();
     }
+
+
+
+    ThreadComHandler* fermetureCom = this->m_protocoleCalibrateur->getThreadComHandler().data();
+    fermetureCom->stop();
+
 
     m_timerTempsAttenteFinAcquisition->setInterval(1000);
     m_timerTempsAttenteFinAcquisition->setSingleShot(true);
@@ -748,6 +839,7 @@ void ExecutionTest::testTermine()
     connect(m_timerTempsAttenteFinAcquisition,SIGNAL(timeout()),this,SLOT(attenteFinAcquisition()));
 
     m_timerTempsAttenteFinAcquisition->start();
+
 
 }
 

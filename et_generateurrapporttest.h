@@ -86,6 +86,7 @@ private:
     int m_tpsAcquisition;
     QVector<double> m_tabCritere;
 
+
     void tableauMesure2(int idMolecule, int codeMolecule);
     void tableauMesure(int idMolecule, int codeMolecule);
     void tableauMesure(int no_Phase);

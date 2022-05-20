@@ -259,7 +259,10 @@ void CommunicationSerie::write(const QString data) {
 void CommunicationSerie::slotRead() {
      QByteArray data = this->device->readAll();
      qDebug() << "Readed is : " << data.size() << " bytes";
-     QString stringData = data;
+     QString stringData;
+     for(int i=0 ; i<data.length() ; i++){
+         stringData.append(data[i]);
+     }
      emit(dataReaded(stringData));
 }
 

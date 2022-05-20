@@ -54,6 +54,8 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
     }
 
     this->ui->button_Precedent->setEnabled(false);
+    this->ui->groupBox_5->hide();
+
 //    this->ui->tableWidget_Analyseurs->setColumnHidden(ET_TABLEW_ANALYSEURS_ID_EQUIPEMENT,true);
 //    this->ui->tableWidget_Communication->setColumnHidden(ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT,true);
 
@@ -81,7 +83,7 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
     m_modelLieu = m_bdHandler->getLieuModel();
     ui->comboBox_Lieu->setModel(m_modelLieu);
     ui->comboBox_Lieu->setModelColumn(LIEU_DESIGNATION);
-
+    m_sondePresente = false;
     ui->tabWidget_ExecutionTest->setCurrentIndex(0);
     ui->button_Executer->setVisible(false);
     ui->button_MettreEnAttente->setVisible(false);
@@ -95,12 +97,22 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
     ui->lineEdit_CanalCalibrateur->setText(canalDefCalibrateur.value("canal_defaut").toString());
 
     ushort idCalibrateur = m_bdHandler->getIdCalibrateur(m_test->getIdSystemeEtalon());
-    QSqlRecord record = *(m_bdHandler->getDesignationPortSerie(idCalibrateur));
-    ui->lineEdit_InterfaceCalibrateur->setText(record.value("designation").toString());
+
+    QSqlRecord* recordEquipement = m_bdHandler->getEquipementRow(idCalibrateur);
+
+    if(recordEquipement->value(EQUIPEMENT_TYPE_CONNEXION).toString() == "IP"){
+        ui->lineEdit_InterfaceCalibrateur->setText(recordEquipement->value(EQUIPEMENT_ADRESSE_IP).toString());
+    }
+    else if(recordEquipement->value(EQUIPEMENT_TYPE_CONNEXION).toString() == "RS232"){
+        QSqlRecord record = *(m_bdHandler->getDesignationPortSerie(idCalibrateur));
+        ui->lineEdit_InterfaceCalibrateur->setText(record.value("designation").toString());
+    }
 
 
 
     connect(this->ui->tableWidget_Analyseurs,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetAnalyseursClicked(QModelIndex)));
+    connect(this->ui->ajouterSonde,SIGNAL(clicked()),this,SLOT(buttonAjouterSondeClicked()));
+    connect(this->ui->supprimerSonde,SIGNAL(clicked()),this,SLOT(buttonSupprimerSondeClicked()));
     connect(this->ui->tableWidget_Communication,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetCommunicationClicked(QModelIndex)));
     connect(this->ui->button_Annuler,SIGNAL(clicked()),this,SLOT(buttonAnnulerClicked()));
     connect(this->ui->button_Ajouter,SIGNAL(clicked()),this,SLOT(buttonAjouterClicked()));
@@ -108,9 +120,12 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
     connect(this->ui->button_Precedent,SIGNAL(clicked()),this,SLOT(buttonPrecedentClicked()));
     connect(this->ui->button_Supprimer,SIGNAL(clicked()),this,SLOT(buttonSupprimerClicked()));
     connect(this->ui->button_TestAnalyseur,SIGNAL(clicked()),this,SLOT(buttonTestAnalyseurClicked()));
+    connect(this->ui->button_TestSonde,SIGNAL(clicked()),this,SLOT(buttonTestSondeClicked()));
     connect(this->ui->button_TestCalibrateur,SIGNAL(clicked()),this,SLOT(buttonTestCalibrateurClicked()));
     connect(this->ui->lineEdit_InterfaceAnalyseur,SIGNAL(textChanged(QString)),this,SLOT(lineEditInterfaceAnalyseurTextChanged(QString)));
+    connect(this->ui->lineEdit_InterfaceSonde,SIGNAL(textChanged(QString)),this,SLOT(lineEditInterfaceSondeTextChanged(QString)));
     connect(this->ui->lineEdit_InterfaceAnalyseur,SIGNAL(returnPressed()),this,SLOT(lineEditInterfaceAnalyseurEnterPressed()));
+    connect(this->ui->lineEdit_InterfaceSonde,SIGNAL(returnPressed()),this,SLOT(lineEditInterfaceSondeEnterPressed()));
     connect(this->ui->lineEdit_CanalCalibrateur,SIGNAL(textChanged(QString)),this,SLOT(lineEditCanalCalibrateurTextChanged(QString)));
     connect(this->ui->lineEdit_CanalCalibrateur,SIGNAL(returnPressed()),this,SLOT(lineEditParamsCalibrateurEnterPressed()));
     connect(this->ui->lineEdit_InterfaceCalibrateur,SIGNAL(textChanged(QString)),this,SLOT(lineEditInterfaceCalibrateurTextChanged(QString)));
@@ -168,7 +183,7 @@ bool et_InterfaceExecutionTest::controleEtape1()
         this->ui->label_Pression->setText("<font color=#000000>"+this->ui->label_Pression->text()+"</font>" );
 
 
-    if(this->ui->doubleSpinBox_Temperature->value()==0) {
+    if(this->ui->doubleSpinBox_Temperature->value()==0 and this->ui->label_Sonde->text().isEmpty()) {
         passerEtapeSuivante = false;
         this->ui->label_Temperature->setText("<font color=#FF0000>"+this->ui->label_Temperature->text()+"</font>" );
     }
@@ -212,6 +227,10 @@ bool et_InterfaceExecutionTest::controleEtape2()
         iterator.next();
         if(iterator.value() == false)
             return false;
+    }
+
+    if(!this->ui->groupBox_5->isHidden() && m_etatComSonde == false){
+        return false;
     }
 
     if(m_etatComCalibrateur == false)
@@ -275,6 +294,57 @@ void et_InterfaceExecutionTest::buttonAjouterClicked()
     this->ui->tableWidget_Communication->setItem(idxNewRecord,ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
 }
 
+void et_InterfaceExecutionTest::buttonAjouterSondeClicked()
+{
+    Dlg_Equipement dlgEquipement(this,this->m_bdHandler,true,0,"SONDE");
+
+    if(!dlgEquipement.exec()) return;
+
+    this->m_idSonde = dlgEquipement.getIdSelection();
+
+    QSqlRecord* record = m_bdHandler->getEquipementRow(m_idSonde);
+
+    if(record->value(EQUIPEMENT_TYPE_CONNEXION).toString() == "IP"){
+        ui->lineEdit_InterfaceSonde->setText(record->value(EQUIPEMENT_ADRESSE_IP).toString());
+    }
+    else if(record->value(EQUIPEMENT_TYPE_CONNEXION).toString() == "RS232"){
+        QSqlRecord recordSonde = *(m_bdHandler->getDesignationPortSerie(m_idSonde));
+        ui->lineEdit_InterfaceSonde->setText(recordSonde.value("designation").toString());
+    }
+
+    QSqlRecord recordEquipement = *(m_bdHandler->getEquipementModeledRow(m_idSonde));
+
+    this->ui->label_Sonde->setText(recordEquipement.value(REL_EQUIPEMENT_NUM_SERIE).toString());
+    this->ui->groupBox_5->show();
+
+    if(this->ui->label_Sonde->text()==""){
+        this->ui->ajouterSonde->setEnabled(true);
+        this->ui->doubleSpinBox_Temperature->show();
+        m_sondePresente = false;
+    }
+    else{
+        this->ui->ajouterSonde->setEnabled(false);
+        this->ui->doubleSpinBox_Temperature->hide();
+        m_sondePresente = true;
+    }
+}
+
+void et_InterfaceExecutionTest::buttonSupprimerSondeClicked()
+{
+    this->ui->label_Sonde->setText("");
+    for(int i=0 ; i<this->ui->tableWidget_Communication->rowCount() ; i++){
+        if(this->ui->tableWidget_Communication->item(i,ET_TABLEW_COMMUNICATION_ID_EQUIPEMENT)->text().toInt() == this->m_idSonde){
+            this->ui->tableWidget_Communication->removeRow(i);
+        }
+    }
+
+    this->ui->ajouterSonde->setEnabled(true);
+    this->ui->doubleSpinBox_Temperature->show();
+    ui->lineEdit_InterfaceSonde->setText("");
+    this->ui->groupBox_5->hide();
+    m_sondePresente = false;
+}
+
 void et_InterfaceExecutionTest::buttonSupprimerClicked()
 {
     if(m_idxSelectionAnalyseurs.isValid()) {
@@ -291,7 +361,7 @@ void et_InterfaceExecutionTest::buttonAnnulerClicked()
 {
     QMessageBox msgBox;
     msgBox.setText("Annuler?");
-    msgBox.setInformativeText("Voulez-vous annuler et revenir à l'acceuil?");
+    msgBox.setInformativeText("Voulez-vous annuler et revenir à l'accueil?");
     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
 
@@ -342,6 +412,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
 
     this->ui->button_TestAnalyseur->setEnabled(false);
     this->ui->button_TestCalibrateur->setEnabled(false);
+    this->ui->button_TestSonde->setEnabled(false);
 
     if(!m_appareilEnTest.isNull())
         delete m_appareilEnTest;
@@ -417,6 +488,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     QCoreApplication::processEvents();
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
+    this->ui->button_TestSonde->setEnabled(true);
     //m_listeEtatComAnalyseurs[idAnalyseur] = true;
 }
 
@@ -424,6 +496,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
 {
     this->ui->button_TestAnalyseur->setEnabled(false);
     this->ui->button_TestCalibrateur->setEnabled(false);
+    this->ui->button_TestSonde->setEnabled(false);
 
     if(!m_appareilEnTest.isNull())
         delete m_appareilEnTest;
@@ -486,8 +559,71 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     calibrateur->deleteLater();
     QCoreApplication::processEvents();
     //m_etatComCalibrateur = true;
-    this->ui->button_TestAnalyseur->setEnabled(true);
+    //this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
+    this->ui->button_TestSonde->setEnabled(true);
+}
+
+void et_InterfaceExecutionTest::buttonTestSondeClicked()
+{
+    this->ui->button_TestAnalyseur->setEnabled(false);
+    this->ui->button_TestCalibrateur->setEnabled(false);
+    this->ui->button_TestSonde->setEnabled(false);
+
+    if(!m_appareilEnTest.isNull())
+        delete m_appareilEnTest;
+
+    m_etatComSonde = true;
+
+    QSqlRecord* record = m_bdHandler->getEquipementRow(m_idSonde);
+
+    DesignationProtocole protocole = m_bdHandler->getDesignationProtocole(m_idSonde);
+
+    QPointer<Protocole> sonde = Protocole::getProtocoleObject(protocole,record->value(EQUIPEMENT_ADRESSE).toString());
+
+
+
+    if(sonde.isNull()) {
+        QMessageBox msgBox;
+        msgBox.setText(QLatin1String("Configuration de l'appareil impossible"));
+        msgBox.setInformativeText(QLatin1String("Une erreur s'est produite lors de la configuration de l'appareil.\n\nVeuillez vefifier les paramètres de l'equipement avant de recommencer le test"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+        return;
+    }
+
+    m_appareilEnTest = sonde;
+    QString interface = ui->lineEdit_InterfaceSonde->text();
+    m_typeConnexion = record->value(EQUIPEMENT_TYPE_CONNEXION).toString();
+    m_IP =  record->value(EQUIPEMENT_ADRESSE_IP).toString();
+    m_numPort =  record->value(EQUIPMENT_PORT_IP).toInt();
+    m_typeSocket =  record->value(EQUIPEMENT_TYPE_SOCKET).toString();
+    delete record;
+    QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler(m_typeConnexion);
+
+    connect(threadCommunication,SIGNAL(ouverturePort(bool)),this,SLOT(ouverturePortComSonde(bool)));
+    connect(sonde,SIGNAL(erreurTransmission()),this,SLOT(erreurCommunicationSonde()));
+
+    if(m_typeConnexion=="IP"){
+        threadCommunication->configureIP(m_IP, m_numPort, m_typeSocket);
+    }
+    else if(m_typeConnexion=="RS232"){
+        threadCommunication->configureRS232(interface);
+    }
+
+    sonde->setThreadComHandler(threadCommunication);
+    sonde->setTimeOut(750);
+
+    sonde->demandeAlarme();
+
+    sonde->quitter();
+    sonde->deleteLater();
+    QCoreApplication::processEvents();
+    //m_etatComCalibrateur = true;
+    //this->ui->button_TestAnalyseur->setEnabled(true);
+    this->ui->button_TestCalibrateur->setEnabled(true);
+    this->ui->button_TestSonde->setEnabled(true);
 }
 
 void et_InterfaceExecutionTest::tableWidgetCommunicationClicked(const QModelIndex index)
@@ -524,6 +660,14 @@ void et_InterfaceExecutionTest::lineEditInterfaceAnalyseurTextChanged(const QStr
         this->ui->button_TestAnalyseur->setEnabled(false);
 }
 
+void et_InterfaceExecutionTest::lineEditInterfaceSondeTextChanged(const QString text)
+{
+    if(text.count()>0)
+        this->ui->button_TestSonde->setEnabled(true);
+    else
+        this->ui->button_TestSonde->setEnabled(false);
+}
+
 void et_InterfaceExecutionTest::lineEditParamsCalibrateurEnterPressed()
 {
     if(ui->lineEdit_CanalCalibrateur->text().count()>0 && ui->lineEdit_InterfaceCalibrateur->text().count()>0)
@@ -534,6 +678,12 @@ void et_InterfaceExecutionTest::lineEditInterfaceAnalyseurEnterPressed()
 {
     if(ui->lineEdit_InterfaceAnalyseur->text().count()>0)
         buttonTestAnalyseurClicked();
+}
+
+void et_InterfaceExecutionTest::lineEditInterfaceSondeEnterPressed()
+{
+    if(ui->lineEdit_InterfaceSonde->text().count()>0)
+        buttonTestSondeClicked();
 }
 
 void et_InterfaceExecutionTest::erreurCommunicationAnalyseur()
@@ -552,6 +702,12 @@ void et_InterfaceExecutionTest::erreurCommunicationCalibrateur()
 {
     m_etatComCalibrateur = false;
     this->ui->label_EtatCalibrateur->setText(QLatin1String("<font color=\"#FF0000\">Erreur de communication!</font>"));
+}
+
+void et_InterfaceExecutionTest::erreurCommunicationSonde()
+{
+    m_etatComSonde = false;
+    this->ui->label_EtatSonde->setText(QLatin1String("<font color=\"#FF0000\">Erreur de communication!</font>"));
 }
 
 void et_InterfaceExecutionTest::ouverturePortComAnalyseur(bool ouverturePort)
@@ -580,6 +736,16 @@ void et_InterfaceExecutionTest::ouverturePortComCalibrateur(const bool ouverture
     }
     else
         ui->label_EtatCalibrateur->setText(QLatin1String("<font color=\"#64FF64\">Communication Ok</font>"));
+}
+
+void et_InterfaceExecutionTest::ouverturePortComSonde(const bool ouverturePort)
+{
+    if(!ouverturePort) {
+        m_etatComSonde = false;
+        this->ui->label_EtatSonde->setText(QLatin1String("<font color=\"#FF0000\">Erreur de l'ouverture du port</font>"));
+    }
+    else
+        ui->label_EtatSonde->setText(QLatin1String("<font color=\"#64FF64\">Communication Ok</font>"));
 }
 
 void et_InterfaceExecutionTest::tabWidgetExecutionTestIndexChanged(const int index)
@@ -663,18 +829,26 @@ QPointer<et_ParamsTest> et_InterfaceExecutionTest::preparerInfosTest()
 
     paramsTest->m_id_TestXML = m_idTestXML;
     paramsTest->m_test = new Test(*(m_test.data()));
+    paramsTest->m_idSonde = m_idSonde;
     paramsTest->m_listeInterfaceAnalyseurs = m_listeInterfaceAnalyseurs;
     paramsTest->m_interfaceCalibrateur = ui->lineEdit_InterfaceCalibrateur->text();
     paramsTest->m_canalCalibrateur = ui->lineEdit_CanalCalibrateur->text();
+    paramsTest->m_interfaceSonde = ui->lineEdit_InterfaceSonde->text();
     paramsTest->m_idOperateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_ID).toUInt();
     paramsTest->m_idLieu = m_modelLieu->record(ui->comboBox_Lieu->currentIndex()).value(LIEU_ID).toUInt();
     paramsTest->m_nomTmpFichierCSV = ui->lineEdit_FichierCSV->text();
     paramsTest->m_designationLieu = m_modelLieu->record(ui->comboBox_Lieu->currentIndex()).value(LIEU_DESIGNATION).toString();
     paramsTest->m_nomTest = this->ui->lineEdit_FichierDescription->text();
     paramsTest->m_pression = ui->doubleSpinBox_Pression->value();
-    paramsTest->m_temperature = ui->doubleSpinBox_Temperature->value();
+    if(m_sondePresente == false){
+        paramsTest->m_temperature = ui->doubleSpinBox_Temperature->value();
+    }
+    else{
+        paramsTest->m_temperature = NULL;
+    }
     paramsTest->m_debutImmediat = m_debutImmediat;
     paramsTest->m_dateHeureDebutPrevu = QDateTime::currentDateTime(); 
+    paramsTest->sondePresente = m_sondePresente;
 
     QString operateur = m_modelOperateur->record(ui->comboBox_Operateur->currentIndex()).value(OPERATEUR_NOM).toString();
     operateur.append(" ");
