@@ -41,10 +41,10 @@ et_listeAttenteTests::et_listeAttenteTests(QPointer<BdHandler> bdHandler, QWidge
     m_timer->setSingleShot(false);
 
     ui->tableWidget_TestsEnAttente->setColumnHidden(ET_TABLEW_TEST_ATTENTE_ID_TEST,true);
-    ui->tableWidget_TestsEnAttente->setColumnHidden(ET_TABLEW_TEST_ATTENTE_ETAT,true);
 
     connect(ui->button_AjouterTest,SIGNAL(clicked()),this,SLOT(buttonAjouterTestClicked()));
     connect(ui->button_Annuler,SIGNAL(clicked()),this,SLOT(buttonAnnulerClicked()));
+    connect(ui->button_Quitter,SIGNAL(clicked()),this,SLOT(buttonAnnulerClicked()));
     connect(ui->button_SupprimerTest,SIGNAL(clicked()),this,SLOT(buttonSupprimerTestClicked()));
     connect(ui->button_ExecuterTests,SIGNAL(clicked()),this,SLOT(buttonExecuterClicked()));
     connect(this,SIGNAL(lancementTest(ushort)),this,SLOT(lancerTest(ushort)));
@@ -135,7 +135,6 @@ void et_listeAttenteTests::verifierTestsExecutables()
 void et_listeAttenteTests::buttonAnnulerClicked()
 {
     QMessageBox msgBox;
-    msgBox.setText(QLatin1String("Annuler ?"));
     msgBox.setInformativeText(QLatin1String("Voulez-vous annuler et revenir à l'accueil ?"));
     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
@@ -175,6 +174,8 @@ void et_listeAttenteTests::miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTe
     this->ui->stackedWidget->setCurrentIndex(1);
 }
 
+
+
 void et_listeAttenteTests::lancerTest(ushort idxTest)
 {
     QCoreApplication::processEvents();
@@ -183,6 +184,8 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
 
     m_listeInfosTestsEnCours.insert(idxTest,infosTestEnCours);
 
+    this->m_idTestmetroEnCours = m_listeParamsTestsEnAttente.value(idxTest)->m_id_TestMetro;
+    this->m_indexTestEnCours = idxTest;
     ui->tabWidget->addTab(infosTestEnCours,m_listeParamsTestsEnAttente.value(idxTest)->m_nomTest);
     int nbtab = ui->tabWidget->count();
     ui->tabWidget->setCurrentIndex(nbtab-1);
@@ -207,8 +210,10 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
 //    connect(threadExecution,SIGNAL(started()),testAExecuter,SLOT(run()));
 //    connect(testAExecuter,SIGNAL(exitTest()),threadExecution,SLOT(quit()));
     connect(testAExecuter,SIGNAL(killMeAndMyThread(short)),this,SLOT(killExecutionTestEtThread(short)));
+
     this->ui->button_ExecuterTests->setDisabled(true);
     while(QDateTime::currentDateTime() < paramsTest->m_dateHeureDebutPrevu){}
+    this->ui->tableWidget_TestsEnAttente->item(this->m_indexTestEnCours,ET_TABLEW_TEST_ATTENTE_ETAT)->setText("En cours");
     testAExecuter->run();
 //    threadExecution->start();
 }
@@ -218,6 +223,7 @@ void et_listeAttenteTests::killExecutionTestEtThread(const short id)
 
     this->ui->tabWidget->setCurrentIndex(0); //astuce trouvee pour que les ports series se ferment bien entre deux tests
 
+    this->ui->tableWidget_TestsEnAttente->item(this->m_indexTestEnCours, ET_TABLEW_TEST_ATTENTE_ETAT)->setText("Finis");
 
     QPointer<ExecutionTest> testEnCours = m_listeTestsEnExecution.value(id);
     if(!testEnCours.isNull())

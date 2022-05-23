@@ -134,9 +134,9 @@
            <item row="1" column="1">
             <layout class="QVBoxLayout" name="verticalLayout">
              <item>
-              <widget class="QPushButton" name="button_Annuler_2">
+              <widget class="QPushButton" name="button_Quitter">
                <property name="text">
-                <string>&amp;Annuler</string>
+                <string>Quitter</string>
                </property>
               </widget>
              </item>
