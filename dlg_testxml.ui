@@ -16,8 +16,32 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QTableView" name="tableView"/>
+     <item row="3" column="1">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinimumSize</enum>
+       </property>
+       <item>
+        <widget class="QPushButton" name="button_Supprimer">
+         <property name="text">
+          <string>Supprimer</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
      <item row="0" column="1">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -25,6 +49,13 @@
         <widget class="QPushButton" name="button_Selectionner">
          <property name="text">
           <string>Selectionner</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="button_Confirmer">
+         <property name="text">
+          <string>Confirmer</string>
          </property>
         </widget>
        </item>
@@ -49,6 +80,30 @@
         </spacer>
        </item>
       </layout>
+     </item>
+     <item row="0" column="0">
+      <widget class="QTableView" name="tableView"/>
+     </item>
+     <item row="3" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QTableWidget" name="testsSelectionnes">
+         <property name="maximumSize">
+          <size>
+           <width>535</width>
+           <height>200</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Tests séléctionnés :</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

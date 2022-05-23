@@ -230,10 +230,9 @@ void CreationTest::afficherPhaseWidget(const ushort noPhase, bool readOnly)
 
             this->m_phaseWidget = new ct_PhaseWidget(this->m_test->getIdSystemeEtalon(),this->m_typeTest,this->m_bdHandler,this,noPhase,*(Phase::getPhaseFromConf(phaseConf).data()));
         }
-        //this->ui->h_Layout_EditPhase->insertWidget(1,this->m_phaseWidget);
 
+        this->ui->h_Layout_EditPhase->addWidget(this->m_phaseWidget);
 
-        this->m_phaseWidget->move(400,100);
         this->m_phaseWidget->show();
     }
 

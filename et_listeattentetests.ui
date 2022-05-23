@@ -74,7 +74,6 @@
              <property name="font">
               <font>
                <pointsize>12</pointsize>
-               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -112,22 +111,22 @@
              </column>
              <column>
               <property name="text">
-               <string>Interface</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Canal</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
                <string>Date/Heure Début</string>
               </property>
              </column>
              <column>
               <property name="text">
                <string>Etat du test</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Interface</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Canal</string>
               </property>
              </column>
             </widget>

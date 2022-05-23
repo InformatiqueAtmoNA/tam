@@ -56,12 +56,14 @@ private:
     QPointer<QSqlTableModel> m_modelLieu;
     QModelIndex m_idxSelectionAnalyseurs;
     QModelIndex m_idxCommunicationAnalyseurs;
+
     QString m_type_Socket;
-    QString m_fichierDescription;
     ushort m_etape;
-    ushort m_idTestXML;
     int m_idSonde;
-    QPointer<Test> m_test;
+    QList<QString> m_fichierDescription;
+    QList<ushort> m_idTestXML;
+    QList<QPointer<Test>> m_test;
+
     QMap<ushort,QString> m_listeInterfaceAnalyseurs;
     QMap<ushort,bool> m_listeEtatComAnalyseurs;
     QPointer<Protocole> m_appareilEnTest;
@@ -74,18 +76,21 @@ private:
     bool m_sondePresente;
     QDateTime m_dateHeureDebutTest;
     QString m_nomCheminCSV;
-
+    QList<QLineEdit*> listeLineEditCSV;
     bool controleEtape1();
     bool controleEtape2();
     void afficherMsgBoxErreurCom();
-    QPointer<et_ParamsTest> preparerInfosTest();
+
     QString m_typeConnexion;
     QString m_IP;
     quint16 m_numPort;
     QString m_typeSocket;
 
+    QList<QPointer<et_ParamsTest>> preparerInfosTest();
+
+
 public:
-    explicit et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,const ushort idTestXml,const QString fichierDescription,bool miseEnAttente=false,ushort idOperateur=0,QWidget *parent = 0);
+    explicit et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,QList<ushort> idTestXml,QList<QString> fichierDescription,bool miseEnAttente=false,ushort idOperateur=0,QWidget *parent = 0);
     ~et_InterfaceExecutionTest();
 
 private Q_SLOTS:
@@ -121,10 +126,11 @@ private Q_SLOTS:
     inline void finTest() {delete m_testAExecuter;}
     inline void tableWidgetAnalyseursClicked(const QModelIndex index) {m_idxSelectionAnalyseurs = index;}
     void button_choixEnregistrementCSV();
+    void button_choixMultipleEnregistrementCSV(int idButon);
 
 Q_SIGNALS:
     void fermeture();
-    void miseEnAttente(QPointer<et_ParamsTest> paramsTest);
+    void miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTest);
 };
 
 #endif // ET_INTERFACEEXECUTIONTEST_H

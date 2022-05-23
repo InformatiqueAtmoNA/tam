@@ -184,8 +184,11 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
 
         return;
     }
-
-    this->m_dlgExecutionTest = new et_InterfaceExecutionTest(m_bdHandler,idTestXML,fichierDescription,false,1,this);
+    QList<ushort> idTestXml;
+    QList<QString> fichierDescriptions;
+    idTestXml.append(idTestXML);
+    fichierDescriptions.append(fichierDescription);
+    this->m_dlgExecutionTest = new et_InterfaceExecutionTest(m_bdHandler,idTestXml,fichierDescriptions,false,1,this);
 
     if(!this->m_homeWidget.isNull()) {
         delete m_homeWidget;

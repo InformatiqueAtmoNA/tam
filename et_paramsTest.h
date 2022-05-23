@@ -38,7 +38,7 @@ public :
     ushort m_id_TestXML;
     ushort m_idSonde;
     QPointer<Test> m_test;
-    QMap<ushort,QString> m_listeNumSerieAnalyseurs; // modifié
+    QMap<ushort,QString> m_listeNumSerieAnalyseurs;
     QMap<ushort,QString> m_listeInterfaceAnalyseurs;
     QString m_interfaceSonde;
     QString m_interfaceCalibrateur;
