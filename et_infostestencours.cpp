@@ -425,12 +425,12 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             delete record;
         }
         if(paramsTest.data()->sondePresente==true){
-            QSqlQuery requete(QString("SELECT M.id_molecule FROM molecule M, polluant_associe P WHERE M.id_molecule=P.id_pa_molecule AND P.id_pa_equipement=%1").arg(paramsTest.data()->m_idSonde));
+            QSqlQuery requete(QString("SELECT id_pa_molecule FROM `Polluant_Associe` WHERE id_pa_equipement=%1").arg(paramsTest.data()->m_idSonde));
             int  idMolecule =0;
               QList<TypePolluant> listePolluants;
               while(requete.next()) {
                   QSqlRecord record = requete.record();
-                  idMolecule = record.value("id_molecule").toUInt();
+                  idMolecule = record.value("id_pa_molecule").toUInt();
                   QSqlRecord *record2 = m_bdHandler->getMoleculeRow(idMolecule);
                   trace.append(record2->value(MOLECULE_FORMULE).toString()+";");
                   delete record2;
@@ -520,7 +520,6 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     QPointer<QSqlTableModel> model = m_bdHandler->getTestMetroModel();
 
     QSqlRecord enregistrement = model->record();
-
     afficherTraceTest("Enregistrement des informations de test",2);
     afficherTraceTest("ID Test_XML "+QString::number(paramsTest->m_id_TestXML),2);
     afficherTraceTest("Type de Test "+typeTestToString( paramsTest->m_test->getTypeTest()),2);
@@ -558,7 +557,7 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_PRESENCE_SONDE,QVariant::fromValue(presenceSonde));
     model->insertRecord(-1,enregistrement);
 
-    model->submitAll();
+    bool succes = model->submitAll();
 
     paramsTest->m_id_TestMetro = model->rowCount();
     //enregistrement = model->record(model->rowCount());

@@ -99,6 +99,7 @@ public:
     QPointer<QStandardItemModel> getItemModelListeRapport();
 
     bool miseAjourDateHeureFinTest(const ushort idTestMetro);
+    bool miseAjourTemperaturesFinTest(float tempMin,float tempMax, float tempMoyenne, int idTest);
     bool insertIntoMesure(const MesureInfo mesuresInfos);
     void setSpanHandlerFromIdConcentration(ushort idConcentration, QString canal, SpanHandler* spanHandler);
 

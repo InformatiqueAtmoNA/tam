@@ -230,6 +230,25 @@ void ExecutionTest::getInfosEquipements()
 
 }
 
+void ExecutionTest::getMesuresTemp()
+{
+    this->m_paramsTest.data()->m_test->setTempMin(m_tabMesuresSonde[0]);
+    this->m_paramsTest.data()->m_test->setTempMax(m_tabMesuresSonde[0]);
+    float moyenne=0;
+    for(int i=0 ; i<this->m_tabMesuresSonde.count() ; i++){
+        if(m_tabMesuresSonde[i]<this->m_paramsTest.data()->m_test->getTempMin()){
+            this->m_paramsTest.data()->m_test->setTempMin(m_tabMesuresSonde[i]);
+        }
+        if(m_tabMesuresSonde[i]>this->m_paramsTest.data()->m_test->getTempMax()){
+            this->m_paramsTest.data()->m_test->setTempMax(m_tabMesuresSonde[i]);
+        }
+        moyenne+=m_tabMesuresSonde[i];
+    }
+    moyenne = moyenne/this->m_tabMesuresSonde.count();
+    this->m_paramsTest.data()->m_test->setTempMoyenne(moyenne);
+
+}
+
 void ExecutionTest::constructionMachineEtat()
 {
 
@@ -594,54 +613,17 @@ void ExecutionTest::initialiserPhase()
 {
     Phase phase = m_paramsTest.data()->m_test->getPhase(m_noPhaseSuivante);
     Commandes cmdDebutPhase = phase.getCmdDebutPhase();
-    ushort idMolecule = phase.getIdMolecule();
-    QSqlRecord* moleculeRow = m_bdHandler->getMoleculeRow(idMolecule);
+    //ushort idMolecule = phase.getIdMolecule();
+    ushort idMolecule;
+    QSqlRecord* moleculeRow = new QSqlRecord;
+    QSqlQuery requete(QString("SELECT id_pa_molecule FROM `Polluant_Associe` WHERE id_pa_equipement=%1").arg(m_idAnaliseur));
 
-    QSqlQuery requete(QString("SELECT id_pa_molecule FROM polluant_associe WHERE id_pa_equipement=%1").arg(m_idAnaliseur));
-
-    idMolecule =0;
-    ushort codePolluant = 0;
     QList<TypePolluant> listePolluants;
     while(requete.next()) {
         QSqlRecord record = requete.record();
         idMolecule = record.value("id_pa_molecule").toUInt();
-
-        QSqlQuery requete2(QString("SELECT code FROM molecule WHERE id_molecule=%1").arg(idMolecule));
-        if(requete2.next()){
-            QSqlRecord record2 = requete2.record();
-            codePolluant = record2.value("code").toUInt();
-        }
-
-        TypePolluant polluant;
-        switch(codePolluant){
-        case 1 :
-            polluant = SO2;
-            break;
-        case 2 :
-            polluant = NO;
-            break;
-        case 3 :
-            polluant = NO2;
-            break;
-        case 4 :
-            polluant = CO;
-            break;
-
-        case 05 :
-            polluant = H2S;
-            break;
-
-        case 8 :
-            polluant = O3;
-            break;
-
-        case 12 :
-            polluant = NOX;
-            break;
-
-        }
-
-        listePolluants.append(polluant);
+        moleculeRow = m_bdHandler->getMoleculeRow(idMolecule);
+        listePolluants.append(stringToTypePolluant(moleculeRow->value(MOLECULE_FORMULE).toString()));
     }
     m_cycleMesureEnCours = 0;
 
@@ -660,27 +642,22 @@ void ExecutionTest::initialiserPhase()
     }
 
     m_protocoleCalibrateur->setTypePolluant(listePolluants);
+
     QList<TypePolluant> listePolluantsSonde;
     if(this->m_paramsTest.data()->sondePresente == true){
-        QSqlQuery requete(QString("SELECT M.id_molecule FROM molecule M, polluant_associe P WHERE M.id_molecule=P.id_pa_molecule AND P.id_pa_equipement=%1").arg(m_paramsTest.data()->m_idSonde));
-          idMolecule =0;
-          QList<TypePolluant> listePolluants;
-          while(requete.next()) {
-              QSqlRecord record = requete.record();
-              idMolecule = record.value("id_molecule").toUInt();
-              moleculeRow = m_bdHandler->getMoleculeRow(idMolecule);
-              listePolluantsSonde.append(stringToTypePolluant(moleculeRow->value(MOLECULE_FORMULE).toString()));
-          }
-
+        QSqlQuery requete(QString("SELECT id_pa_molecule FROM `Polluant_Associe` WHERE id_pa_equipement=%1").arg(m_paramsTest.data()->m_idSonde));
+        while(requete.next()) {
+            QSqlRecord record = requete.record();
+            idMolecule = record.value("id_pa_molecule").toUInt();
+            moleculeRow = m_bdHandler->getMoleculeRow(idMolecule);
+            listePolluantsSonde.append(stringToTypePolluant(moleculeRow->value(MOLECULE_FORMULE).toString()));
+        }
         m_SondeProtocole->setTypePolluant(listePolluantsSonde);
     }
 
     delete moleculeRow;
-
     m_flagPhaseInitialisee = true;
-
     emit(traceTest("Debut du la phase n° "+QString::number(m_noPhaseSuivante),0));
-
     emit(this->initialisationPhaseTerminee());
 }
 
@@ -780,28 +757,18 @@ void ExecutionTest::testTermine()
     emit(traceTest("test termine",0));
 
     m_bdHandler->miseAjourDateHeureFinTest(m_paramsTest.data()->m_id_TestMetro);
-    if(this->m_paramsTest.data()->sondePresente == true){
-        this->m_paramsTest.data()->m_test->setTempMin(m_tabMesuresSonde[0]);
-        this->m_paramsTest.data()->m_test->setTempMax(m_tabMesuresSonde[0]);
-        float moyenne=0;
-        for(int i=0 ; i<this->m_tabMesuresSonde.count() ; i++){
-            if(m_tabMesuresSonde[i]<this->m_paramsTest.data()->m_test->getTempMin()){
-                this->m_paramsTest.data()->m_test->setTempMin(m_tabMesuresSonde[i]);
-            }
-            if(m_tabMesuresSonde[i]>this->m_paramsTest.data()->m_test->getTempMax()){
-                this->m_paramsTest.data()->m_test->setTempMax(m_tabMesuresSonde[i]);
-            }
-            moyenne+=m_tabMesuresSonde[i];
-        }
-        moyenne = moyenne/this->m_tabMesuresSonde.count();
-        this->m_paramsTest.data()->m_test->setTempMoyenne(moyenne);
-        QString strRequete = QString("UPDATE `Test_Metrologique` SET `temperature_min` = %1").arg(m_paramsTest.data()->m_test->getTempMin());
-        strRequete.append(QString(" ,`temperature_max` = %1").arg(m_paramsTest.data()->m_test->getTempMax()));
-        strRequete.append(QString(" ,`temperature_moyenne` = %1 ").arg(m_paramsTest.data()->m_test->getTempMoyenne()));
-        strRequete.append(QString(" WHERE `id_test` = %1 ").arg(m_paramsTest.data()->m_id_TestMetro));
-        QSqlQuery requete;
-        bool succes = requete.exec(strRequete);
 
+
+    if(this->m_paramsTest.data()->sondePresente == true){
+        this->getMesuresTemp();
+
+        float tempMin = this->m_paramsTest.data()->m_test->getTempMin();
+        float tempMax = this->m_paramsTest.data()->m_test->getTempMax();
+        float tempMoyenne = this->m_paramsTest.data()->m_test->getTempMoyenne();
+        int idTestMetro = this->m_paramsTest.data()->m_id_TestMetro;
+
+
+        this->m_bdHandler->miseAjourTemperaturesFinTest(tempMin,tempMax,tempMoyenne,idTestMetro);
         if(!m_SondeProtocole.isNull()){
             m_SondeProtocole->quitter();
         }
@@ -814,23 +781,28 @@ void ExecutionTest::testTermine()
     m_timerTempsAttenteFinAcquisition = new QTimer;
 
     QMapIterator<ushort,QPointer<Protocole> > it_anaDesignProto(m_analyseursProtocole);
+
     while (it_anaDesignProto.hasNext()) {
         it_anaDesignProto.next();
         if(!it_anaDesignProto.value().isNull()) {
             it_anaDesignProto.value()->passageMesure();
             it_anaDesignProto.value()->quitter();
+
             ThreadComHandler* fermetureCom = it_anaDesignProto.value()->getThreadComHandler().data();
             fermetureCom->stop();
         }
     }
+
+
     if(!m_protocoleCalibrateur.isNull()) {
         m_protocoleCalibrateur->quitter();
+        ThreadComHandler* fermetureCom = this->m_protocoleCalibrateur->getThreadComHandler().data();
+        fermetureCom->stop();
     }
 
 
 
-    ThreadComHandler* fermetureCom = this->m_protocoleCalibrateur->getThreadComHandler().data();
-    fermetureCom->stop();
+
 
 
     m_timerTempsAttenteFinAcquisition->setInterval(1000);

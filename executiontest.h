@@ -111,7 +111,7 @@ private :
     // \brief Récupère les infos sur les équipements dans la base de données
     ///////////////////////////////////////////////////////////////////////////*/
     void getInfosEquipements();
-
+    void getMesuresTemp();
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void constructionMachineEtat()
     // \brief Initialise la machine à état servant à l'exécution des tests

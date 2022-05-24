@@ -43,7 +43,7 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
     ui(new Ui::et_InterfaceExecutionTest)
 {
     ui->setupUi(this);
-
+    m_idSonde =0;
     m_bdHandler = bdHandler;
     m_etape = 1;
     m_idOperateur = idOperateur;

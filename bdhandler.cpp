@@ -771,6 +771,21 @@ bool BdHandler::miseAjourDateHeureFinTest(const ushort idTestMetro)
     return succes;
 }
 
+bool BdHandler::miseAjourTemperaturesFinTest(float tempMin, float tempMax, float tempMoyenne, int idTest)
+{
+    QString strRequete = QString("UPDATE `Test_Metrologique` SET `temperature_min` = %1").arg(tempMin);
+    strRequete.append(QString(" ,`temperature_max` = %1").arg(tempMax));
+    strRequete.append(QString(" ,`temperature_moyenne` = %1 ").arg(tempMoyenne));
+    strRequete.append(QString(" WHERE `id_test` = %1 ").arg(idTest));
+    QSqlQuery requete;
+    bool succes = requete.exec(strRequete);
+    if(!succes) {
+        emit(afficherTrace("Problème lors de la mise à jour du champs date_fin de la table Test_Metrologique"),2);
+        emit(afficherTrace("id_testMetro ="+QString::number(idTest)),2);
+    }
+    return succes;
+}
+
 
 QPointer<QStandardItemModel> BdHandler::getItemModelListeRapport(){
 

@@ -90,7 +90,9 @@ void Dlg_testXml::buttonFermerClicked()
 }
 
 void Dlg_testXml::buttonConfirmerClicked(){
-    this->accept();
+    if(!indexTestsSelectionne.isEmpty()){
+        this->accept();
+    }
 }
 
 void Dlg_testXml::buttonSelectionnerClicked()
