@@ -161,6 +161,7 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
     this->ui->lineEdit_TypeTest->setText(typeTestToString(m_test[0]->getTypeTest()));
 
     if(!m_miseEnAttente) {
+        ui->button_MettreEnAttente->hide();
         m_infosTestEnCours = new et_InfosTestEnCours(m_bdHandler,this);
         this->ui->h_Layout_InfosTest->addWidget(m_infosTestEnCours.data());
     }
@@ -556,7 +557,6 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
         }
     }
     QTableWidgetItem* itemCom_interface = new QTableWidgetItem(interface);
-    itemCom_interface->setForeground(QColor(255,0,0));
     this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_INTERFACE,itemCom_interface);
     analyseur->quitter();
     analyseur->deleteLater();
@@ -634,7 +634,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     calibrateur->deleteLater();
     QCoreApplication::processEvents();
     //m_etatComCalibrateur = true;
-    //this->ui->button_TestAnalyseur->setEnabled(true);
+    this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
     this->ui->button_TestSonde->setEnabled(true);
 }
@@ -696,7 +696,7 @@ void et_InterfaceExecutionTest::buttonTestSondeClicked()
     sonde->deleteLater();
     QCoreApplication::processEvents();
     //m_etatComCalibrateur = true;
-    //this->ui->button_TestAnalyseur->setEnabled(true);
+    this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
     this->ui->button_TestSonde->setEnabled(true);
 }
@@ -798,7 +798,7 @@ void et_InterfaceExecutionTest::ouverturePortComAnalyseur(bool ouverturePort)
     }
     else {
         QTableWidgetItem* itemCom_etat = new QTableWidgetItem("Communication Ok");
-        itemCom_etat->setForeground(QColor(255,0,0)); // modifie
+        itemCom_etat->setForeground(QColor(0,255,0)); // modifie
         this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
     }
 }

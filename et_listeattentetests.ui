@@ -44,13 +44,6 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="button_Annuler">
-           <property name="text">
-            <string>&amp;Annuler</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="button_ExecuterTests">
            <property name="text">
             <string>&amp;Exécuter les tests</string>
@@ -143,7 +136,7 @@
              <item>
               <widget class="QPushButton" name="button_AjouterTest">
                <property name="text">
-                <string>Ajouter un test</string>
+                <string>Ajouter des tests</string>
                </property>
               </widget>
              </item>

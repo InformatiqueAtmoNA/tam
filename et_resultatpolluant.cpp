@@ -61,14 +61,14 @@ et_Resultatpolluant::et_Resultatpolluant(QList<QString> listNomColTpsRep,QVector
     this->ui->lineEditDroiteReg->hide();
 
     this->ui->label_Valeur1->setText("Max Tps de Reponse =");
-    this->ui->lineEdit_Valeur1->setText(QString::number(tabValeurPourCritere.value(0),'f',2));
+    this->ui->lineEdit_Valeur1->setText(QString::number(qAbs(tabValeurPourCritere.value(0)),'f',2));
     this->ui->label_Critere1->setText("Critère (s) <");
     this->ui->lineEdit_Critere1->setText(QString::number(tabCritere.value(0),'f',2));
 
     verifierCriteres("<",this->ui->lineEdit_Critere1,this->ui->lineEdit_Valeur1);
 
     this->ui->label_Valeur2->setText("Difference Tps Reponse (s) =");
-    this->ui->lineEdit_Valeur2->setText(QString::number(tabValeurPourCritere.value(1),'f',2));
+    this->ui->lineEdit_Valeur2->setText(QString::number(qAbs(tabValeurPourCritere.value(1)),'f',2));
     this->ui->label_Critere2->setText("Critère Max (s) <");
     this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
 
@@ -99,14 +99,14 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     this->ui->lineEditDroiteReg->hide();
 
     this->ui->label_Valeur1->setText("Ecart-Type Z (ppb) =");
-    this->ui->lineEdit_Valeur1->setText(QString::number(tabEcartType.value(0),'f',2));
+    this->ui->lineEdit_Valeur1->setText(QString::number(qAbs(tabEcartType.value(0)),'f',2));
     this->ui->label_Critere1->setText("Critère Z (ppb) <");
     this->ui->lineEdit_Critere1->setText(QString::number(tabCritere.value(0),'f',2));
 
     verifierCriteres("<",this->ui->lineEdit_Critere1,this->ui->lineEdit_Valeur1);
 
     this->ui->label_Valeur2->setText("Ecart-Type C (%) =");
-    this->ui->lineEdit_Valeur2->setText(QString::number((tabEcartType.value(1)/tabConcentration.value(1)*100),'f',2));
+    this->ui->lineEdit_Valeur2->setText(QString::number((qAbs(tabEcartType.value(1)/tabConcentration.value(1)*100)),'f',2));
     this->ui->label_Critere2->setText("Critère C (%) <");
     this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
 
@@ -139,21 +139,21 @@ et_Resultatpolluant::et_Resultatpolluant(QVector<float>tabConcentration,QVector<
     this->ui->tableWidget->resizeRowsToContents();
 
     this->ui->label_Valeur1->setText("Residu Zero (ppb) =");
-    this->ui->lineEdit_Valeur1->setText(QString::number(tabValeurPourCritere.value(0),'f',2));
+    this->ui->lineEdit_Valeur1->setText(QString::number(qAbs(tabValeurPourCritere.value(0)),'f',2));
     this->ui->label_Critere1->setText("Critère Zero (ppb) <");
     this->ui->lineEdit_Critere1->setText(QString::number(tabCritere.value(0),'f',2));
 
     verifierCriteres("<",this->ui->lineEdit_Critere1,this->ui->lineEdit_Valeur1);
 
     this->ui->label_Valeur2->setText("Residu Max (%) =");
-    this->ui->lineEdit_Valeur2->setText(QString::number(tabValeurPourCritere.value(1),'f',2));
+    this->ui->lineEdit_Valeur2->setText(QString::number(qAbs(tabValeurPourCritere.value(1)),'f',2));
     this->ui->label_Critere2->setText("Critère Max (%) <");
     this->ui->lineEdit_Critere2->setText(QString::number(tabCritere.value(1),'f',2));
 
     verifierCriteres("<",this->ui->lineEdit_Critere2,this->ui->lineEdit_Valeur2);
 
     this->ui->label_Valeur3->setText("Ecart relatif Max (%) =");
-    this->ui->lineEdit_Valeur3->setText(QString::number(tabValeurPourCritere.value(4),'f',2));
+    this->ui->lineEdit_Valeur3->setText(QString::number(qAbs(tabValeurPourCritere.value(4)),'f',2));
     this->ui->label_Critere3->setText("Critère Max (%) <");
     this->ui->lineEdit_Critere3->setText(QString::number(tabCritere.value(2),'f',2));
 
@@ -167,7 +167,7 @@ void et_Resultatpolluant::verifierCriteres(QString typeCritere,QLineEdit* criter
 
     if(typeCritere == "<")
     {
-        if(qAbs(valeur->text().toFloat()) < critere->text().toFloat())
+        if(valeur->text().toFloat() < critere->text().toFloat())
         {
             valeur->setStyleSheet("color: green;");
         }
@@ -178,7 +178,7 @@ void et_Resultatpolluant::verifierCriteres(QString typeCritere,QLineEdit* criter
     }
     else if(typeCritere == ">")
     {
-        if(qAbs(valeur->text().toFloat()) > critere->text().toFloat())
+        if(valeur->text().toFloat() > critere->text().toFloat())
         {
             valeur->setStyleSheet("color: green;");
         }

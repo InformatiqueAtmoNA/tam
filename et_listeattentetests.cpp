@@ -43,7 +43,6 @@ et_listeAttenteTests::et_listeAttenteTests(QPointer<BdHandler> bdHandler, QWidge
     ui->tableWidget_TestsEnAttente->setColumnHidden(ET_TABLEW_TEST_ATTENTE_ID_TEST,true);
 
     connect(ui->button_AjouterTest,SIGNAL(clicked()),this,SLOT(buttonAjouterTestClicked()));
-    connect(ui->button_Annuler,SIGNAL(clicked()),this,SLOT(buttonAnnulerClicked()));
     connect(ui->button_Quitter,SIGNAL(clicked()),this,SLOT(buttonAnnulerClicked()));
     connect(ui->button_SupprimerTest,SIGNAL(clicked()),this,SLOT(buttonSupprimerTestClicked()));
     connect(ui->button_ExecuterTests,SIGNAL(clicked()),this,SLOT(buttonExecuterClicked()));
