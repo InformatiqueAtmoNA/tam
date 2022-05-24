@@ -105,9 +105,9 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
-void MainWindow::afficherHomeWidget()
+void MainWindow::afficherHomeWidget(int index)
 {
-    m_homeWidget = new HomeWidget(m_bdHandler,this);
+    m_homeWidget = new HomeWidget(m_bdHandler,this,&index);
     this->setCentralWidget(m_homeWidget);
 
     if(!this->m_dlgCreationtest.isNull()) {
@@ -156,7 +156,7 @@ void MainWindow::afficherCreationTest(const QString fichierDescription)
 
     this->setCentralWidget(m_dlgCreationtest);
 
-    connect(this->m_dlgCreationtest,SIGNAL(fermeture()),this,SLOT(fermetureTestWidget()));
+    connect(this->m_dlgCreationtest,SIGNAL(fermeture(int)),this,SLOT(fermetureTestWidget(int)));
 
     m_dlgCreationtest->show();
 }
@@ -197,7 +197,7 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
     this->setCentralWidget(m_dlgExecutionTest);
     m_dlgExecutionTest->show();
 
-    connect(this->m_dlgExecutionTest,SIGNAL(fermeture()),this,SLOT(fermetureTestWidget()));
+    connect(this->m_dlgExecutionTest,SIGNAL(fermeture(int)),this,SLOT(fermetureTestWidget(int)));
 }
 
 void MainWindow::afficherRapport(const ushort idTest,const ushort idAnalyseur, const ushort typeTest)
@@ -212,13 +212,13 @@ void MainWindow::afficherRapport(const ushort idTest,const ushort idAnalyseur, c
     this->setCentralWidget(m_dlgGenerateurRapportTest);
     m_dlgGenerateurRapportTest->show();
 
-    connect(this->m_dlgGenerateurRapportTest,SIGNAL(fermeture()),this,SLOT(fermetureTestWidget()));
+    connect(this->m_dlgGenerateurRapportTest,SIGNAL(fermeture(int)),this,SLOT(fermetureTestWidget(int)));
 
 }
 
-void MainWindow::fermetureTestWidget()
+void MainWindow::fermetureTestWidget(int index)
 {
-    this->afficherHomeWidget();
+    this->afficherHomeWidget(index);
 }
 
 void MainWindow::afficherDlgEquipement()
@@ -278,5 +278,5 @@ void MainWindow::programmerSerieTests()
     this->setCentralWidget(m_dlgListeAttenteTest);
     m_dlgListeAttenteTest->show();
 
-    connect(this->m_dlgListeAttenteTest,SIGNAL(fermeture()),this,SLOT(fermetureTestWidget()));
+    connect(this->m_dlgListeAttenteTest,SIGNAL(fermeture(int)),this,SLOT(fermetureTestWidget(int)));
 }

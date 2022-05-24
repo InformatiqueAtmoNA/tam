@@ -131,6 +131,6 @@ private Q_SLOTS:
     void buttonFermerClicked();
 
 Q_SIGNALS:
-    void fermeture();
+    void fermeture(int index);
 };
 #endif // ET_GENERATEURRAPPORTTEST_H

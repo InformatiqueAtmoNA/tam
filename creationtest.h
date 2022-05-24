@@ -101,7 +101,7 @@ public Q_SLOTS:
     void editionPhaseValidee(const Phase & phase);
 
 Q_SIGNALS:
-    void fermeture();
+    void fermeture(int index);
 };
 
 #endif // CREATIONTEST_H

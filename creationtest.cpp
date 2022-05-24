@@ -356,7 +356,7 @@ void CreationTest::button_AnnulerClicked()
     msgBox.setDefaultButton(QMessageBox::Ok);
 
     if(msgBox.exec()==QMessageBox::Ok)
-        emit(this->fermeture());
+        emit(this->fermeture(0));
 }
 
 void CreationTest::button_SuivantClicked()
@@ -474,7 +474,7 @@ void CreationTest::button_SauvegarderClicked ()
             ancienFichierXML.remove();
         }
     }
-    emit(this->fermeture());
+    emit(this->fermeture(0));
 }
 
 void CreationTest::tabWidgetIndexChanged(const int index)

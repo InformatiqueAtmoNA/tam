@@ -41,7 +41,7 @@ class HomeWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent = 0);
+    explicit HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent = 0,int *index=0);
     ~HomeWidget();
 
 

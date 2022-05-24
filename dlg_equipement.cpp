@@ -208,7 +208,8 @@ void Dlg_Equipement::initialiserChamps() {
 
     if(!this->m_returnSelection || this->m_model->rowCount()==0)
         this->ui->button_Selectionner->setVisible(false);
-
+    this->ui->addrIP->setText("0.0.0.0");
+    this->ui->numPort->setText("0");
     this->ui->lineEdit_NoSerie->clear();
     this->ui->lineEdit_MaxGamme->clear();
     this->ui->lineEdit_MinGamme->clear();
@@ -288,7 +289,7 @@ void Dlg_Equipement::buttonValiderClicked()
     m_model->setData(m_model->index(row,EQUIPEMENT_ADRESSE_IP),QVariant::fromValue(this->ui->addrIP->text()));
     m_model->setData(m_model->index(row,EQUIPMENT_PORT_IP),QVariant::fromValue(this->ui->numPort->text()));
     m_model->setData(m_model->index(row,EQUIPEMENT_TYPE_CONNEXION),QVariant::fromValue(this->m_type_connexion));
-    m_model->setData(m_model->index(row,EQUIPEMENT_TYPE_SOCKET),QVariant::fromValue(this->ui->typeSocket->text()));
+    m_model->setData(m_model->index(row,EQUIPEMENT_TYPE_SOCKET),QVariant::fromValue(this->ui->typeSocket->currentText()));
 
     m_model->submitAll();
 
@@ -441,7 +442,7 @@ void Dlg_Equipement::buttonModifierClicked()
     this->ui->lineEdit_Adresse->setText(selection.value(EQUIPEMENT_ADRESSE).toString());
     this->ui->addrIP->setText(selection.value(EQUIPEMENT_ADRESSE_IP).toString());
     this->ui->numPort->setText(selection.value(EQUIPMENT_PORT_IP).toString());
-    this->ui->typeSocket->setText(selection.value(EQUIPEMENT_TYPE_SOCKET).toString());
+    this->ui->typeSocket->setCurrentText(selection.value(EQUIPEMENT_TYPE_SOCKET).toString());
 
     if(selection.value(EQUIPEMENT_TYPE_CONNEXION).toString()=="RS232"){
         this->ui->checkBoxIP->setCheckState(Qt::Unchecked);

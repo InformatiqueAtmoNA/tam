@@ -129,7 +129,7 @@ private Q_SLOTS:
     void button_choixMultipleEnregistrementCSV(int idButon);
 
 Q_SIGNALS:
-    void fermeture();
+    void fermeture(int index=0);
     void miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTest);
 };
 

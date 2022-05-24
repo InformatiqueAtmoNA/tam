@@ -70,7 +70,7 @@ private Q_SLOTS:
     void killExecutionTestEtThread(const short id);
     void miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTest);
 Q_SIGNALS:
-    void fermeture();
+    void fermeture(int index);
     void lancementTest(ushort idxTest);
 };
 

@@ -37,6 +37,7 @@ private Q_SLOTS:
     void buttonSelectionnerClicked();
     void buttonConfirmerClicked();
     void buttonSupprimerClicked();
+    void filter(int checkState);
 };
 
 #endif // DLG_TESTXML_H

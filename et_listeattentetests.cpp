@@ -140,7 +140,7 @@ void et_listeAttenteTests::buttonAnnulerClicked()
     msgBox.setDefaultButton(QMessageBox::Ok);
 
     if(msgBox.exec()==QMessageBox::Ok)
-        emit(this->fermeture());
+        emit(this->fermeture(0));
 }
 
 void et_listeAttenteTests::miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTest)
@@ -223,7 +223,7 @@ void et_listeAttenteTests::killExecutionTestEtThread(const short id)
 
     this->ui->tabWidget->setCurrentIndex(0); //astuce trouvee pour que les ports series se ferment bien entre deux tests
 
-    this->ui->tableWidget_TestsEnAttente->item(this->m_indexTestEnCours, ET_TABLEW_TEST_ATTENTE_ETAT)->setText("Finis");
+    this->ui->tableWidget_TestsEnAttente->item(this->m_indexTestEnCours, ET_TABLEW_TEST_ATTENTE_ETAT)->setText("Terminé");
 
     QPointer<ExecutionTest> testEnCours = m_listeTestsEnExecution.value(id);
     if(!testEnCours.isNull())

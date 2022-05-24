@@ -27,7 +27,7 @@
 #include "ui_homewidget.h"
 
 
-HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
+HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent, int* index) :
     QWidget(parent),
     ui(new Ui::HomeWidget)
 {
@@ -59,7 +59,7 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
     this->ui->button_Supprimer->setEnabled(false);
     this->ui->button_Afficher->setEnabled(false);
     this->ui->button_supprimer_test_resultat->setEnabled(false);
-    this->ui->tabWidget_TestRapport->setCurrentIndex(0);
+    this->ui->tabWidget_TestRapport->setCurrentIndex(*index);
     this->ui->listView_Rapports->hide();
     this->ui->label_3->hide();
 
@@ -115,7 +115,7 @@ void HomeWidget::getListeRapports()
             m_modelRapport->setParent(this);
             this->ui->tableView_TestRapport->setModel(m_modelRapport);
             this->ui->tableView_TestRapport->resizeColumnsToContents();
-            this->ui->tableView_TestRapport->setColumnHidden(HOMEW_TABVIEW_TEST_ID_TEST,true);
+            //this->ui->tableView_TestRapport->setColumnHidden(HOMEW_TABVIEW_TEST_ID_TEST,true);
             this->ui->tableView_TestRapport->setColumnHidden(HOMEW_TABVIEW_TEST_ID_EQUIP,true);
 
 

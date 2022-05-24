@@ -136,7 +136,7 @@ void et_GenerateurRapportTest::buttonFermerClicked()
     msgBox.setDefaultButton(QMessageBox::Ok);
 
     if(msgBox.exec()==QMessageBox::Ok)
-        emit(this->fermeture());
+        emit(this->fermeture(1));
 }
 
 //Mise en forme du tableau de mesure separe par phase identique par polluant
