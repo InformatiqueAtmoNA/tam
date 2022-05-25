@@ -53,9 +53,9 @@ class Test : public QObject
     double m_critere1; // critere de performance utilisé pour la génération des rapports
     double m_critere2; // critere de performance utilisé pour la génération des rapports
     double m_critere3; // critere de performance utilisé pour la génération des rapports
-    float m_temp_min;
-    float m_temp_max;
-    float m_temp_moyenne;
+    float m_temp_min=0;
+    float m_temp_max=0;
+    float m_temp_moyenne=0;
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
