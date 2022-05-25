@@ -560,12 +560,17 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_ID_SONDE,QVariant::fromValue(paramsTest->m_idSonde));
 
     enregistrement.setValue(TEST_METRO_PRESENCE_SONDE,QVariant::fromValue(presenceSonde));
+
+    logTrames.write("-------- valeurs de l'enregistrement -----------");
+    for(int i=0 ; i<enregistrement.count() ; i++){
+        logTrames.write(QString(enregistrement.value(i).toString()).toLatin1()+ "\n") ;
+    }
+    logTrames.write("---------valeurs de la classe paramtest ------------ \n");
+
     model->insertRecord(-1,enregistrement);
 
     bool succes = model->submitAll();
     paramsTest->m_id_TestMetro = model->rowCount();
-
-    qDebug() << "nombre lignes : " << model->rowCount() <<"\n";
 
     QString date = m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss");
 
@@ -630,8 +635,9 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     qDebug() << "succes de l'enregistrement : " << succes <<"\n";
     if(!succes){
         qDebug() <<model->lastError();
+        logTrames.write(model->lastError().text().toLatin1());
     }
-
+    logTrames.write("------------------------------------------- \n");
 
     model = m_bdHandler->getTestMetroModel();
 
