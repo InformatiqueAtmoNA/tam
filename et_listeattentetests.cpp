@@ -47,7 +47,6 @@ et_listeAttenteTests::et_listeAttenteTests(QPointer<BdHandler> bdHandler, QWidge
     connect(ui->button_SupprimerTest,SIGNAL(clicked()),this,SLOT(buttonSupprimerTestClicked()));
     connect(ui->button_ExecuterTests,SIGNAL(clicked()),this,SLOT(buttonExecuterClicked()));
     connect(this,SIGNAL(lancementTest(ushort)),this,SLOT(lancerTest(ushort)));
-
     ui->stackedWidget->setCurrentIndex(1);
 }
 
@@ -173,6 +172,11 @@ void et_listeAttenteTests::miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTe
     this->ui->stackedWidget->setCurrentIndex(1);
 }
 
+void et_listeAttenteTests::changerEtatTest(int idTestMetro)
+{
+     this->ui->tableWidget_TestsEnAttente->item(m_indexTestEnCours[idTestMetro], ET_TABLEW_TEST_ATTENTE_ETAT)->setText("Terminé");
+}
+
 
 
 void et_listeAttenteTests::lancerTest(ushort idxTest)
@@ -183,14 +187,15 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
 
     m_listeInfosTestsEnCours.insert(idxTest,infosTestEnCours);
 
-    this->m_idTestmetroEnCours = m_listeParamsTestsEnAttente.value(idxTest)->m_id_TestMetro;
-    this->m_indexTestEnCours = idxTest;
     ui->tabWidget->addTab(infosTestEnCours,m_listeParamsTestsEnAttente.value(idxTest)->m_nomTest);
     int nbtab = ui->tabWidget->count();
     ui->tabWidget->setCurrentIndex(nbtab-1);
 
     QPointer<et_ParamsTest> paramsTest = m_listeParamsTestsEnAttente.value(idxTest);
+
     infosTestEnCours->enregistrerParamsTest(paramsTest);
+
+    m_indexTestEnCours.insert(paramsTest->m_id_TestMetro, idxTest);
 
     QPointer<ExecutionTest> testAExecuter = new ExecutionTest(m_listeParamsTestsEnAttente.value(idxTest),m_bdHandler,idxTest);
 
@@ -199,22 +204,17 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
     m_listeParamsTestsEnCours.insert(idxTest,m_listeParamsTestsEnAttente.value(idxTest));
     m_listeParamsTestsEnAttente.remove(idxTest);
 
-//    QPointer<QThreadEx> threadExecution = new QThreadEx();
-
-//    m_listeThreadsExecution.insert(idxTest,threadExecution);
     m_listeTestsEnExecution.insert(idxTest,testAExecuter);
 
-//    testAExecuter->moveToThread(threadExecution);
-
-//    connect(threadExecution,SIGNAL(started()),testAExecuter,SLOT(run()));
-//    connect(testAExecuter,SIGNAL(exitTest()),threadExecution,SLOT(quit()));
     connect(testAExecuter,SIGNAL(killMeAndMyThread(short)),this,SLOT(killExecutionTestEtThread(short)));
-
+    connect(testAExecuter,SIGNAL(modifierEtatTestListe(int)),this,SLOT(changerEtatTest(int)));
     this->ui->button_ExecuterTests->setDisabled(true);
+
     while(QDateTime::currentDateTime() < paramsTest->m_dateHeureDebutPrevu){}
-    this->ui->tableWidget_TestsEnAttente->item(this->m_indexTestEnCours,ET_TABLEW_TEST_ATTENTE_ETAT)->setText("En cours");
+
+    this->ui->tableWidget_TestsEnAttente->item(m_indexTestEnCours[paramsTest->m_id_TestMetro],ET_TABLEW_TEST_ATTENTE_ETAT)->setText("En cours");
+
     testAExecuter->run();
-//    threadExecution->start();
 }
 
 void et_listeAttenteTests::killExecutionTestEtThread(const short id)
@@ -222,7 +222,7 @@ void et_listeAttenteTests::killExecutionTestEtThread(const short id)
 
     this->ui->tabWidget->setCurrentIndex(0); //astuce trouvee pour que les ports series se ferment bien entre deux tests
 
-    this->ui->tableWidget_TestsEnAttente->item(this->m_indexTestEnCours, ET_TABLEW_TEST_ATTENTE_ETAT)->setText("Terminé");
+
 
     QPointer<ExecutionTest> testEnCours = m_listeTestsEnExecution.value(id);
     if(!testEnCours.isNull())

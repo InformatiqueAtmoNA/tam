@@ -758,7 +758,6 @@ void ExecutionTest::testTermine()
 
     m_bdHandler->miseAjourDateHeureFinTest(m_paramsTest.data()->m_id_TestMetro);
 
-
     if(this->m_paramsTest.data()->sondePresente == true){
         this->getMesuresTemp();
 
@@ -776,8 +775,6 @@ void ExecutionTest::testTermine()
         fermetureCom2->stop();
     }
 
-
-
     m_timerTempsAttenteFinAcquisition = new QTimer;
 
     QMapIterator<ushort,QPointer<Protocole> > it_anaDesignProto(m_analyseursProtocole);
@@ -790,29 +787,22 @@ void ExecutionTest::testTermine()
 
             ThreadComHandler* fermetureCom = it_anaDesignProto.value()->getThreadComHandler().data();
             fermetureCom->stop();
-        }
+        }  
     }
-
-
     if(!m_protocoleCalibrateur.isNull()) {
         m_protocoleCalibrateur->quitter();
         ThreadComHandler* fermetureCom = this->m_protocoleCalibrateur->getThreadComHandler().data();
         fermetureCom->stop();
     }
 
-
-
-
-
-
     m_timerTempsAttenteFinAcquisition->setInterval(1000);
     m_timerTempsAttenteFinAcquisition->setSingleShot(true);
+
+    emit(modifierEtatTestListe(m_paramsTest->m_id_TestMetro));
 
     connect(m_timerTempsAttenteFinAcquisition,SIGNAL(timeout()),this,SLOT(attenteFinAcquisition()));
 
     m_timerTempsAttenteFinAcquisition->start();
-
-
 }
 
 void ExecutionTest::attenteFinAcquisition()

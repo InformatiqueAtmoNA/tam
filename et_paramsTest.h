@@ -110,6 +110,10 @@ public :
            == bdHandler->getIdCalibrateur(paramTest->m_test->getIdSystemeEtalon()))
             return true;
 
+        if(m_idSonde == paramTest->m_idSonde && sondePresente==true && paramTest->sondePresente==true){
+            return true;
+        }
+
         if(this->m_interfaceCalibrateur == paramTest->m_interfaceCalibrateur)
             return true;
 

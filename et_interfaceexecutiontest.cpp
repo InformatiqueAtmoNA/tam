@@ -721,10 +721,11 @@ void et_InterfaceExecutionTest::lineEditCanalCalibrateurTextChanged(const QStrin
 
 void et_InterfaceExecutionTest::lineEditInterfaceCalibrateurTextChanged(const QString text)
 {
-    if(text.count()>0 && this->ui->lineEdit_CanalCalibrateur->text().count()>0)
-        this->ui->button_TestCalibrateur->setEnabled(true);
-    else
+    if(text.count()<=0 && this->ui->lineEdit_CanalCalibrateur->text().count()<=0)
         this->ui->button_TestCalibrateur->setEnabled(false);
+    else
+        this->ui->button_TestCalibrateur->setEnabled(true);
+
 }
 
 void et_InterfaceExecutionTest::lineEditInterfaceAnalyseurTextChanged(const QString text)

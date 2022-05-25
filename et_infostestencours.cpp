@@ -560,7 +560,6 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
 
 
     model->insertRecord(-1,enregistrement);
-
     bool succes = model->submitAll();
 
     paramsTest->m_id_TestMetro = model->rowCount();

@@ -346,6 +346,8 @@ Q_SIGNALS:
     void traceTest(const QString trace,const ushort niveau);
 
     void killMeAndMyThread(const short id);
+
+    void modifierEtatTestListe(int idTestMetro);
 };
 
 #endif // EXECUTIONTEST_H

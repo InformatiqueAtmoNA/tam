@@ -56,7 +56,7 @@ private:
     QPointer<et_InterfaceExecutionTest> m_interfaceparamsTest;
     ushort m_nbPagesTest;
     int m_idTestmetroEnCours;
-    int m_indexTestEnCours;
+    QMap<int,int> m_indexTestEnCours;
     QPointer<QTimer> m_timer;
 
 private Q_SLOTS:
@@ -69,6 +69,7 @@ private Q_SLOTS:
     void lancerTest(ushort idxTest);
     void killExecutionTestEtThread(const short id);
     void miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTest);
+    void changerEtatTest(int idTestMetro);
 Q_SIGNALS:
     void fermeture(int index);
     void lancementTest(ushort idxTest);
