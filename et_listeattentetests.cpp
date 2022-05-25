@@ -161,9 +161,7 @@ void et_listeAttenteTests::miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTe
         this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_DATE_HEURE_DEBUT,item_DateHeureDebut);
         this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_ETAT,item_Etat);
         this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_INTERFACE_CALIBRATEUR,item_Interface);
-        this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_CANAL_CALIBRATEUR,item_Canal);
-
-
+        this->ui->tableWidget_TestsEnAttente->setItem(idxNewRecord,ET_TABLEW_TEST_ATTENTE_CANAL_CALIBRATEUR,item_Canal);        
         m_listeParamsTestsEnAttente.insert(idxNewRecord,index);
     }
 
@@ -210,7 +208,6 @@ void et_listeAttenteTests::lancerTest(ushort idxTest)
     connect(testAExecuter,SIGNAL(modifierEtatTestListe(int)),this,SLOT(changerEtatTest(int)));
     this->ui->button_ExecuterTests->setDisabled(true);
 
-    while(QDateTime::currentDateTime() < paramsTest->m_dateHeureDebutPrevu){}
 
     this->ui->tableWidget_TestsEnAttente->item(m_indexTestEnCours[paramsTest->m_id_TestMetro],ET_TABLEW_TEST_ATTENTE_ETAT)->setText("En cours");
 

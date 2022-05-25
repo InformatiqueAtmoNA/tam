@@ -431,10 +431,10 @@ bool et_GenerateurRapportTest::genererRapportRendementFour()
     for (int j=0;j<m_tabResultatTPG.count();j++){
 
         this->ui->tableWidget_Rdf->insertRow(j);
-        QTableWidgetItem* item = new QTableWidgetItem(QString::number(m_tabResultatTPG.value(j),'f',2));
+        QTableWidgetItem* item = new QTableWidgetItem(QString::number(qAbs(m_tabResultatTPG.value(j)),'f',2));
 
         if(j < 2){
-            if(m_tabResultatTPG.value(j)>m_tabCritere.value(0))
+            if(qAbs(m_tabResultatTPG.value(j))>m_tabCritere.value(0))
             {
                 item->setForeground(QBrush(QColor("green")));
             }
@@ -445,7 +445,7 @@ bool et_GenerateurRapportTest::genererRapportRendementFour()
         }
         else if(j>2 and j<5)
         {
-            if(m_tabResultatTPG.value(j)<m_tabCritere.value(1))
+            if(qAbs(m_tabResultatTPG.value(j))<m_tabCritere.value(1))
             {
                 item->setForeground(QBrush(QColor("green")));
             }
