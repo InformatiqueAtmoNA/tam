@@ -74,6 +74,7 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
         m_infosTestEnCours = new et_InfosTestEnCours(m_bdHandler,this);
         this->ui->h_Layout_InfosTest->addWidget(m_infosTestEnCours.data());
     }
+
     m_modelOperateur = m_bdHandler->getOperateurModel();
     ui->comboBox_Operateur->setModel(m_modelOperateur);
     ui->comboBox_Operateur->setModelColumn(OPERATEUR_NOM);

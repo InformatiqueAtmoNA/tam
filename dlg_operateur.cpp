@@ -88,8 +88,6 @@ void Dlg_Operateur::afficherTable() {
 
     this->ui->tableView->setModel(m_model);
     this->ui->tableView->setColumnHidden(OPERATEUR_ID, true);
-    this->ui->tableView->setColumnHidden(OPERATEUR_MDP, true);
-    this->ui->tableView->setColumnHidden(OPERATEUR_ADMIN, true);
     this->ui->tableView->resizeColumnsToContents();
     this->ui->tableView->setItemDelegate(new QSqlRelationalDelegate(this));
 }
@@ -130,6 +128,7 @@ void Dlg_Operateur::buttonSupprimerClicked() {
 }
 
 void Dlg_Operateur::buttonAjouterClicked() {
+
     this->ui->gb_edit_champs->setVisible(true);
     this->ui->button_Ajouter->setEnabled(false);
     this->ui->button_Supprimer->setEnabled(false);
@@ -142,6 +141,11 @@ void Dlg_Operateur::buttonAjouterClicked() {
 }
 
 void Dlg_Operateur::buttonValiderClicked() {
+    int Droits=0;
+    if(this->ui->comboBox_Droits->currentText()=="Administrateur"){
+        Droits=1;
+    }
+
     int row = m_model->rowCount();
 
     if(row>0)
@@ -150,6 +154,9 @@ void Dlg_Operateur::buttonValiderClicked() {
 
     m_model->setData(m_model->index(row,OPERATEUR_NOM),QVariant::fromValue(this->ui->lineEdit_Nom->text()));
     m_model->setData(m_model->index(row,OPERATEUR_PRENOM),QVariant::fromValue(this->ui->lineEdit_Prenom->text()));
+    m_model->setData(m_model->index(row,OPERATEUR_MDP),QVariant::fromValue(this->ui->lineEdit_MDP->text()));
+    m_model->setData(m_model->index(row,OPERATEUR_ADMIN),QVariant::fromValue(Droits));
+    m_model->setData(m_model->index(row,OPERATEUR_USERNAME),QVariant::fromValue(this->ui->lineEdit_identifiant->text()));
 
     m_model->submitAll();
 

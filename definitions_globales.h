@@ -142,7 +142,7 @@ enum table_test_metro {TEST_METRO_ID,TEST_METRO__TYPE_TEST,TEST_METRO_ID_OPERATE
 // \enum Colonnes de la table Test_XML
 enum table_test_xml {TEST_XML_ID,TEST_XML_NOM_FICHIER,TEST_XML_TYPE_TEST,TEST_XML_ID_SYSTEME_ETALON};
 // \enum Colonnes de la table Operateur
-enum table_operateur {OPERATEUR_ID,OPERATEUR_NOM,OPERATEUR_PRENOM,OPERATEUR_MDP,OPERATEUR_ADMIN};
+enum table_operateur {OPERATEUR_ID,OPERATEUR_NOM,OPERATEUR_PRENOM,OPERATEUR_MDP,OPERATEUR_ADMIN, OPERATEUR_USERNAME};
 // \enum Colonnes de la table Lieu
 enum table_lieu {LIEU_ID,LIEU_DESIGNATION};
 // \enum Colonnes de la table Mesure

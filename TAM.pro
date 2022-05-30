@@ -6,13 +6,16 @@ QT += sql \
     widgets\
     serialport \
     statemachine \
-    core
+    core \
+    network
 
 TARGET = TAM
 TEMPLATE = app
 CONFIG  += \
     console
 SOURCES += main.cpp \
+    dlg_authentification.cpp \
+    dlg_info_utilisateur.cpp \
     mainwindow.cpp \
     threadcomhandler.cpp \
     tei_146i.cpp \
@@ -54,6 +57,8 @@ SOURCES += main.cpp \
     parametreshandler.cpp \
     mode4_sx_6000_1808.cpp
 HEADERS += mainwindow.h \
+    dlg_authentification.h \
+    dlg_info_utilisateur.h \
     threadcomhandler.h \
     tei_146i.h \
     tei_146c.h \
@@ -106,6 +111,8 @@ HEADERS += mainwindow.h \
     mode4_sx_6000_1808.h
 FORMS += mainwindow.ui \
     creationtest.ui \
+    dlg_authentification.ui \
+    dlg_info_utilisateur.ui \
     dlg_molecule.ui \
     dlg_protocole.ui \
     dlg_marque.ui \
