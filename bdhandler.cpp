@@ -515,6 +515,7 @@ QSqlRecord* BdHandler::getTableRow(const QString sqlTableRequete)
         for(int i=0;i<record->count();i++)
             qDebug()<<record->fieldName(i)<<" = "<<record->value(i);
     }
+
     return record;
 }
 
@@ -557,6 +558,12 @@ QSqlRecord* BdHandler::getEquipementModeledRow(const ushort idEquipement)
 
     emit(afficherTrace("call getEquipementRow("+QString::number(idEquipement)+")"));
 
+    return getTableRow(requete);
+}
+
+QSqlRecord *BdHandler::getOperateurRow(const QString username)
+{
+    QString requete = QString("SELECT * FROM Operateur WHERE user_name=%1").arg(QString('"' + username + '"'));
     return getTableRow(requete);
 }
 
@@ -757,6 +764,40 @@ void BdHandler::setSpanHandlerFromIdConcentration(ushort idConcentration, QStrin
 
     spanHandler->setSpanArguments(canal,record->value(CONCENTRATION_POINT).toUInt(),record->value(CONCENTRATION_OZONE).toUInt());
 }
+
+void BdHandler::ValiderTest(const uint idTest, QAuthenticator aUser)
+{
+    QString getIdOperateur =QString("SELECT * FROM Operateur WHERE user_name=%1").arg('"' + aUser.user()+'"');
+    QString idOperateur=this->getTableRow(getIdOperateur)->value(OPERATEUR_ID).toString();
+    QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+
+    QString strRequete = "INSERT INTO Validation_Test(idTest,idOperateur,datevalidation,etatValidation) VALUES(";
+    strRequete.append(QString::number(idTest)+","+idOperateur+"," + '"'+date+'"' + "," + '"'+"VALIDE"+'"' +")");
+    strRequete.append("ON DUPLICATE KEY UPDATE idOperateur="+idOperateur+ ",datevalidation="+'"'+date+'"'+",etatValidation='VALIDE'");
+    QSqlQuery requete;
+    requete.exec(strRequete);
+}
+
+void BdHandler::InvaliderTest(const uint idTest, QAuthenticator aUser)
+{
+    QString getIdOperateur =QString("SELECT * FROM Operateur WHERE user_name=%1").arg('"' + aUser.user()+'"');
+    QString idOperateur=this->getTableRow(getIdOperateur)->value(OPERATEUR_ID).toString();
+    QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+
+    QString strRequete = "INSERT INTO Validation_Test(idTest,idOperateur,datevalidation,etatValidation) VALUES(";
+    strRequete.append(QString::number(idTest)+","+idOperateur+"," + '"'+date+'"' + "," + '"'+"INVALIDE"+'"' +")");
+    strRequete.append("ON DUPLICATE KEY UPDATE idOperateur="+idOperateur+ ",datevalidation="+'"'+date+'"'+", etatValidation='INVALIDE'");
+    QSqlQuery requete;
+    requete.exec(strRequete);
+}
+
+QSqlRecord *BdHandler::getValidationRow(const ushort idTest)
+{
+    QString getIdOperateur =QString("SELECT * FROM Validation_Test WHERE idTest=%1").arg(idTest);
+    return getTableRow(getIdOperateur);
+}
+
+
 
 bool BdHandler::miseAjourDateHeureFinTest(const ushort idTestMetro)
 {

@@ -27,7 +27,7 @@
 #include "et_listeattentetests.h"
 #include "ui_et_listeattentetests.h"
 
-et_listeAttenteTests::et_listeAttenteTests(QPointer<BdHandler> bdHandler, QWidget *parent) :
+et_listeAttenteTests::et_listeAttenteTests(QPointer<BdHandler> bdHandler,QAuthenticator aUser, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::et_listeAttenteTests)
 {
@@ -35,7 +35,7 @@ et_listeAttenteTests::et_listeAttenteTests(QPointer<BdHandler> bdHandler, QWidge
 
     m_bdHandler = bdHandler;
     m_nbPagesTest = 0;
-
+    m_user = aUser;
     m_timer = new QTimer(this);
     m_timer->setInterval(60000);
     m_timer->setSingleShot(false);
@@ -66,7 +66,7 @@ void et_listeAttenteTests::buttonAjouterTestClicked()
     QList<ushort> idTestXML = dlgChoixFichierXml.getIdSelection();
     QList<QString> fichierDescriptionTest = dlgChoixFichierXml.getFichierDescriptionSelection();
 
-    m_interfaceparamsTest = new et_InterfaceExecutionTest(m_bdHandler,idTestXML,fichierDescriptionTest,true);
+    m_interfaceparamsTest = new et_InterfaceExecutionTest(m_bdHandler,m_user,idTestXML,fichierDescriptionTest,true);
 
     connect(m_interfaceparamsTest,SIGNAL(miseEnAttente(QList<QPointer<et_ParamsTest>>)),
             this,SLOT(miseEnAttente(QList<QPointer<et_ParamsTest>>)));

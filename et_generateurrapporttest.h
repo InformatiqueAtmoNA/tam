@@ -27,6 +27,7 @@
 #ifndef ET_GENERATEURRAPPORTTEST_H
 #define ET_GENERATEURRAPPORTTEST_H
 
+#include <QAuthenticator>
 #include <QWidget>
 #include "et_resultatpolluant.h"
 #include "et_paramsTest.h"
@@ -85,7 +86,7 @@ private:
     QVector <int> m_tabNbreAcquisition;
     int m_tpsAcquisition;
     QVector<double> m_tabCritere;
-
+    QAuthenticator m_User;
 
     void tableauMesure2(int idMolecule, int codeMolecule);
     void tableauMesure(int idMolecule, int codeMolecule);
@@ -93,7 +94,7 @@ private:
     void affichageTableauResidu ();
     void affichageTableauTpsReponse ();
     void affichageEquipement(ushort idEquipement,QString nomLigne);
-
+    void affichageValidation();
     bool genererRapport();
     bool genererRapportRepetabilite();
     bool genererRapportLinearite();
@@ -124,11 +125,13 @@ private:
     float calculTpsReponseDescente(QVector<float> &Xi,float moyenne,int tpsAcq);
 
 public:
-    explicit et_GenerateurRapportTest(QPointer<BdHandler> bdHandler,const ushort idTest,const ushort idAnalyseur,const ushort typeTest,QWidget *parent = 0);
+    explicit et_GenerateurRapportTest(QPointer<BdHandler> bdHandler,QAuthenticator aUser,const ushort idTest,const ushort idAnalyseur,const ushort typeTest,QWidget *parent = 0);
     ~et_GenerateurRapportTest();
 
 private Q_SLOTS:
     void buttonFermerClicked();
+    void buttonValiderClicked();
+    void buttonInvaliderClicked();
 
 Q_SIGNALS:
     void fermeture(int index);

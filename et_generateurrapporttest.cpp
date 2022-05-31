@@ -30,6 +30,7 @@
 #include <stdlib.h>
 
 et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler,
+                                             QAuthenticator aUser,
                                              const ushort idTest,
                                              const ushort idAnalyseur,
                                              const ushort typeTest,   
@@ -39,6 +40,7 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
 {
     ui->setupUi(this);
 
+    m_User = aUser;
     m_idTest = idTest;
     m_idAnalyseur = idAnalyseur;
     m_typeTest = typeTest;
@@ -113,13 +115,17 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
 
     m_tpsAcquisition = informationTest->value("tps_acquisition").toInt();
 
+    this->ui->label_TestValide->hide();
+    this->ui->labelValidePAr->hide();
+    this->ui->label_ValidePar->hide();
+    this->ui->dateTimeEdit_DateValid->hide();
+
+    affichageValidation();
     genererRapport();
 
     connect(this->ui->button_Fermer,SIGNAL(clicked()),this,SLOT(buttonFermerClicked()));
-
-    this->ui->Button_Exporter->setEnabled(false);
-    this->ui->Button_Valider->setEnabled(false);
-
+    connect(this->ui->Button_Valider,SIGNAL(clicked()),this,SLOT(buttonValiderClicked()));
+    connect(this->ui->Button_Invalider,SIGNAL(clicked()),this,SLOT(buttonInvaliderClicked()));
 }
 
 et_GenerateurRapportTest::~et_GenerateurRapportTest()
@@ -137,6 +143,18 @@ void et_GenerateurRapportTest::buttonFermerClicked()
 
     if(msgBox.exec()==QMessageBox::Ok)
         emit(this->fermeture(1));
+}
+
+void et_GenerateurRapportTest::buttonValiderClicked()
+{
+    this->m_bdHandler->ValiderTest(m_idTest,m_User);
+    affichageValidation();
+}
+
+void et_GenerateurRapportTest::buttonInvaliderClicked()
+{
+    this->m_bdHandler->InvaliderTest(m_idTest, m_User);
+    affichageValidation();
 }
 
 //Mise en forme du tableau de mesure separe par phase identique par polluant
@@ -309,6 +327,42 @@ void et_GenerateurRapportTest::affichageEquipement(ushort idEquipement,QString n
 
     m_listeEnteteLigne.append(QString("%1").arg(nomLigne));
 
+}
+
+void et_GenerateurRapportTest::affichageValidation()
+{
+
+    QSqlRecord* record = this->m_bdHandler->getValidationRow(m_idTest);
+    if(record == NULL){
+        this->ui->labelTestValide->setText("EN ATTENTE");
+        return;
+    }
+
+    QString value =record->value(VALIDATION_TEST_ID_OPERATEUR).toString();
+    QString requete = QString("SELECT Nom, Prenom FROM Operateur WHERE id_operateur=%1").arg(record->value(VALIDATION_TEST_ID_OPERATEUR).toString());
+    QSqlQuery query;
+    query.exec(requete);
+    QSqlRecord record2=query.record();;
+    QString username;
+    if(query.next()){
+        record2 = query.record();
+        username=record2.value(0).toString();
+        username.append(" "+record2.value(1).toString());
+    }
+
+    this->ui->labelTestValide->setText(record->value(VALIDATION_TEST_ETAT).toString());
+
+    if(record->value(VALIDATION_TEST_ETAT).toString()!="EN ATTENTE"){
+        this->ui->label_TestValide->show();
+        this->ui->label_ValidePar->show();
+        this->ui->labelValidePAr->show();
+        this->ui->labelValidePAr->setText(username);
+
+
+        this->ui->dateTimeEdit_DateValid->show();
+        this->ui->dateTimeEdit_DateValid->setDisabled(true);
+        this->ui->dateTimeEdit_DateValid->setDateTime(record->value(VALIDATION_TEST_DATE).toDateTime());
+    }
 }
 
 bool et_GenerateurRapportTest::genererRapport()

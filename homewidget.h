@@ -54,8 +54,6 @@ private:
     QModelIndex m_idxSelectionRapport;
     QModelIndex m_idxSelectionItemRapport;
     QStandardItemModel *m_itemModele;
-
-
     void getListeTests();
     void getListeRapports();
 

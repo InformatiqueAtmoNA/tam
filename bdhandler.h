@@ -30,6 +30,8 @@
 #include "definitions_globales.h"
 #include "spanhandler.h"
 
+#include <QAuthenticator>
+
 class BdHandler : public QObject
 {
     Q_OBJECT
@@ -76,6 +78,7 @@ public:
     QSqlRecord* getEquipementRow(const ushort idEquipement);
     QSqlRecord* getSystemeEtalonRow(const ushort idSystemeEtalon);
     QSqlRecord* getEquipementModeledRow(const ushort idEquipement);
+    QSqlRecord* getOperateurRow(const QString username);
     QString getEquipementNumSerie(const ushort idEquipement);
     QString getTestFavoriteState(const ushort idTest);
     ushort getTxTransmission(const ushort idTxTransmission);
@@ -92,16 +95,18 @@ public:
     QPointer<QSqlQueryModel> getListeTypeTestParEquipement(const uint id_Equipement);
     QPointer<QSqlQueryModel> getListeDateTestParEquipParTypeTest(const uint id_Equipement,const QString & id_TypeTest);
     ushort getIdCalibrateur(const uint idSystemeEtalon);
-
     QString getEquipementTypeConnexion(const ushort idEquipement);
     QString getEquipementTypeSocket(const ushort idEquipement);
-
     QPointer<QStandardItemModel> getItemModelListeRapport();
 
     bool miseAjourDateHeureFinTest(const ushort idTestMetro);
     bool miseAjourTemperaturesFinTest(float tempMin,float tempMax, float tempMoyenne, int idTest);
     bool insertIntoMesure(const MesureInfo mesuresInfos);
     void setSpanHandlerFromIdConcentration(ushort idConcentration, QString canal, SpanHandler* spanHandler);
+
+    void ValiderTest(const uint idTest,QAuthenticator aUser);
+    void InvaliderTest(const uint idTest, QAuthenticator aUser);
+    QSqlRecord* getValidationRow(const ushort idTest);
 
 Q_SIGNALS:
     void afficherTrace(QString trace);

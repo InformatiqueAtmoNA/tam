@@ -27,6 +27,7 @@
 #ifndef ET_INTERFACEEXECUTIONTEST_H
 #define ET_INTERFACEEXECUTIONTEST_H
 
+#include <QAuthenticator>
 #include <QWidget>
 
 #include "bdhandler.h"
@@ -77,6 +78,8 @@ private:
     QDateTime m_dateHeureDebutTest;
     QString m_nomCheminCSV;
     QList<QLineEdit*> listeLineEditCSV;
+    QAuthenticator m_user;
+
     bool controleEtape1();
     bool controleEtape2();
     void afficherMsgBoxErreurCom();
@@ -90,7 +93,7 @@ private:
 
 
 public:
-    explicit et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,QList<ushort> idTestXml,QList<QString> fichierDescription,bool miseEnAttente=false,ushort idOperateur=0,QWidget *parent = 0);
+    explicit et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,QAuthenticator aUser,QList<ushort> idTestXml,QList<QString> fichierDescription,bool miseEnAttente=false,ushort idOperateur=0,QWidget *parent = 0);
     ~et_InterfaceExecutionTest();
 
 private Q_SLOTS:

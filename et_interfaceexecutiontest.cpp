@@ -29,6 +29,7 @@
 
 
 QString decoupeNomFichier(QString nomFichier){
+
     if(nomFichier.indexOf(".xml")>0)
         nomFichier.remove(".xml");
     if(nomFichier.indexOf(".\\")>0)
@@ -38,11 +39,13 @@ QString decoupeNomFichier(QString nomFichier){
     return nomFichier;
 }
 
-et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,QList<ushort> idTestXML, QList<QString> fichierDescription,bool miseEnAttente,ushort idOperateur, QWidget *parent) :
+et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,QAuthenticator aUser,QList<ushort> idTestXML, QList<QString> fichierDescription,bool miseEnAttente,ushort idOperateur, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::et_InterfaceExecutionTest)
 {
     ui->setupUi(this);
+
+    m_user = aUser;
     m_idSonde =0;
     m_bdHandler = bdHandler;
     m_etape = 1;
@@ -168,7 +171,8 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
 
     m_modelOperateur = m_bdHandler->getOperateurModel();
     ui->comboBox_Operateur->setModel(m_modelOperateur);
-    ui->comboBox_Operateur->setModelColumn(OPERATEUR_NOM);
+    ui->comboBox_Operateur->setModelColumn(OPERATEUR_USERNAME);
+    ui->comboBox_Operateur->setCurrentIndex(ui->comboBox_Operateur->findText(m_user.user()));
 
     m_debutImmediat=false;
     m_sondePresente = false;

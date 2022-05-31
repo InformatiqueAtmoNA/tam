@@ -142,6 +142,10 @@ enum table_test_metro {TEST_METRO_ID,TEST_METRO__TYPE_TEST,TEST_METRO_ID_OPERATE
                      TEST_METRO_ID_SONDE,TEST_METRO_PRESENCE_SONDE};
 // \enum Colonnes de la table Test_XML
 enum table_test_xml {TEST_XML_ID,TEST_XML_NOM_FICHIER,TEST_XML_TYPE_TEST,TEST_XML_ID_SYSTEME_ETALON,TEST_XML_EST_FAVORI};
+
+// \enum Colonnes de la table Validation_Test
+enum table_validation_test {VALIDATION_TEST_ID,VALIDATION_TEST_ID_TEST,VALIDATION_TEST_ID_OPERATEUR,VALIDATION_TEST_DATE, VALIDATION_TEST_ETAT};
+
 // \enum Colonnes de la table Operateur
 enum table_operateur {OPERATEUR_ID,OPERATEUR_NOM,OPERATEUR_PRENOM,OPERATEUR_MDP,OPERATEUR_ADMIN, OPERATEUR_USERNAME};
 // \enum Colonnes de la table Lieu
