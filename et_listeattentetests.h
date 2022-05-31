@@ -27,6 +27,7 @@
 #ifndef ET_LISTEATTENTETESTS_H
 #define ET_LISTEATTENTETESTS_H
 
+#include <QAuthenticator>
 #include <QWidget>
 #include "et_infostestencours.h"
 #include "dlg_testxml.h"
@@ -41,7 +42,7 @@ class et_listeAttenteTests : public QWidget
     Q_OBJECT
 
 public:
-    explicit et_listeAttenteTests(QPointer<BdHandler> bdHandler, QWidget *parent = 0);
+    explicit et_listeAttenteTests(QPointer<BdHandler> bdHandler,QAuthenticator aUser, QWidget *parent = 0);
     ~et_listeAttenteTests();
 
 private:
@@ -56,6 +57,7 @@ private:
     QPointer<et_InterfaceExecutionTest> m_interfaceparamsTest;
     ushort m_nbPagesTest;
     QPointer<QTimer> m_timer;
+    QAuthenticator m_user;
 
 private Q_SLOTS:
     void buttonAjouterTestClicked();

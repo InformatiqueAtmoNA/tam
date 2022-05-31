@@ -189,7 +189,7 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
         return;
     }
 
-    this->m_dlgExecutionTest = new et_InterfaceExecutionTest(m_bdHandler,idTestXML,fichierDescription,false,1,this);
+    this->m_dlgExecutionTest = new et_InterfaceExecutionTest(m_bdHandler,m_user,idTestXML,fichierDescription,false,1,this);
 
     if(!this->m_homeWidget.isNull()) {
         delete m_homeWidget;
@@ -204,7 +204,7 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
 void MainWindow::afficherRapport(const ushort idTest,const ushort idAnalyseur, const ushort typeTest)
 {
 
-    this->m_dlgGenerateurRapportTest = new et_GenerateurRapportTest(m_bdHandler,idTest,idAnalyseur,typeTest,this);
+    this->m_dlgGenerateurRapportTest = new et_GenerateurRapportTest(m_bdHandler,m_user,idTest,idAnalyseur,typeTest,this);
 
     if(!this->m_homeWidget.isNull()) {
         delete m_homeWidget;
@@ -277,19 +277,16 @@ void MainWindow::connexion()
     }
     this->m_user=dlg_Authentification.getUser();
 
-
-    QSqlQuery requete(QString("SELECT Administrateur FROM Operateur WHERE user_name=%1").arg(QString('"' + this->m_user.user() + '"')));
-    if(requete.next()){
-        QSqlRecord record = requete.record();
-        if(record.value(0).toInt()!=1){
-            this->ui->action_Parametres->setDisabled(true);
-            this->ui->actionDlgOperateur->setDisabled(true);
-        }
-        else{
-            this->ui->action_Parametres->setDisabled(false);
-            this->ui->actionDlgOperateur->setDisabled(false);
-        }
+    QSqlRecord *record = this->m_bdHandler->getOperateurRow(this->m_user.user());
+    if(record->value(OPERATEUR_ADMIN).toInt()!=1){
+        this->ui->action_Parametres->setDisabled(true);
+        this->ui->actionDlgOperateur->setDisabled(true);
     }
+    else{
+        this->ui->action_Parametres->setDisabled(false);
+        this->ui->actionDlgOperateur->setDisabled(false);
+    }
+
 }
 
 void MainWindow::afficherInformationsUser()
@@ -301,7 +298,7 @@ void MainWindow::afficherInformationsUser()
 
 void MainWindow::programmerSerieTests()
 {
-    this->m_dlgListeAttenteTest = new et_listeAttenteTests(m_bdHandler,this);
+    this->m_dlgListeAttenteTest = new et_listeAttenteTests(m_bdHandler,m_user,this);
 
     if(!this->m_homeWidget.isNull()) {
         delete m_homeWidget;

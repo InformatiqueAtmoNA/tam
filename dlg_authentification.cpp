@@ -23,23 +23,12 @@ bool dlg_Authentification::connexionBD()
 {
     bool validation = false;
 
-    QSqlQuery requete(QString("SELECT user_name, Mot_de_passe FROM Operateur "));
-    while(requete.next()) {
-        QSqlRecord record = requete.record();
-        QAuthenticator* aUser = new QAuthenticator;
-        aUser->setUser(record.value(0).toString());
-        aUser->setPassword(record.value(1).toString());
-        this->listeUsers.append(*aUser);
-    }
-
     this->user.setUser(this->ui->indentifiant->text().toLatin1());
     this->user.setPassword(this->ui->mot_de_passe->text().toLatin1());
+    QSqlRecord *record = bdhandler->getOperateurRow(this->user.user());
 
-    for(QAuthenticator index : this->listeUsers){
-        if(index == user){
-            validation = true;
-            return validation;
-        }
+    if(record!=NULL && user.password()== record->value(OPERATEUR_MDP).toString()){
+        validation=true;
     }
     return validation;
 }

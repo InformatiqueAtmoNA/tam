@@ -27,12 +27,12 @@
 #include "et_interfaceexecutiontest.h"
 #include "ui_et_interfaceexecutiontest.h"
 
-et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,ushort idTestXML, QString fichierDescription,bool miseEnAttente,ushort idOperateur, QWidget *parent) :
+et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,QAuthenticator aUser,ushort idTestXML, QString fichierDescription,bool miseEnAttente,ushort idOperateur, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::et_InterfaceExecutionTest)
 {
     ui->setupUi(this);
-
+    m_user = aUser;
     m_bdHandler = bdHandler;
     m_fichierDescription = fichierDescription;
     m_etape = 1;
@@ -77,7 +77,8 @@ et_InterfaceExecutionTest::et_InterfaceExecutionTest(QPointer<BdHandler> bdHandl
 
     m_modelOperateur = m_bdHandler->getOperateurModel();
     ui->comboBox_Operateur->setModel(m_modelOperateur);
-    ui->comboBox_Operateur->setModelColumn(OPERATEUR_NOM);
+    ui->comboBox_Operateur->setModelColumn(OPERATEUR_USERNAME);
+    ui->comboBox_Operateur->setCurrentIndex(ui->comboBox_Operateur->findText(m_user.user()));
 
     m_modelLieu = m_bdHandler->getLieuModel();
     ui->comboBox_Lieu->setModel(m_modelLieu);

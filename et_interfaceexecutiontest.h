@@ -27,6 +27,7 @@
 #ifndef ET_INTERFACEEXECUTIONTEST_H
 #define ET_INTERFACEEXECUTIONTEST_H
 
+#include <QAuthenticator>
 #include <QWidget>
 
 #include "bdhandler.h"
@@ -70,6 +71,7 @@ private:
     bool m_debutImmediat;
     QDateTime m_dateHeureDebutTest;
     QString m_nomCheminCSV;
+    QAuthenticator m_user;
 
     bool controleEtape1();
     bool controleEtape2();
@@ -77,7 +79,7 @@ private:
     QPointer<et_ParamsTest> preparerInfosTest();
 
 public:
-    explicit et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,const ushort idTestXml,const QString fichierDescription,bool miseEnAttente=false,ushort idOperateur=0,QWidget *parent = 0);
+    explicit et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,QAuthenticator aUser,const ushort idTestXml,const QString fichierDescription,bool miseEnAttente=false,ushort idOperateur=0,QWidget *parent = 0);
     ~et_InterfaceExecutionTest();
 
 private Q_SLOTS:

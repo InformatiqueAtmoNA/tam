@@ -29,19 +29,17 @@ void dlg_info_utilisateur::afficherInfo()
     this->ui->label_5->hide();
     this->ui->lineEdit_NouveauMDP->hide();
     this->ui->Buton_valider->hide();
+    QSqlRecord *record = bdhandler->getOperateurRow(this->user.user());
 
-    QSqlQuery requete(QString("SELECT Nom, Prenom, Administrateur FROM Operateur WHERE user_name=%1").arg(QString('"' + this->user.user() + '"')));
-    while(requete.next()) {
-        QSqlRecord record = requete.record();
-        this->ui->label_Nom->setText(record.value(0).toString());
-        this->ui->label_Prenom->setText(record.value(1).toString());
-        if(record.value(2).toInt()==1){
-            this->ui->label_Droits->setText("Administrateur");
-        }
-        else{
-            this->ui->label_Droits->setText("Utilisateur");
-        }
+    this->ui->label_Nom->setText(record->value(OPERATEUR_NOM).toString());
+    this->ui->label_Prenom->setText(record->value(OPERATEUR_PRENOM).toString());
+    if(record->value(OPERATEUR_ADMIN).toInt()==1){
+        this->ui->label_Droits->setText("Administrateur");
     }
+    else{
+        this->ui->label_Droits->setText("Utilisateur");
+    }
+
     this->ui->label_identifiant->setText(user.user());
     this->ui->label_MDP->setText(user.password());
 }
