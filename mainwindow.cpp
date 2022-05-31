@@ -38,12 +38,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QString driver = getParam("BD_Driver").toString();
     QString host = getParam("Host").toString();
     QString userName = getParam("UserName").toString();
-    QString password = getParam("Password").toString();
+    QString password;
+    for(char index : getParam("Password").toString().toLatin1()){
+        index-=17;
+        password.append(index);
+    }
     QString dbName = getParam("DB_Name").toString();
 
     m_bdHandler = new BdHandler(driver,host,userName,password,dbName);
     m_bdHandler->connexionBD();
-
     connect(this->ui->actionDlgEquipement,SIGNAL(triggered()),this,SLOT(afficherDlgEquipement()));
     connect(this->ui->actionDlgSystemeEtalon,SIGNAL(triggered()),this,SLOT(afficherDlgSystemeEtalon()));
     connect(this->ui->actionDlgLieu,SIGNAL(triggered()),this,SLOT(afficherDlgLieu()));
@@ -53,9 +56,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->ui->action_SerieTest,SIGNAL(triggered()),this,SLOT(programmerSerieTests()));
     connect(this->ui->action_aPropos,SIGNAL(triggered()),this,SLOT(aPropos()));
     connect(this->ui->action_Fichier_Quitter,SIGNAL(triggered()),this,SLOT(quitter()));
-
-
+    connect(this->ui->actionDeconnexion,SIGNAL(triggered()),this,SLOT(connexion()));
+    connect(this->ui->actionInformations,SIGNAL(triggered()),this,SLOT(afficherInformationsUser()));
     this->afficherHomeWidget();
+    this->connexion();
 }
 
 MainWindow::~MainWindow()
@@ -72,6 +76,7 @@ MainWindow::~MainWindow()
 
     delete ui;
 }
+
 
 void MainWindow::quitter()
 {
@@ -127,7 +132,6 @@ void MainWindow::afficherHomeWidget(int index)
     connect(this->m_homeWidget,SIGNAL(executerTest(ushort,QString)),this,SLOT(executerTest(ushort,QString)));
     connect(this->m_homeWidget,SIGNAL(afficherRapport(ushort,ushort,ushort)),this,SLOT(afficherRapport(ushort,ushort,ushort)));
     connect(this->m_homeWidget,SIGNAL(programmerSerieTest()),this,SLOT(programmerSerieTests()));
-
 
     m_homeWidget->show();
 }
@@ -264,7 +268,38 @@ void MainWindow::aPropos()
                        "Base sur Qt " QT_VERSION_STR "\n\n"
                        "Copyright (C) 2011-2014 TAM Team \n"
                        "TAM est distribue sous les termes de la \n"
-                       "Licence Publique Generale (GPL) V2 \n\n");
+                                                     "Licence Publique Generale (GPL) V2 \n\n");
+}
+
+void MainWindow::connexion()
+{
+    dlg_Authentification dlg_Authentification(this, this->m_bdHandler);
+    int retour = dlg_Authentification.exec();
+    if(retour == QDialog::Rejected){
+       exit(0);
+    }
+    this->m_user=dlg_Authentification.getUser();
+
+
+    QSqlQuery requete(QString("SELECT Administrateur FROM Operateur WHERE user_name=%1").arg(QString('"' + this->m_user.user() + '"')));
+    if(requete.next()){
+        QSqlRecord record = requete.record();
+        if(record.value(0).toInt()!=1){
+            this->ui->action_Parametres->setDisabled(true);
+            this->ui->actionDlgOperateur->setDisabled(true);
+        }
+        else{
+            this->ui->action_Parametres->setDisabled(false);
+            this->ui->actionDlgOperateur->setDisabled(false);
+        }
+    }
+}
+
+void MainWindow::afficherInformationsUser()
+{
+    dlg_info_utilisateur info_utilisateur(this->m_user, m_bdHandler, this);
+    info_utilisateur.exec();
+    m_user=info_utilisateur.getUser();
 }
 
 void MainWindow::programmerSerieTests()
