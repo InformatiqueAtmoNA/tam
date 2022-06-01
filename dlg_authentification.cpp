@@ -8,6 +8,8 @@ dlg_Authentification::dlg_Authentification(QWidget *parent,const QPointer<BdHand
 {
     ui->setupUi(this);
     this->ui->erreur->hide();
+    this->ui->checkBox->hide();
+    this->ui->mot_de_passe->setEchoMode(QLineEdit::Password);
     this->bdhandler = bdHandler;
     this->connecte = false;
     this->connexionLocale = true;
