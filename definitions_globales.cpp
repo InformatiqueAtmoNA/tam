@@ -50,7 +50,8 @@ DesignationProtocole stringToProtocole(QString protocole) {
         return API_DIL;
     if(protocole=="MODBUS_RTU_TXXXX")
         return MODBUS_RTU_TXXXX;
-
+    if(protocole=="HORIBA_APXX")
+        return HORIBA_APXX;
     return PROTOCOLE_INCONNU;
 }
 

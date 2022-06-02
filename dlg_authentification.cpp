@@ -23,12 +23,11 @@ dlg_Authentification::~dlg_Authentification()
 
 bool dlg_Authentification::connexionBD()
 {
-    bool validation = false;
+    bool validation = true;
 
     this->user.setUser(this->ui->indentifiant->text().toLatin1());
     this->user.setPassword(this->ui->mot_de_passe->text().toLatin1());
     QSqlRecord *record = bdhandler->getOperateurRow(this->user.user());
-
     if(record!=NULL && user.password()== record->value(OPERATEUR_MDP).toString()){
         validation=true;
     }

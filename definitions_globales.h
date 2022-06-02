@@ -63,6 +63,9 @@
 #define ETAT_LECTURE 2
 // \def ETAT_LECTURE Réception d'une trame effectuée
 #define ETAT_ERREUR 3
+
+// \def SOH Caractère ASCII Start Of Text
+#define SOH 0x01
 // \def STX Caractère ASCII Start Of Text
 #define STX 0x02
 // \def STX Caractère ASCII End Of Text
@@ -85,7 +88,7 @@
 // \enum DesignationProtocole DesignationProtocole de communication supportés
 // A MODIFIER LORS DE L'AJOUT DE NOUVEAUX DesignationProtocole
 enum DesignationProtocole {MODE4_ANA_CMD04,MODE4_ANA_CMD16,MODE4_SX6000_17,MODE4_SX6000_1808,MODE4_LNI,TEI_ANA,TEI_146i,TEI_146i_OZONISEUR,
-                 TEI_146i_PHOTOMETRE,TEI_146c,TEI_146c_V2,TEI_49ps,API_ANA,API_DIL,MODBUS_RTU_TXXXX,PROTOCOLE_INCONNU};
+                 TEI_146i_PHOTOMETRE,TEI_146c,TEI_146c_V2,TEI_49ps,API_ANA,API_DIL,MODBUS_RTU_TXXXX,HORIBA_APXX,PROTOCOLE_INCONNU};
 
 // \enum TypePeripherique Type d'appareil
 enum TypePeripherique {ANALYSEUR,ETALON,DILUTEUR,BOUTEILLE,GO3,GZERO,SONDE};

@@ -17,6 +17,7 @@ SOURCES += main.cpp \
     communicationip.cpp \
     dlg_authentification.cpp \
     dlg_info_utilisateur.cpp \
+    horiba.cpp \
     mainwindow.cpp \
     modbus.cpp \
     threadcomhandler.cpp \
@@ -63,6 +64,7 @@ HEADERS += mainwindow.h \
     modbus.h \
     dlg_authentification.h \
     dlg_info_utilisateur.h \
+    horiba.h \
     threadcomhandler.h \
     tei_146i.h \
     tei_146c.h \
