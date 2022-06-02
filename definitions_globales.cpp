@@ -48,6 +48,8 @@ DesignationProtocole stringToProtocole(QString protocole) {
         return API_ANA;
     if(protocole=="API_DIL")
         return API_DIL;
+    if(protocole=="HORIBA_APXX")
+        return HORIBA_APXX;
     return PROTOCOLE_INCONNU;
 }
 

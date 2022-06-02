@@ -15,6 +15,7 @@
 #include "tei_49c.h"
 #include "tei_49ps.h"
 #include "api.h"
+#include "horiba.h"
 
 Protocole::Protocole() {
     m_avorterTransaction = false;
@@ -121,7 +122,7 @@ QString Protocole::transaction(const QString & commande) {
 // Slot de lecture d'une trame
 void Protocole::lectureTrame(const QString & data) {
     qDebug()<<"Trame reçue : " << data.toLatin1();
-    this->trame = data;
+    this->trame=data;
     this->flagEtatCom = ETAT_LECTURE;
 }
 
@@ -176,6 +177,9 @@ QPointer<Protocole> Protocole::getProtocoleObject(const DesignationProtocole & d
         break;
     case API_DIL:
         protocole = new Api(adresse,ETALON,API_DIL);
+        break;
+    case HORIBA_APXX:
+        protocole = new horiba(adresse,ANALYSEUR);
         break;
     default:
         break;

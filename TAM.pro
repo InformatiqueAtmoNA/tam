@@ -13,6 +13,7 @@ TEMPLATE = app
 CONFIG  += \
     console
 SOURCES += main.cpp \
+    horiba.cpp \
     mainwindow.cpp \
     threadcomhandler.cpp \
     tei_146i.cpp \
@@ -54,6 +55,7 @@ SOURCES += main.cpp \
     parametreshandler.cpp \
     mode4_sx_6000_1808.cpp
 HEADERS += mainwindow.h \
+    horiba.h \
     threadcomhandler.h \
     tei_146i.h \
     tei_146c.h \
