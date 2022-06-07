@@ -118,30 +118,19 @@ QByteArray Modbus::getRegistre(QList<TypePolluant> polluantAssocie)
 }
 
 
-void Modbus::passageZero()
-{
+/*
+ * Les fonctions suivante ne sont pas utiles pour la sonde de temperature qui n'est ni un analyseur, ni un diluteur
+ * Il est cependant nécéssaire de les implémenter pour compiler le code puisque la classe modbus hérite de la classe protocole qui est une classe abstraite
+*/
+void Modbus::passageZero(){}
 
-}
+void Modbus::passageEtalon(){}
 
-void Modbus::passageEtalon()
-{
+void Modbus::passageMesure(){}
 
-}
+const QVector<Commandes> *Modbus::getListeCommandes(){}
 
-void Modbus::passageMesure()
-{
-
-}
-
-const QVector<Commandes> *Modbus::getListeCommandes()
-{
-
-}
-
-SpanHandler *Modbus::getSpanHandler(Commandes commandeSpan)
-{
-
-}
+SpanHandler *Modbus::getSpanHandler(Commandes commandeSpan){}
 
 
 

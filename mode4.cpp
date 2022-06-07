@@ -348,10 +348,12 @@ void Mode4::commandeSpanTpg(const SpanHandler & spanTpgData) {
 // Reset du peripherique
 bool Mode4::reset() {
     QString cmd;
-    if(this->typePeripherique==ANALYSEUR)
+    if(this->typePeripherique==ANALYSEUR){
         cmd = *(this->creerTrameCommande("1Z","\0"));
-    else
+    }
+    else{
         cmd = *(this->creerTrameCommande("00","\0"));
+    }
 
     emit(this->envoiTrame(cmd));
     qDebug()<<"Trame reset envoyee : "<<cmd;

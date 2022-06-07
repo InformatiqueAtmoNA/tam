@@ -45,6 +45,18 @@ public:
     virtual QPointer<MesureIndividuelle> demandeMesure();
 
     /*///////////////////////////////////////////////////////////////////////////
+    // \fn virtual void init()
+    // \brief Initialisation des parametres du périphérique
+    ///////////////////////////////////////////////////////////////////////////*/
+    virtual bool init();
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn virtual void parDefault()
+    // \brief Règle l'appareil sur son mode de fonctionnement par défaut
+    ///////////////////////////////////////////////////////////////////////////*/
+    virtual bool parDefault();
+
+    /*///////////////////////////////////////////////////////////////////////////
     // \fn virtual void demandeAlarme()
     // \brief Demande d'alarme
     //
@@ -88,6 +100,7 @@ public:
     ///////////////////////////////////////////////////////////////////////////*/
     virtual SpanHandler* getSpanHandler(Commandes commandeSpan);
 
+    virtual QDateTime *demandeDateHeure();
     QMap<QString,QString> getInformationFromResponse(QString reponse);
 
 private :

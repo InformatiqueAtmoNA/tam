@@ -127,7 +127,7 @@ bool CommunicationSerie::setDeviceName(const QString newDeviceName) {
     }
     this->device->setPortName(newDeviceName);
     this->deviceName = newDeviceName;
-
+     connect(device,SIGNAL(readyRead()),this,SLOT(slotRead()));
 
 //    // connection du signal de changement de statut
 //    if(!connect(device,SIGNAL(signalStatus(QString,QDateTime)),this,SLOT(statusSignal(QString,QDateTime)))) {
@@ -247,8 +247,7 @@ void CommunicationSerie::write(const QString data) {
         emit(this->transmissionError());        
     }
     device->waitForBytesWritten();
-    _sleep(2000);
-    connect(device,SIGNAL(readyRead()),this,SLOT(slotRead()));
+    _sleep(500);
 }
 
 /////////////////

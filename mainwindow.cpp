@@ -28,6 +28,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QLabel>
+#include <QPushButton>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -35,18 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QString driver = getParam("BD_Driver").toString();
-    QString host = getParam("Host").toString();
-    QString userName = getParam("UserName").toString();
-    QString password;
-    for(char index : getParam("Password").toString().toLatin1()){
-        index-=17;
-        password.append(index);
-    }
-    QString dbName = getParam("DB_Name").toString();
-
-    m_bdHandler = new BdHandler(driver,host,userName,password,dbName);
-    m_bdHandler->connexionBD();
     connect(this->ui->actionDlgEquipement,SIGNAL(triggered()),this,SLOT(afficherDlgEquipement()));
     connect(this->ui->actionDlgSystemeEtalon,SIGNAL(triggered()),this,SLOT(afficherDlgSystemeEtalon()));
     connect(this->ui->actionDlgLieu,SIGNAL(triggered()),this,SLOT(afficherDlgLieu()));
@@ -58,8 +49,41 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->ui->action_Fichier_Quitter,SIGNAL(triggered()),this,SLOT(quitter()));
     connect(this->ui->actionDeconnexion,SIGNAL(triggered()),this,SLOT(connexion()));
     connect(this->ui->actionInformations,SIGNAL(triggered()),this,SLOT(afficherInformationsUser()));
-    this->afficherHomeWidget();
+
+    QString driver = getParam("BD_Driver").toString();
+    QString host = getParam("Host").toString();
+    QString userName = getParam("UserName").toString();
+    QString password= getParam("Password").toString().toLatin1();
+
+    QString dbName = getParam("DB_Name").toString();
+
+    m_bdHandler = new BdHandler(driver,host,userName,password,dbName);
+
+
+    if(!m_bdHandler->connexionBD()){
+        password="";
+        for(char index : getParam("Password").toString().toLatin1()){
+            index-=17;
+            password.append(index);
+        }
+        m_bdHandler = new BdHandler(driver,host,userName,password,dbName);
+        if(!m_bdHandler->connexionBD()){
+            return;
+        }
+    }
+    else{
+        // modification du mot de passe pour le rendre non lisible dans le fichier params.ini
+        QString newPassword;
+        for(char index :password.toLatin1()){
+            index+=17;
+            newPassword.append(index);
+        }
+        setParam("Password",QVariant::fromValue(newPassword));
+    }
+
     this->connexion();
+    this->afficherHomeWidget();
+
 }
 
 MainWindow::~MainWindow()
@@ -299,6 +323,7 @@ void MainWindow::afficherInformationsUser()
     info_utilisateur.exec();
     m_user=info_utilisateur.getUser();
 }
+
 
 void MainWindow::programmerSerieTests()
 {
