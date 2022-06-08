@@ -23,7 +23,7 @@ dlg_Authentification::~dlg_Authentification()
 
 bool dlg_Authentification::connexionBD()
 {
-    bool validation = true;
+    bool validation = false;
 
     this->user.setUser(this->ui->indentifiant->text().toLatin1());
     this->user.setPassword(this->ui->mot_de_passe->text().toLatin1());

@@ -118,7 +118,7 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     this->ui->label_TestValide->hide();
     this->ui->labelValidePAr->hide();
     this->ui->label_ValidePar->hide();
-    this->ui->dateTimeEdit_DateValid->hide();
+    this->ui->labelDateValidation->hide();
 
     affichageValidation();
     genererRapport();
@@ -332,36 +332,30 @@ void et_GenerateurRapportTest::affichageEquipement(ushort idEquipement,QString n
 void et_GenerateurRapportTest::affichageValidation()
 {
 
-    QSqlRecord* record = this->m_bdHandler->getValidationRow(m_idTest);
-    if(record == NULL){
-        this->ui->labelTestValide->setText("EN ATTENTE");
-        return;
-    }
+    QList<QString> *Validation = this->m_bdHandler->getValidation(m_idTest);
+    this->ui->labelTestValide->setText(Validation->at(0));
 
-    QString value =record->value(VALIDATION_TEST_ID_OPERATEUR).toString();
-    QString requete = QString("SELECT Nom, Prenom FROM Operateur WHERE id_operateur=%1").arg(record->value(VALIDATION_TEST_ID_OPERATEUR).toString());
-    QSqlQuery query;
-    query.exec(requete);
-    QSqlRecord record2=query.record();;
-    QString username;
-    if(query.next()){
-        record2 = query.record();
-        username=record2.value(0).toString();
-        username.append(" "+record2.value(1).toString());
-    }
 
-    this->ui->labelTestValide->setText(record->value(VALIDATION_TEST_ETAT).toString());
+    if(Validation->at(0)!="EN ATTENTE"){
+        QString requete = QString("SELECT Nom, Prenom FROM Operateur WHERE id_operateur=%1").arg(Validation->at(1));
+        QSqlQuery query;
+        query.exec(requete);
+        QSqlRecord record=query.record();;
+        QString username;
+        if(query.next()){
+            record = query.record();
+            username=record.value(0).toString();
+            username.append(" "+record.value(1).toString());
+        }
 
-    if(record->value(VALIDATION_TEST_ETAT).toString()!="EN ATTENTE"){
         this->ui->label_TestValide->show();
         this->ui->label_ValidePar->show();
         this->ui->labelValidePAr->show();
         this->ui->labelValidePAr->setText(username);
 
 
-        this->ui->dateTimeEdit_DateValid->show();
-        this->ui->dateTimeEdit_DateValid->setDisabled(true);
-        this->ui->dateTimeEdit_DateValid->setDateTime(record->value(VALIDATION_TEST_DATE).toDateTime());
+        this->ui->labelDateValidation->show();
+        this->ui->labelDateValidation->setText(Validation->at(2));
     }
 }
 

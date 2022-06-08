@@ -67,6 +67,7 @@ private Q_SLOTS:
     void buttonAfficherClicked();
     void buttonSupprimerClicked();
     void buttonSupprimerTestResultatClicked();
+    void buttonValiderFiltreClicked();
     void filter(int etatCheckBox);
 
 Q_SIGNALS:

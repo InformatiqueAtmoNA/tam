@@ -145,7 +145,8 @@ void CreationTest::initialiserChamps()
     if(m_favoriteState=="OUI"){
         this->ui->checkBoxFavori->setCheckState(Qt::Checked);
     }
-    else if(m_favoriteState=="NON"){
+    else{
+        m_favoriteState="NON";
         this->ui->checkBoxFavori->setCheckState(Qt::Unchecked);
     }
 

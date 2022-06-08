@@ -70,7 +70,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QDateTimeEdit" name="dateTimeEdit_DateValid"/>
+           <widget class="QLabel" name="labelDateValidation">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

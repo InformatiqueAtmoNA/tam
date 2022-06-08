@@ -238,17 +238,22 @@ QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel(const uint i
     return model;
 }
 
-QPointer<QSqlQueryModel> BdHandler::getTestRapportModel()
+QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(int nbRows)
 {
-    QString requete(QString("SELECT T.id_Test,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut FROM Equipement E , Liste_Analyseurs_Test L , Test_Metrologique T WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement order by T.date_debut DESC LIMIT 20"));
+    QString requete(QString("SELECT T.id_Test,M.me_designation,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut,T.etatValidation "
+                            "FROM Modele_Equipement M, Equipement E , Liste_Analyseurs_Test L, Test_Metrologique T "
+                            "WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement AND E.id_modele=M.id_modele "
+                            "order by T.date_debut DESC LIMIT %1").arg(nbRows));
 
     QPointer<QSqlQueryModel> model = new QSqlQueryModel;
     model->setQuery(requete,m_baseMySql);
     model->setHeaderData(HOMEW_TABVIEW_TEST_ID_TEST, Qt::Horizontal, tr("Numero Test"));
+    model->setHeaderData(HOMEW_TABVIEW_TEST_MODELE_EQUIPEMENT, Qt::Horizontal, tr("Modele"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_ID_EQUIP, Qt::Horizontal, tr("id_equipement"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_NO_EQUIP, Qt::Horizontal, tr("Numero Equipement"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_TYPE_TEST, Qt::Horizontal, tr("Type de Test"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_DATE, Qt::Horizontal, tr("Date de Debut"));
+    model->setHeaderData(HOMEW_TABVIEW_TEST_VALIDATION, Qt::Horizontal, tr("Validité"));
     return model;
 }
 
@@ -771,9 +776,10 @@ void BdHandler::ValiderTest(const uint idTest, QAuthenticator aUser)
     QString idOperateur=this->getTableRow(getIdOperateur)->value(OPERATEUR_ID).toString();
     QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
 
-    QString strRequete = "INSERT INTO Validation_Test(idTest,idOperateur,datevalidation,etatValidation) VALUES(";
-    strRequete.append(QString::number(idTest)+","+idOperateur+"," + '"'+date+'"' + "," + '"'+"VALIDE"+'"' +")");
-    strRequete.append("ON DUPLICATE KEY UPDATE idOperateur="+idOperateur+ ",datevalidation="+'"'+date+'"'+",etatValidation='VALIDE'");
+    QString strRequete = QString("UPDATE Test_Metrologique SET datevalidation=%1 ").arg('"'+ date+'"');
+    strRequete.append(QLatin1String(",etatValidation =")+"'"+"VALIDE" +"'");
+    strRequete.append(QString(",id_operateur_validation=%1").arg(idOperateur));
+    strRequete.append(QString(" WHERE id_test=%1").arg(idTest));
     QSqlQuery requete;
     requete.exec(strRequete);
 }
@@ -784,17 +790,26 @@ void BdHandler::InvaliderTest(const uint idTest, QAuthenticator aUser)
     QString idOperateur=this->getTableRow(getIdOperateur)->value(OPERATEUR_ID).toString();
     QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
 
-    QString strRequete = "INSERT INTO Validation_Test(idTest,idOperateur,datevalidation,etatValidation) VALUES(";
-    strRequete.append(QString::number(idTest)+","+idOperateur+"," + '"'+date+'"' + "," + '"'+"INVALIDE"+'"' +")");
-    strRequete.append("ON DUPLICATE KEY UPDATE idOperateur="+idOperateur+ ",datevalidation="+'"'+date+'"'+", etatValidation='INVALIDE'");
+    QString strRequete = QString("UPDATE Test_Metrologique SET datevalidation=%1 ").arg('"'+ date+ '"');
+    strRequete.append(QLatin1String(",etatValidation =")+"'"+"INVALIDE" +"'");
+    strRequete.append(QString(",id_operateur_validation=%1").arg(idOperateur));
+    strRequete.append(QString(" WHERE id_test=%1").arg(idTest));
     QSqlQuery requete;
     requete.exec(strRequete);
 }
 
-QSqlRecord *BdHandler::getValidationRow(const ushort idTest)
+QList<QString> *BdHandler::getValidation(const ushort idTest)
 {
-    QString getIdOperateur =QString("SELECT * FROM Validation_Test WHERE idTest=%1").arg(idTest);
-    return getTableRow(getIdOperateur);
+    QSqlQuery requete(QString("SELECT etatValidation, id_operateur_validation, dateValidation FROM Test_Metrologique WHERE id_test=%1").arg(idTest));
+    QList<QString >*Liste=new QList<QString>;
+    if(requete.next()) {
+        QSqlRecord record = requete.record();
+        Liste->append(record.value("etatValidation").toString());
+        Liste->append(record.value("id_operateur_validation").toString());
+        Liste->append(record.value("dateValidation").toString());
+    }
+
+    return Liste;
 }
 
 
