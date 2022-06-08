@@ -56,7 +56,7 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent, int* index
     this->ui->button_Afficher->setEnabled(false);
     this->ui->button_supprimer_test_resultat->setEnabled(false);
     this->ui->tabWidget_TestRapport->setCurrentIndex(*index);
-    this->ui->button_Supprimer->hide();
+    this->ui->button_supprimer_test_resultat->hide();
     this->ui->cb_modele_equipement->setModel(this->m_bdHandler->getModelesModel());
     this->ui->cb_modele_equipement->setModelColumn(MODELE_DESIGNATION);
     this->ui->cb_modele_equipement->insertItem(0,"AUCUN");
