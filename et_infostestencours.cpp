@@ -556,50 +556,20 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_ID_SONDE,QVariant::fromValue(paramsTest->m_idSonde));
 
     enregistrement.setValue(TEST_METRO_PRESENCE_SONDE,QVariant::fromValue(presenceSonde));
-
-
+    enregistrement.setValue(TEST_METRO_DATE_VALIDATION,QVariant::fromValue(m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
+    enregistrement.setValue(TEST_METRO_ETAT_VALIDATION,QVariant::fromValue(QString("EN ATTENTE")));
+    enregistrement.setValue(TEST_METRO_ID_OPERATEUR_VALIDATION,QVariant::fromValue(paramsTest->m_idOperateur));
 
     model->insertRecord(-1,enregistrement);
-    bool succes = model->submitAll();
+    model->submitAll();
 
-    paramsTest->m_id_TestMetro = model->rowCount();
+    paramsTest->m_id_TestMetro = m_bdHandler->getTestMetroModel()->record(m_bdHandler->getTestMetroModel()->rowCount()-1).value(TEST_METRO_ID).toUInt();
 
-    logTrames.write("-------------------------------------------------------------------------------------- \n");
-    logTrames.write("nombre lignes : " + QString::number(model->rowCount()).toLatin1() + "\n");
     logTrames.write("-------- valeurs de l'enregistrement -----------");
     for(int i=0 ; i<enregistrement.count() ; i++){
         logTrames.write(QString(enregistrement.value(i).toString()).toLatin1()+ "\n") ;
     }
-    logTrames.write("---------valeurs de la classe paramtest ------------ \n");
-    QString date = m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss");
-    logTrames.write("id test metro : " + QString::number(paramsTest->m_id_TestMetro).toLatin1()  + "\n");
-    logTrames.write("id test xml : " +QString::number(paramsTest->m_id_TestXML).toLatin1()  + "\n");
-    logTrames.write("type de test : " + QString::number(paramsTest->m_test->getTypeTest()).toLatin1() + "\n");
-    logTrames.write("idoperateur : " + QString::number(paramsTest->m_idOperateur).toLatin1() + "\n");
-    logTrames.write("id systeme etalon : " + QString::number(paramsTest->m_test->getIdSystemeEtalon()).toLatin1() + "\n");
-    logTrames.write("id lieu :  " + QString::number(paramsTest->m_idLieu).toLatin1() + "\n");
-    logTrames.write("pression : " + QString::number(paramsTest->m_pression).toLatin1() + "\n");
-    logTrames.write("temperature : " + QString::number(paramsTest->m_temperature).toLatin1() + "\n");
-    logTrames.write("temps aquisition : " + QString::number(paramsTest->m_test->getTempsAcquisition()).toLatin1() + "\n");
-    logTrames.write("date debut : " + date.toLatin1() + "\n");
-    logTrames.write("date fin : " + date.toLatin1() + "\n");
-    logTrames.write("critere 1 : " + QString::number(paramsTest->m_test->getCritere1()).toLatin1() + "\n");
-    logTrames.write("critere 2 : " + QString::number(paramsTest->m_test->getCritere2()).toLatin1() + "\n");
-    logTrames.write("critere 3 : " + QString::number(paramsTest->m_test->getCritere3()).toLatin1() + "\n");
-    logTrames.write("temperatur min : " + QString::number(paramsTest->m_test->getTempMin()).toLatin1() + "\n");
-    logTrames.write("temperatur max : " + QString::number(paramsTest->m_test->getTempMax()).toLatin1() + "\n");
-    logTrames.write("temperatur moyenne : " + QString::number(paramsTest->m_test->getTempMoyenne()).toLatin1() + "\n");
-    logTrames.write("id sonde : " + QString::number(paramsTest->m_idSonde).toLatin1() + "\n");
-    logTrames.write("sonde presente : " + presenceSonde.toLatin1() + "\n");
-    logTrames.write("succes de l'enregistrement : " + QString::number(succes).toLatin1() + "\n");
-    if(!succes){
-        logTrames.write(model->lastError().text().toLatin1());
-    }
-    logTrames.write("------------------------------------------- \n");
-    model = m_bdHandler->getTestMetroModel();
-    logTrames.write("nombre lignes : " + QString::number(model->rowCount()).toLatin1()  + "\n");
-
-    delete model;
+    logTrames.write("-------------------------------------------------------------------------------------- \n");
 
     enregistrerAnalyseurTest(paramsTest);
 
