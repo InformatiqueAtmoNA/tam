@@ -18,13 +18,15 @@
 #include "modbus.h"
 #include "horiba.h"
 
+
+
 Protocole::Protocole() {
     m_avorterTransaction = false;
 }
 
 Protocole::~Protocole() {
-//    if(threadCommunication->isRunning())
-//        threadCommunication->stop();
+    //    if(threadCommunication->isRunning())
+    //        threadCommunication->stop();
     threadCommunication->deleteLater();
     while(threadCommunication->isRunning()) {
         QCoreApplication::processEvents();
@@ -52,7 +54,10 @@ QPointer<ThreadComHandler> Protocole::getThreadComHandler() {
 void Protocole::setTimeOut(const ushort newTimeOut) {
     this->timeout = newTimeOut;
 }
-
+void Protocole::setVersionProtocole(DesignationProtocole newVersionProtocole)
+{
+    versionProtocole = newVersionProtocole;
+}
 // Retourne le timeout à la communication
 ushort Protocole::getTimeOut() {
     return this->timeout;
@@ -78,9 +83,9 @@ QString Protocole::transaction(const QString & commande) {
     do{
         qDebug()<< "Essai " << compteur << " : ";
 
-    emit(this->envoiTrame(commande));
-    this->flagEtatCom = ETAT_ATTENTE;
-    QTimer timerCommunication;
+        emit(this->envoiTrame(commande));
+        this->flagEtatCom = ETAT_ATTENTE;
+        QTimer timerCommunication;
         logTrames.write(commande.toLatin1());
         logTrames.write("\n");
 
@@ -113,13 +118,23 @@ QString Protocole::transaction(const QString & commande) {
     logTrames.close();
 
     emit(this->afficheTrame(this->trame));
-    return this->trame;
+    QString aTrame = this->trame;
+    this->trame.clear();
+    return aTrame;
 }
 
 // Slot de lecture d'une trame
 void Protocole::lectureTrame(const QString & data) {
-    qDebug()<<"Trame reçue : " << data.toLatin1();
-    this->trame=data;
+
+    if(trame.isEmpty()){
+        this->trame=data;
+    }
+    else if(versionProtocole == HORIBA_APXX && trame.back()!=char(0x03)){
+        this->trame.append(data);
+    }
+    if(((versionProtocole == HORIBA_APXX && trame.back()==char(0x03))||versionProtocole != HORIBA_APXX)){
+        qDebug()<<"Trame reçue : " << trame.toLatin1();
+    }
     this->flagEtatCom = ETAT_LECTURE;
 }
 
@@ -131,7 +146,6 @@ void Protocole::timeoutCom() {
 QPointer<Protocole> Protocole::getProtocoleObject(const DesignationProtocole & designationProtocole, const QString & adresse)
 {
     QPointer<Protocole> protocole;
-
     switch(designationProtocole) {
     case MODE4_ANA_CMD04:
         protocole = new Mode4(adresse,ANALYSEUR,MODE4_ANA_CMD04,false);
@@ -183,7 +197,6 @@ QPointer<Protocole> Protocole::getProtocoleObject(const DesignationProtocole & d
     default:
         break;
     }
-
     return protocole;
 }
 

@@ -78,7 +78,7 @@ Dlg_Equipement::Dlg_Equipement(QWidget *parent,const QPointer<BdHandler> bdHandl
             this,SLOT(boutonFiltreClicked()));
     connect(this->ui->lineEdit_FiltreNserie,SIGNAL(returnPressed()),this,SLOT(boutonFiltreClicked()));
     connect(this->ui->lineEdit_Filtre_Modele,SIGNAL(returnPressed()),this,SLOT(boutonFiltreClicked()));
-    connect(this->ui->comboBox_actif,SIGNAL(currentIndexChanged(QString)),this,SLOT(boutonFiltreClicked()));
+    connect(this->ui->comboBox_actif,SIGNAL(currentIndexChanged(int)),this,SLOT(boutonFiltreClicked()));
     connect(this->ui->checkBoxIP,SIGNAL(stateChanged(int)),this,SLOT(changeStateOfRS232(int)));
     connect(this->ui->checkBoxRS232,SIGNAL(stateChanged(int)),this,SLOT(changeStateOfIP(int)));
 

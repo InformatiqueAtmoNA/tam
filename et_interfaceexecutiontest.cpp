@@ -540,6 +540,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     m_appareilEnTest = analyseur;
 
     analyseur->setThreadComHandler(threadCommunication);
+    analyseur->setVersionProtocole(protocole);
     analyseur->setTimeOut(500);
 
     analyseur->init();

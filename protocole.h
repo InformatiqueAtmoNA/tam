@@ -275,6 +275,8 @@ public:
     ///////////////////////////////////////////////////////////////////////////*/
     static QPointer<Protocole> getProtocoleObject(const DesignationProtocole & designationProtocole, const QString & adresse);
 
+    void setVersionProtocole(DesignationProtocole newVersionProtocole);
+
 public Q_SLOTS:
 
     void quitter();

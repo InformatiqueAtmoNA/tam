@@ -56,6 +56,7 @@ private:
     QString stopBits; // Bits de stop
     QString flowControl; // Type de controle de flux
     int charTimeOut; // Intervalle de timeout en ms
+    bool timeoutAttente;
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void connectSignalsSlots()
@@ -315,6 +316,7 @@ public Q_SLOTS:
     // \param bytes Nombre d'octets écrits
     ///////////////////////////////////////////////////////////////////////////*/
     void bytesWrittenSlot(const qint64 bytes);
+
 
 Q_SIGNALS:
     /*///////////////////////////////////////////////////////////////////////////
