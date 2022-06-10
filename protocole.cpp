@@ -191,6 +191,7 @@ QPointer<Protocole> Protocole::getProtocoleObject(const DesignationProtocole & d
         break;
     case MODBUS_RTU_TXXXX :
         protocole = new Modbus(adresse,SONDE,MODBUS_RTU_TXXXX);
+        break;
     case HORIBA_APXX:
         protocole = new horiba(adresse,ANALYSEUR);
         break;
