@@ -156,6 +156,7 @@ void ExecutionTest::getInfosEquipements()
 
         QPointer<Protocole> protocoleAnalyseur = Protocole::getProtocoleObject(designationProtocoleAnalyseur,adresse);
         protocoleAnalyseur->setThreadComHandler(threadCommunication);
+        protocoleAnalyseur->setVersionProtocole(designationProtocoleAnalyseur);
         protocoleAnalyseur->setTimeOut(500);
 
         protocoleAnalyseur->init();
@@ -197,6 +198,7 @@ void ExecutionTest::getInfosEquipements()
 
 
     m_protocoleCalibrateur->setThreadComHandler(threadCommunication);
+    m_protocoleCalibrateur->setVersionProtocole(designationProtocoleCalibrateur);
     m_protocoleCalibrateur->setTimeOut(500);
 
     m_protocoleCalibrateur->init();
@@ -221,6 +223,7 @@ void ExecutionTest::getInfosEquipements()
         }
 
         m_SondeProtocole->setThreadComHandler(threadCommunicationSonde);
+        m_SondeProtocole->setVersionProtocole(designationProtocoleSonde);
         m_SondeProtocole->setTimeOut(1000);
         m_SondeProtocole->init();
     }

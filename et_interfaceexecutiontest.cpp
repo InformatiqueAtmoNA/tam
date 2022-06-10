@@ -622,6 +622,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
         threadCommunication->configureRS232(interface);
     }
     calibrateur->setThreadComHandler(threadCommunication);
+    calibrateur->setVersionProtocole(protocole);
     calibrateur->setTimeOut(750);
 
     if(calibrateur->demandeAlarme() > 0) {
@@ -694,6 +695,7 @@ void et_InterfaceExecutionTest::buttonTestSondeClicked()
     }
 
     sonde->setThreadComHandler(threadCommunication);
+    sonde->setVersionProtocole(protocole);
     sonde->setTimeOut(750);
 
     sonde->demandeAlarme();
