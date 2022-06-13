@@ -125,16 +125,14 @@ QString Protocole::transaction(const QString & commande) {
 
 // Slot de lecture d'une trame
 void Protocole::lectureTrame(const QString & data) {
-
-    if(trame.isEmpty()){
+    this->trame.append(data);
+    /*if(trame.isEmpty()){
         this->trame=data;
     }
     else if(versionProtocole == HORIBA_APXX && trame.back()!=char(0x03)){
         this->trame.append(data);
-    }
-    if(((versionProtocole == HORIBA_APXX && trame.back()==char(0x03))||versionProtocole != HORIBA_APXX)){
-        qDebug()<<"Trame reçue : " << trame.toLatin1();
-    }
+    }*/
+    qDebug()<<"Trame reçue : " << data.toLatin1();
     this->flagEtatCom = ETAT_LECTURE;
 }
 

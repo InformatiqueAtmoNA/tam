@@ -246,7 +246,7 @@ void CommunicationSerie::write(const QString data) {
         qDebug() << "Problème lors de l'envoi de la trame" << baData;
         emit(this->transmissionError());        
     }
-    bool a =device->waitForBytesWritten();
+    device->waitForBytesWritten();
 }
 
 /////////////////
