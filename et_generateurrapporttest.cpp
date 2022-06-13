@@ -333,6 +333,12 @@ void et_GenerateurRapportTest::affichageValidation()
 {
 
     QList<QString> *Validation = this->m_bdHandler->getValidation(m_idTest);
+    if(Validation->isEmpty()){
+        QMessageBox msgBox;
+        msgBox.setText(QLatin1String("Erreur lors de la récupération des informations de validation"));
+        msgBox.exec();
+        return;
+    }
     this->ui->labelTestValide->setText(Validation->at(0));
 
 

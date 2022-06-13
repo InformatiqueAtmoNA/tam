@@ -61,7 +61,7 @@ void dlg_info_utilisateur::ButonModifierMDPClicked()
 
 void dlg_info_utilisateur::ButonValiderClicked()
 {
-    QString requete =QString("UPDATE operateur SET Mot_de_passe=%1 ").arg(this->ui->lineEdit_NouveauMDP->text());
+    QString requete =QString("UPDATE Operateur SET Mot_de_passe=%1 ").arg(this->ui->lineEdit_NouveauMDP->text());
     requete.append(QString("WHERE user_name=%1").arg('"' + this->user.user() + '"'));
     QSqlQuery query(requete);
     if(!query.exec()){
