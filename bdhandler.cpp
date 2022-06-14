@@ -238,13 +238,30 @@ QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel(const uint i
     return model;
 }
 
-QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(int nbRows)
+QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(QList<QString> liste_filtres)
 {
-    QString requete(QString("SELECT T.id_Test,M.me_designation,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut,T.etatValidation "
+    QString requete="SELECT T.id_Test,M.me_designation,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut,T.etatValidation "
                             "FROM Modele_Equipement M, Equipement E , Liste_Analyseurs_Test L, Test_Metrologique T "
-                            "WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement AND E.id_modele=M.id_modele "
-                            "order by T.date_debut DESC LIMIT %1").arg(nbRows));
+                            "WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement AND E.id_modele=M.id_modele ";
 
+    if(liste_filtres[0]!="AUCUN"){
+            requete.append(QString("AND M.me_designation=%1 ").arg(QChar(39)+ liste_filtres[0]+QChar(39)));
+    }
+    if(liste_filtres[1]!="AUCUN"){
+            requete.append(QString("AND T.id_Test LIKE %1 ").arg(QChar(39)+QLatin1Char('%')+liste_filtres[1]+"%"+QChar(39)));
+    }
+    if(liste_filtres[2]!="AUCUN"){
+            requete.append(QString("AND E.numero_serie LIKE %1 ").arg(QChar(39)+QLatin1Char('%')+liste_filtres[2]+"%"+QChar(39)));
+    }
+    if(liste_filtres[3]!="AUCUN"){
+            requete.append(QString("AND T.test_metro_type_test=%1 ").arg(QChar(39)+liste_filtres[3]+QChar(39)));
+    }
+    if(liste_filtres[4]!="AUCUN"){
+            requete.append(QString("AND T.etatValidation=%1 ").arg(QChar(39)+liste_filtres[4]+QChar(39)));
+    }
+
+    requete.append(QString("order by T.date_debut DESC LIMIT %1").arg(liste_filtres[5]));
+    qDebug() <<requete;
     QPointer<QSqlQueryModel> model = new QSqlQueryModel;
     model->setQuery(requete,m_baseMySql);
     model->setHeaderData(HOMEW_TABVIEW_TEST_ID_TEST, Qt::Horizontal, tr("Numero Test"));
@@ -770,7 +787,7 @@ void BdHandler::setSpanHandlerFromIdConcentration(ushort idConcentration, QStrin
     spanHandler->setSpanArguments(canal,record->value(CONCENTRATION_POINT).toUInt(),record->value(CONCENTRATION_OZONE).toUInt());
 }
 
-void BdHandler::ValiderTest(const uint idTest, QAuthenticator aUser)
+void BdHandler::ValiderTest(const uint idTest, QAuthenticator aUser, ushort idAnalyseur)
 {
     QString getIdOperateur =QString("SELECT * FROM Operateur WHERE user_name=%1").arg('"' + aUser.user()+'"');
     QString idOperateur=this->getTableRow(getIdOperateur)->value(OPERATEUR_ID).toString();
@@ -779,12 +796,18 @@ void BdHandler::ValiderTest(const uint idTest, QAuthenticator aUser)
     QString strRequete = QString("UPDATE Test_Metrologique SET datevalidation=%1 ").arg('"'+ date+'"');
     strRequete.append(QLatin1String(",etatValidation =")+"'"+"VALIDE" +"'");
     strRequete.append(QString(",id_operateur_validation=%1").arg(idOperateur));
-    strRequete.append(QString(" WHERE id_test=%1").arg(idTest));
+    strRequete.append(QString(" WHERE id_test=%1 AND ").arg(idTest));
     QSqlQuery requete;
+    qDebug() << strRequete;
     requete.exec(strRequete);
+    /*QString strRequete2 = "INSERT INTO Validation_Test(id_analyseur,id_operateur,date_validation,etat_validation) VALUES(";
+    strRequete.append(QString::number(idAnalyseur)+","+idOperateur+"," + '"'+date+'"' + "," + '"'+"VALIDE"+'"' +")");
+    strRequete.append("ON DUPLICATE KEY UPDATE idOperateur="+idOperateur+ ",datevalidation="+'"'+date+'"'+",etatValidation='VALIDE'");
+    QSqlQuery requete2;
+    requete.exec(strRequete);*/
 }
 
-void BdHandler::InvaliderTest(const uint idTest, QAuthenticator aUser)
+void BdHandler::InvaliderTest(const uint idTest, QAuthenticator aUser, ushort idAnalyseur)
 {
     QString getIdOperateur =QString("SELECT * FROM Operateur WHERE user_name=%1").arg('"' + aUser.user()+'"');
     QString idOperateur=this->getTableRow(getIdOperateur)->value(OPERATEUR_ID).toString();

@@ -44,6 +44,13 @@
           </spacer>
          </item>
          <item>
+          <widget class="QPushButton" name="button_Quitter">
+           <property name="text">
+            <string>Quitter</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="button_ExecuterTests">
            <property name="text">
             <string>&amp;Exécuter les tests</string>
@@ -126,13 +133,6 @@
            </item>
            <item row="1" column="1">
             <layout class="QVBoxLayout" name="verticalLayout">
-             <item>
-              <widget class="QPushButton" name="button_Quitter">
-               <property name="text">
-                <string>Quitter</string>
-               </property>
-              </widget>
-             </item>
              <item>
               <widget class="QPushButton" name="button_AjouterTest">
                <property name="text">

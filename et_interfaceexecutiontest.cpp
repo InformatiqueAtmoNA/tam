@@ -698,6 +698,8 @@ void et_InterfaceExecutionTest::buttonTestSondeClicked()
     sonde->setVersionProtocole(protocole);
     sonde->setTimeOut(750);
 
+    // une demande pour alumer l'appareil et une autre pour recupérer une trame complète
+    sonde->demandeAlarme();
     sonde->demandeAlarme();
 
     sonde->quitter();

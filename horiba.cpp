@@ -4,6 +4,16 @@
 horiba::horiba(const QString & adressePeriph,const TypePeripherique & typePeriph)
 {
     this->adresse=adressePeriph;
+    if(adresse.size()==1){
+        adresse.prepend('0');
+    }
+
+    if(adresse.isNull()){
+        QMessageBox msgBox;
+        msgBox.setText(QLatin1String("L'appareil n'a pas d'adresse attribuée, l'adresse 01 va lui être attribué par défault"));
+        msgBox.exec();
+        adresse="01";
+    }
 }
 
 bool horiba::init()
@@ -200,8 +210,7 @@ QMap<QString,QString> horiba::getInformationFromResponse(QString reponse)
         QString caution = liste[6];
         QString alarme = liste[7];
         alarme.remove(char(0x03));
-        alarme.remove(alarme.back());
-        alarme.remove(alarme.back());
+        alarme.remove(char(alarme.count()-2),2);
 
         map["header"]=header;
         map["error"]=error;

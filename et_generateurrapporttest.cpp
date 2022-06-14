@@ -147,13 +147,13 @@ void et_GenerateurRapportTest::buttonFermerClicked()
 
 void et_GenerateurRapportTest::buttonValiderClicked()
 {
-    this->m_bdHandler->ValiderTest(m_idTest,m_User);
+    this->m_bdHandler->ValiderTest(m_idTest,m_User,m_idAnalyseur);
     affichageValidation();
 }
 
 void et_GenerateurRapportTest::buttonInvaliderClicked()
 {
-    this->m_bdHandler->InvaliderTest(m_idTest, m_User);
+    this->m_bdHandler->InvaliderTest(m_idTest, m_User, m_idAnalyseur);
     affichageValidation();
 }
 
@@ -333,7 +333,7 @@ void et_GenerateurRapportTest::affichageValidation()
 {
 
     QList<QString> *Validation = this->m_bdHandler->getValidation(m_idTest);
-    if(Validation->isEmpty()){
+    if(Validation->isEmpty() || Validation->size()<3){
         QMessageBox msgBox;
         msgBox.setText(QLatin1String("Erreur lors de la récupération des informations de validation"));
         msgBox.exec();

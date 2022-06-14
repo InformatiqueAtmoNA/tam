@@ -53,7 +53,7 @@ public:
     QPointer<QSqlRelationalTableModel> getSystemeEtalonModel(const uint idSystemeEtalon=0);
     QPointer<QSqlRelationalTableModel> getPolluantAssocieModel(const uint idEquipement);
     QPointer<QSqlRelationalTableModel> getConcentrationAssocieeModel(const uint idConcentration=0);
-    QPointer<QSqlQueryModel> getTestRapportModel(int nbRows);
+    QPointer<QSqlQueryModel> getTestRapportModel(QList<QString> liste_filtres);
     QPointer<QSqlQueryModel> getEquipementFiltreParModele(const QString & filtre);
     QPointer<QSqlQueryModel> getPolluantsParSystemeEtalon(const uint idSystemeEtalon,const bool filtrerRdf=false);
     QPointer<QSqlTableModel> getSystemeEtalonModelSansRelation();
@@ -104,8 +104,8 @@ public:
     bool insertIntoMesure(const MesureInfo mesuresInfos);
     void setSpanHandlerFromIdConcentration(ushort idConcentration, QString canal, SpanHandler* spanHandler);
 
-    void ValiderTest(const uint idTest,QAuthenticator aUser);
-    void InvaliderTest(const uint idTest, QAuthenticator aUser);
+    void ValiderTest(const uint idTest,QAuthenticator aUser, ushort idAnalyseur);
+    void InvaliderTest(const uint idTest, QAuthenticator aUser, ushort idAnalyseur);
     QList<QString>* getValidation(const ushort idTest);
 
 Q_SIGNALS:

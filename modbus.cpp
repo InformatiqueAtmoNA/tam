@@ -126,7 +126,22 @@ void Modbus::passageZero(){}
 
 void Modbus::passageEtalon(){}
 
-void Modbus::passageMesure(){}
+void Modbus::passageMesure(){
+    uint16_t adr_high = 0x00;
+    uint16_t adr_low = 0x30;
+    QByteArray adr_registres;
+    adr_registres.append(adr_high);
+    adr_registres.append(adr_low);
+
+    uint16_t nrb_reg_high = 0x00;
+    uint16_t nrb_reg_low = 0x01;
+    QByteArray nbrRegistres;
+    nbrRegistres.append(nrb_reg_high);
+    nbrRegistres.append(nrb_reg_low);
+
+    QString cmd = *(this->creerTrameCommande(adr_registres, nbrRegistres));
+    QString reponse = this->transaction(cmd);
+}
 
 const QVector<Commandes> *Modbus::getListeCommandes(){}
 

@@ -49,7 +49,7 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent, int* index
     connect(this->ui->nb_Ligne_Affichees,SIGNAL(returnPressed()),this,SLOT(buttonValiderFiltreClicked()));
 
     this->ui->nb_Ligne_Affichees->setText("20");
-    this->ui->checkBoxFavoris->setCheckState(Qt::Unchecked);
+
     this->ui->button_Executer->setEnabled(false);
     this->ui->button_Modifier->setEnabled(false);
     this->ui->button_Supprimer->setEnabled(false);
@@ -64,6 +64,7 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent, int* index
 
     this->getListeTests();
     this->getListeRapports();
+    this->ui->checkBoxFavoris->setCheckState(Qt::Checked);
 }
 
 HomeWidget::~HomeWidget()
@@ -108,40 +109,37 @@ void HomeWidget::getListeTests()
 
 void HomeWidget::getListeRapports()
 {
-            m_modelRapport = this->m_bdHandler->getTestRapportModel(this->ui->nb_Ligne_Affichees->text().toInt());
+            QList<QString> m_liste_filtres;
+            m_liste_filtres.append(this->ui->cb_modele_equipement->currentText());
+            if(this->ui->filtre_num_test->text().isEmpty()){
+                m_liste_filtres.append("AUCUN");
+            }
+            else{
+                m_liste_filtres.append(this->ui->filtre_num_test->text());
+            }
+            if(this->ui->filtre_num_equipement->text().isEmpty()){
+                m_liste_filtres.append("AUCUN");
+            }
+            else{
+                m_liste_filtres.append(this->ui->filtre_num_equipement->text());
+            }
+            m_liste_filtres.append(this->ui->cb_type_test->currentText());
+            m_liste_filtres.append(this->ui->cb_validite->currentText());
+            if(this->ui->nb_Ligne_Affichees->text().isEmpty()){
+                m_liste_filtres.append("0");
+            }
+            else{
+                m_liste_filtres.append(this->ui->nb_Ligne_Affichees->text());
+            }
+
+            m_modelRapport = this->m_bdHandler->getTestRapportModel(m_liste_filtres);
 
             m_modelRapport->setParent(this);
-            QSortFilterProxyModel *filter = new QSortFilterProxyModel;
 
+            QSortFilterProxyModel *filter = new QSortFilterProxyModel;
             filter->setSourceModel(m_modelRapport);
             this->ui->tableView_TestRapport->setModel(filter);
 
-            for(int i=0 ; i <= m_modelRapport->rowCount(); i++)
-            {
-                this->ui->tableView_TestRapport->setRowHidden(i,false);
-                QSqlRecord record = m_modelRapport->record(i);
-                QString modeleEquipement = record.value(HOMEW_TABVIEW_TEST_MODELE_EQUIPEMENT).toString();
-                QString numeroTest = record.value(HOMEW_TABVIEW_TEST_ID_TEST).toString();
-                QString numeroEquipement = record.value(HOMEW_TABVIEW_TEST_NO_EQUIP).toString();
-                QString typeTest = record.value(HOMEW_TABVIEW_TEST_TYPE_TEST).toString();
-                QString validation = record.value(HOMEW_TABVIEW_TEST_VALIDATION).toString();
-
-                if(!this->ui->filtre_num_test->text().isEmpty() and !numeroTest.contains(this->ui->filtre_num_test->text())){
-                     this->ui->tableView_TestRapport->setRowHidden(i,true);
-                }
-                else if(!this->ui->filtre_num_equipement->text().isEmpty() and !numeroEquipement.contains(this->ui->filtre_num_equipement->text())){
-                    this->ui->tableView_TestRapport->setRowHidden(i,true);
-                }
-                else if(this->ui->cb_modele_equipement->currentText()!="AUCUN" and !modeleEquipement.contains(this->ui->cb_modele_equipement->currentText())){
-                    this->ui->tableView_TestRapport->setRowHidden(i,true);
-                }
-                else if(this->ui->cb_type_test->currentText()!="AUCUN" and !typeTest.contains(this->ui->cb_type_test->currentText())){
-                    this->ui->tableView_TestRapport->setRowHidden(i,true);
-                }
-                else if(this->ui->cb_validite->currentText()!="AUCUN" and !validation.contains(this->ui->cb_validite->currentText())){
-                    this->ui->tableView_TestRapport->setRowHidden(i,true);
-                }
-            }
             this->ui->tableView_TestRapport->setSortingEnabled(true);
             this->ui->tableView_TestRapport->setColumnHidden(HOMEW_TABVIEW_TEST_ID_EQUIP,true);
 
