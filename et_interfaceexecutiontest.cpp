@@ -522,6 +522,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
 
     connect(threadCommunication,SIGNAL(ouverturePort(bool)),this,SLOT(ouverturePortComAnalyseur(bool)));
     connect(analyseur,SIGNAL(erreurTransmission()),this,SLOT(erreurCommunicationAnalyseur()));
+    connect(analyseur,SIGNAL(transmissionOK()),this,SLOT(communicationSondeOK()));
 
     m_typeConnexion = equipementRecord->value(EQUIPEMENT_TYPE_CONNEXION).toString();
     m_IP =  equipementRecord->value(EQUIPEMENT_ADRESSE_IP).toString();
@@ -534,8 +535,6 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     else if(m_typeConnexion=="RS232"){
         threadCommunication->configureRS232(interface);
     }
-
-
 
     m_appareilEnTest = analyseur;
 
@@ -570,7 +569,6 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
     this->ui->button_TestSonde->setEnabled(true);
-    //m_listeEtatComAnalyseurs[idAnalyseur] = true;
 }
 
 void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
@@ -608,12 +606,11 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     m_numPort =  equipementRecord->value(EQUIPMENT_PORT_IP).toInt();
     m_typeSocket =  equipementRecord->value(EQUIPEMENT_TYPE_SOCKET).toString();
     m_appareilEnTest = calibrateur;
-    //QString typeConnexion = record->value(EQUIPEMENT_TYPE_CONNEXION).toString();
     QPointer<ThreadComHandler> threadCommunication = new ThreadComHandler(m_typeConnexion);
 
     connect(threadCommunication,SIGNAL(ouverturePort(bool)),this,SLOT(ouverturePortComCalibrateur(bool)));
     connect(calibrateur,SIGNAL(erreurTransmission()),this,SLOT(erreurCommunicationCalibrateur()));
-
+    connect(calibrateur,SIGNAL(transmissionOK()),this,SLOT(communicationSondeOK()));
 
     if(m_typeConnexion=="IP"){
         threadCommunication->configureIP(m_IP, m_numPort, m_typeSocket);
@@ -640,7 +637,6 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
     calibrateur->quitter();
     calibrateur->deleteLater();
     QCoreApplication::processEvents();
-    //m_etatComCalibrateur = true;
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
     this->ui->button_TestSonde->setEnabled(true);
@@ -706,7 +702,7 @@ void et_InterfaceExecutionTest::buttonTestSondeClicked()
     sonde->quitter();
     sonde->deleteLater();
     QCoreApplication::processEvents();
-    //m_etatComCalibrateur = true;
+
     this->ui->button_TestAnalyseur->setEnabled(true);
     this->ui->button_TestCalibrateur->setEnabled(true);
     this->ui->button_TestSonde->setEnabled(true);
@@ -795,6 +791,24 @@ void et_InterfaceExecutionTest::erreurCommunicationSonde()
 {
     m_etatComSonde = false;
     this->ui->label_EtatSonde->setText(QLatin1String("<font color=\"#FF0000\">Erreur de communication!</font>"));
+}
+
+void et_InterfaceExecutionTest::communicationAnalyseurOK()
+{
+    ushort idAnalyseur = ui->tableWidget_Analyseurs->itemAt(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_ANALYSEURS_ID_EQUIPEMENT)->text().toUInt();
+
+    m_listeEtatComAnalyseurs[idAnalyseur] = true;
+
+    QTableWidgetItem* itemCom_etat = new QTableWidgetItem("Communication OK");
+
+    itemCom_etat->setForeground(QColor(0,255,0)); // modifie
+    this->ui->tableWidget_Communication->setItem(m_idxCommunicationAnalyseurs.row(),ET_TABLEW_COMMUNICATION_ETAT_COM,itemCom_etat);
+}
+
+void et_InterfaceExecutionTest::communicationCalibrateurOK()
+{
+    m_etatComCalibrateur = true;
+    this->ui->label_EtatCalibrateur->setText(QLatin1String("<font color=\"#00FF00\">Communication OK</font>"));
 }
 
 void et_InterfaceExecutionTest::communicationSondeOK()

@@ -72,8 +72,8 @@
    <addaction name="menu_Fichier"/>
    <addaction name="menuTests_M_trologiques"/>
    <addaction name="menuBaseDonnees"/>
-   <addaction name="menu_Aide"/>
    <addaction name="menuEspace_Personnel"/>
+   <addaction name="menu_Aide"/>
   </widget>
   <action name="action_Fichier_Quitter">
    <property name="text">

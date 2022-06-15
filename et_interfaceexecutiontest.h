@@ -117,7 +117,9 @@ private Q_SLOTS:
     void lineEditInterfaceSondeEnterPressed();
     void erreurCommunicationAnalyseur();
     void erreurCommunicationCalibrateur();
-    void erreurCommunicationSonde();  
+    void erreurCommunicationSonde();
+    void communicationAnalyseurOK();
+    void communicationCalibrateurOK();
     void communicationSondeOK();
     void ouverturePortComAnalyseur(const bool ouverturePort);
     void ouverturePortComCalibrateur(const bool ouverturePort);

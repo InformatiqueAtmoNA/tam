@@ -28,6 +28,9 @@ void dlg_info_utilisateur::afficherInfo()
 {
     this->ui->label_5->hide();
     this->ui->lineEdit_NouveauMDP->hide();
+    this->ui->lineEdit_NouveauMDP->setEchoMode(QLineEdit::Password);
+    this->ui->label_MDP->setEchoMode(QLineEdit::Password);
+    this->ui->label_MDP->setDisabled(true);
     this->ui->Buton_valider->hide();
     QSqlRecord *record = bdhandler->getOperateurRow(this->user.user());
 

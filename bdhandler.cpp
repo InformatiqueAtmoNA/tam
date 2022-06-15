@@ -242,7 +242,7 @@ QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(QList<QString> liste_fil
 {
     QString requete="SELECT T.id_Test,M.me_designation,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut,IFNULL(V.etat_validation, 'EN ATTENTE') "
                             "FROM Modele_Equipement M, Equipement E, Test_Metrologique T, Liste_Analyseurs_Test L "
-                            "LEFT OUTER join validation_test V  ON V.id_test  = L.id_test AND V.id_analyseur = L.id_equipement "
+                            "LEFT OUTER join Validation_Test V  ON V.id_test  = L.id_test AND V.id_analyseur = L.id_equipement "
                             "WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement AND E.id_modele=M.id_modele ";
 
     if(liste_filtres[0]!="AUCUN"){
@@ -265,9 +265,6 @@ QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(QList<QString> liste_fil
             requete.append("AND V.etat_validation IS NULL ");
         }
     }
-
-
-
 
     requete.append(QString("order by T.date_debut DESC LIMIT %1").arg(liste_filtres[5]));
     qDebug() <<requete;
