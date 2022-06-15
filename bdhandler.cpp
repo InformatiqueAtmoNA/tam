@@ -258,8 +258,16 @@ QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(QList<QString> liste_fil
             requete.append(QString("AND T.test_metro_type_test=%1 ").arg(QChar(39)+liste_filtres[3]+QChar(39)));
     }
     if(liste_filtres[4]!="AUCUN"){
-            requete.append(QString("AND T.etatValidation=%1 ").arg(QChar(39)+liste_filtres[4]+QChar(39)));
+        if(liste_filtres[4]!="EN ATTENTE"){
+            requete.append(QString("AND V.etat_validation=%1 ").arg(QChar(39)+liste_filtres[4]+QChar(39)));
+        }
+        else if(liste_filtres[4]=="EN ATTENTE"){
+            requete.append("AND V.etat_validation IS NULL ");
+        }
     }
+
+
+
 
     requete.append(QString("order by T.date_debut DESC LIMIT %1").arg(liste_filtres[5]));
     qDebug() <<requete;
