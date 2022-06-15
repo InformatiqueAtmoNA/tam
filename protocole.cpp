@@ -105,6 +105,7 @@ QString Protocole::transaction(const QString & commande) {
         emit(this->erreurTransmission());
         return NULL;
     }
+    emit(this->transmissionOK());
     this->flagEtatCom = ETAT_REPOS;
 
     // Si erreur de commande

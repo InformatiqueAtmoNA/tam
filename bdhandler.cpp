@@ -240,8 +240,9 @@ QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel(const uint i
 
 QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(QList<QString> liste_filtres)
 {
-    QString requete="SELECT T.id_Test,M.me_designation,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut,T.etatValidation "
-                            "FROM Modele_Equipement M, Equipement E , Liste_Analyseurs_Test L, Test_Metrologique T "
+    QString requete="SELECT T.id_Test,M.me_designation,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut,IFNULL(V.etat_validation, 'EN ATTENTE') "
+                            "FROM Modele_Equipement M, Equipement E, Test_Metrologique T, Liste_Analyseurs_Test L "
+                            "LEFT OUTER join validation_test V  ON V.id_test  = L.id_test AND V.id_analyseur = L.id_equipement "
                             "WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement AND E.id_modele=M.id_modele ";
 
     if(liste_filtres[0]!="AUCUN"){
@@ -793,18 +794,10 @@ void BdHandler::ValiderTest(const uint idTest, QAuthenticator aUser, ushort idAn
     QString idOperateur=this->getTableRow(getIdOperateur)->value(OPERATEUR_ID).toString();
     QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
 
-    QString strRequete = QString("UPDATE Test_Metrologique SET datevalidation=%1 ").arg('"'+ date+'"');
-    strRequete.append(QLatin1String(",etatValidation =")+"'"+"VALIDE" +"'");
-    strRequete.append(QString(",id_operateur_validation=%1").arg(idOperateur));
-    strRequete.append(QString(" WHERE id_test=%1 AND ").arg(idTest));
+    QString strRequete = "REPLACE INTO Validation_Test(id_test,id_analyseur,id_operateur,date_validation,etat_validation) VALUES(";
+    strRequete.append(QString::number(idTest)+","+QString::number(idAnalyseur)+","+idOperateur+"," + '"'+date+'"' + "," + '"'+"VALIDE"+'"' +") ");
     QSqlQuery requete;
-    qDebug() << strRequete;
     requete.exec(strRequete);
-    /*QString strRequete2 = "INSERT INTO Validation_Test(id_analyseur,id_operateur,date_validation,etat_validation) VALUES(";
-    strRequete.append(QString::number(idAnalyseur)+","+idOperateur+"," + '"'+date+'"' + "," + '"'+"VALIDE"+'"' +")");
-    strRequete.append("ON DUPLICATE KEY UPDATE idOperateur="+idOperateur+ ",datevalidation="+'"'+date+'"'+",etatValidation='VALIDE'");
-    QSqlQuery requete2;
-    requete.exec(strRequete);*/
 }
 
 void BdHandler::InvaliderTest(const uint idTest, QAuthenticator aUser, ushort idAnalyseur)
@@ -813,25 +806,23 @@ void BdHandler::InvaliderTest(const uint idTest, QAuthenticator aUser, ushort id
     QString idOperateur=this->getTableRow(getIdOperateur)->value(OPERATEUR_ID).toString();
     QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
 
-    QString strRequete = QString("UPDATE Test_Metrologique SET datevalidation=%1 ").arg('"'+ date+ '"');
-    strRequete.append(QLatin1String(",etatValidation =")+"'"+"INVALIDE" +"'");
-    strRequete.append(QString(",id_operateur_validation=%1").arg(idOperateur));
-    strRequete.append(QString(" WHERE id_test=%1").arg(idTest));
+
+    QString strRequete = "REPLACE INTO Validation_Test(id_test,id_analyseur,id_operateur,date_validation,etat_validation) VALUES(";
+    strRequete.append(QString::number(idTest)+","+QString::number(idAnalyseur)+","+idOperateur+"," + '"'+date+'"' + "," + '"'+"INVALIDE"+'"' +") ");
     QSqlQuery requete;
     requete.exec(strRequete);
 }
 
 QList<QString> *BdHandler::getValidation(const ushort idTest)
 {
-    QSqlQuery requete(QString("SELECT etatValidation, id_operateur_validation, dateValidation FROM Test_Metrologique WHERE id_test=%1").arg(idTest));
+    QSqlQuery requete(QString("SELECT id_operateur, date_validation, etat_validation FROM Validation_Test WHERE id_test=%1").arg(idTest));
     QList<QString >*Liste=new QList<QString>;
     if(requete.next()) {
         QSqlRecord record = requete.record();
-        Liste->append(record.value("etatValidation").toString());
-        Liste->append(record.value("id_operateur_validation").toString());
-        Liste->append(record.value("dateValidation").toString());
+        Liste->append(record.value("etat_validation").toString());
+        Liste->append(record.value("id_operateur").toString());
+        Liste->append(record.value("date_validation").toString());
     }
-
     return Liste;
 }
 

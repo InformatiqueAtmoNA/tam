@@ -333,36 +333,39 @@ void et_GenerateurRapportTest::affichageValidation()
 {
 
     QList<QString> *Validation = this->m_bdHandler->getValidation(m_idTest);
-    if(Validation->isEmpty() || Validation->size()<3){
-        QMessageBox msgBox;
-        msgBox.setText(QLatin1String("Erreur lors de la récupération des informations de validation"));
-        msgBox.exec();
-        return;
+
+    if(Validation->size()<3){
+        this->ui->labelTestValide->setText("EN ATTENTE");
     }
-    this->ui->labelTestValide->setText(Validation->at(0));
+
+    if(Validation->size()==3){
+        this->ui->labelTestValide->setText(Validation->at(0));
+        if(Validation->at(0)!="EN ATTENTE"){
+            QString requete = QString("SELECT Nom, Prenom FROM Operateur WHERE id_operateur=%1").arg(Validation->at(1));
+            QSqlQuery query;
+            query.exec(requete);
+            QSqlRecord record=query.record();;
+            QString username;
+            if(query.next()){
+                record = query.record();
+                username=record.value(0).toString();
+                username.append(" "+record.value(1).toString());
+            }
+
+            this->ui->label_TestValide->show();
+            this->ui->label_ValidePar->show();
+            this->ui->labelValidePAr->show();
+            this->ui->labelValidePAr->setText(username);
 
 
-    if(Validation->at(0)!="EN ATTENTE"){
-        QString requete = QString("SELECT Nom, Prenom FROM Operateur WHERE id_operateur=%1").arg(Validation->at(1));
-        QSqlQuery query;
-        query.exec(requete);
-        QSqlRecord record=query.record();;
-        QString username;
-        if(query.next()){
-            record = query.record();
-            username=record.value(0).toString();
-            username.append(" "+record.value(1).toString());
+            this->ui->labelDateValidation->show();
+            this->ui->labelDateValidation->setText(Validation->at(2));
         }
-
-        this->ui->label_TestValide->show();
-        this->ui->label_ValidePar->show();
-        this->ui->labelValidePAr->show();
-        this->ui->labelValidePAr->setText(username);
-
-
-        this->ui->labelDateValidation->show();
-        this->ui->labelDateValidation->setText(Validation->at(2));
     }
+
+
+
+
 }
 
 bool et_GenerateurRapportTest::genererRapport()

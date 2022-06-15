@@ -686,6 +686,7 @@ void et_InterfaceExecutionTest::buttonTestSondeClicked()
 
     connect(threadCommunication,SIGNAL(ouverturePort(bool)),this,SLOT(ouverturePortComSonde(bool)));
     connect(sonde,SIGNAL(erreurTransmission()),this,SLOT(erreurCommunicationSonde()));
+    connect(sonde,SIGNAL(transmissionOK()),this,SLOT(communicationSondeOK()));
 
     if(m_typeConnexion=="IP"){
         threadCommunication->configureIP(m_IP, m_numPort, m_typeSocket);
@@ -794,6 +795,12 @@ void et_InterfaceExecutionTest::erreurCommunicationSonde()
 {
     m_etatComSonde = false;
     this->ui->label_EtatSonde->setText(QLatin1String("<font color=\"#FF0000\">Erreur de communication!</font>"));
+}
+
+void et_InterfaceExecutionTest::communicationSondeOK()
+{
+    m_etatComSonde = true;
+    this->ui->label_EtatSonde->setText(QLatin1String("<font color=\"#00FF00\">Communication OK</font>"));
 }
 
 void et_InterfaceExecutionTest::ouverturePortComAnalyseur(bool ouverturePort)
