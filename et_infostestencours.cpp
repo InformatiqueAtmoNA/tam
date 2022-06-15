@@ -554,11 +554,7 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_TEMP_MAX,QVariant::fromValue(paramsTest->m_test->getTempMax()));
     enregistrement.setValue(TEST_METRO_TEMP_MOYENNE,QVariant::fromValue(paramsTest->m_test->getTempMoyenne()));
     enregistrement.setValue(TEST_METRO_ID_SONDE,QVariant::fromValue(paramsTest->m_idSonde));
-
     enregistrement.setValue(TEST_METRO_PRESENCE_SONDE,QVariant::fromValue(presenceSonde));
-    enregistrement.setValue(TEST_METRO_DATE_VALIDATION,QVariant::fromValue(m_dateHeureDebut.toString("yyyy-MM-dd hh:mm:ss")));
-    enregistrement.setValue(TEST_METRO_ETAT_VALIDATION,QVariant::fromValue(QString("EN ATTENTE")));
-    enregistrement.setValue(TEST_METRO_ID_OPERATEUR_VALIDATION,QVariant::fromValue(paramsTest->m_idOperateur));
 
     model->insertRecord(-1,enregistrement);
     model->submitAll();
