@@ -78,29 +78,12 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     m_tabCritere.append (informationTest->value("critere1").toDouble());
     m_tabCritere.append(informationTest->value("critere2").toDouble());
     m_tabCritere.append(informationTest->value("critere3").toDouble());
+    m_tabCritere.append (informationTest->value("critere_temperature_min").toDouble());
+    m_tabCritere.append(informationTest->value("critere_temperature_max").toDouble());
+    m_tabCritere.append(informationTest->value("critere_variation").toDouble());
 
-    this->ui->labelTempMax->setText(informationTest->value("temperature_max").toString());
-    this->ui->labelTempMin->setText(informationTest->value("temperature_min").toString());
+    affichageCriteresTemperature(informationTest);
 
-    if(informationTest->value("sondePresente").toString() == "OUI"){
-        this->ui->label_Temp_max->show();
-        this->ui->labelTempMax->show();
-
-        this->ui->label_Temp_min->show();
-        this->ui->labelTempMin->show();
-
-        this->ui->label_Temp->setText("Temperature Moyenne : ");
-        this->ui->labelTemp->setText(informationTest->value("temperature_moyenne").toString());
-
-    }
-    else{
-
-        this->ui->label_Temp_max->hide();
-        this->ui->labelTempMax->hide();
-
-        this->ui->label_Temp_min->hide();
-        this->ui->labelTempMin->hide();
-    }
     affichageEquipement(m_idAnalyseur,"ANALYSEUR");
 
     QSqlRecord* systemEtalon = m_bdHandler->getSystemeEtalonRow(informationTest->value("id_systeme_etalon").toInt());
@@ -147,14 +130,34 @@ void et_GenerateurRapportTest::buttonFermerClicked()
 
 void et_GenerateurRapportTest::buttonValiderClicked()
 {
-    this->m_bdHandler->ValiderTest(m_idTest,m_User,m_idAnalyseur);
-    affichageValidation();
+    QMessageBox msgBox;
+    msgBox.setText(QLatin1String("Fermer ?"));
+    msgBox.setInformativeText(QLatin1String("Voulez-vous valider le test ?"));
+    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+
+    msgBox.defaultButton()->setText("Oui");
+
+    if(msgBox.exec()==QMessageBox::Ok) {
+        this->m_bdHandler->ValiderTest(m_idTest,m_User,m_idAnalyseur);
+        affichageValidation();
+    }
+
 }
 
 void et_GenerateurRapportTest::buttonInvaliderClicked()
 {
-    this->m_bdHandler->InvaliderTest(m_idTest, m_User, m_idAnalyseur);
-    affichageValidation();
+    QMessageBox msgBox;
+    msgBox.setText(QLatin1String("Fermer ?"));
+    msgBox.setInformativeText(QLatin1String("Voulez-vous invalider le test ?"));
+    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.defaultButton()->setText("OUI");
+
+    if(msgBox.exec()==QMessageBox::Ok) {
+        this->m_bdHandler->InvaliderTest(m_idTest, m_User, m_idAnalyseur);
+        affichageValidation();
+    }
 }
 
 //Mise en forme du tableau de mesure separe par phase identique par polluant
@@ -340,6 +343,16 @@ void et_GenerateurRapportTest::affichageValidation()
 
     if(Validation->size()==3){
         this->ui->labelTestValide->setText(Validation->at(0));
+
+        if(Validation->at(0)== "VALIDE"){
+            this->ui->Button_Valider->setDisabled(true);
+            this->ui->Button_Invalider->setDisabled(false);
+        }
+        else if(Validation->at(0)== "INVALIDE"){
+            this->ui->Button_Valider->setDisabled(false);
+            this->ui->Button_Invalider->setDisabled(true);
+        }
+
         if(Validation->at(0)!="EN ATTENTE"){
             QString requete = QString("SELECT Nom, Prenom FROM Operateur WHERE id_operateur=%1").arg(Validation->at(1));
             QSqlQuery query;
@@ -365,6 +378,59 @@ void et_GenerateurRapportTest::affichageValidation()
 
 
 
+
+}
+
+void et_GenerateurRapportTest::affichageCriteresTemperature(QSqlRecord* informationTest)
+{
+
+    if(informationTest->value("sondePresente").toString() == "OUI"){
+        float variation =informationTest->value("temperature_max").toFloat() - informationTest->value("temperature_min").toFloat();
+
+        this->ui->groupBox_temperature->show();
+
+        this->ui->lineEdit_Temp_min->setDisabled(true);
+        this->ui->lineEdit_Temp_max->setDisabled(true);
+        this->ui->lineEdit_Variation->setDisabled(true);
+        this->ui->lineEdit_crit_Temp_min->setDisabled(true);
+        this->ui->lineEdit_crit_Temp_max->setDisabled(true);
+        this->ui->lineEdit_crit_Variation->setDisabled(true);
+
+        this->ui->label_Temp->setText("Temperature Moyenne : ");
+        this->ui->labelTemp->setText(informationTest->value("temperature_moyenne").toString());
+        this->ui->lineEdit_Temp_min->setText(informationTest->value("temperature_min").toString());
+        this->ui->lineEdit_Temp_max->setText(informationTest->value("temperature_max").toString());
+        this->ui->lineEdit_Variation->setText(QString::number(variation));
+
+        this->ui->lineEdit_crit_Temp_min->setText(QString::number(m_tabCritere.value(3)));
+        this->ui->lineEdit_crit_Temp_max->setText(QString::number(m_tabCritere.value(4)));
+        this->ui->lineEdit_crit_Variation->setText(QString::number(m_tabCritere.value(5)));
+
+        if(this->ui->lineEdit_Temp_min->text().toFloat() > this->ui->lineEdit_crit_Temp_min->text().toFloat()){
+            this->ui->lineEdit_Temp_min->setStyleSheet("color: green;");
+        }
+        else{
+            this->ui->lineEdit_Temp_min->setStyleSheet("color: red;");
+        }
+
+        if(this->ui->lineEdit_Temp_max->text().toFloat() < this->ui->lineEdit_crit_Temp_max->text().toFloat()){
+            this->ui->lineEdit_Temp_max->setStyleSheet("color: green;");
+        }
+        else{
+            this->ui->lineEdit_Temp_max->setStyleSheet("color: red;");
+        }
+
+        if(this->ui->lineEdit_Variation->text().toFloat() < this->ui->lineEdit_crit_Variation->text().toFloat()){
+            this->ui->lineEdit_Variation->setStyleSheet("color: green;");
+        }
+        else{
+            this->ui->lineEdit_Variation->setStyleSheet("color: red;");
+        }
+
+    }
+    else{
+        this->ui->groupBox_temperature->hide();
+    }
 
 }
 

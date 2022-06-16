@@ -550,10 +550,15 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_CRITERE_2,QVariant::fromValue(paramsTest->m_test->getCritere2()));
     enregistrement.setValue(TEST_METRO_CRITERE_3,QVariant::fromValue(paramsTest->m_test->getCritere3()));
 
-    enregistrement.setValue(TEST_METRO_TEMP_MIN,QVariant::fromValue(paramsTest->m_test->getTempMin()));
+    enregistrement.setValue(TEST_METRO_CRITERE_TEMP_MIN,QVariant::fromValue(paramsTest->m_test->getCritere_Temp_min()));
+    enregistrement.setValue(TEST_METRO_CRITERE_TEMP_MAX,QVariant::fromValue(paramsTest->m_test->getCritere_Temp_max()));
+    enregistrement.setValue(TEST_METRO_CRITERE_VARIATION,QVariant::fromValue(paramsTest->m_test->getCritere_Variation()));
+    /*enregistrement.setValue(TEST_METRO_TEMP_MIN,QVariant::fromValue(paramsTest->m_test->getTempMin()));
     enregistrement.setValue(TEST_METRO_TEMP_MAX,QVariant::fromValue(paramsTest->m_test->getTempMax()));
-    enregistrement.setValue(TEST_METRO_TEMP_MOYENNE,QVariant::fromValue(paramsTest->m_test->getTempMoyenne()));
-    enregistrement.setValue(TEST_METRO_ID_SONDE,QVariant::fromValue(paramsTest->m_idSonde));
+    enregistrement.setValue(TEST_METRO_TEMP_MOYENNE,QVariant::fromValue(paramsTest->m_test->getTempMoyenne()));*/
+    if(paramsTest->m_idSonde!=0){
+        enregistrement.setValue(TEST_METRO_ID_SONDE,QVariant::fromValue(paramsTest->m_idSonde));
+    }
     enregistrement.setValue(TEST_METRO_PRESENCE_SONDE,QVariant::fromValue(presenceSonde));
 
     model->insertRecord(-1,enregistrement);

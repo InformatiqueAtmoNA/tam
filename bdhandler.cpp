@@ -242,7 +242,7 @@ QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(QList<QString> liste_fil
 {
     QString requete="SELECT T.id_Test,M.me_designation,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut,IFNULL(V.etat_validation, 'EN ATTENTE') "
                             "FROM Modele_Equipement M, Equipement E, Test_Metrologique T, Liste_Analyseurs_Test L "
-                            "LEFT OUTER join Validation_Test V  ON V.id_test  = L.id_test AND V.id_analyseur = L.id_equipement "
+                            "LEFT OUTER join validation_test V  ON V.id_test  = L.id_test AND V.id_analyseur = L.id_equipement "
                             "WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement AND E.id_modele=M.id_modele ";
 
     if(liste_filtres[0]!="AUCUN"){
@@ -671,8 +671,9 @@ ushort BdHandler::getIdCalibrateur(const uint idSystemeEtalon)
 QSqlRecord* BdHandler::getInformationsTest(const ushort idTest)
 {
     QString strequete = QString("SELECT TM.id_test, TM.test_metro_type_test, O.Nom, O.Prenom, L.designation, TM.pression,");
-    strequete.append("TM.temperature, TM.date_debut, TM.date_fin, TM.id_systeme_etalon, TM.tps_acquisition ,TM.critere1 , TM.critere2, TM.critere3, TM.temperature_min,");
-    strequete.append("TM.temperature_max, TM.temperature_moyenne, TM.id_sonde, TM.sondePresente FROM Test_Metrologique TM, Operateur O, Lieu L");
+    strequete.append("TM.temperature, TM.date_debut, TM.date_fin, TM.id_systeme_etalon, TM.tps_acquisition ,TM.critere1 , TM.critere2, TM.critere3, ");
+    strequete.append("TM.critere_temperature_min, TM.critere_temperature_max, TM.critere_variation, ");
+    strequete.append("TM.temperature_min, TM.temperature_max, TM.temperature_moyenne, TM.id_sonde, TM.sondePresente FROM Test_Metrologique TM, Operateur O, Lieu L");
     strequete.append(QString (" WHERE TM.id_operateur = O.id_operateur AND TM.id_lieu = L.id_lieu AND TM.id_test =%1").arg(idTest));
 
     return getTableRow(strequete);

@@ -522,7 +522,7 @@ void et_InterfaceExecutionTest::buttonTestAnalyseurClicked()
 
     connect(threadCommunication,SIGNAL(ouverturePort(bool)),this,SLOT(ouverturePortComAnalyseur(bool)));
     connect(analyseur,SIGNAL(erreurTransmission()),this,SLOT(erreurCommunicationAnalyseur()));
-    connect(analyseur,SIGNAL(transmissionOK()),this,SLOT(communicationSondeOK()));
+    connect(analyseur,SIGNAL(transmissionOK()),this,SLOT(communicationAnalyseurOK()));
 
     m_typeConnexion = equipementRecord->value(EQUIPEMENT_TYPE_CONNEXION).toString();
     m_IP =  equipementRecord->value(EQUIPEMENT_ADRESSE_IP).toString();
@@ -610,7 +610,7 @@ void et_InterfaceExecutionTest::buttonTestCalibrateurClicked()
 
     connect(threadCommunication,SIGNAL(ouverturePort(bool)),this,SLOT(ouverturePortComCalibrateur(bool)));
     connect(calibrateur,SIGNAL(erreurTransmission()),this,SLOT(erreurCommunicationCalibrateur()));
-    connect(calibrateur,SIGNAL(transmissionOK()),this,SLOT(communicationSondeOK()));
+    connect(calibrateur,SIGNAL(transmissionOK()),this,SLOT(communicationCalibrateurOK()));
 
     if(m_typeConnexion=="IP"){
         threadCommunication->configureIP(m_IP, m_numPort, m_typeSocket);

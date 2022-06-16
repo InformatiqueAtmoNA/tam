@@ -77,6 +77,9 @@ private Q_SLOTS:
     inline void doubleSpinBox_Critere1(const double value) {this->m_test->setCritere1(value);}
     inline void doubleSpinBox_Critere2(const double value) {this->m_test->setCritere2(value);}
     inline void doubleSpinBox_Critere3(const double value) {this->m_test->setCritere3(value);}
+    inline void doubleSpinBox_Critere_Temp_min(const double value) {this->m_test->setCritere_Temp_min(value);}
+    inline void doubleSpinBox_Critere_Temp_max(const double value) {this->m_test->setCritere_Temp_max(value);}
+    inline void doubleSpinBox_Critere_Variation(const double value) {this->m_test->setCritere_Variation(value);}
 
     void button_AjouterPhaseClicked();
     void button_InsererPhaseClicked();

@@ -341,7 +341,7 @@
            <item row="2" column="6">
             <widget class="QPushButton" name="button_Valider">
              <property name="text">
-              <string>Valider</string>
+              <string>Filtrer</string>
              </property>
             </widget>
            </item>

@@ -7,7 +7,7 @@ QT += sql \
     serialport \
     statemachine \
     core \
-    network
+    network \
 
 TARGET = TAM
 TEMPLATE = app

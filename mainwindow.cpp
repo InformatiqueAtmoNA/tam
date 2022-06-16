@@ -306,13 +306,21 @@ void MainWindow::connexion()
     this->m_user=dlg_Authentification.getUser();
 
     QSqlRecord *record = this->m_bdHandler->getOperateurRow(this->m_user.user());
-    if(record->value(OPERATEUR_ADMIN).toInt()!=1){
-        this->ui->action_Parametres->setDisabled(true);
-        this->ui->actionDlgOperateur->setDisabled(true);
+    if(!record->value(OPERATEUR_ADMIN).isNull()){
+        if(record->value(OPERATEUR_ADMIN).toInt()!=1){
+            this->ui->action_Parametres->setDisabled(true);
+            this->ui->actionDlgOperateur->setDisabled(true);
+        }
+        else{
+            this->ui->action_Parametres->setDisabled(false);
+            this->ui->actionDlgOperateur->setDisabled(false);
+        }
     }
     else{
-        this->ui->action_Parametres->setDisabled(false);
-        this->ui->actionDlgOperateur->setDisabled(false);
+        QMessageBox msgBox;
+        msgBox.setText(QLatin1String("Fermer ?"));
+        msgBox.setInformativeText(QLatin1String("Il semblerait que vous n'ayez aucun droit de configuré en base, l'application va se fermer pour éviter tout bug"));
+        exit(0);
     }
 
 }

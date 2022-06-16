@@ -95,6 +95,7 @@ private:
     void affichageTableauTpsReponse ();
     void affichageEquipement(ushort idEquipement,QString nomLigne);
     void affichageValidation();
+    void affichageCriteresTemperature(QSqlRecord* informationTest);
     bool genererRapport();
     bool genererRapportRepetabilite();
     bool genererRapportLinearite();

@@ -67,8 +67,12 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     connect(this->ui->button_fichierXML,SIGNAL(clicked()),this,SLOT(button_choixEnregistrementXML()));
     connect(this->ui->doubleSpinBox_critere1,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere1(double)));
     connect(this->ui->doubleSpinBox_critere2,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere2(double)));
-    connect(this->ui->checkBoxFavori,SIGNAL(stateChanged(int)),this,SLOT(favoriBoxChecked(int)));
     connect(this->ui->doubleSpinBox_critere3,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere3(double)));
+    connect(this->ui->doubleSpinBox_crit_temp_min,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere_Temp_min(double)));
+    connect(this->ui->doubleSpinBox_crit_temp_max,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere_Temp_max(double)));
+    connect(this->ui->doubleSpinBox_crit_variation_temp,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere_Variation(double)));
+    connect(this->ui->checkBoxFavori,SIGNAL(stateChanged(int)),this,SLOT(favoriBoxChecked(int)));
+
 
     this->ui->button_InsererPhase->setEnabled(false);
     this->ui->button_SupprimerPhase->setEnabled(false);
@@ -138,6 +142,9 @@ void CreationTest::initialiserChamps()
     this->ui->doubleSpinBox_critere1->setValue(this->m_test->getCritere1());
     this->ui->doubleSpinBox_critere2->setValue(this->m_test->getCritere2());
     this->ui->doubleSpinBox_critere3->setValue(this->m_test->getCritere3());
+    this->ui->doubleSpinBox_crit_temp_min->setValue(this->m_test->getCritere_Temp_min());
+    this->ui->doubleSpinBox_crit_temp_max->setValue(this->m_test->getCritere_Temp_max());
+    this->ui->doubleSpinBox_crit_variation_temp->setValue(this->m_test->getCritere_Variation());
 
     QPointer<QSqlRelationalTableModel> model = this->m_bdHandler->getSystemeEtalonModel();
 
