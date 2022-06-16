@@ -100,11 +100,25 @@ public:
     ///////////////////////////////////////////////////////////////////////////*/
     virtual SpanHandler* getSpanHandler(Commandes commandeSpan);
 
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn virtual void demandeDateHeure()
+    // \brief Demande la date et l'heure
+    //
+    // \return QDateTime* Date et heure du périphérique
+    ///////////////////////////////////////////////////////////////////////////*/
     virtual QDateTime *demandeDateHeure();
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn QMap<QString,QString> getInformationFromResponse(QString reponse);
+    // \brief Découpe la tame et renvoie les mesures récupérées
+    //
+    // \return QMap<QString,QString> Liste des informations récupérées
+    ///////////////////////////////////////////////////////////////////////////*/
     QMap<QString,QString> getInformationFromResponse(QString reponse);
 
 private :
-    QString adresse;
+    QString adresse; // adresse de l'équipement
+    TypePeripherique typePeriph;
 };
 
 #endif // HORIBA_H

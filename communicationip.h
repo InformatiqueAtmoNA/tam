@@ -22,23 +22,68 @@ class CommunicationIP: public QObject
     public :
 
         CommunicationIP();
+        /*
+         * Définition du port de connexion IP
+        */
         void setPort(quint16 newPort);
+
+        /*
+         * Définition de l'adresse IP
+        */
         void setAddr(QString newAddr);
+
+        /*
+         * Définition du type de socket TCP/UDP
+        */
         void setTypeSocket(QString newTypeSocket);
+
+        /*
+         * Connexion entre deux appareils
+        */
         void bindToHost();
+
+        /*
+         * Vérification que le canal de communication est ouvert
+        */
         bool isOpen();
-        void close();    
+
+        /*
+         * Fermeture du canal de communication
+        */
+        void close();
+
+        /*
+         * Retourne l'état de la connexion
+        */
         bool getEtatConnexion() const;
 
 public Q_SLOTS :
 
+        /*
+         * Envoie d'une trame
+        */
         void send_Trame(QString trame);
+
+        /*
+         * Confirme la connexion
+        */
         void connexion_OK();
+
+        /*
+         * Prévient d'une perte de connexion
+        */
         void connexion_perdue();
+
+        /*
+         * Lecture des données reçues
+        */
         void socketRead();
 
     signals :
 
+        /*
+         * Prévient que les données ont été reçues
+        */
         void dataReceived(QString trame);
 
 };

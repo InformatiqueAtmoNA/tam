@@ -1146,7 +1146,7 @@ D'export des mesures brutes :</string>
        <item>
         <widget class="QPushButton" name="button_Annuler">
          <property name="text">
-          <string>&amp;Annuler</string>
+          <string>&amp;Quitter</string>
          </property>
         </widget>
        </item>

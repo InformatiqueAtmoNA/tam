@@ -35,6 +35,8 @@ void dlg_info_utilisateur::afficherInfo()
     QSqlRecord *record = bdhandler->getOperateurRow(this->user.user());
 
     this->ui->label_Nom->setText(record->value(OPERATEUR_NOM).toString());
+
+    // vérification des droits
     this->ui->label_Prenom->setText(record->value(OPERATEUR_PRENOM).toString());
     if(record->value(OPERATEUR_ADMIN).toInt()==1){
         this->ui->label_Droits->setText("Administrateur");
@@ -47,8 +49,10 @@ void dlg_info_utilisateur::afficherInfo()
     this->ui->label_MDP->setText(user.password());
 }
 
+//////
+///  SLOTS
+///////
 
-// Q_SLOTS
 
 void dlg_info_utilisateur::butonFermerClicked()
 {

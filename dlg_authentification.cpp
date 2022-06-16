@@ -46,6 +46,10 @@ const QAuthenticator &dlg_Authentification::getUser() const
     return user;
 }
 
+/////////
+/// SLOTS
+//////////
+
 void dlg_Authentification::butonValiderClicked(){
 
     if(this->ui->checkBox->checkState()==Qt::Checked){

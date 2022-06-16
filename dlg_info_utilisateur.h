@@ -18,6 +18,7 @@ public:
     explicit dlg_info_utilisateur(QAuthenticator aUser,const QPointer<BdHandler> bdHandler = new BdHandler(), QWidget *parent = nullptr);
     ~dlg_info_utilisateur();
 
+    //Récupération des informations de l'utilisateur
     const QAuthenticator &getUser() const;
     void afficherInfo();
 private:

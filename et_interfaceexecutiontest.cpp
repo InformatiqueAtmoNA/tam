@@ -887,7 +887,6 @@ void et_InterfaceExecutionTest::buttonExecuterClicked()
 
     ui->button_Precedent->setEnabled(true);
     ui->button_Executer->setEnabled(true);
-    ui->button_MettreEnAttente->setEnabled(true);
 }
 
 void et_InterfaceExecutionTest::buttonMettreEnAttenteClicked() {

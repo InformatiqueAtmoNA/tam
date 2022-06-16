@@ -4,6 +4,7 @@
 horiba::horiba(const QString & adressePeriph,const TypePeripherique & typePeriph)
 {
     this->adresse=adressePeriph;
+    this->typePeriph =typePeriph;
     if(adresse.size()==1){
         adresse.prepend('0');
     }
@@ -109,10 +110,11 @@ void horiba::passageMesure()
     QString reponse = transaction(*trame);
 }
 
+// non utilisé puisque aucun diluteur horiba n'est présent chez ATMO
 const QVector<Commandes> *horiba::getListeCommandes()
 {
     QVector<Commandes>* commandesAutorisees;
-    /*if(this->typePeripherique == ANALYSEUR){
+    if(this->typePeripherique == ANALYSEUR){
         commandesAutorisees = new QVector<Commandes>(5);
         (*commandesAutorisees)[0] = MESURES;
         (*commandesAutorisees)[1] = ALARME;
@@ -120,7 +122,7 @@ const QVector<Commandes> *horiba::getListeCommandes()
         (*commandesAutorisees)[3] = MODE_ETALON;
         (*commandesAutorisees)[4] = MODE_MESURE;
     }
-    else{
+    /*else{
         commandesAutorisees = new QVector<Commandes>(6);
         (*commandesAutorisees)[0] = STAND_BY;
         (*commandesAutorisees)[1] = ALARME;
@@ -133,6 +135,7 @@ const QVector<Commandes> *horiba::getListeCommandes()
     return commandesAutorisees;
 }
 
+// non utilisé puisque aucun diluteur horiba n'est présent chez ATMO
 SpanHandler *horiba::getSpanHandler(Commandes commandeSpan)
 {
     SpanHandler* infosCommandeSpan = new SpanHandler();
@@ -186,6 +189,8 @@ QMap<QString,QString> horiba::getInformationFromResponse(QString reponse)
 
     reponse.remove(' ');
     QStringList liste;
+
+    // si la réponse est complète
     if(reponse.contains(',')){
         liste = reponse.split(',');
 
@@ -222,6 +227,7 @@ QMap<QString,QString> horiba::getInformationFromResponse(QString reponse)
         map["caution"]=caution;
         map["alarme"]=alarme;
     }
+    // si la réponse ne contient que le header
     else{
         QString header = reponse.mid(1,10);
         QString error =  reponse.mid(12,2);
