@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>670</height>
+    <width>1041</width>
+    <height>574</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <item>
       <widget class="QTabWidget" name="tabWidget_ExecutionTest">
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="Page_Parametres">
         <attribute name="title">
@@ -37,8 +37,8 @@
            <property name="title">
             <string>Paramètres d'exécution :</string>
            </property>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="0" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_10">
+            <item>
              <layout class="QHBoxLayout" name="horizontalLayout">
               <property name="sizeConstraint">
                <enum>QLayout::SetDefaultConstraint</enum>
@@ -55,6 +55,18 @@
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>230</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>230</width>
+                      <height>22</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>Fichier de description :</string>
                     </property>
@@ -68,10 +80,35 @@
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>229</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>229</width>
+                      <height>22</height>
+                     </size>
+                    </property>
                     <property name="readOnly">
                      <bool>true</bool>
                     </property>
                    </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_8">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -79,13 +116,51 @@
                  <layout class="QHBoxLayout" name="horizontalLayout_7">
                   <item>
                    <widget class="QLabel" name="label_Operateur">
+                    <property name="minimumSize">
+                     <size>
+                      <width>230</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>230</width>
+                      <height>22</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>Opérateur :</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QComboBox" name="comboBox_Operateur"/>
+                   <widget class="QComboBox" name="comboBox_Operateur">
+                    <property name="minimumSize">
+                     <size>
+                      <width>229</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>229</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_9">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -93,13 +168,51 @@
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
                   <item>
                    <widget class="QLabel" name="label_Lieu">
+                    <property name="minimumSize">
+                     <size>
+                      <width>230</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>230</width>
+                      <height>22</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>Lieu :</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QComboBox" name="comboBox_Lieu"/>
+                   <widget class="QComboBox" name="comboBox_Lieu">
+                    <property name="minimumSize">
+                     <size>
+                      <width>229</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>229</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_10">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -203,6 +316,19 @@
                   </item>
                  </layout>
                 </item>
+                <item>
+                 <spacer name="verticalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                </layout>
               </item>
               <item>
@@ -233,6 +359,18 @@
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>150</width>
+                      <height>29</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>150</width>
+                      <height>29</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>Type de test :</string>
                     </property>
@@ -251,26 +389,124 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <spacer name="horizontalSpacer_11">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                  </layout>
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_3">
                   <item>
                    <widget class="QLabel" name="label_Temperature">
+                    <property name="minimumSize">
+                     <size>
+                      <width>150</width>
+                      <height>29</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>150</width>
+                      <height>29</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>Température :</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="doubleSpinBox_Temperature">
-                    <property name="maximum">
-                     <double>1000000000.000000000000000</double>
+                   <spacer name="horizontalSpacer_8">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
                     </property>
-                    <property name="value">
-                     <double>20.000000000000000</double>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
                     </property>
-                   </widget>
+                   </spacer>
+                  </item>
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_10">
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_2">
+                      <item>
+                       <widget class="QPushButton" name="ajouterSonde">
+                        <property name="maximumSize">
+                         <size>
+                          <width>125</width>
+                          <height>24</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>Ajouter une sonde</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="supprimerSonde">
+                        <property name="maximumSize">
+                         <size>
+                          <width>75</width>
+                          <height>24</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>Supprimer</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_Sonde">
+                      <property name="maximumSize">
+                       <size>
+                        <width>300</width>
+                        <height>24</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="doubleSpinBox_Temperature">
+                      <property name="maximum">
+                       <double>1000000000.000000000000000</double>
+                      </property>
+                      <property name="value">
+                       <double>20.000000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_12">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -278,6 +514,18 @@
                  <layout class="QHBoxLayout" name="horizontalLayout_5">
                   <item>
                    <widget class="QLabel" name="label_Pression">
+                    <property name="minimumSize">
+                     <size>
+                      <width>150</width>
+                      <height>29</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>150</width>
+                      <height>29</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>Pression :</string>
                     </property>
@@ -293,6 +541,19 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <spacer name="horizontalSpacer_13">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                  </layout>
                 </item>
                 <item>
@@ -304,6 +565,18 @@
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>193</width>
+                      <height>32</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>216</width>
+                      <height>32</height>
+                     </size>
                     </property>
                     <property name="text">
                      <string>Nom du fichier CSV 
@@ -328,9 +601,55 @@ D'export des mesures brutes :</string>
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <spacer name="horizontalSpacer_14">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                  </layout>
                 </item>
+                <item>
+                 <spacer name="verticalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <layout class="QVBoxLayout" name="affichageInfoTests"/>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_15">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -356,7 +675,7 @@ D'export des mesures brutes :</string>
             <string>Choix des analyseurs :</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0">
+            <item row="0" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_10">
               <item>
                <widget class="QTableWidget" name="tableWidget_Analyseurs">
@@ -365,6 +684,12 @@ D'export des mesures brutes :</string>
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>892</width>
+                  <height>100</height>
+                 </size>
                 </property>
                 <property name="editTriggers">
                  <set>QAbstractItemView::NoEditTriggers</set>
@@ -451,7 +776,7 @@ D'export des mesures brutes :</string>
                  </widget>
                 </item>
                 <item>
-                 <spacer name="verticalSpacer">
+                 <spacer name="verticalSpacer_4">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
                   </property>
@@ -604,6 +929,81 @@ D'export des mesures brutes :</string>
             </widget>
            </item>
            <item>
+            <widget class="QGroupBox" name="groupBox_5">
+             <property name="minimumSize">
+              <size>
+               <width>978</width>
+               <height>62</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Communication Sonde</string>
+             </property>
+             <widget class="QWidget" name="horizontalLayoutWidget">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>20</y>
+                <width>661</width>
+                <height>28</height>
+               </rect>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_20">
+               <item>
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>Interface de communication :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_InterfaceSonde"/>
+               </item>
+               <item>
+                <widget class="QPushButton" name="button_TestSonde">
+                 <property name="text">
+                  <string>Tester</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_9">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="minimumSize">
+                  <size>
+                   <width>142</width>
+                   <height>26</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>État de la communication :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_EtatSonde">
+                 <property name="text">
+                  <string>En Attente</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+           <item>
             <widget class="QGroupBox" name="groupBox_4">
              <property name="title">
               <string>Communication calibrateur</string>
@@ -728,6 +1128,9 @@ D'export des mesures brutes :</string>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_11">
        <item>
+        <layout class="QGridLayout" name="gridLayout_10"/>
+       </item>
+       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -743,7 +1146,7 @@ D'export des mesures brutes :</string>
        <item>
         <widget class="QPushButton" name="button_Annuler">
          <property name="text">
-          <string>&amp;Annuler</string>
+          <string>&amp;Quitter</string>
          </property>
         </widget>
        </item>

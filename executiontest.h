@@ -69,8 +69,10 @@ private :
     QMap<ushort,int> m_analyseursTxTransmission; // // Liste des analyseurs et de leur taux de transmission de données
     QMap<ushort, QPointer<Protocole> > m_analyseursProtocole; // // Liste des analyseurs et des pointeurs vers leur instance de l'objet Protocole associé
     QPointer<QFile> m_fichierMesures;
+    QPointer<Protocole> m_SondeProtocole;
 
     QSqlRecord* m_infosCalibrateur; // Enregistrement dans la base de données du calibrateur utilisé pout le test
+
     int m_txTransmissionCalibrateur; // // Taux de transmission de données du calibrateur utilisé pout le test
     QPointer<Protocole> m_protocoleCalibrateur; // Pointeur vers une instance d'un objet Protocole
 
@@ -82,6 +84,7 @@ private :
     ushort m_cyclePhaseEnCours; // Cycle de phase en cours
 
     QMap<ushort,QPointer<MesureIndividuelle> > m_tabMesuresIndividuelles;
+    QList<float> m_tabMesuresSonde;
     QMap<ushort,QVector<QPointer<MesureIndividuelle> > > m_tabMesuresParCycle;
     QMap<ushort,QVector<QPointer<MesureIndividuelle> > > m_tabMoyennesMesuresParPhase;
 
@@ -94,7 +97,11 @@ private :
     QPointer<QTimer> m_timerTempsAttenteFinAcquisition;
 
     QString m_etatAutomate;
-
+    QString m_typeConnexion;
+    QString m_IP;
+    quint16 m_numPort;
+    QString m_typeSocket;
+    ushort m_idAnaliseur;
     bool m_moyennerMesures;
     bool m_flagPhaseInitialisee;
     bool m_remplirFichierCSV;
@@ -104,7 +111,7 @@ private :
     // \brief Récupère les infos sur les équipements dans la base de données
     ///////////////////////////////////////////////////////////////////////////*/
     void getInfosEquipements();
-
+    void getMesuresTemp();
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void constructionMachineEtat()
     // \brief Initialise la machine à état servant à l'exécution des tests
@@ -339,6 +346,8 @@ Q_SIGNALS:
     void traceTest(const QString trace,const ushort niveau);
 
     void killMeAndMyThread(const short id);
+
+    void modifierEtatTestListe(int idTestMetro);
 };
 
 #endif // EXECUTIONTEST_H

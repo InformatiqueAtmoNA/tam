@@ -127,34 +127,54 @@ QPointer<MesureIndividuelle> Tei::demandeMesureNox() {
 // Demande de mesure immediate
 QPointer<MesureIndividuelle> Tei::demandeMesure() {
     QString cmd;
-
-    switch(this->polluantAssocie) {
-    case CO :
-        cmd = *(this->creerTrameCommande("co"));
-        break;
-    case O3 :
-        cmd = *(this->creerTrameCommande("o3"));
-        break;
-    case SO2 :
-        cmd = *(this->creerTrameCommande("so2"));
-        break;
-    case NO:
-    case NO2:
-    case NOX:
-        return this->demandeMesureNox();
-        break;
-    default:
-       emit(this->erreurCommande());
-    }
-
-    QString reponse = this->transaction(cmd);
     QPointer<MesureIndividuelle> tabMesures(new MesureIndividuelle());
 
-    if(reponse.isEmpty())
-        return tabMesures;
+    int iterationNo =0;
+    for(TypePolluant polluant : polluantAssocie)   {
+        switch(polluant) {
+        case CO :
+            cmd = *(this->creerTrameCommande("co"));
+            break;
+        case O3 :
+            cmd = *(this->creerTrameCommande("o3"));
+            break;
+        case SO2 :
+            cmd = *(this->creerTrameCommande("so2"));
+            break;
+        case NO :
+        case NO2:
+        case NOX:
+            iterationNo++;
+            switch(iterationNo){
+            case 1 :
+                cmd = *(this->creerTrameCommande("no"));
+                break;
+            case 2 :
+                cmd = *(this->creerTrameCommande("nox"));
+                break;
+            case 3 :
+                cmd = *(this->creerTrameCommande("no2"));
+                break;
+            }
+            break;
+        default:
+           emit(this->erreurCommande());
+        }
 
-    tabMesures.data()->append(this->getFloatFromMesureString(reponse));
-
+        QString reponse = this->transaction(cmd);
+        if(reponse.isEmpty())
+            //return mesures;
+        switch(polluant){
+        case NO :
+        case NO2:
+        case NOX:
+            if(!reponse.contains("inf"))
+                tabMesures.data()->append(this->getFloatFromMesureString(reponse));
+            break;
+        default:
+            tabMesures.data()->append(this->getFloatFromMesureString(reponse));
+        }
+    }
     return tabMesures;
 }
 

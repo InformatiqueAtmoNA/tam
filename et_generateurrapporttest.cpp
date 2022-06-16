@@ -30,18 +30,21 @@
 #include <stdlib.h>
 
 et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler,
+                                             QAuthenticator aUser,
                                              const ushort idTest,
                                              const ushort idAnalyseur,
-                                             const ushort typeTest,
+                                             const ushort typeTest,   
                                              QWidget *parent):
     QWidget(parent),
     ui(new Ui::et_GenerateurRapportTest)
 {
     ui->setupUi(this);
 
+    m_User = aUser;
     m_idTest = idTest;
     m_idAnalyseur = idAnalyseur;
     m_typeTest = typeTest;
+
 
 
     /*if(bdHandler.isNull()) {
@@ -55,13 +58,13 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     }
     else*/
         m_bdHandler = bdHandler;
-
     QSqlRecord* informationTest =  m_bdHandler->getInformationsTest(m_idTest);
 
     m_NomTest = informationTest->value("test_metro_type_test").toString();
     ui->label_TypeTest->setText(m_NomTest);
     m_Operateur = informationTest->value("Nom").toString() + " " + informationTest->value("Prenom").toString();
     ui->labelOperateur->setText(m_Operateur);
+    ui->idTest->setText(QString::number(m_idTest));
     m_DateDeb = informationTest->value("date_debut").toDateTime();
     ui->dateTimeEdit_datedebut->setDateTime(m_DateDeb);
     m_DateFin = informationTest->value("date_fin").toDateTime();
@@ -69,11 +72,17 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
     m_Lieu = informationTest->value("designation").toString();
     ui->labelLieu->setText(m_Lieu);
     m_Temperature = informationTest->value("temperature").toString();
-    ui->labelTemp->setText(m_Temperature);
+    this->ui->labelTemp->setText(m_Temperature);
     m_Pression = informationTest->value("pression").toString();
     ui->labelPression->setText(m_Pression);
     m_tabCritere.append (informationTest->value("critere1").toDouble());
     m_tabCritere.append(informationTest->value("critere2").toDouble());
+    m_tabCritere.append(informationTest->value("critere3").toDouble());
+    m_tabCritere.append (informationTest->value("critere_temperature_min").toDouble());
+    m_tabCritere.append(informationTest->value("critere_temperature_max").toDouble());
+    m_tabCritere.append(informationTest->value("critere_variation").toDouble());
+
+    affichageCriteresTemperature(informationTest);
 
     affichageEquipement(m_idAnalyseur,"ANALYSEUR");
 
@@ -89,13 +98,17 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
 
     m_tpsAcquisition = informationTest->value("tps_acquisition").toInt();
 
+    this->ui->label_TestValide->hide();
+    this->ui->labelValidePAr->hide();
+    this->ui->label_ValidePar->hide();
+    this->ui->labelDateValidation->hide();
+
+    affichageValidation();
     genererRapport();
 
     connect(this->ui->button_Fermer,SIGNAL(clicked()),this,SLOT(buttonFermerClicked()));
-
-    this->ui->Button_Exporter->setEnabled(false);
-    this->ui->Button_Valider->setEnabled(false);
-
+    connect(this->ui->Button_Valider,SIGNAL(clicked()),this,SLOT(buttonValiderClicked()));
+    connect(this->ui->Button_Invalider,SIGNAL(clicked()),this,SLOT(buttonInvaliderClicked()));
 }
 
 et_GenerateurRapportTest::~et_GenerateurRapportTest()
@@ -112,7 +125,39 @@ void et_GenerateurRapportTest::buttonFermerClicked()
     msgBox.setDefaultButton(QMessageBox::Ok);
 
     if(msgBox.exec()==QMessageBox::Ok)
-        emit(this->fermeture());
+        emit(this->fermeture(1));
+}
+
+void et_GenerateurRapportTest::buttonValiderClicked()
+{
+    QMessageBox msgBox;
+    msgBox.setText(QLatin1String("Fermer ?"));
+    msgBox.setInformativeText(QLatin1String("Voulez-vous valider le test ?"));
+    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+
+    msgBox.defaultButton()->setText("Oui");
+
+    if(msgBox.exec()==QMessageBox::Ok) {
+        this->m_bdHandler->ValiderTest(m_idTest,m_User,m_idAnalyseur);
+        affichageValidation();
+    }
+
+}
+
+void et_GenerateurRapportTest::buttonInvaliderClicked()
+{
+    QMessageBox msgBox;
+    msgBox.setText(QLatin1String("Fermer ?"));
+    msgBox.setInformativeText(QLatin1String("Voulez-vous invalider le test ?"));
+    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.defaultButton()->setText("OUI");
+
+    if(msgBox.exec()==QMessageBox::Ok) {
+        this->m_bdHandler->InvaliderTest(m_idTest, m_User, m_idAnalyseur);
+        affichageValidation();
+    }
 }
 
 //Mise en forme du tableau de mesure separe par phase identique par polluant
@@ -227,14 +272,15 @@ void et_GenerateurRapportTest::affichageTableauResidu ()
         else {
             m_ResiduZero = m_tabMoyenne[i]-(m_ordonnee + m_pente * m_tabConcentration[i]);
             m_tabResidu.append(m_ResiduZero);
-            m_tabResiduRel.append(-99);
-            m_tabResiduInc.append(-99);
+            m_tabResiduRel.append(0);
+            m_tabResiduInc.append(0);
         }
     }
     m_tabValeurPourCritere.append(m_ResiduZero);
     m_tabValeurPourCritere.append(rmax(m_tabConcentration,m_tabResiduRel));
     m_tabValeurPourCritere.append(m_pente);
     m_tabValeurPourCritere.append(m_ordonnee);
+    m_tabValeurPourCritere.append(rmax(m_tabResiduRel,m_tabResiduInc));
 }
 
 //Mise en forme du Tableau des temps de reponse
@@ -286,6 +332,108 @@ void et_GenerateurRapportTest::affichageEquipement(ushort idEquipement,QString n
 
 }
 
+void et_GenerateurRapportTest::affichageValidation()
+{
+
+    QList<QString> *Validation = this->m_bdHandler->getValidation(m_idTest);
+
+    if(Validation->size()<3){
+        this->ui->labelTestValide->setText("EN ATTENTE");
+    }
+
+    if(Validation->size()==3){
+        this->ui->labelTestValide->setText(Validation->at(0));
+
+        if(Validation->at(0)== "VALIDE"){
+            this->ui->Button_Valider->setDisabled(true);
+            this->ui->Button_Invalider->setDisabled(false);
+        }
+        else if(Validation->at(0)== "INVALIDE"){
+            this->ui->Button_Valider->setDisabled(false);
+            this->ui->Button_Invalider->setDisabled(true);
+        }
+
+        if(Validation->at(0)!="EN ATTENTE"){
+            QString requete = QString("SELECT Nom, Prenom FROM Operateur WHERE id_operateur=%1").arg(Validation->at(1));
+            QSqlQuery query;
+            query.exec(requete);
+            QSqlRecord record=query.record();;
+            QString username;
+            if(query.next()){
+                record = query.record();
+                username=record.value(0).toString();
+                username.append(" "+record.value(1).toString());
+            }
+
+            this->ui->label_TestValide->show();
+            this->ui->label_ValidePar->show();
+            this->ui->labelValidePAr->show();
+            this->ui->labelValidePAr->setText(username);
+
+
+            this->ui->labelDateValidation->show();
+            this->ui->labelDateValidation->setText(Validation->at(2));
+        }
+    }
+
+
+
+
+}
+
+void et_GenerateurRapportTest::affichageCriteresTemperature(QSqlRecord* informationTest)
+{
+
+    if(informationTest->value("sondePresente").toString() == "OUI"){
+        float variation =informationTest->value("temperature_max").toFloat() - informationTest->value("temperature_min").toFloat();
+
+        this->ui->groupBox_temperature->show();
+
+        this->ui->lineEdit_Temp_min->setDisabled(true);
+        this->ui->lineEdit_Temp_max->setDisabled(true);
+        this->ui->lineEdit_Variation->setDisabled(true);
+        this->ui->lineEdit_crit_Temp_min->setDisabled(true);
+        this->ui->lineEdit_crit_Temp_max->setDisabled(true);
+        this->ui->lineEdit_crit_Variation->setDisabled(true);
+
+        this->ui->label_Temp->setText("Temperature Moyenne : ");
+        this->ui->labelTemp->setText(informationTest->value("temperature_moyenne").toString());
+        this->ui->lineEdit_Temp_min->setText(informationTest->value("temperature_min").toString());
+        this->ui->lineEdit_Temp_max->setText(informationTest->value("temperature_max").toString());
+        this->ui->lineEdit_Variation->setText(QString::number(variation));
+
+        this->ui->lineEdit_crit_Temp_min->setText(QString::number(m_tabCritere.value(3)));
+        this->ui->lineEdit_crit_Temp_max->setText(QString::number(m_tabCritere.value(4)));
+        this->ui->lineEdit_crit_Variation->setText(QString::number(m_tabCritere.value(5)));
+
+        if(this->ui->lineEdit_Temp_min->text().toFloat() > this->ui->lineEdit_crit_Temp_min->text().toFloat()){
+            this->ui->lineEdit_Temp_min->setStyleSheet("color: green;");
+        }
+        else{
+            this->ui->lineEdit_Temp_min->setStyleSheet("color: red;");
+        }
+
+        if(this->ui->lineEdit_Temp_max->text().toFloat() < this->ui->lineEdit_crit_Temp_max->text().toFloat()){
+            this->ui->lineEdit_Temp_max->setStyleSheet("color: green;");
+        }
+        else{
+            this->ui->lineEdit_Temp_max->setStyleSheet("color: red;");
+        }
+
+        if(this->ui->lineEdit_Variation->text().toFloat() < this->ui->lineEdit_crit_Variation->text().toFloat()){
+            this->ui->lineEdit_Variation->setStyleSheet("color: green;");
+        }
+        else{
+            this->ui->lineEdit_Variation->setStyleSheet("color: red;");
+        }
+
+    }
+    else{
+        this->ui->groupBox_temperature->hide();
+    }
+
+}
+
 bool et_GenerateurRapportTest::genererRapport()
 {
     switch(this->   m_typeTest) {
@@ -333,6 +481,7 @@ bool et_GenerateurRapportTest::genererRapportLinearite()
         tableauMesure(m_PolluantTest->data(m_PolluantTest->index(i,0)).toInt(),
                       m_PolluantTest->data(m_PolluantTest->index(i,1)).toInt());
         affichageTableauResidu();
+
         QWidget* resultatPolluant = new et_Resultatpolluant(m_tabConcentration,m_tabMesures,m_tabMoyenne,
                                                             m_tabEcartType,m_tabValeurPourCritere,
                                                             m_tabResidu,m_tabResiduRel,m_tabResiduInc,m_tabCritere,this);
@@ -402,10 +551,32 @@ bool et_GenerateurRapportTest::genererRapportRendementFour()
     }
 
     //Remplissage tableWidgetTPG
-
     for (int j=0;j<m_tabResultatTPG.count();j++){
+
         this->ui->tableWidget_Rdf->insertRow(j);
-        QTableWidgetItem* item = new QTableWidgetItem(QString::number(m_tabResultatTPG.value(j),'f',2));
+        QTableWidgetItem* item = new QTableWidgetItem(QString::number(qAbs(m_tabResultatTPG.value(j)),'f',2));
+
+        if(j < 2){
+            if(qAbs(m_tabResultatTPG.value(j))>m_tabCritere.value(0))
+            {
+                item->setForeground(QBrush(QColor("green")));
+            }
+            else
+            {
+                item->setForeground(QBrush(QColor("red")));
+            }
+        }
+        else if(j>2 and j<5)
+        {
+            if(qAbs(m_tabResultatTPG.value(j))<m_tabCritere.value(1))
+            {
+                item->setForeground(QBrush(QColor("green")));
+            }
+            else
+            {
+                item->setForeground(QBrush(QColor("red")));
+            }
+        }
         this->ui->tableWidget_Rdf->setItem(j,0,item);
     }
     this->ui->tableWidget_Rdf->setVerticalHeaderLabels(m_listeEnteteLigneTPG);

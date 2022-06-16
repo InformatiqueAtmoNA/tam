@@ -10,7 +10,15 @@ ParametresHandler::ParametresHandler(QWidget *parent) :
     ui->lineEdit_DbHost->setText(getParam("Host").toString());
     ui->lineEdit_DbName->setText(getParam("DB_Name").toString());
     ui->lineEdit_DbUser->setText(getParam("UserName").toString());
-    ui->lineEdit_DbPassword->setText(getParam("Password").toString());
+
+    // lecture du mot de passe modifié
+    QString password;
+    for(char index : getParam("Password").toString().toLatin1()){
+        index-=17;
+        password.append(index);
+    }
+
+    ui->lineEdit_DbPassword->setText(password);
     if (getParam("Path_XML").toBool()){
         ui->lineEdit_RepXML->setText(getParam("Path_XML").toString());
     }
@@ -71,7 +79,15 @@ void ParametresHandler::buttonOkClicked()
         setParam("Host",QVariant::fromValue(ui->lineEdit_DbHost->text()));
         setParam("DB_Name",QVariant::fromValue(ui->lineEdit_DbName->text()));
         setParam("UserName",QVariant::fromValue(ui->lineEdit_DbUser->text()));
-        setParam("Password",QVariant::fromValue(ui->lineEdit_DbPassword->text()));
+
+        // modification du mot de passe pour le rendre non lisible dans le fichier params.ini
+        QString password;
+        for(char index : ui->lineEdit_DbPassword->text().toLatin1()){
+            index+=17;
+            password.append(index);
+        }
+        setParam("Password",QVariant::fromValue(password));
+
         setParam("Path_XML",QVariant::fromValue(ui->lineEdit_RepXML->text()));
         setParam("Path_CSV",QVariant::fromValue(ui->lineEdit_RepCSV->text()));
         setParam("Path_Rapports",QVariant::fromValue(ui->lineEdit_RepRapports->text()));

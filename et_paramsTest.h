@@ -36,9 +36,11 @@ class et_ParamsTest : public QObject {
 public :
     ushort m_id_TestMetro;
     ushort m_id_TestXML;
+    ushort m_idSonde;
     QPointer<Test> m_test;
-    QMap<ushort,QString> m_listeNumSerieAnalyseurs; // modifié
+    QMap<ushort,QString> m_listeNumSerieAnalyseurs;
     QMap<ushort,QString> m_listeInterfaceAnalyseurs;
+    QString m_interfaceSonde;
     QString m_interfaceCalibrateur;
     QString m_canalCalibrateur;
     ushort m_idOperateur;
@@ -51,6 +53,7 @@ public :
     float m_pression;
     float m_temperature;
     bool m_debutImmediat;
+    bool sondePresente;
     QDateTime m_dateHeureDebutPrevu;
     int m_tpsAcquisition;
 
@@ -106,6 +109,10 @@ public :
         if(bdHandler->getIdCalibrateur(m_test->getIdSystemeEtalon())
            == bdHandler->getIdCalibrateur(paramTest->m_test->getIdSystemeEtalon()))
             return true;
+
+        if(m_idSonde == paramTest->m_idSonde && sondePresente==true && paramTest->sondePresente==true){
+            return true;
+        }
 
         if(this->m_interfaceCalibrateur == paramTest->m_interfaceCalibrateur)
             return true;

@@ -51,6 +51,7 @@ private:
     QPointer<Test> m_test;
     QString m_nomCheminXml;
     QString m_nomFichier;
+    QString m_favoriteState;
     QString m_nomFichierAEffacer;
     QPointer<BdHandler> m_bdHandler;
     TypeTest m_typeTest;
@@ -75,6 +76,10 @@ private Q_SLOTS:
     inline void timeEdit_TempsAttenteEntreMesureValueChanged(const QTime & time) {this->m_test->setTempsAttenteEntreMesure(time);}
     inline void doubleSpinBox_Critere1(const double value) {this->m_test->setCritere1(value);}
     inline void doubleSpinBox_Critere2(const double value) {this->m_test->setCritere2(value);}
+    inline void doubleSpinBox_Critere3(const double value) {this->m_test->setCritere3(value);}
+    inline void doubleSpinBox_Critere_Temp_min(const double value) {this->m_test->setCritere_Temp_min(value);}
+    inline void doubleSpinBox_Critere_Temp_max(const double value) {this->m_test->setCritere_Temp_max(value);}
+    inline void doubleSpinBox_Critere_Variation(const double value) {this->m_test->setCritere_Variation(value);}
 
     void button_AjouterPhaseClicked();
     void button_InsererPhaseClicked();
@@ -92,13 +97,14 @@ private Q_SLOTS:
     void listWidgetCurrentRowChanged(const int row);
     void lineEditNomTestTextChanged(const QString nomTest);
     void button_choixEnregistrementXML();
+    void favoriBoxChecked(int boxState);
 
 public Q_SLOTS:
     void editionPhaseAnnulee();
     void editionPhaseValidee(const Phase & phase);
 
 Q_SIGNALS:
-    void fermeture();
+    void fermeture(int index);
 };
 
 #endif // CREATIONTEST_H

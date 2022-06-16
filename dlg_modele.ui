@@ -152,6 +152,11 @@
                   <string>GZERO</string>
                  </property>
                 </item>
+                <item>
+                 <property name="text">
+                  <string>SONDE</string>
+                 </property>
+                </item>
                </widget>
               </item>
               <item>

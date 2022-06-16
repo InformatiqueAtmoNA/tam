@@ -51,7 +51,7 @@ protected:
     bool timerFini; // Signifie la fin du timeout de communication
     QString trame;  // trame de réponse
     TypePeripherique typePeripherique; // Analyseur ou diluteur
-    TypePolluant polluantAssocie; // Polluant associé
+    QList<TypePolluant> polluantAssocie; // Polluant associé
     OptionTpg optionTpg; // Option pour le tirtrage en phase gazeuse
     DesignationProtocole versionProtocole; // Version de protocole
     bool m_avorterTransaction;
@@ -91,7 +91,7 @@ public:
     //
     // \param typePolluant Type de polluant associé à l'appareil
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setTypePolluant(const TypePolluant & typePolluant) {this->polluantAssocie = typePolluant;}
+    inline void setTypePolluant(QList<TypePolluant> typePolluant) {this->polluantAssocie=typePolluant;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getTimeOut()
@@ -275,6 +275,8 @@ public:
     ///////////////////////////////////////////////////////////////////////////*/
     static QPointer<Protocole> getProtocoleObject(const DesignationProtocole & designationProtocole, const QString & adresse);
 
+    void setVersionProtocole(DesignationProtocole newVersionProtocole);
+
 public Q_SLOTS:
 
     void quitter();
@@ -309,6 +311,13 @@ Q_SIGNALS:
     // \brief Envoi un signal lors d'une erreur de transmission
     ///////////////////////////////////////////////////////////////////////////*/
     void erreurTransmission();
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void erreurTransmission()
+    // \brief Envoi un signal lors d'une erreur de transmission
+    ///////////////////////////////////////////////////////////////////////////*/
+    void transmissionOK();
+
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void erreurCommande()

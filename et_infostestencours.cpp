@@ -280,9 +280,7 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
         trace = "Polluant : ";
         QSqlRecord* record = m_bdHandler->getMoleculeRow(paramsTest->m_test->getPhase(i).getIdMolecule());
-        trace.append(record->value(MOLECULE_FORMULE).toString());
-        delete record;
-        ui->textEdit_ParametresTest->append(trace);
+        trace.append(record->value(MOLECULE_FORMULE).toString());   
 
         trace = "Point de consigne : ";
         record = m_bdHandler->getConcentrationRow(paramsTest->m_test->getPhase(i).getIdConcentration());
@@ -426,6 +424,22 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
             trace.append(record->value(MOLECULE_FORMULE).toString()+";");
             delete record;
         }
+        if(paramsTest.data()->sondePresente==true){
+            QSqlQuery requete(QString("SELECT id_pa_molecule FROM `Polluant_Associe` WHERE id_pa_equipement=%1").arg(paramsTest.data()->m_idSonde));
+            int  idMolecule =0;
+              QList<TypePolluant> listePolluants;
+              while(requete.next()) {
+                  QSqlRecord record = requete.record();
+                  idMolecule = record.value("id_pa_molecule").toUInt();
+                  QSqlRecord *record2 = m_bdHandler->getMoleculeRow(idMolecule);
+                  trace.append(record2->value(MOLECULE_FORMULE).toString()+";");
+                  delete record2;
+              }
+        }
+
+
+
+        ui->textEdit_ParametresTest->append(trace);
         trace.append("\n");
         paramsTest->m_fichierCSV->write(trace.toLatin1());
 
@@ -496,10 +510,17 @@ void et_InfosTestEnCours::afficherParamsTest(QPointer<et_ParamsTest> paramsTest)
 
 void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTest)
 {
+    QFile logTrames("enregistrement.txt");
+    logTrames.open(QFile::WriteOnly | QFile::Append);
+    QString presenceSonde;
+    if(paramsTest->sondePresente){
+        presenceSonde="OUI";
+    }
+    else{
+        presenceSonde="NON";
+    }
     QPointer<QSqlTableModel> model = m_bdHandler->getTestMetroModel();
-
     QSqlRecord enregistrement = model->record();
-
     afficherTraceTest("Enregistrement des informations de test",2);
     afficherTraceTest("ID Test_XML "+QString::number(paramsTest->m_id_TestXML),2);
     afficherTraceTest("Type de Test "+typeTestToString( paramsTest->m_test->getTypeTest()),2);
@@ -527,22 +548,34 @@ void et_InfosTestEnCours::enregistrerParamsTest(QPointer<et_ParamsTest> paramsTe
     enregistrement.setValue(TEST_METRO_TPS_ACQUISITION,QVariant::fromValue(paramsTest->m_test->getTempsAcquisition()));
     enregistrement.setValue(TEST_METRO_CRITERE_1,QVariant::fromValue(paramsTest->m_test->getCritere1()));
     enregistrement.setValue(TEST_METRO_CRITERE_2,QVariant::fromValue(paramsTest->m_test->getCritere2()));
-    model->insertRecord(-1,enregistrement);
+    enregistrement.setValue(TEST_METRO_CRITERE_3,QVariant::fromValue(paramsTest->m_test->getCritere3()));
 
+    enregistrement.setValue(TEST_METRO_CRITERE_TEMP_MIN,QVariant::fromValue(paramsTest->m_test->getCritere_Temp_min()));
+    enregistrement.setValue(TEST_METRO_CRITERE_TEMP_MAX,QVariant::fromValue(paramsTest->m_test->getCritere_Temp_max()));
+    enregistrement.setValue(TEST_METRO_CRITERE_VARIATION,QVariant::fromValue(paramsTest->m_test->getCritere_Variation()));
+
+    if(paramsTest->m_idSonde!=0){
+        enregistrement.setValue(TEST_METRO_ID_SONDE,QVariant::fromValue(paramsTest->m_idSonde));
+    }
+    enregistrement.setValue(TEST_METRO_PRESENCE_SONDE,QVariant::fromValue(presenceSonde));
+
+    model->insertRecord(-1,enregistrement);
     model->submitAll();
 
-    paramsTest->m_id_TestMetro = model->rowCount();
-    enregistrement = model->record(model->rowCount()-1);
+    paramsTest->m_id_TestMetro = m_bdHandler->getTestMetroModel()->record(m_bdHandler->getTestMetroModel()->rowCount()-1).value(TEST_METRO_ID).toUInt();
 
-    delete model;
-
-    //paramsTest->m_id_TestMetro = enregistrement.value(TEST_METRO_ID).toUInt();
+    logTrames.write("-------- valeurs de l'enregistrement -----------");
+    for(int i=0 ; i<enregistrement.count() ; i++){
+        logTrames.write(QString(enregistrement.value(i).toString()).toLatin1()+ "\n") ;
+    }
+    logTrames.write("-------------------------------------------------------------------------------------- \n");
 
     enregistrerAnalyseurTest(paramsTest);
 
     enregistrerConcTestMetro(paramsTest);
 
     afficherParamsTest(paramsTest);
+    logTrames.close();
 }
 
 

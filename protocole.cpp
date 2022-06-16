@@ -15,14 +15,18 @@
 #include "tei_49c.h"
 #include "tei_49ps.h"
 #include "api.h"
+#include "modbus.h"
+#include "horiba.h"
+
+
 
 Protocole::Protocole() {
     m_avorterTransaction = false;
 }
 
 Protocole::~Protocole() {
-//    if(threadCommunication->isRunning())
-//        threadCommunication->stop();
+    //    if(threadCommunication->isRunning())
+    //        threadCommunication->stop();
     threadCommunication->deleteLater();
     while(threadCommunication->isRunning()) {
         QCoreApplication::processEvents();
@@ -50,7 +54,10 @@ QPointer<ThreadComHandler> Protocole::getThreadComHandler() {
 void Protocole::setTimeOut(const ushort newTimeOut) {
     this->timeout = newTimeOut;
 }
-
+void Protocole::setVersionProtocole(DesignationProtocole newVersionProtocole)
+{
+    versionProtocole = newVersionProtocole;
+}
 // Retourne le timeout à la communication
 ushort Protocole::getTimeOut() {
     return this->timeout;
@@ -72,20 +79,17 @@ QString Protocole::transaction(const QString & commande) {
 
     QFile logTrames("logTrames.txt");
     logTrames.open(QFile::WriteOnly | QFile::Append);
-
     int compteur=1;
     do{
         qDebug()<< "Essai " << compteur << " : ";
 
+        emit(this->envoiTrame(commande));
+        this->flagEtatCom = ETAT_ATTENTE;
+        QTimer timerCommunication;
         logTrames.write(commande.toLatin1());
         logTrames.write("\n");
 
         qDebug()<< "Trame envoyee : " << commande.toLatin1();
-
-        emit(this->envoiTrame(commande));
-        this->flagEtatCom = ETAT_ATTENTE;
-        QTimer timerCommunication;
-
         timerCommunication.start(this->timeout);
         connect(&timerCommunication,SIGNAL(timeout()),this,SLOT(timeoutCom()));
         // On attend timeout ms de recevoir la reponse
@@ -96,12 +100,12 @@ QString Protocole::transaction(const QString & commande) {
         }
         compteur++;
     }while(this->flagEtatCom == ETAT_ATTENTE && compteur<=3);
-
     // Si pas de reponse
     if(this->flagEtatCom == ETAT_ATTENTE) {
         emit(this->erreurTransmission());
         return NULL;
     }
+    emit(this->transmissionOK());
     this->flagEtatCom = ETAT_REPOS;
 
     // Si erreur de commande
@@ -115,13 +119,15 @@ QString Protocole::transaction(const QString & commande) {
     logTrames.close();
 
     emit(this->afficheTrame(this->trame));
-    return this->trame;
+    QString aTrame = this->trame;
+    this->trame.clear();
+    return aTrame;
 }
 
 // Slot de lecture d'une trame
 void Protocole::lectureTrame(const QString & data) {
     qDebug()<<"Trame reçue : " << data.toLatin1();
-    this->trame = data;
+    this->trame.append(data);
     this->flagEtatCom = ETAT_LECTURE;
 }
 
@@ -133,7 +139,6 @@ void Protocole::timeoutCom() {
 QPointer<Protocole> Protocole::getProtocoleObject(const DesignationProtocole & designationProtocole, const QString & adresse)
 {
     QPointer<Protocole> protocole;
-
     switch(designationProtocole) {
     case MODE4_ANA_CMD04:
         protocole = new Mode4(adresse,ANALYSEUR,MODE4_ANA_CMD04,false);
@@ -177,10 +182,15 @@ QPointer<Protocole> Protocole::getProtocoleObject(const DesignationProtocole & d
     case API_DIL:
         protocole = new Api(adresse,ETALON,API_DIL);
         break;
+    case MODBUS_RTU_TXXXX :
+        protocole = new Modbus(adresse,SONDE,MODBUS_RTU_TXXXX);
+        break;
+    case HORIBA_APXX:
+        protocole = new horiba(adresse,ANALYSEUR);
+        break;
     default:
         break;
     }
-
     return protocole;
 }
 

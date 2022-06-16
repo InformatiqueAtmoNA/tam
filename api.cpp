@@ -81,37 +81,58 @@ QPointer<MesureIndividuelle> Api::demandeMesureNox() {
 // Demande de mesure immediate
 QPointer<MesureIndividuelle> Api::demandeMesure() {
     QString cmd;
-
-    switch(this->polluantAssocie) {
-    case CO :
-        cmd = *(this->creerTrameCommande("T","CO"));
-        break;
-    case O3 :
-        cmd = *(this->creerTrameCommande("T","O3"));
-        break;
-    case SO2 :
-        cmd = *(this->creerTrameCommande("T","SO2"));
-        break;
-    case NO:
-    case NO2:
-    case NOX:
-        return this->demandeMesureNox();
-        break;
-    case H2S:
-        cmd = *(this->creerTrameCommande("T","H2S"));
-        break;
-    default:
-       emit(this->erreurCommande());
-    }
-    QString reponse = this->transaction(cmd);
-
     QPointer<MesureIndividuelle> mesures(new MesureIndividuelle());
 
-    if(reponse.isEmpty())
-        return mesures;
+    int iterationNo =0;
+    for(TypePolluant polluant : polluantAssocie)   {
+        switch(polluant) {
+        case CO :
+            cmd = *(this->creerTrameCommande("T","CO"));
+            break;
+        case O3 :
+            cmd = *(this->creerTrameCommande("T","O3"));
+            break;
+        case SO2 :
+            cmd = *(this->creerTrameCommande("T","SO2"));
+            break;
+        case NO :
+        case NO2:
+        case NOX:
+            iterationNo++;
+            switch(iterationNo){
+            case 1 :
+                cmd = *(this->creerTrameCommande("T","NO"));
+                break;
+            case 2 :
+                cmd = *(this->creerTrameCommande("T","NOX"));
+                break;
+            case 3 :
+                cmd = *(this->creerTrameCommande("T","NO2"));
+                break;
+            }
+            break;
+        case H2S:
+            cmd = *(this->creerTrameCommande("T","H2S"));
+            break;
+        default:
+           emit(this->erreurCommande());
+        }
 
-    mesures.data()->append(this->getFloatFromMesureString(reponse));
+        QString reponse = this->transaction(cmd);
+        if(reponse.isEmpty())
+            return mesures;
 
+        switch(polluant){
+        case NO :
+        case NO2:
+        case NOX:
+            if(!reponse.contains("inf"))
+                mesures.data()->append(this->getFloatFromMesureString(reponse));
+            break;
+        default:
+            mesures.data()->append(this->getFloatFromMesureString(reponse));
+        }
+    }
     return mesures;
 }
 
@@ -134,6 +155,7 @@ ushort Api::demandeAlarme() {
     if(codeAlarme>0)
         emit(this->alarmeGenerale());
     return codeAlarme;
+
 }
 
 // Demande de passage en mode zero

@@ -188,6 +188,13 @@ QPointer<QSqlTableModel> BdHandler::getTestXmlModel(const uint idTestXml)
 
     return model;
 }
+QString BdHandler::getTestFavoriteState(const ushort idTest){
+    QSqlRecord* record = getTableRow(QString("SELECT * FROM test_xml WHERE id_Test_Xml=%1").arg(idTest));
+    QString favoriteState;
+    if(record != NULL)
+        favoriteState = record->value(TEST_XML_EST_FAVORI).toString();
+    return favoriteState;
+}
 
 QPointer<QSqlRelationalTableModel> BdHandler::getModelesModel()
 {
@@ -231,17 +238,45 @@ QPointer<QSqlRelationalTableModel> BdHandler::getSystemeEtalonModel(const uint i
     return model;
 }
 
-QPointer<QSqlQueryModel> BdHandler::getTestRapportModel()
+QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(QList<QString> liste_filtres)
 {
-    QString requete(QString("SELECT T.id_Test,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut FROM Equipement E , Liste_Analyseurs_Test L , Test_Metrologique T WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement order by T.date_debut DESC LIMIT 20"));
+    QString requete="SELECT T.id_Test,M.me_designation,E.id_equipement,E.numero_serie,T.test_metro_type_test,T.date_debut,IFNULL(V.etat_validation, 'EN ATTENTE') "
+                            "FROM Modele_Equipement M, Equipement E, Test_Metrologique T, Liste_Analyseurs_Test L "
+                            "LEFT OUTER join validation_test V  ON V.id_test  = L.id_test AND V.id_analyseur = L.id_equipement "
+                            "WHERE L.id_test = T.id_test AND E.id_equipement = L.id_equipement AND E.id_modele=M.id_modele ";
 
+    if(liste_filtres[0]!="AUCUN"){
+            requete.append(QString("AND M.me_designation=%1 ").arg(QChar(39)+ liste_filtres[0]+QChar(39)));
+    }
+    if(liste_filtres[1]!="AUCUN"){
+            requete.append(QString("AND T.id_Test LIKE %1 ").arg(QChar(39)+QLatin1Char('%')+liste_filtres[1]+"%"+QChar(39)));
+    }
+    if(liste_filtres[2]!="AUCUN"){
+            requete.append(QString("AND E.numero_serie LIKE %1 ").arg(QChar(39)+QLatin1Char('%')+liste_filtres[2]+"%"+QChar(39)));
+    }
+    if(liste_filtres[3]!="AUCUN"){
+            requete.append(QString("AND T.test_metro_type_test=%1 ").arg(QChar(39)+liste_filtres[3]+QChar(39)));
+    }
+    if(liste_filtres[4]!="AUCUN"){
+        if(liste_filtres[4]!="EN ATTENTE"){
+            requete.append(QString("AND V.etat_validation=%1 ").arg(QChar(39)+liste_filtres[4]+QChar(39)));
+        }
+        else if(liste_filtres[4]=="EN ATTENTE"){
+            requete.append("AND V.etat_validation IS NULL ");
+        }
+    }
+
+    requete.append(QString("order by T.date_debut DESC LIMIT %1").arg(liste_filtres[5]));
+    qDebug() <<requete;
     QPointer<QSqlQueryModel> model = new QSqlQueryModel;
     model->setQuery(requete,m_baseMySql);
     model->setHeaderData(HOMEW_TABVIEW_TEST_ID_TEST, Qt::Horizontal, tr("Numero Test"));
+    model->setHeaderData(HOMEW_TABVIEW_TEST_MODELE_EQUIPEMENT, Qt::Horizontal, tr("Modele"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_ID_EQUIP, Qt::Horizontal, tr("id_equipement"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_NO_EQUIP, Qt::Horizontal, tr("Numero Equipement"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_TYPE_TEST, Qt::Horizontal, tr("Type de Test"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_DATE, Qt::Horizontal, tr("Date de Debut"));
+    model->setHeaderData(HOMEW_TABVIEW_TEST_VALIDATION, Qt::Horizontal, tr("Validité"));
     return model;
 }
 
@@ -508,6 +543,7 @@ QSqlRecord* BdHandler::getTableRow(const QString sqlTableRequete)
         for(int i=0;i<record->count();i++)
             qDebug()<<record->fieldName(i)<<" = "<<record->value(i);
     }
+
     return record;
 }
 
@@ -543,7 +579,7 @@ QSqlRecord* BdHandler::getSystemeEtalonRow(const ushort idSystemeEtalon)
 QSqlRecord* BdHandler::getEquipementModeledRow(const ushort idEquipement)
 {
     QString requete = "SELECT E.id_equipement,E.numero_serie,ME.me_designation,MA.designation,E.min_gamme,";
-    requete.append("E.max_gamme,E.offset,E.adresse,PS.designation ");
+    requete.append("E.max_gamme,E.offset,E.adresse,PS.designation,E.ip_adress ");
     requete.append("FROM Equipement E,Modele_Equipement ME, Marque_Equipement MA, Port_Serie PS ");
     requete.append("WHERE E.id_modele = ME.id_modele AND ME.id_marque = MA.id_marque AND E.no_port = PS.no_port ");
     requete.append(QString("AND id_equipement=%1").arg(idEquipement));
@@ -553,12 +589,34 @@ QSqlRecord* BdHandler::getEquipementModeledRow(const ushort idEquipement)
     return getTableRow(requete);
 }
 
+QSqlRecord *BdHandler::getOperateurRow(const QString username)
+{
+    QString requete = QString("SELECT * FROM Operateur WHERE user_name=%1").arg(QString('"' + username + '"'));
+    return getTableRow(requete);
+}
+
 QString BdHandler::getEquipementNumSerie(const ushort idEquipement) {
     QSqlRecord* record = getTableRow(QString("SELECT * FROM Equipement WHERE id_equipement=%1").arg(idEquipement));
     QString numSerie;
     if(record != NULL)
         numSerie = record->value(EQUIPEMENT_NO_SERIE).toString();
     return numSerie;
+}
+
+QString BdHandler::getEquipementTypeSocket(const ushort idEquipement){
+    QSqlRecord* record = getTableRow(QString("SELECT * FROM Equipement WHERE id_equipement=%1").arg(idEquipement));
+    QString typeSocket;
+    if(record != NULL)
+        typeSocket = record->value(EQUIPEMENT_TYPE_SOCKET).toString();
+    return typeSocket;
+}
+
+QString BdHandler::getEquipementTypeConnexion(const ushort idEquipement){
+    QSqlRecord* record = getTableRow(QString("SELECT * FROM Equipement WHERE id_equipement=%1").arg(idEquipement));
+    QString typeSocket;
+    if(record != NULL)
+        typeSocket = record->value(EQUIPEMENT_TYPE_CONNEXION).toString();
+    return typeSocket;
 }
 
 ushort BdHandler::getTxTransmission(const ushort idTxTransmission)
@@ -613,7 +671,9 @@ ushort BdHandler::getIdCalibrateur(const uint idSystemeEtalon)
 QSqlRecord* BdHandler::getInformationsTest(const ushort idTest)
 {
     QString strequete = QString("SELECT TM.id_test, TM.test_metro_type_test, O.Nom, O.Prenom, L.designation, TM.pression,");
-    strequete.append("TM.temperature, TM.date_debut, TM.date_fin, TM.id_systeme_etalon, TM.tps_acquisition ,TM.critere1 , TM.critere2 FROM Test_Metrologique TM, Operateur O, Lieu L");
+    strequete.append("TM.temperature, TM.date_debut, TM.date_fin, TM.id_systeme_etalon, TM.tps_acquisition ,TM.critere1 , TM.critere2, TM.critere3, ");
+    strequete.append("TM.critere_temperature_min, TM.critere_temperature_max, TM.critere_variation, ");
+    strequete.append("TM.temperature_min, TM.temperature_max, TM.temperature_moyenne, TM.id_sonde, TM.sondePresente FROM Test_Metrologique TM, Operateur O, Lieu L");
     strequete.append(QString (" WHERE TM.id_operateur = O.id_operateur AND TM.id_lieu = L.id_lieu AND TM.id_test =%1").arg(idTest));
 
     return getTableRow(strequete);
@@ -734,6 +794,46 @@ void BdHandler::setSpanHandlerFromIdConcentration(ushort idConcentration, QStrin
     spanHandler->setSpanArguments(canal,record->value(CONCENTRATION_POINT).toUInt(),record->value(CONCENTRATION_OZONE).toUInt());
 }
 
+void BdHandler::ValiderTest(const uint idTest, QAuthenticator aUser, ushort idAnalyseur)
+{
+    QString getIdOperateur =QString("SELECT * FROM Operateur WHERE user_name=%1").arg('"' + aUser.user()+'"');
+    QString idOperateur=this->getTableRow(getIdOperateur)->value(OPERATEUR_ID).toString();
+    QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+
+    QString strRequete = "REPLACE INTO Validation_Test(id_test,id_analyseur,id_operateur,date_validation,etat_validation) VALUES(";
+    strRequete.append(QString::number(idTest)+","+QString::number(idAnalyseur)+","+idOperateur+"," + '"'+date+'"' + "," + '"'+"VALIDE"+'"' +") ");
+    QSqlQuery requete;
+    requete.exec(strRequete);
+}
+
+void BdHandler::InvaliderTest(const uint idTest, QAuthenticator aUser, ushort idAnalyseur)
+{
+    QString getIdOperateur =QString("SELECT * FROM Operateur WHERE user_name=%1").arg('"' + aUser.user()+'"');
+    QString idOperateur=this->getTableRow(getIdOperateur)->value(OPERATEUR_ID).toString();
+    QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+
+
+    QString strRequete = "REPLACE INTO Validation_Test(id_test,id_analyseur,id_operateur,date_validation,etat_validation) VALUES(";
+    strRequete.append(QString::number(idTest)+","+QString::number(idAnalyseur)+","+idOperateur+"," + '"'+date+'"' + "," + '"'+"INVALIDE"+'"' +") ");
+    QSqlQuery requete;
+    requete.exec(strRequete);
+}
+
+QList<QString> *BdHandler::getValidation(const ushort idTest)
+{
+    QSqlQuery requete(QString("SELECT id_operateur, date_validation, etat_validation FROM Validation_Test WHERE id_test=%1").arg(idTest));
+    QList<QString >*Liste=new QList<QString>;
+    if(requete.next()) {
+        QSqlRecord record = requete.record();
+        Liste->append(record.value("etat_validation").toString());
+        Liste->append(record.value("id_operateur").toString());
+        Liste->append(record.value("date_validation").toString());
+    }
+    return Liste;
+}
+
+
+
 bool BdHandler::miseAjourDateHeureFinTest(const ushort idTestMetro)
 {
     QString strRequete = "UPDATE `Test_Metrologique` SET `date_fin` = '"+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
@@ -743,6 +843,21 @@ bool BdHandler::miseAjourDateHeureFinTest(const ushort idTestMetro)
     if(!succes) {
         emit(afficherTrace("Problème lors de la mise à jour du champs date_fin de la table Test_Metrologique"),2);
         emit(afficherTrace("id_testMetro ="+QString::number(idTestMetro)),2);
+    }
+    return succes;
+}
+
+bool BdHandler::miseAjourTemperaturesFinTest(float tempMin, float tempMax, float tempMoyenne, int idTest)
+{
+    QString strRequete = QString("UPDATE `Test_Metrologique` SET `temperature_min` = %1").arg(tempMin);
+    strRequete.append(QString(" ,`temperature_max` = %1").arg(tempMax));
+    strRequete.append(QString(" ,`temperature_moyenne` = %1 ").arg(tempMoyenne));
+    strRequete.append(QString(" WHERE `id_test` = %1 ").arg(idTest));
+    QSqlQuery requete;
+    bool succes = requete.exec(strRequete);
+    if(!succes) {
+        emit(afficherTrace("Problème lors de la mise à jour du champs date_fin de la table Test_Metrologique"),2);
+        emit(afficherTrace("id_testMetro ="+QString::number(idTest)),2);
     }
     return succes;
 }

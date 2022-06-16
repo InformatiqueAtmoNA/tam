@@ -52,6 +52,14 @@ class Test : public QObject
     QMap<ushort,Phase> m_listePhases; // Liste des différentes phases du test
     double m_critere1; // critere de performance utilisé pour la génération des rapports
     double m_critere2; // critere de performance utilisé pour la génération des rapports
+    double m_critere3; // critere de performance utilisé pour la génération des rapports
+    double m_critere_temp_min; // critere de performance utilisé pour la génération des rapports
+    double m_critere_temp_max; // critere de performance utilisé pour la génération des rapports
+    double m_critere_variation; // critere de performance utilisé pour la génération des rapports
+
+    float m_temp_min=0;
+    float m_temp_max=0;
+    float m_temp_moyenne=0;
 
 public:
     /*///////////////////////////////////////////////////////////////////////////
@@ -101,6 +109,63 @@ public:
     // \return double critere de performance 2
     ///////////////////////////////////////////////////////////////////////////*/
     inline double getCritere2() {return this->m_critere2;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn double getCritere2()
+    // \brief Renvoi le critere de performance 3
+    //
+    // \return double critere de performance 3
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline double getCritere3() {return this->m_critere3;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn double getCritere2()
+    // \brief Renvoi le critere de température minimum
+    //
+    // \return double critere de température minimum
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline double getCritere_Temp_min() {return this->m_critere_temp_min;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn double getCritere2()
+    // \brief Renvoi le critere de température maximum
+    //
+    // \return double critere de température maximum
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline double getCritere_Temp_max() {return this->m_critere_temp_max;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn double getCritere2()
+    // \brief Renvoi le critere de variation de température
+    //
+    // \return double critere de variation de température
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline double getCritere_Variation() {return this->m_critere_variation;}
+
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn float getTempMin()
+    // \brief Renvoi la température minimum
+    //
+    // \return float température minimum
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline float getTempMin() {return this->m_temp_min;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn float getTempMax()
+    // \brief Renvoi la température maximum
+    //
+    // \return float température maximum
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline float getTempMax() {return this->m_temp_max;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn float getTempMoyenne()
+    // \brief Renvoi la température moyenne
+    //
+    // \return float température moyenne
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline float getTempMoyenne() {return this->m_temp_moyenne;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn ushort getTempsAcquisition()
@@ -281,7 +346,63 @@ public:
     //
     // \param Critere de performance 2
     ///////////////////////////////////////////////////////////////////////////*/
-    inline void setCritere2(const double & critere2) {this->m_critere2 = critere2;}
+    inline void setCritere2(const float & critere2) {this->m_critere2 = critere2;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setCritere3(const double & criter3)
+    // \brief Ajoute un critere de performance
+    //
+    // \param Critere de performance 3
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setCritere3(const double & critere3) {this->m_critere3 = critere3;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setCritere_Temp_min(const double & critere_temp_min)
+    // \brief Ajoute un critere de température minimum
+    //
+    // \param critere de température minimum
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline double setCritere_Temp_min(const double & critere_temp_min) {this->m_critere_temp_min  = critere_temp_min;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setCritere_Temp_max(const double & critere_temp_max)
+    // \brief Ajoute un critere de température maximum
+    //
+    // \param critere de température maximum
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline double setCritere_Temp_max(const double & critere_temp_max) {this->m_critere_temp_max = critere_temp_max;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setCritere_Variation(const double & critere_variation)
+    // \brief Ajoute un critere de variation de température
+    //
+    // \param critere de variation de température
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline double setCritere_Variation(const double & critere_variation) {this->m_critere_variation = critere_variation;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setTempMin(const float & TempMin)
+    // \brief Ajoute une température minimum
+    //
+    // \param température minimum
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setTempMin(const float & TempMin) {this->m_temp_min =TempMin ;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setTempMax(const float & TempMax)
+    // \brief Ajoute une température maximum
+    //
+    // \param température maximum
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setTempMax(const float & TempMax) {this->m_temp_max =TempMax ;}
+
+    /*///////////////////////////////////////////////////////////////////////////
+    // \fn void setTempMoyenne(const float & TempMoyenne)
+    // \brief Ajoute une température moyenne
+    //
+    // \param température moyenne
+    ///////////////////////////////////////////////////////////////////////////*/
+    inline void setTempMoyenne(const float & TempMoyenne) {this->m_temp_moyenne =TempMoyenne ;}
 
     /*///////////////////////////////////////////////////////////////////////////
     // \fn void setTempsAcquisition(ushort const & tpsAcquisition)

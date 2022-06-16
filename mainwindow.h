@@ -39,6 +39,8 @@
 #include "dlg_lieu.h"
 #include "dlg_operateur.h"
 #include "dlg_port_serie.h"
+#include "dlg_authentification.h"
+#include "dlg_info_utilisateur.h"
 #include "et_generateurrapporttest.h"
 #include "parametreshandler.h"
 
@@ -61,9 +63,9 @@ protected:
     QPointer<et_GenerateurRapportTest> m_dlgGenerateurRapportTest;
     QPointer<et_listeAttenteTests> m_dlgListeAttenteTest;
     ExecutionTest* testAExecuter;
-
+    QAuthenticator m_user;
     void changeEvent(QEvent *e);
-    void afficherHomeWidget();
+    void afficherHomeWidget(int index=0);
     void afficherCreationTest(const QString fichierDescription="");
 
 private:
@@ -76,7 +78,7 @@ public Q_SLOTS:
     void modifierTest(const QString fichierDescription);
     void executerTest(const ushort idTestXML, const QString fichierDescription);
     void afficherRapport(const ushort idTest,const ushort idAnalyseur, const ushort typeTest);
-    void fermetureTestWidget();
+    void fermetureTestWidget(int index=0);
     void afficherDlgEquipement();
     void afficherDlgSystemeEtalon();
     void afficherDlgLieu();
@@ -85,6 +87,8 @@ public Q_SLOTS:
     void programmerSerieTests();
     void afficherParametres();
     void aPropos();
+    void connexion();
+    void afficherInformationsUser();
 };
 
 #endif // MAINWINDOW_H

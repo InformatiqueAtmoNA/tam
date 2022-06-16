@@ -30,6 +30,7 @@ private:
     QPointer<QSqlTableModel> m_model_tx_transmission;
     QPointer<QSqlTableModel> m_model_port_serie;
     QPointer<QSqlTableModel> m_model_molecule;
+    QPointer<QSqlTableModel> m_model_typeConnexion;
 
     QModelIndex m_indexSelection;
     QModelIndex m_indexSelectionMolecule;
@@ -44,6 +45,8 @@ private:
     ushort m_idTxTransmission;
     ushort m_noport;
     int m_idModifie;
+    QString m_type_connexion;
+
 
     void peuplerTable();
     void afficherFormulaire();
@@ -68,6 +71,8 @@ private Q_SLOTS:
     void tableViewPolluantIndexChanged(const QModelIndex & idxSelection);
     void boutonSupprimerModifierDesactive ();
     void boutonFiltreClicked();
+    void changeStateOfRS232(int state);
+    void changeStateOfIP(int state);
 };
 
 

@@ -294,6 +294,13 @@
                     <item row="0" column="0">
                      <layout class="QVBoxLayout" name="verticalLayout_2">
                       <item>
+                       <widget class="QCheckBox" name="checkBoxFavori">
+                        <property name="text">
+                         <string>Mettre en favori</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_6">
                         <item>
                          <widget class="QLabel" name="label_6">
@@ -783,33 +790,6 @@
               <string>Critères de Performance</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_6">
-              <item row="0" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <item>
-                 <widget class="QLabel" name="label_critere1">
-                  <property name="text">
-                   <string>Critere 1 :</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_critere1">
-                  <property name="maximumSize">
-                   <size>
-                    <width>63</width>
-                    <height>27</height>
-                   </size>
-                  </property>
-                  <property name="decimals">
-                   <number>2</number>
-                  </property>
-                  <property name="maximum">
-                   <double>1000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
               <item row="1" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <item>
@@ -837,6 +817,54 @@
                 </item>
                </layout>
               </item>
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="QLabel" name="label_critere1">
+                  <property name="text">
+                   <string>Critere 1 :</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_critere1">
+                  <property name="maximumSize">
+                   <size>
+                    <width>63</width>
+                    <height>27</height>
+                   </size>
+                  </property>
+                  <property name="decimals">
+                   <number>2</number>
+                  </property>
+                  <property name="maximum">
+                   <double>1000.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="2" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_20">
+                <item>
+                 <widget class="QLabel" name="label_critere3">
+                  <property name="text">
+                   <string>Critère 3 :</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_critere3">
+                  <property name="maximumSize">
+                   <size>
+                    <width>63</width>
+                    <height>27</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
              </layout>
             </widget>
            </item>
@@ -856,19 +884,102 @@
           </layout>
          </item>
          <item row="1" column="0">
-          <spacer name="verticalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
+          <layout class="QHBoxLayout" name="horizontalLayout_22">
+           <item>
+            <widget class="QGroupBox" name="groupBox_critere_temp">
+             <property name="minimumSize">
+              <size>
+               <width>300</width>
+               <height>150</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Critères d'environnement</string>
+             </property>
+             <widget class="QWidget" name="horizontalLayoutWidget">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>20</y>
+                <width>251</width>
+                <height>24</height>
+               </rect>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <item>
+                <widget class="QLabel" name="label_crit_temp_min">
+                 <property name="text">
+                  <string>Critère de température minimum : </string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_crit_temp_min"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="horizontalLayoutWidget_2">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>80</y>
+                <width>251</width>
+                <height>21</height>
+               </rect>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_16">
+               <item>
+                <widget class="QLabel" name="label_crit_variation_temp">
+                 <property name="text">
+                  <string>Critère de variation de température : </string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_crit_variation_temp"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="horizontalLayoutWidget_3">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>50</y>
+                <width>251</width>
+                <height>21</height>
+               </rect>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_21">
+               <item>
+                <widget class="QLabel" name="label_crit_temp_max">
+                 <property name="text">
+                  <string>Critère de température maximum : </string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_crit_temp_max"/>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_19">
            <item>
             <widget class="QLabel" name="label_15">
@@ -888,6 +999,19 @@
             </widget>
            </item>
           </layout>
+         </item>
+         <item row="2" column="0">
+          <spacer name="verticalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>

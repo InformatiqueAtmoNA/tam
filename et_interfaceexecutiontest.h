@@ -27,6 +27,7 @@
 #ifndef ET_INTERFACEEXECUTIONTEST_H
 #define ET_INTERFACEEXECUTIONTEST_H
 
+#include <QAuthenticator>
 #include <QWidget>
 
 #include "bdhandler.h"
@@ -56,48 +57,73 @@ private:
     QPointer<QSqlTableModel> m_modelLieu;
     QModelIndex m_idxSelectionAnalyseurs;
     QModelIndex m_idxCommunicationAnalyseurs;
-    QString m_fichierDescription;
+
+    QString m_type_Socket;
     ushort m_etape;
-    ushort m_idTestXML;
-    QPointer<Test> m_test;
+    int m_idSonde;
+    QList<QString> m_fichierDescription;
+    QList<ushort> m_idTestXML;
+    QList<QPointer<Test>> m_test;
+
     QMap<ushort,QString> m_listeInterfaceAnalyseurs;
     QMap<ushort,bool> m_listeEtatComAnalyseurs;
     QPointer<Protocole> m_appareilEnTest;
     bool m_etatComCalibrateur;
+    bool m_etatComSonde;
     QPointer<ExecutionTest> m_testAExecuter;
     ushort m_niveauInfos;
     bool m_miseEnAttente;
     bool m_debutImmediat;
+    bool m_sondePresente;
     QDateTime m_dateHeureDebutTest;
     QString m_nomCheminCSV;
+    QList<QLineEdit*> listeLineEditCSV;
+    QAuthenticator m_user;
 
     bool controleEtape1();
     bool controleEtape2();
     void afficherMsgBoxErreurCom();
-    QPointer<et_ParamsTest> preparerInfosTest();
+
+    QString m_typeConnexion;
+    QString m_IP;
+    quint16 m_numPort;
+    QString m_typeSocket;
+
+    QList<QPointer<et_ParamsTest>> preparerInfosTest();
+
 
 public:
-    explicit et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,const ushort idTestXml,const QString fichierDescription,bool miseEnAttente=false,ushort idOperateur=0,QWidget *parent = 0);
+    explicit et_InterfaceExecutionTest(QPointer<BdHandler> bdHandler,QAuthenticator aUser,QList<ushort> idTestXml,QList<QString> fichierDescription,bool miseEnAttente=false,ushort idOperateur=0,QWidget *parent = 0);
     ~et_InterfaceExecutionTest();
 
 private Q_SLOTS:
     void buttonAjouterClicked();
+    void buttonAjouterSondeClicked();
+    void buttonSupprimerSondeClicked();
     void buttonAnnulerClicked();
     void buttonPrecedentClicked();
     void buttonSuivantClicked();
     void buttonSupprimerClicked();
     void buttonTestAnalyseurClicked();
     void buttonTestCalibrateurClicked();
+    void buttonTestSondeClicked();
     void tableWidgetCommunicationClicked(const QModelIndex index);
     void lineEditCanalCalibrateurTextChanged(const QString text);
     void lineEditInterfaceCalibrateurTextChanged(const QString text);
     void lineEditInterfaceAnalyseurTextChanged(const QString text);
+    void lineEditInterfaceSondeTextChanged(const QString text);
     void lineEditParamsCalibrateurEnterPressed();
     void lineEditInterfaceAnalyseurEnterPressed();
+    void lineEditInterfaceSondeEnterPressed();
     void erreurCommunicationAnalyseur();
     void erreurCommunicationCalibrateur();
+    void erreurCommunicationSonde();
+    void communicationAnalyseurOK();
+    void communicationCalibrateurOK();
+    void communicationSondeOK();
     void ouverturePortComAnalyseur(const bool ouverturePort);
     void ouverturePortComCalibrateur(const bool ouverturePort);
+    void ouverturePortComSonde(const bool ouverturePort);
     void tabWidgetExecutionTestIndexChanged(const int index);
     void buttonExecuterClicked();
     void buttonMettreEnAttenteClicked();
@@ -106,10 +132,11 @@ private Q_SLOTS:
     inline void finTest() {delete m_testAExecuter;}
     inline void tableWidgetAnalyseursClicked(const QModelIndex index) {m_idxSelectionAnalyseurs = index;}
     void button_choixEnregistrementCSV();
+    void button_choixMultipleEnregistrementCSV(int idButon);
 
 Q_SIGNALS:
-    void fermeture();
-    void miseEnAttente(QPointer<et_ParamsTest> paramsTest);
+    void fermeture(int index=0);
+    void miseEnAttente(QList<QPointer<et_ParamsTest>> paramsTest);
 };
 
 #endif // ET_INTERFACEEXECUTIONTEST_H

@@ -67,6 +67,12 @@ CreationTest::CreationTest(const QPointer<BdHandler> bdHandler,QWidget *parent,c
     connect(this->ui->button_fichierXML,SIGNAL(clicked()),this,SLOT(button_choixEnregistrementXML()));
     connect(this->ui->doubleSpinBox_critere1,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere1(double)));
     connect(this->ui->doubleSpinBox_critere2,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere2(double)));
+    connect(this->ui->doubleSpinBox_critere3,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere3(double)));
+    connect(this->ui->doubleSpinBox_crit_temp_min,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere_Temp_min(double)));
+    connect(this->ui->doubleSpinBox_crit_temp_max,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere_Temp_max(double)));
+    connect(this->ui->doubleSpinBox_crit_variation_temp,SIGNAL(valueChanged(double)),this,SLOT(doubleSpinBox_Critere_Variation(double)));
+    connect(this->ui->checkBoxFavori,SIGNAL(stateChanged(int)),this,SLOT(favoriBoxChecked(int)));
+
 
     this->ui->button_InsererPhase->setEnabled(false);
     this->ui->button_SupprimerPhase->setEnabled(false);
@@ -125,6 +131,7 @@ CreationTest::~CreationTest()
 
 void CreationTest::initialiserChamps()
 {
+
     this->ui->timeEdit_TempsStabilisation->setTime(this->m_test->getTempsStabilisation());
     this->ui->timeEdit_TempsAttenteEntreMesure->setTime(this->m_test->getTempsAttenteEntreMesure());
     this->ui->timeEdit_TempsMoyennageMesures->setTime(this->m_test->getTempsMoyennageMesure());
@@ -134,8 +141,22 @@ void CreationTest::initialiserChamps()
     this->ui->spinBox_NbCyclesPhases->setValue(this->m_test->getNbCyclesDePhases());
     this->ui->doubleSpinBox_critere1->setValue(this->m_test->getCritere1());
     this->ui->doubleSpinBox_critere2->setValue(this->m_test->getCritere2());
+    this->ui->doubleSpinBox_critere3->setValue(this->m_test->getCritere3());
+    this->ui->doubleSpinBox_crit_temp_min->setValue(this->m_test->getCritere_Temp_min());
+    this->ui->doubleSpinBox_crit_temp_max->setValue(this->m_test->getCritere_Temp_max());
+    this->ui->doubleSpinBox_crit_variation_temp->setValue(this->m_test->getCritere_Variation());
 
     QPointer<QSqlRelationalTableModel> model = this->m_bdHandler->getSystemeEtalonModel();
+
+    this->m_favoriteState = this->m_bdHandler->getTestFavoriteState(this->m_test->getIdTest());
+    if(m_favoriteState=="OUI"){
+        this->ui->checkBoxFavori->setCheckState(Qt::Checked);
+    }
+    else{
+        m_favoriteState="NON";
+        this->ui->checkBoxFavori->setCheckState(Qt::Unchecked);
+    }
+
     model->setFilter(QString("id_systeme_etalon=%1").arg(this->m_test->getIdSystemeEtalon()));
     model->select();
     qDebug()<<QString("id_systeme_etalon=%1").arg(this->m_test->getIdSystemeEtalon());
@@ -145,6 +166,10 @@ void CreationTest::initialiserChamps()
     this->ui->lineEdit_GZero->setText(model->record(0).value(SYS_ETALON_GZERO).toString());
 
     this->m_typeTest = this->m_test->getTypeTest();
+    if(m_typeTest!= LINEARITE){
+        this->ui->doubleSpinBox_critere3->hide();
+        this->ui->label_critere3->hide();
+    }
     switch(this->m_typeTest) {
     case REPETABILITE:
         this->m_indexTypeTest = 0;
@@ -213,10 +238,9 @@ void CreationTest::afficherPhaseWidget(const ushort noPhase, bool readOnly)
 
             this->m_phaseWidget = new ct_PhaseWidget(this->m_test->getIdSystemeEtalon(),this->m_typeTest,this->m_bdHandler,this,noPhase,*(Phase::getPhaseFromConf(phaseConf).data()));
         }
-        //this->ui->h_Layout_EditPhase->insertWidget(1,this->m_phaseWidget);
 
+        this->ui->h_Layout_EditPhase->addWidget(this->m_phaseWidget);
 
-        this->m_phaseWidget->move(400,100);
         this->m_phaseWidget->show();
     }
 
@@ -340,7 +364,7 @@ void CreationTest::button_AnnulerClicked()
     msgBox.setDefaultButton(QMessageBox::Ok);
 
     if(msgBox.exec()==QMessageBox::Ok)
-        emit(this->fermeture());
+        emit(this->fermeture(0));
 }
 
 void CreationTest::button_SuivantClicked()
@@ -436,6 +460,7 @@ void CreationTest::button_SauvegarderClicked ()
     model->setData(model->index(row,TEST_XML_TYPE_TEST),QVariant::fromValue(typeTestToString(this->m_typeTest)));
     model->setData(model->index(row,TEST_XML_ID_SYSTEME_ETALON),QVariant::fromValue(this->m_test->getIdSystemeEtalon()));
     qDebug()<<model->index(row,TEST_XML_ID).data();
+    model->setData(model->index(row,TEST_XML_EST_FAVORI),QVariant::fromValue((this->m_favoriteState)));
     model->submitAll();
 
     this->m_test->setIdTest(model->record(row).value(TEST_XML_ID).toInt());
@@ -457,7 +482,7 @@ void CreationTest::button_SauvegarderClicked ()
             ancienFichierXML.remove();
         }
     }
-    emit(this->fermeture());
+    emit(this->fermeture(0));
 }
 
 void CreationTest::tabWidgetIndexChanged(const int index)
@@ -577,16 +602,23 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
         this->m_typeTest=REPETABILITE;
         this->ui->label_critere1->setText(QLatin1String("Ecart-type de repetabilite au zero en ppb"));
         this->ui->label_critere2->setText(QLatin1String("Ecart-type de repetabilite à la concentration en %"));
+        this->ui->label_critere3->hide();
+        this->ui->doubleSpinBox_critere3->hide();
         break;
     case 1:
         this->m_typeTest=LINEARITE;
         this->ui->label_critere1->setText(QLatin1String("Residu au zero en ppb"));
         this->ui->label_critere2->setText(QLatin1String("Residu Maximal concentration > à 0 en %"));
+        this->ui->label_critere3->setText(QLatin1String("Ecart a la consigne > à 0 en %"));
+        this->ui->label_critere3->show();
+        this->ui->doubleSpinBox_critere3->show();
         break;
     case 2:
         this->m_typeTest=TEMPS_REPONSE;
         this->ui->label_critere1->setText(QLatin1String("Temps de reponse montee et descente en seconde"));
         this->ui->label_critere2->setText(QLatin1String("Difference entre Temps de reponse montee et descente en seconde"));
+        this->ui->label_critere3->hide();
+        this->ui->doubleSpinBox_critere3->hide();
         break;
     case 3:
         this->m_typeTest=RENDEMENT_FOUR;
@@ -594,6 +626,8 @@ void CreationTest::cb_ChoixTypeTestIndexChanged(const int index)
         this->ui->spinBox_nbCyclesMesures->setValue(4);
         this->ui->label_critere1->setText(QLatin1String("Rendement de conversion en %"));
         this->ui->label_critere2->setText(QLatin1String("Difference NO/NOX entre 1ere et derniere phase en %"));
+        this->ui->label_critere3->hide();
+        this->ui->doubleSpinBox_critere3->hide();
         break;
     case 4:
         this->m_typeTest=PERSO;
@@ -667,4 +701,13 @@ void CreationTest::button_choixEnregistrementXML()
         return;
     }
 
+}
+
+void CreationTest::favoriBoxChecked(int boxState){
+    if(boxState==2){
+        this->m_favoriteState="OUI";
+    }
+    else if(boxState == 0){
+        this->m_favoriteState="NON";
+    }
 }

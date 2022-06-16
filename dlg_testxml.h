@@ -17,8 +17,9 @@ public:
                          const bool returnSelection=false);
     ~Dlg_testXml();
 
-    short getIdSelection();
-    QString getFichierDescriptionSelection();
+    QList<ushort> getIdSelection();
+    QList<QString> getFichierDescriptionSelection();
+
 
 private:
     Ui::Dlg_testXml *ui;
@@ -26,14 +27,17 @@ private:
     QModelIndex m_indexSelection;
     QPointer<BdHandler> m_bdHandler;
     bool m_returnSelection;
-
+    QList<QModelIndex> indexTestsSelectionne;
     void afficherTable();
 
 private Q_SLOTS:
-    void changementSelection(const QModelIndex & idxSelection);
+    void changementSelection(QModelIndex idxSelection);
     void initialiserChamps();
     void buttonFermerClicked();
     void buttonSelectionnerClicked();
+    void buttonConfirmerClicked();
+    void buttonSupprimerClicked();
+    void filter(int checkState);
 };
 
 #endif // DLG_TESTXML_H

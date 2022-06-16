@@ -127,11 +127,8 @@ bool CommunicationSerie::setDeviceName(const QString newDeviceName) {
     }
     this->device->setPortName(newDeviceName);
     this->deviceName = newDeviceName;
+     connect(device,SIGNAL(readyRead()),this,SLOT(slotRead()));
 
-    // connection du signal et du slot de lecture
-    if(!connect(device,SIGNAL(readyRead()),this,SLOT(slotRead()))) {
-        qDebug() << "Problème lors de la connection du signal de lecture";
-    }
 //    // connection du signal de changement de statut
 //    if(!connect(device,SIGNAL(signalStatus(QString,QDateTime)),this,SLOT(statusSignal(QString,QDateTime)))) {
 //        qDebug() << "Problème lors de la connection du signal de changement de statut";
@@ -247,8 +244,9 @@ void CommunicationSerie::write(const QString data) {
     QByteArray baData = data.toLatin1();
     if(this->device->write(baData)<0) {
         qDebug() << "Problème lors de l'envoi de la trame" << baData;
-        emit(this->transmissionError());
+        emit(this->transmissionError());        
     }
+    device->waitForBytesWritten();
 }
 
 /////////////////
@@ -259,7 +257,10 @@ void CommunicationSerie::write(const QString data) {
 void CommunicationSerie::slotRead() {
      QByteArray data = this->device->readAll();
      qDebug() << "Readed is : " << data.size() << " bytes";
-     QString stringData = data;
+     QString stringData;
+     for(int i=0 ; i<data.length() ; i++){
+         stringData.append(data[i]);
+     }
      emit(dataReaded(stringData));
 }
 

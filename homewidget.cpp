@@ -27,18 +27,13 @@
 #include "ui_homewidget.h"
 
 
-HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
+HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent, int* index) :
     QWidget(parent),
     ui(new Ui::HomeWidget)
 {
     ui->setupUi(this);
 
     this->m_bdHandler = bdHandler;
-    this->getListeTests();
-    this->getListeRapports();
-
-    //QHeaderView *headers = this->ui->tableWidget_TestXml->horizontalHeader();
-    //headers->setResizeMode(QHeaderView::Stretch);
 
     connect(this->ui->button_Afficher,SIGNAL(clicked()),this,SLOT(buttonAfficherClicked()));
     connect(this->ui->button_Executer,SIGNAL(clicked()),this,SLOT(buttonExecuterClicked()));
@@ -48,18 +43,28 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent) :
     connect(this->ui->button_ProgrammerSerieTests,SIGNAL(clicked()),this,SIGNAL(programmerSerieTest()));
     connect(this->ui->tableWidget_TestXml,SIGNAL(clicked(QModelIndex)),this,SLOT(tableWidgetTestXmlIndexChanged(QModelIndex)));
     connect(this->ui->tableView_TestRapport,SIGNAL(clicked(QModelIndex)),this,SLOT(tableViewTestRapportIndexChanged(QModelIndex)));
-    connect(this->ui->treeView,SIGNAL(clicked(QModelIndex)),this,SLOT(treeViewTestRapportIndexChanged(QModelIndex)));
-    //connect(this->ui->button_supprimer_test_resultat,SIGNAL(clicked()),this,SLOT(buttonSupprimerTestResultatClicked()));
+    connect(this->ui->checkBoxFavoris,SIGNAL(stateChanged(int)),this,SLOT(filter(int)));
+    connect(this->ui->button_Valider,SIGNAL(clicked()),this,SLOT(buttonValiderFiltreClicked()));
+
+    connect(this->ui->nb_Ligne_Affichees,SIGNAL(returnPressed()),this,SLOT(buttonValiderFiltreClicked()));
+
+    this->ui->nb_Ligne_Affichees->setText("20");
 
     this->ui->button_Executer->setEnabled(false);
     this->ui->button_Modifier->setEnabled(false);
     this->ui->button_Supprimer->setEnabled(false);
     this->ui->button_Afficher->setEnabled(false);
     this->ui->button_supprimer_test_resultat->setEnabled(false);
-    this->ui->tabWidget_TestRapport->setCurrentIndex(0);
-    this->ui->listView_Rapports->hide();
-    this->ui->label_3->hide();
+    this->ui->tabWidget_TestRapport->setCurrentIndex(*index);
+    this->ui->button_supprimer_test_resultat->hide();
+    this->ui->cb_modele_equipement->setModel(this->m_bdHandler->getModelesModel());
+    this->ui->cb_modele_equipement->setModelColumn(MODELE_DESIGNATION);
+    this->ui->cb_modele_equipement->insertItem(0,"AUCUN");
+    this->ui->cb_modele_equipement->setCurrentIndex(this->ui->cb_modele_equipement->findText("AUCUN"));
 
+    this->getListeTests();
+    this->getListeRapports();
+    this->ui->checkBoxFavoris->setCheckState(Qt::Checked);
 }
 
 HomeWidget::~HomeWidget()
@@ -84,6 +89,7 @@ void HomeWidget::getListeTests()
             QTableWidgetItem* item_numSerieDiluteur = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_DILUTEUR).toString());
             QTableWidgetItem* item_numSerieBouteille = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_BOUTEILLE).toString());
             QTableWidgetItem* item_numSerieGoz = new QTableWidgetItem(recordSystemeEtalon.value(SYS_ETALON_GZERO).toString());
+            QTableWidgetItem* item_est_favoris = new QTableWidgetItem(recordTestXml.value(TEST_XML_EST_FAVORI).toString());
 
             uint idxNewRecord = this->ui->tableWidget_TestXml->rowCount();
             this->ui->tableWidget_TestXml->insertRow(idxNewRecord);
@@ -93,6 +99,7 @@ void HomeWidget::getListeTests()
             this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_DILUTEUR,item_numSerieDiluteur);
             this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_BOUTEILLE,item_numSerieBouteille);
             this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_GZERO,item_numSerieGoz);
+            this->ui->tableWidget_TestXml->setItem(idxNewRecord,HOMEW_TABLEW_TEST_EST_FAVORI,item_est_favoris);
             this->ui->tableWidget_TestXml->setColumnHidden(HOMEW_TABLEW_TEST_ID_TEST,true);
 
             this->ui->tableWidget_TestXml->resizeColumnsToContents();
@@ -102,32 +109,42 @@ void HomeWidget::getListeTests()
 
 void HomeWidget::getListeRapports()
 {
-            //if(!this->m_bdHandler->isOpen())
-            //   m_bdHandler->connexionBD();
+            QList<QString> m_liste_filtres;
+            m_liste_filtres.append(this->ui->cb_modele_equipement->currentText());
+            if(this->ui->filtre_num_test->text().isEmpty()){
+                m_liste_filtres.append("AUCUN");
+            }
+            else{
+                m_liste_filtres.append(this->ui->filtre_num_test->text());
+            }
+            if(this->ui->filtre_num_equipement->text().isEmpty()){
+                m_liste_filtres.append("AUCUN");
+            }
+            else{
+                m_liste_filtres.append(this->ui->filtre_num_equipement->text());
+            }
+            m_liste_filtres.append(this->ui->cb_type_test->currentText());
+            m_liste_filtres.append(this->ui->cb_validite->currentText());
+            if(this->ui->nb_Ligne_Affichees->text().isEmpty()){
+                m_liste_filtres.append("0");
+            }
+            else{
+                m_liste_filtres.append(this->ui->nb_Ligne_Affichees->text());
+            }
 
-            m_modelRapport = this->m_bdHandler->getTestRapportModel();
+            m_modelRapport = this->m_bdHandler->getTestRapportModel(m_liste_filtres);
 
             m_modelRapport->setParent(this);
-            this->ui->tableView_TestRapport->setModel(m_modelRapport);
-            this->ui->tableView_TestRapport->resizeColumnsToContents();
-            this->ui->tableView_TestRapport->setColumnHidden(HOMEW_TABVIEW_TEST_ID_TEST,true);
+
+            QSortFilterProxyModel *filter = new QSortFilterProxyModel;
+            filter->setSourceModel(m_modelRapport);
+            this->ui->tableView_TestRapport->setModel(filter);
+
+            this->ui->tableView_TestRapport->setSortingEnabled(true);
             this->ui->tableView_TestRapport->setColumnHidden(HOMEW_TABVIEW_TEST_ID_EQUIP,true);
 
-
-            //m_Sysmodel.setRootPath(QDir::rootPath());
-            //modele = model;
-
-            m_itemModele = m_bdHandler->getItemModelListeRapport();
-            this->ui->treeView->setModel(m_itemModele);
-
-
-            //this->ui->treeView->hideColumn(HOMEW_TABVIEW_TEST_ID_TEST);
-           // this->ui->treeView->hideColumn(HOMEW_TABVIEW_TEST_ID_EQUIP);
-
+            ui->tableView_TestRapport->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
-
-
-
 
 void HomeWidget::tableWidgetTestXmlIndexChanged(const QModelIndex & index)
 {
@@ -140,22 +157,44 @@ void HomeWidget::tableWidgetTestXmlIndexChanged(const QModelIndex & index)
 void HomeWidget::tableViewTestRapportIndexChanged(const QModelIndex & index)
 {
     this->m_idxSelectionRapport = index;
-    this->ui->treeView->reset();
     this->ui->button_Afficher->setEnabled(m_idxSelectionRapport.isValid());
 }
 
 void HomeWidget::treeViewTestRapportIndexChanged(const QModelIndex & index)
 {
     this->m_idxSelectionItemRapport = index;
-    if (!m_itemModele->hasChildren(m_idxSelectionItemRapport.model()->index(0,0))){ // modifie
-        this->ui->button_Afficher->setEnabled(m_idxSelectionItemRapport.isValid());
-    }
-    else {
-        this->ui->button_Afficher->setDisabled(m_idxSelectionItemRapport.isValid());
-    }
+
+        if (!m_itemModele->hasChildren(m_idxSelectionItemRapport.model()->index(0,0,m_idxSelectionItemRapport))){
+            this->ui->button_Afficher->setEnabled(m_idxSelectionItemRapport.isValid());
+        }
+        else {
+            this->ui->button_Afficher->setDisabled(m_idxSelectionItemRapport.isValid());
+        }
 
 }
 
+void HomeWidget::filter(int etatCheckBox){
+    if(etatCheckBox == 2)
+    {
+        for(int i=0 ; i<=this->ui->tableWidget_TestXml->rowCount(); i++)
+        {
+            QSqlRecord recordTestXml = this->m_modelTestXml->record(i);
+            QString estFavori = recordTestXml.value(TEST_XML_EST_FAVORI).toString();
+
+            if(estFavori=="NON")
+            {
+                this->ui->tableWidget_TestXml->setRowHidden(i,true);
+            }
+        }
+    }
+    else
+    {
+        for(int i=0 ; i<=this->ui->tableWidget_TestXml->rowCount(); i++)
+        {
+            this->ui->tableWidget_TestXml->showRow(i);
+        }
+    }
+}
 void HomeWidget::buttonNouveauClicked()
 {
     emit(this->creerTest());
@@ -205,14 +244,6 @@ void HomeWidget::buttonAfficherClicked()
          ushort typeTest = stringToTypeTest(this->m_modelRapport->record(m_idxSelectionRapport.row()).value(HOMEW_TABVIEW_TEST_TYPE_TEST).toString());
          emit(this->afficherRapport(idTest,idAnalyseur,typeTest));
     }
-    else if (ui->treeView->currentIndex().isValid()){
-
-        ushort typeTest = stringToTypeTest(m_idxSelectionItemRapport.parent().data().toString());
-        ushort idTest = m_idxSelectionItemRapport.model()->index(0,0).data().toInt(); // modifie
-        ushort idAnalyseur = m_idxSelectionItemRapport.model()->index(1,0).data().toInt(); // modifie
-
-        emit(this->afficherRapport(idTest,idAnalyseur,typeTest));
-     }
 }
 
 void HomeWidget::buttonSupprimerTestResultatClicked() {
@@ -227,7 +258,13 @@ void HomeWidget::buttonSupprimerTestResultatClicked() {
     if(!m_modelRapport->removeRow(m_idxSelectionRapport.row()))
         QMessageBox::critical(this,"Impossible de supprimer","Erreur de la suppression de l'enregistrement demande",QMessageBox::Ok);
     else {
-        //m_modelRapport->();
         this->getListeRapports();
     }
+}
+
+void HomeWidget::buttonValiderFiltreClicked()
+{
+    this->ui->nb_Ligne_Affichees->setText(QString::number(qAbs(this->ui->nb_Ligne_Affichees->text().toInt())));
+
+    this->getListeRapports();
 }

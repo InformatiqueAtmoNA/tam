@@ -26,36 +26,50 @@
 
 #include "threadcomhandler.h"
 
-ThreadComHandler::ThreadComHandler()
+ThreadComHandler::ThreadComHandler(QString typeConnexion)
 {
     flagStop = false;
+    this->m_typeConnexion=typeConnexion;
 }
 
 ThreadComHandler::~ThreadComHandler() {
-    if(this->comRS232->isOpen())
-        this->comRS232->close();
-    this->comRS232->deleteLater();
-    QCoreApplication::sendPostedEvents(); // modifie
+    if(m_typeConnexion=="RS232"){
+        if(this->comRS232->isOpen())
+            this->comRS232->close();
+        this->comRS232->deleteLater();
+    }
+    else if(m_typeConnexion=="IP"){
+        if(this->comIP->isOpen())
+            this->comIP->close();
+        this->comIP->deleteLater();
+    }
+    QCoreApplication::sendPostedEvents();
     QCoreApplication::processEvents();
 }
 
 void ThreadComHandler::run() {
     exec();
     qDebug()<<"Fin du thread de communication";
-    this->comRS232->close();
+    if(m_typeConnexion=="RS232"){
+         this->comRS232->close();
+    }
+    else if(m_typeConnexion=="IP"){
+            this->comIP->close();
+    }
 }
 
-// Configure la liaison RS232
 void ThreadComHandler::configureRS232(const QString deviceName) {
+
+    qDebug() << "Connexion en RS232";
     this->comRS232 = new CommunicationSerie(deviceName);
 
     if(!this->comRS232->open(QSerialPort::ReadWrite)) {
-        qDebug() << "Problème lors de l'ouverture du peripherique " << deviceName;
+        qDebug() << "Problème lors de l'ouverture du périphérique " << deviceName;
         emit(this->ouverturePort(false));
         return;
     }
     else {
-        qDebug() << "Ouverture du peripherique " << deviceName << " reussie";
+        qDebug() << "Ouverture du périphérique " << deviceName << " réussie";
         emit(this->ouverturePort(true));
     }
     if(!comRS232->setBaudRate(QSerialPort::Baud9600)) {
@@ -89,13 +103,44 @@ void ThreadComHandler::configureRS232(const QString deviceName) {
         return;
     }
 
-    // Connection signaux/slots de lecture/ecriture
+    // Connection signaux/slots de lecture/écriture
     connect(this,SIGNAL(envoiTrame(QString)),this->comRS232,SLOT(sendData(QString)));
     connect(this->comRS232,SIGNAL(dataReaded(QString)),this,SIGNAL(receptionTrame(QString)));
 }
 
+void ThreadComHandler::configureIP(QString IP, quint16 port, QString typeSocket){
+    qDebug() << "Connexion en IP";
+    this->comIP = new CommunicationIP();
+    this->comIP->setPort(port);
+    this->comIP->setAddr(IP);
+    this->comIP->setTypeSocket(typeSocket);
+    this->comIP->bindToHost();
+
+    if(!this->comIP->getEtatConnexion()) {
+        qDebug() << "Problème lors de l'ouverture du périphérique " << IP;
+        emit(this->ouverturePort(false));
+        //return;
+    }
+    else {
+        qDebug() << "Ouverture du peripherique " << IP << " réussie";
+        emit(this->ouverturePort(true));
+    }
+
+    // Connection signaux/slots de lecture/écriture
+    connect(this,SIGNAL(envoiTrame(QString)),this->comIP,SLOT(send_Trame(QString)));
+    connect(this->comIP,SIGNAL(dataReceived(QString)),this,SIGNAL(receptionTrame(QString)));
+}
+
+
+
 void ThreadComHandler::stop() {
     this->flagStop = true;
-    if(this->comRS232->isOpen())
-        this->comRS232->close();
+    if(m_typeConnexion=="RS232"){
+        if(this->comRS232->isOpen())
+            this->comRS232->close();
+    }
+    else if(m_typeConnexion=="IP"){
+        if(this->comIP->isOpen())
+            this->comIP->close();
+    }
 }

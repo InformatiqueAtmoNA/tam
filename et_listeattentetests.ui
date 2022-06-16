@@ -44,9 +44,9 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="button_Annuler">
+          <widget class="QPushButton" name="button_Quitter">
            <property name="text">
-            <string>&amp;Annuler</string>
+            <string>Quitter</string>
            </property>
           </widget>
          </item>
@@ -74,7 +74,6 @@
              <property name="font">
               <font>
                <pointsize>12</pointsize>
-               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -112,16 +111,6 @@
              </column>
              <column>
               <property name="text">
-               <string>Interface</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Canal</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
                <string>Date/Heure Début</string>
               </property>
              </column>
@@ -130,21 +119,24 @@
                <string>Etat du test</string>
               </property>
              </column>
+             <column>
+              <property name="text">
+               <string>Interface</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Canal</string>
+              </property>
+             </column>
             </widget>
            </item>
            <item row="1" column="1">
             <layout class="QVBoxLayout" name="verticalLayout">
              <item>
-              <widget class="QPushButton" name="button_Annuler_2">
-               <property name="text">
-                <string>&amp;Annuler</string>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QPushButton" name="button_AjouterTest">
                <property name="text">
-                <string>Ajouter un test</string>
+                <string>Ajouter des tests</string>
                </property>
               </widget>
              </item>

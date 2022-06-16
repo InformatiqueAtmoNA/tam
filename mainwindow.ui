@@ -29,7 +29,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Fichier">
@@ -62,9 +62,17 @@
     </property>
     <addaction name="action_aPropos"/>
    </widget>
+   <widget class="QMenu" name="menuEspace_Personnel">
+    <property name="title">
+     <string>Espace Personnel</string>
+    </property>
+    <addaction name="actionInformations"/>
+    <addaction name="actionDeconnexion"/>
+   </widget>
    <addaction name="menu_Fichier"/>
    <addaction name="menuTests_M_trologiques"/>
    <addaction name="menuBaseDonnees"/>
+   <addaction name="menuEspace_Personnel"/>
    <addaction name="menu_Aide"/>
   </widget>
   <action name="action_Fichier_Quitter">
@@ -110,6 +118,16 @@
   <action name="actionDlgSystemeEtalon">
    <property name="text">
     <string>Système Etalon</string>
+   </property>
+  </action>
+  <action name="actionInformations">
+   <property name="text">
+    <string>Informations</string>
+   </property>
+  </action>
+  <action name="actionDeconnexion">
+   <property name="text">
+    <string>Déconnexion</string>
    </property>
   </action>
  </widget>

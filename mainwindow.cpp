@@ -28,21 +28,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QLabel>
+#include <QPushButton>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    QString driver = getParam("BD_Driver").toString();
-    QString host = getParam("Host").toString();
-    QString userName = getParam("UserName").toString();
-    QString password = getParam("Password").toString();
-    QString dbName = getParam("DB_Name").toString();
-
-    m_bdHandler = new BdHandler(driver,host,userName,password,dbName);
-    m_bdHandler->connexionBD();
 
     connect(this->ui->actionDlgEquipement,SIGNAL(triggered()),this,SLOT(afficherDlgEquipement()));
     connect(this->ui->actionDlgSystemeEtalon,SIGNAL(triggered()),this,SLOT(afficherDlgSystemeEtalon()));
@@ -53,9 +47,43 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->ui->action_SerieTest,SIGNAL(triggered()),this,SLOT(programmerSerieTests()));
     connect(this->ui->action_aPropos,SIGNAL(triggered()),this,SLOT(aPropos()));
     connect(this->ui->action_Fichier_Quitter,SIGNAL(triggered()),this,SLOT(quitter()));
+    connect(this->ui->actionDeconnexion,SIGNAL(triggered()),this,SLOT(connexion()));
+    connect(this->ui->actionInformations,SIGNAL(triggered()),this,SLOT(afficherInformationsUser()));
+
+    QString driver = getParam("BD_Driver").toString();
+    QString host = getParam("Host").toString();
+    QString userName = getParam("UserName").toString();
+    QString password= getParam("Password").toString().toLatin1();
+
+    QString dbName = getParam("DB_Name").toString();
+
+    m_bdHandler = new BdHandler(driver,host,userName,password,dbName);
 
 
+    if(!m_bdHandler->connexionBD()){
+        password="";
+        for(char index : getParam("Password").toString().toLatin1()){
+            index-=17;
+            password.append(index);
+        }
+        m_bdHandler = new BdHandler(driver,host,userName,password,dbName);
+        if(!m_bdHandler->connexionBD()){
+            return;
+        }
+    }
+    else{
+        // modification du mot de passe pour le rendre non lisible dans le fichier params.ini
+        QString newPassword;
+        for(char index :password.toLatin1()){
+            index+=17;
+            newPassword.append(index);
+        }
+        setParam("Password",QVariant::fromValue(newPassword));
+    }
+
+    this->connexion();
     this->afficherHomeWidget();
+
 }
 
 MainWindow::~MainWindow()
@@ -72,6 +100,7 @@ MainWindow::~MainWindow()
 
     delete ui;
 }
+
 
 void MainWindow::quitter()
 {
@@ -105,9 +134,9 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
-void MainWindow::afficherHomeWidget()
+void MainWindow::afficherHomeWidget(int index)
 {
-    m_homeWidget = new HomeWidget(m_bdHandler,this);
+    m_homeWidget = new HomeWidget(m_bdHandler,this,&index);
     this->setCentralWidget(m_homeWidget);
 
     if(!this->m_dlgCreationtest.isNull()) {
@@ -127,7 +156,6 @@ void MainWindow::afficherHomeWidget()
     connect(this->m_homeWidget,SIGNAL(executerTest(ushort,QString)),this,SLOT(executerTest(ushort,QString)));
     connect(this->m_homeWidget,SIGNAL(afficherRapport(ushort,ushort,ushort)),this,SLOT(afficherRapport(ushort,ushort,ushort)));
     connect(this->m_homeWidget,SIGNAL(programmerSerieTest()),this,SLOT(programmerSerieTests()));
-
 
     m_homeWidget->show();
 }
@@ -156,7 +184,7 @@ void MainWindow::afficherCreationTest(const QString fichierDescription)
 
     this->setCentralWidget(m_dlgCreationtest);
 
-    connect(this->m_dlgCreationtest,SIGNAL(fermeture()),this,SLOT(fermetureTestWidget()));
+    connect(this->m_dlgCreationtest,SIGNAL(fermeture(int)),this,SLOT(fermetureTestWidget(int)));
 
     m_dlgCreationtest->show();
 }
@@ -185,7 +213,11 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
         return;
     }
 
-    this->m_dlgExecutionTest = new et_InterfaceExecutionTest(m_bdHandler,idTestXML,fichierDescription,false,1,this);
+    QList<ushort> idTestXml;
+    QList<QString> fichierDescriptions;
+    idTestXml.append(idTestXML);
+    fichierDescriptions.append(fichierDescription);
+    this->m_dlgExecutionTest = new et_InterfaceExecutionTest(m_bdHandler,m_user,idTestXml,fichierDescriptions,false,1,this);
 
     if(!this->m_homeWidget.isNull()) {
         delete m_homeWidget;
@@ -194,13 +226,13 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
     this->setCentralWidget(m_dlgExecutionTest);
     m_dlgExecutionTest->show();
 
-    connect(this->m_dlgExecutionTest,SIGNAL(fermeture()),this,SLOT(fermetureTestWidget()));
+    connect(this->m_dlgExecutionTest,SIGNAL(fermeture(int)),this,SLOT(fermetureTestWidget(int)));
 }
 
 void MainWindow::afficherRapport(const ushort idTest,const ushort idAnalyseur, const ushort typeTest)
 {
 
-    this->m_dlgGenerateurRapportTest = new et_GenerateurRapportTest(m_bdHandler,idTest,idAnalyseur,typeTest,this);
+    this->m_dlgGenerateurRapportTest = new et_GenerateurRapportTest(m_bdHandler,m_user,idTest,idAnalyseur,typeTest,this);
 
     if(!this->m_homeWidget.isNull()) {
         delete m_homeWidget;
@@ -209,13 +241,13 @@ void MainWindow::afficherRapport(const ushort idTest,const ushort idAnalyseur, c
     this->setCentralWidget(m_dlgGenerateurRapportTest);
     m_dlgGenerateurRapportTest->show();
 
-    connect(this->m_dlgGenerateurRapportTest,SIGNAL(fermeture()),this,SLOT(fermetureTestWidget()));
+    connect(this->m_dlgGenerateurRapportTest,SIGNAL(fermeture(int)),this,SLOT(fermetureTestWidget(int)));
 
 }
 
-void MainWindow::fermetureTestWidget()
+void MainWindow::fermetureTestWidget(int index)
 {
-    this->afficherHomeWidget();
+    this->afficherHomeWidget(index);
 }
 
 void MainWindow::afficherDlgEquipement()
@@ -256,17 +288,54 @@ void MainWindow::afficherParametres()
 
 void MainWindow::aPropos()
 {
-    QMessageBox::about(this,"A propos de TAM","TAM 3.0.67 \n"
+    QMessageBox::about(this,"A propos de TAM","TAM 3.1.0 \n"
                        "Version du 11/06/2014 \n\n"
                        "Base sur Qt " QT_VERSION_STR "\n\n"
                        "Copyright (C) 2011-2014 TAM Team \n"
                        "TAM est distribue sous les termes de la \n"
-                       "Licence Publique Generale (GPL) V2 \n\n");
+                                                     "Licence Publique Generale (GPL) V2 \n\n");
 }
+
+void MainWindow::connexion()
+{
+    dlg_Authentification dlg_Authentification(this, this->m_bdHandler);
+    int retour = dlg_Authentification.exec();
+    if(retour == QDialog::Rejected){
+       exit(0);
+    }
+    this->m_user=dlg_Authentification.getUser();
+
+    QSqlRecord *record = this->m_bdHandler->getOperateurRow(this->m_user.user());
+    if(!record->value(OPERATEUR_ADMIN).isNull()){
+        if(record->value(OPERATEUR_ADMIN).toInt()!=1){
+            this->ui->action_Parametres->setDisabled(true);
+            this->ui->actionDlgOperateur->setDisabled(true);
+        }
+        else{
+            this->ui->action_Parametres->setDisabled(false);
+            this->ui->actionDlgOperateur->setDisabled(false);
+        }
+    }
+    else{
+        QMessageBox msgBox;
+        msgBox.setText(QLatin1String("Fermer ?"));
+        msgBox.setInformativeText(QLatin1String("Il semblerait que vous n'ayez aucun droit de configuré en base, l'application va se fermer pour éviter tout bug"));
+        exit(0);
+    }
+
+}
+
+void MainWindow::afficherInformationsUser()
+{
+    dlg_info_utilisateur info_utilisateur(this->m_user, m_bdHandler, this);
+    info_utilisateur.exec();
+    m_user=info_utilisateur.getUser();
+}
+
 
 void MainWindow::programmerSerieTests()
 {
-    this->m_dlgListeAttenteTest = new et_listeAttenteTests(m_bdHandler,this);
+    this->m_dlgListeAttenteTest = new et_listeAttenteTests(m_bdHandler,m_user,this);
 
     if(!this->m_homeWidget.isNull()) {
         delete m_homeWidget;
@@ -275,5 +344,5 @@ void MainWindow::programmerSerieTests()
     this->setCentralWidget(m_dlgListeAttenteTest);
     m_dlgListeAttenteTest->show();
 
-    connect(this->m_dlgListeAttenteTest,SIGNAL(fermeture()),this,SLOT(fermetureTestWidget()));
+    connect(this->m_dlgListeAttenteTest,SIGNAL(fermeture(int)),this,SLOT(fermetureTestWidget(int)));
 }
