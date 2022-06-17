@@ -34,6 +34,7 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent, int* index
     ui->setupUi(this);
 
     this->m_bdHandler = bdHandler;
+
     connect(this->ui->button_Afficher,SIGNAL(clicked()),this,SLOT(buttonAfficherClicked()));
     connect(this->ui->button_Executer,SIGNAL(clicked()),this,SLOT(buttonExecuterClicked()));
     connect(this->ui->button_Modifier,SIGNAL(clicked()),this,SLOT(buttonModifierClicked()));
@@ -61,10 +62,10 @@ HomeWidget::HomeWidget(QPointer<BdHandler> bdHandler,QWidget *parent, int* index
     this->ui->cb_modele_equipement->insertItem(0,"AUCUN");
     this->ui->cb_modele_equipement->setCurrentIndex(this->ui->cb_modele_equipement->findText("AUCUN"));
 
+
     this->getListeTests();
     this->getListeRapports();
     this->ui->checkBoxFavoris->setCheckState(Qt::Checked);
-
 }
 
 HomeWidget::~HomeWidget()

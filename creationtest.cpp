@@ -704,6 +704,7 @@ void CreationTest::button_choixEnregistrementXML()
 }
 
 void CreationTest::favoriBoxChecked(int boxState){
+
     if(boxState!=0){
         this->m_favoriteState="OUI";
     }

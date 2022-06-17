@@ -218,7 +218,6 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
     QList<QString> fichierDescriptions;
     idTestXml.append(idTestXML);
     fichierDescriptions.append(fichierDescription);
-
     this->m_dlgExecutionTest = new et_InterfaceExecutionTest(m_bdHandler,m_user,idTestXml,fichierDescriptions,false,1,this);
 
     if(!this->m_homeWidget.isNull()) {
@@ -290,6 +289,7 @@ void MainWindow::afficherParametres()
 
 void MainWindow::aPropos()
 {
+
     QMessageBox::about(this,"A propos de TAM","TAM 3.2.0 \n"
                        "Version du 16/06/2022 \n\n"
                        "Base sur Qt " QT_VERSION_STR "\n\n"
