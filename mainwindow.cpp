@@ -201,6 +201,7 @@ void MainWindow::modifierTest(const QString fichierDescription)
 
 void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescription)
 {
+
     if(!QFile::exists(fichierDescription)) {
         QMessageBox msgBox;
         msgBox.setText(QLatin1String("Un problème est survenu lors du chargement du fichier de configuration du test"));
@@ -217,6 +218,7 @@ void MainWindow::executerTest(const ushort idTestXML, const QString fichierDescr
     QList<QString> fichierDescriptions;
     idTestXml.append(idTestXML);
     fichierDescriptions.append(fichierDescription);
+
     this->m_dlgExecutionTest = new et_InterfaceExecutionTest(m_bdHandler,m_user,idTestXml,fichierDescriptions,false,1,this);
 
     if(!this->m_homeWidget.isNull()) {

@@ -267,7 +267,7 @@ QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(QList<QString> liste_fil
     }
 
     requete.append(QString("order by T.date_debut DESC LIMIT %1").arg(liste_filtres[5]));
-    qDebug() <<requete;
+
     QPointer<QSqlQueryModel> model = new QSqlQueryModel;
     model->setQuery(requete,m_baseMySql);
     model->setHeaderData(HOMEW_TABVIEW_TEST_ID_TEST, Qt::Horizontal, tr("Numero Test"));

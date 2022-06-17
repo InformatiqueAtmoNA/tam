@@ -101,16 +101,6 @@
            <height>16777215</height>
           </size>
          </property>
-         <column>
-          <property name="text">
-           <string>id_Test</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>test</string>
-          </property>
-         </column>
         </widget>
        </item>
       </layout>

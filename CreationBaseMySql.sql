@@ -13,7 +13,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Listage de la structure de la table tam_rpi. concentration
-CREATE TABLE IF NOT EXISTS `Concentration` (
+CREATE TABLE IF NOT EXISTS `concentration` (
   `id_Concentration` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id_systeme_etalon` int(10) unsigned NOT NULL,
   `id_molecule` smallint(5) unsigned NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `Concentration` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. concentration_associee
-CREATE TABLE IF NOT EXISTS `Concentration_Associee` (
+CREATE TABLE IF NOT EXISTS `concentration_associee` (
   `id_concentration_associee` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id_concentration` int(10) unsigned NOT NULL,
   `id_molecule` smallint(5) unsigned NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `Concentration_Associee` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. concentration_test_metro
-CREATE TABLE IF NOT EXISTS `Concentration_Test_Metro` (
+CREATE TABLE IF NOT EXISTS `concentration_test_metro` (
   `idConcentration_Test_Metro` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id_test` smallint(5) unsigned NOT NULL,
   `noPhase` tinyint(3) unsigned NOT NULL,
@@ -59,12 +59,12 @@ CREATE TABLE IF NOT EXISTS `Concentration_Test_Metro` (
   KEY `fk_Concentration_id_molecule` (`id_molecule`),
   CONSTRAINT `Concentration_Test_Metro_ibfk_1` FOREIGN KEY (`id_molecule`) REFERENCES `molecule` (`id_molecule`) ON UPDATE CASCADE,
   CONSTRAINT `fk_Concentration_Test_Metro_1` FOREIGN KEY (`id_test`) REFERENCES `test_metrologique` (`id_test`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20688 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=20746 DEFAULT CHARSET=latin1;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. equipement
-CREATE TABLE IF NOT EXISTS `Equipement` (
+CREATE TABLE IF NOT EXISTS `equipement` (
   `id_equipement` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `id_modele` smallint(5) unsigned NOT NULL,
   `numero_serie` varchar(45) COLLATE latin1_general_ci NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `Equipement` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. equipement_reforme
-CREATE TABLE IF NOT EXISTS `Equipement_Reforme` (
+CREATE TABLE IF NOT EXISTS `equipement_reforme` (
   `id_equipement_reforme` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `id_modele` smallint(5) unsigned NOT NULL,
   `id_equipement` smallint(5) unsigned NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `Equipement_Reforme` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. lieu
-CREATE TABLE IF NOT EXISTS `Lieu` (
+CREATE TABLE IF NOT EXISTS `lieu` (
   `id_lieu` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(45) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_lieu`)
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `Lieu` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. liste_analyseurs_test
-CREATE TABLE IF NOT EXISTS `Liste_Analyseurs_Test` (
+CREATE TABLE IF NOT EXISTS `liste_analyseurs_test` (
   `id_test` smallint(5) unsigned NOT NULL,
   `id_equipement` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id_test`,`id_equipement`),
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `Liste_Analyseurs_Test` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. marque_equipement
-CREATE TABLE IF NOT EXISTS `Marque_Equipement` (
+CREATE TABLE IF NOT EXISTS `marque_equipement` (
   `id_marque` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(30) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_marque`),
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `Marque_Equipement` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. mesure
-CREATE TABLE IF NOT EXISTS `Mesure` (
+CREATE TABLE IF NOT EXISTS `mesure` (
   `id_mesure` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id_test` smallint(5) unsigned NOT NULL,
   `id_equipement` smallint(5) unsigned NOT NULL,
@@ -158,12 +158,12 @@ CREATE TABLE IF NOT EXISTS `Mesure` (
   KEY `fk_mesure_equipement` (`id_equipement`),
   CONSTRAINT `fk_mesure_equipement` FOREIGN KEY (`id_equipement`) REFERENCES `equipement` (`id_equipement`) ON UPDATE CASCADE,
   CONSTRAINT `fk_mesure_test` FOREIGN KEY (`id_test`) REFERENCES `test_metrologique` (`id_test`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=289648 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=289718 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. modele_equipement
-CREATE TABLE IF NOT EXISTS `Modele_Equipement` (
+CREATE TABLE IF NOT EXISTS `modele_equipement` (
   `id_modele` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `id_marque` smallint(5) unsigned NOT NULL,
   `id_protocole` smallint(5) unsigned NOT NULL,
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `Modele_Equipement` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. molecule
-CREATE TABLE IF NOT EXISTS `Molecule` (
+CREATE TABLE IF NOT EXISTS `molecule` (
   `id_molecule` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `code` varchar(5) COLLATE latin1_general_ci NOT NULL,
   `nom` varchar(50) COLLATE latin1_general_ci NOT NULL,
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `Molecule` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. operateur
-CREATE TABLE IF NOT EXISTS `Operateur` (
+CREATE TABLE IF NOT EXISTS `operateur` (
   `id_operateur` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `Nom` varchar(30) COLLATE latin1_general_ci NOT NULL,
   `Prenom` varchar(30) COLLATE latin1_general_ci NOT NULL,
@@ -201,12 +201,12 @@ CREATE TABLE IF NOT EXISTS `Operateur` (
   `user_name` varchar(30) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_operateur`),
   UNIQUE KEY `id_username` (`user_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. polluant_associe
-CREATE TABLE IF NOT EXISTS `Polluant_Associe` (
+CREATE TABLE IF NOT EXISTS `polluant_associe` (
   `id_polluant_associe` int(11) NOT NULL AUTO_INCREMENT,
   `id_pa_equipement` smallint(5) unsigned NOT NULL,
   `id_pa_molecule` smallint(5) unsigned NOT NULL,
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `Polluant_Associe` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. port_serie
-CREATE TABLE IF NOT EXISTS `Port_Serie` (
+CREATE TABLE IF NOT EXISTS `port_serie` (
   `no_port` smallint(6) NOT NULL DEFAULT 0,
   `designation` varchar(20) COLLATE latin1_general_ci DEFAULT NULL,
   PRIMARY KEY (`no_port`)
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `Port_Serie` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. protocole
-CREATE TABLE IF NOT EXISTS `Protocole` (
+CREATE TABLE IF NOT EXISTS `protocole` (
   `id_Protocole` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(20) COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`id_Protocole`),
@@ -239,7 +239,7 @@ CREATE TABLE IF NOT EXISTS `Protocole` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. systeme_etalonnage
-CREATE TABLE IF NOT EXISTS `Systeme_Etalonnage` (
+CREATE TABLE IF NOT EXISTS `systeme_etalonnage` (
   `id_systeme_etalon` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id_etalon` smallint(5) unsigned NOT NULL,
   `id_bouteille` smallint(5) unsigned NOT NULL,
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `Systeme_Etalonnage` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. taux_transmission
-CREATE TABLE IF NOT EXISTS `Taux_Transmission` (
+CREATE TABLE IF NOT EXISTS `taux_transmission` (
   `id_tx_transmission` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `taux_transmission` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id_tx_transmission`),
@@ -261,7 +261,7 @@ CREATE TABLE IF NOT EXISTS `Taux_Transmission` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. test_metrologique
-CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
+CREATE TABLE IF NOT EXISTS `test_metrologique` (
   `id_test` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `test_metro_type_test` enum('REPETABILITE','LINEARITE','TEMPS_REPONSE','RENDEMENT_FOUR','PERSO') COLLATE latin1_general_ci NOT NULL,
   `id_operateur` smallint(5) unsigned NOT NULL,
@@ -275,6 +275,9 @@ CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
   `critere1` double(6,2) NOT NULL,
   `critere2` double(6,2) NOT NULL,
   `critere3` double(6,2) NOT NULL,
+  `critere_temperature_min` double(6,2) NOT NULL,
+  `critere_temperature_max` double(6,2) NOT NULL,
+  `critere_variation` double(6,2) NOT NULL,
   `temperature_min` decimal(10,2) DEFAULT NULL,
   `temperature_max` decimal(10,2) DEFAULT NULL,
   `temperature_moyenne` decimal(10,2) DEFAULT NULL,
@@ -283,13 +286,15 @@ CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
   PRIMARY KEY (`id_test`),
   KEY `fk_test_operateur` (`id_operateur`),
   KEY `fk_test_lieu` (`id_lieu`),
-  KEY `fk_test_system_etalon` (`id_systeme_etalon`)
-) ENGINE=InnoDB AUTO_INCREMENT=2791 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+  KEY `fk_test_system_etalon` (`id_systeme_etalon`),
+  KEY `fk_id_sonde` (`id_sonde`),
+  CONSTRAINT `fk_id_sonde` FOREIGN KEY (`id_sonde`) REFERENCES `equipement` (`id_equipement`)
+) ENGINE=InnoDB AUTO_INCREMENT=2799 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. test_xml
-CREATE TABLE IF NOT EXISTS `Test_Xml` (
+CREATE TABLE IF NOT EXISTS `test_xml` (
   `id_Test_Xml` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `fichier_description` varchar(100) COLLATE latin1_general_ci NOT NULL,
   `type_test` enum('REPETABILITE','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','RENDEMENT_FOUR','PERSO') COLLATE latin1_general_ci NOT NULL DEFAULT 'PERSO',
@@ -303,7 +308,7 @@ CREATE TABLE IF NOT EXISTS `Test_Xml` (
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de la table tam_rpi. validation_test
-CREATE TABLE IF NOT EXISTS `Validation_Test` (
+CREATE TABLE IF NOT EXISTS `validation_test` (
   `id_validation` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `id_test` smallint(5) unsigned NOT NULL,
   `id_analyseur` smallint(5) unsigned NOT NULL,
@@ -317,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `Validation_Test` (
   CONSTRAINT `fk_id_analyseur` FOREIGN KEY (`id_analyseur`) REFERENCES `equipement` (`id_equipement`),
   CONSTRAINT `fk_id_operateur` FOREIGN KEY (`id_operateur`) REFERENCES `operateur` (`id_operateur`),
   CONSTRAINT `fk_id_test` FOREIGN KEY (`id_test`) REFERENCES `test_metrologique` (`id_test`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
