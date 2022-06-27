@@ -1,11 +1,11 @@
 /*///////////////////////////////////////////////////////////////////////////////////
 // \file bdhandler.h
-// \brief Classe gérant l'acces a la base de donnees
+// \brief Classe gï¿½rant l'acces a la base de donnees
 // \author FOUQUART Christophe
 // \version 1.0
 // \date 07/04/2011
 //
-// TAM - Tests Automatiques Métrologiques
+// TAM - Tests Automatiques Mï¿½trologiques
 // Copyright (C) 2011-2012 TAM Team
 //
 // This program is free software; you can redistribute it and/or
@@ -106,7 +106,7 @@ public:
 
     void ValiderTest(const uint idTest,QAuthenticator aUser, ushort idAnalyseur);
     void InvaliderTest(const uint idTest, QAuthenticator aUser, ushort idAnalyseur);
-    QList<QString>* getValidation(const ushort idTest);
+    QList<QString>* getValidation(const ushort idTest,const ushort idAnalyseur);
 
 Q_SIGNALS:
     void afficherTrace(QString trace);

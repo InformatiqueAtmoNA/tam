@@ -33,7 +33,7 @@ et_GenerateurRapportTest::et_GenerateurRapportTest(QPointer<BdHandler> bdHandler
                                              QAuthenticator aUser,
                                              const ushort idTest,
                                              const ushort idAnalyseur,
-                                             const ushort typeTest,   
+                                             const ushort typeTest,
                                              QWidget *parent):
     QWidget(parent),
     ui(new Ui::et_GenerateurRapportTest)
@@ -120,7 +120,7 @@ void et_GenerateurRapportTest::buttonFermerClicked()
 {
     QMessageBox msgBox;
     msgBox.setText(QLatin1String("Fermer ?"));
-    msgBox.setInformativeText(QLatin1String("Voulez-vous fermer et revenir à l'accueil ?"));
+    msgBox.setInformativeText(QLatin1String("Voulez-vous fermer et revenir ? l'accueil ?"));
     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
 
@@ -335,7 +335,7 @@ void et_GenerateurRapportTest::affichageEquipement(ushort idEquipement,QString n
 void et_GenerateurRapportTest::affichageValidation()
 {
 
-    QList<QString> *Validation = this->m_bdHandler->getValidation(m_idTest);
+    QList<QString> *Validation = this->m_bdHandler->getValidation(m_idTest,m_idAnalyseur);
 
     if(Validation->size()<3){
         this->ui->labelTestValide->setText("EN ATTENTE");
@@ -522,7 +522,7 @@ bool et_GenerateurRapportTest::genererRapportRendementFour()
             listNomMolecule << "NO" << "NOX" << "NO2";
             m_tabMoyenneCalculTPG.append(m_tabMoyenne);
             QWidget* resultatPolluant = new et_Resultatpolluant(listNomMolecule,m_tabMesures,m_tabMoyenne,this);
-            ui->tabWidget->addTab(resultatPolluant,"Phase N°"+ QString::number(i+1));
+            ui->tabWidget->addTab(resultatPolluant,"Phase N"+ QString::number(i+1));
         }
      }
     // Calcul des rendements de four et de la diff

@@ -69,15 +69,15 @@ QPointer<QSqlRelationalTableModel> BdHandler::getEquipementModel()
     model->setRelation(EQUIPEMENT_ID_TX_TRANSMISSION, QSqlRelation("Taux_Transmission","id_tx_transmission","taux_transmission"));
     model->setRelation(EQUIPEMENT_PORT,QSqlRelation("Port_Serie","no_port","designation"));
 
-    model->setHeaderData(EQUIPEMENT_NO_SERIE, Qt::Horizontal, "N° Serie");
-    model->setHeaderData(EQUIPEMENT_ID_MODELE, Qt::Horizontal, "Modèle");
+    model->setHeaderData(EQUIPEMENT_NO_SERIE, Qt::Horizontal, "Numero Serie");
+    model->setHeaderData(EQUIPEMENT_ID_MODELE, Qt::Horizontal, "Modele");
     model->setHeaderData(EQUIPEMENT_ID_TX_TRANSMISSION, Qt::Horizontal, "Taux transmission");
     model->setHeaderData(EQUIPEMENT_EN_SERVICE, Qt::Horizontal, "En service ?");
     model->setHeaderData(EQUIPEMENT_MAX_GAMME, Qt::Horizontal, "Max. Gamme");
     model->setHeaderData(EQUIPEMENT_MIN_GAMME, Qt::Horizontal, "Min. Gamme");
     model->setHeaderData(EQUIPEMENT_OFFSET, Qt::Horizontal, "Offset");
     model->setHeaderData(EQUIPEMENT_ADRESSE, Qt::Horizontal, "Adresse");
-    model->setHeaderData(EQUIPEMENT_CONTROLE_FLUX, Qt::Horizontal, "Contrôle de flux");
+    model->setHeaderData(EQUIPEMENT_CONTROLE_FLUX, Qt::Horizontal, "Controle de flux");
     model->setHeaderData(EQUIPEMENT_NB_BITS_STOP, Qt::Horizontal, "Nb. bits de stop");
     model->setHeaderData(EQUIPEMENT_NB_BITS_TRANSMISSION, Qt::Horizontal, "Nb. bits de transmission");
     model->setHeaderData(EQUIPEMENT_PARITE, Qt::Horizontal, "Parite");
@@ -276,7 +276,7 @@ QPointer<QSqlQueryModel> BdHandler::getTestRapportModel(QList<QString> liste_fil
     model->setHeaderData(HOMEW_TABVIEW_TEST_NO_EQUIP, Qt::Horizontal, tr("Numero Equipement"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_TYPE_TEST, Qt::Horizontal, tr("Type de Test"));
     model->setHeaderData(HOMEW_TABVIEW_TEST_DATE, Qt::Horizontal, tr("Date de Debut"));
-    model->setHeaderData(HOMEW_TABVIEW_TEST_VALIDATION, Qt::Horizontal, tr("Validité"));
+    model->setHeaderData(HOMEW_TABVIEW_TEST_VALIDATION, Qt::Horizontal, tr("Validite"));
     return model;
 }
 
@@ -739,7 +739,7 @@ QPointer<QSqlQueryModel> BdHandler::getMesureTestAnalyseur (const ushort idTest 
     return model;
 }
 
-//Recuperation des phases d'un test à partir table mesure
+//Recuperation des phases d'un test a partir table mesure
 
 QPointer<QSqlQueryModel> BdHandler::getTestPhase (const ushort idTest)
 {
@@ -782,7 +782,7 @@ bool BdHandler::insertIntoMesure(const MesureInfo mesureInfos)
     succes = requete.exec(strRequete);
 
     if(!succes)
-        emit(afficherTrace("Problème lors de l'enregistrement de la mesure moyenne"));
+        emit(afficherTrace("Probleme lors de l'enregistrement de la mesure moyenne"));
     succes = m_baseMySql.commit();
     return succes;
 }
@@ -819,11 +819,11 @@ void BdHandler::InvaliderTest(const uint idTest, QAuthenticator aUser, ushort id
     requete.exec(strRequete);
 }
 
-QList<QString> *BdHandler::getValidation(const ushort idTest)
+QList<QString> *BdHandler::getValidation(const ushort idTest,const ushort idAnalyseur)
 {
-    QSqlQuery requete(QString("SELECT id_operateur, date_validation, etat_validation FROM Validation_Test WHERE id_test=%1").arg(idTest));
+    QSqlQuery requete(QString("SELECT id_operateur, date_validation, etat_validation FROM Validation_Test WHERE id_test = %1 AND id_analyseur = %2").arg(QString::number(idTest),QString::number(idAnalyseur)));
     QList<QString >*Liste=new QList<QString>;
-    if(requete.next()) {
+     if(requete.next()) {
         QSqlRecord record = requete.record();
         Liste->append(record.value("etat_validation").toString());
         Liste->append(record.value("id_operateur").toString());
@@ -841,7 +841,7 @@ bool BdHandler::miseAjourDateHeureFinTest(const ushort idTestMetro)
     QSqlQuery requete;
     bool succes = requete.exec(strRequete);
     if(!succes) {
-        emit(afficherTrace("Problème lors de la mise à jour du champs date_fin de la table Test_Metrologique"),2);
+        emit(afficherTrace("Probleme lors de la mise a jour du champs date_fin de la table Test_Metrologique"),2);
         emit(afficherTrace("id_testMetro ="+QString::number(idTestMetro)),2);
     }
     return succes;
@@ -856,7 +856,7 @@ bool BdHandler::miseAjourTemperaturesFinTest(float tempMin, float tempMax, float
     QSqlQuery requete;
     bool succes = requete.exec(strRequete);
     if(!succes) {
-        emit(afficherTrace("Problème lors de la mise à jour du champs date_fin de la table Test_Metrologique"),2);
+        emit(afficherTrace("Probleme lors de la mise a jour du champs date_fin de la table Test_Metrologique"),2);
         emit(afficherTrace("id_testMetro ="+QString::number(idTest)),2);
     }
     return succes;
