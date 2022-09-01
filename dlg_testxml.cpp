@@ -50,6 +50,8 @@ Dlg_testXml::Dlg_testXml(QWidget *parent,const QPointer<BdHandler> bdHandler,
     connect(this->ui->button_Confirmer,SIGNAL(clicked()),this,SLOT(buttonConfirmerClicked()));
     connect(this->ui->button_Supprimer,SIGNAL(clicked()),this,SLOT(buttonSupprimerClicked()));
     connect(this->ui->checkBoxFavoris,SIGNAL(stateChanged(int)),this,SLOT(filter(int)));
+
+    this->ui->checkBoxFavoris->setCheckState(Qt::Checked);
 }
 
 Dlg_testXml::~Dlg_testXml()
