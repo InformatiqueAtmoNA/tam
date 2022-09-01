@@ -71,9 +71,10 @@ QPointer<MesureIndividuelle> horiba::demandeMesure()
     }
     QString mesure1 = getInformationFromResponse(reponse)["valeur1"];
     mesures.data()->append(mesure1.toFloat());
-    QString mesure2 = getInformationFromResponse(reponse)["valeur2"];
+// "valeur3" pointe vers mesure2 et "Valeur2" vers mesure3 pour gestion ordre NO/NOX/NO2 dans table resultats
+    QString mesure2 = getInformationFromResponse(reponse)["valeur3"];
     mesures.data()->append(mesure2.toFloat());
-    QString mesure3 = getInformationFromResponse(reponse)["valeur3"];
+    QString mesure3 = getInformationFromResponse(reponse)["valeur2"];
     mesures.data()->append(mesure3.toFloat());
 
     return mesures;
