@@ -596,6 +596,7 @@ void ExecutionTest::enregistrerMesures()
         strMesure.append(";");
         if(this->m_paramsTest.data()->sondePresente==true){
             strMesure.append(QString::number(this->m_tabMesuresSonde.last()));
+            strMesure.append(";");
         }
 
         if(m_remplirFichierCSV){
