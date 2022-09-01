@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS `Test_Metrologique` (
 
 -- Listage de la structure de la table tam_rpi. test_xml
 
-CREATE TABLE IF NOT EXISTS `Test_Xml` (
+CREATE TABLE IF NOT EXISTS `Test_XML` (
   `id_Test_Xml` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `fichier_description` varchar(100) COLLATE latin1_general_ci NOT NULL,
   `type_test` enum('REPETABILITE','REPETABILITE_2','LINEARITE','TEMPS_REPONSE','RENDEMENT_FOUR','PERSO') COLLATE latin1_general_ci NOT NULL DEFAULT 'PERSO',

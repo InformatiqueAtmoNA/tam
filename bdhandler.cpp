@@ -189,7 +189,7 @@ QPointer<QSqlTableModel> BdHandler::getTestXmlModel(const uint idTestXml)
     return model;
 }
 QString BdHandler::getTestFavoriteState(const ushort idTest){
-    QSqlRecord* record = getTableRow(QString("SELECT * FROM test_xml WHERE id_Test_Xml=%1").arg(idTest));
+    QSqlRecord* record = getTableRow(QString("SELECT * FROM Test_XML WHERE id_Test_Xml=%1").arg(idTest));
     QString favoriteState;
     if(record != NULL)
         favoriteState = record->value(TEST_XML_EST_FAVORI).toString();
