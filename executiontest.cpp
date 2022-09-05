@@ -517,6 +517,7 @@ void ExecutionTest::lancerTimerTempsAcquisition()
             QPointer< MesureIndividuelle > mesuresSonde = m_SondeProtocole->demandeMesure();
             m_tabMesuresSonde.append(mesuresSonde.data()->at(0));
         }
+        m_protocoleCalibrateur->demandeAlarme();
     }
     emit(this->mesuresEffectuees());
 }
