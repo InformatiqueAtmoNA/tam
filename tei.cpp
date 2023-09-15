@@ -163,7 +163,7 @@ QPointer<MesureIndividuelle> Tei::demandeMesure() {
 
         QString reponse = this->transaction(cmd);
         if(reponse.isEmpty())
-            //return mesures;
+            return tabMesures;
         switch(polluant){
         case NO :
         case NO2:
